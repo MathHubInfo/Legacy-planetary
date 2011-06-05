@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Simpletest case for node_example module.
+ *
+ * Verify example module functionality.
+ */
+
+/**
+ * Functionality tests for node example module.
+ */
+class NodeExampleTestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Node example',
+      'description' => 'Verify the custom node type creation.',
+      'group' => 'Examples',
+    );
+  }
+
+  function setUp() {
+    // Enable the module.
+    parent::setUp('node_example');
+  }
+
+  /**
+   * Verify the functionality of the example module.
+   */
+  function testNodeCreation() {
+    // Create and login user.
+    $account = $this->drupalCreateUser(array('access content', 'create node_example content'));
+    $this->drupalLogin($account);
+
+    // Create a new node. The image makes it more complicated, so skip it.
+    $edit = array(
+      'title' => $this->randomName(),
+      'node_example_color[und][0][value]' => 'red',
+      'node_example_color[und][1][value]' => 'green',
+      'node_example_color[und][2][value]' => 'blue',
+      'node_example_quantity[und][0][value]' => 100,
+    );
+    $this->drupalPost('node/add/node-example', $edit, t('Save'));
+    $this->assertText("Example Node " . $edit['title'] . " has been created", "Found node creation message");
+    $this->assertPattern("/The colors available.*red.*green.*blue/", "Correct 'colors available' on node page");
+
+    // Look on the examples page to make sure it shows up there also.
+    $this->drupalGet('examples/node_example');
+    $this->assertText($edit['title'], "Found random title string");
+    $this->assertPattern("/red.*green.*blue/", "Correct 'colors available' on node example page");
+
+  }
+}
+

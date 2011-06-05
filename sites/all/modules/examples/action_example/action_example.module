@@ -1,0 +1,361 @@
+<?php
+
+/**
+ * @file
+ * Action definition example module.
+ *
+ * Triggers and actions are a matched pair of Drupal features allowing some
+ * Drupal programming without using PHP. Using the appropriate action in a
+ * specific event, a site administrator can add new functionality.
+ * Examples are:
+ *  - Send an email after a node is published or edited.
+ *  - Display a message after a user has logged in.
+ *  - Display a message and send an email after a node has been deleted.
+ *
+ * A trigger is a special function which can enqueue actions. The trigger module
+ * provides the interface allowing us to associate certain actions with certain
+ * triggers.
+ *
+ * Actions are the functions designed to be run by triggers.
+ *
+ * A trigger should build the appropriate context for the action to be fired.
+ * Actions are very often grouped by functionality: examples are 'user', 'node',
+ * 'taxonomy'. When actions are grouped it is because they expect the same
+ * arguments. This way, you can enqueue as many actions understanding the 'user'
+ * object as you want.
+ *
+ * Not all actions can be used in all triggers because they require different
+ * contexts. But some actions are generic enough that they do not require
+ * special objects in their contexts, and so can be used on every available
+ * trigger. This 'group' type is used by actions to be available for this
+ * trigger.
+ *
+ * What are good candidates to be triggers? Any function can be a trigger, as
+ * long as it has the code to call the enqueued actions, but to make Drupal
+ * more extensible, you will find hooks (from Drupal and contributed modules)
+ * very good candidates. A trigger should build the arguments, ask for enqueued
+ * actions and run them. You may define a function being a trigger, and run it
+ * through a button in the front page, or you may prepare a trigger for a hook,
+ * and everytime that hook is fired, your trigger will be.
+ *
+ * What are good candidates to be actions? any function is a possible action,
+ * the only problem is finding a trigger able to run it.
+ *
+ * This module describes how to create actions for Drupal. In this
+ * example we are providing three actions:
+ *
+ * - A generic action that can be used in any trigger, which is the most
+ *   basic example of an action.
+ *
+ * - An action which which extends the capabilities of User triggers, even if
+ *   associated with node or comment events.
+ *
+ * - An action which extends the capabilities of node triggers, but limited
+ *   to certain events only, and using a customizable option.
+ *
+ * See:
+ *
+ * @todo this is a drupal 6 link
+ * @link http://drupal.org/node/172152 Writing Actions @endlink
+ *
+ * @todo this is a drupal 6 link
+ * @link http://drupal.org/node/199254 Triggers and Actions in Drupal 7 @endlink
+ *
+ * @see hook_action_info()
+ * In addition, the @link trigger_example.module Trigger Example @endlink
+ * provides detailed information on how to create a trigger.
+ */
+
+/**
+ * Implements hook_action_info().
+ *
+ * We call hook_action_info when we are defining the actions we provide.
+ * Actions are the actions fired by the associated triggers. In this example,
+ * we are registering our three new actions, providing the unique name (using
+ * Drupal's convention modulename_description_action), an easy to understand
+ * description of what the action does, the 'object' expected by this action
+ * (default options from core are node, user, comment and system, however other
+ * trigger modules may declare new object types), which are the triggers allowed
+ * to use these action, and if some customization is available. Please, note
+ * that the function name is not required to finish as _action to be declared as
+ * a Drupal action, and that only information provided by hook_trigger_info()
+ * will be considered for valid actions creation.
+ *
+ * These are the actions being provided in hook_action_info()
+ *
+ * - action_example_basic_action: this action is a dummy function which can be
+ *   used by any trigger. The label describes that the action will do nothing,
+ *   but is enough for a basic example. Type is set to system, so users will not
+ *   be confused about the scope of this action (expecting a node, user, or any
+ *   other object). This action is not configurable, and will appear as
+ *   available in the list of action under the menu entry:
+ *   'admin/config/system/actions.
+ * - action_example_unblock_user_action: Unblocks a user.
+ * - action_example_node_sticky_action: This action is a complex action that is
+ *   only available to Node type triggers, and can only be associated with the
+ *   events node presave, node insert and node update. The action does not
+ *   exist by default and it has to be created by user configuration. This makes
+ *   it an "advanced action" in Drupal, so-called because it requires
+ *   configuration or customization.
+ *   In this example action, the action will promote nodes and make them sticky
+ *   during presave, insert, or update, but only for particular users. As an
+ *   advanced action, it first needs to be created in the actions management
+ *   page (admin/config/system/actions). At the bottom of that page a selection
+ *   list shows a list of advanced actions that will includes the option
+ *   'Promote to frontpage and sticky on top any content created by :'
+ *   Selecting this option and clicking the 'Create' button, a configuration
+ *   form will ask for an author name. When this action is associated to any
+ *   of the possible Node trigger events, it will only be effective if the
+ *   author of the content matches the author configured by the action.
+ *
+ * @return
+ *   An associative array of action descriptions. The keys of the array
+ *   are the names of the action functions, and each corresponding value
+ *   is an associative array with the following key-value pairs:
+ *   - 'type': The type of object this action acts upon. Core actions have types
+ *     'node', 'user', 'comment', and 'system', but additional types can be
+ *     used, as long as the trigger and action agree on them.
+ *   - 'label': The human-readable name of the action, which should be passed
+ *     through the t() function for translation.
+ *   - 'configurable': If FALSE, then the action doesn't require any extra
+ *     configuration. If TRUE, then your module must define a form function with
+ *     the same name as the action function with '_form' appended (e.g., the
+ *     form for 'node_assign_owner_action' is 'node_assign_owner_action_form'.)
+ *     This function takes $context as its only parameter, and is paired with
+ *     the usual _submit function, and possibly an _validate function.
+ *   - 'triggers': An array of the triggers that can trigger this
+ *     action. For example: array('node_insert', 'user_update'). You can also
+ *     declare support for any trigger by returning array('any') for this value.
+ *   - 'behavior': (optional) A machine-readable array of behaviors of this
+ *     action, used to signal additionally required actions that may need to be
+ *     triggered. Currently recognized behaviors by Trigger module:
+ *     - 'changes_property': If an action with this behavior is assigned to a
+ *       trigger other than a "presave" hook, any save actions also assigned to
+ *       this trigger are moved later in the list. If no save action is present,
+ *       one will be added.
+ *       Modules that are processing actions (like Trigger module) should take
+ *       special care in the "presave" hook, in which case a dependent "save"
+ *       action should NOT be invoked.
+ *
+ * See hook_action_info().
+ */
+function action_example_action_info() {
+  return array(
+    'action_example_basic_action' => array(
+      'label' => t('Action Example: A basic example action that does nothing'),
+      'type' => 'system',
+      'configurable' => FALSE,
+      'triggers' => array('any'),
+    ),
+    'action_example_unblock_user_action' => array(
+      'label' => t('Action Example: Unblock a user'),
+      'type' => 'user',
+      'configurable' => FALSE,
+      'triggers' => array('any'),
+    ),
+    'action_example_node_sticky_action' => array(
+      'type' => 'node',
+      'label' => t('Action Example: Promote to frontpage and sticky on top any content created by :'),
+      'configurable' => TRUE,
+      'behavior' => array('changes_property'),
+      'triggers' => array('node_presave', 'node_insert', 'node_update'),
+    ),
+  );
+}
+
+
+
+/**
+ * Implements hook_menu().
+ *
+ * Simply provide a menu entry which explains what the module does.
+ */
+function action_example_menu() {
+  $items['examples/action_example'] = array(
+    'title'           => 'Action Example',
+    'description'     => 'Provides a basic information page.',
+    'page callback'   => '_action_example_page',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+
+/**
+ * A simple page to explain to the developer what to do.
+ */
+function _action_example_page() {
+  return t("The Action Example provides three example actions which can be configured on the <a href='@actions_url'>Actions configuration page</a> and assigned to triggers on the <a href='@triggers_url'>Triggers configuration page</a>.", array('@actions_url' => url('admin/config/system/actions'), '@triggers_url' => url('admin/structure/trigger/node')));
+}
+
+/*
+ * Most basic action.
+ *
+ * This action is not expecting any type of entity object, and can be used with
+ * any trigger type or any event.
+ */
+
+/**
+ * Basic example action.
+ *
+ * @param $entity
+ *   An optional entity object.
+ * @param array $context
+ *   Array with parameters for this action: depends on the trigger.
+ *
+ * @ingroup actions
+ */
+function action_example_basic_action(&$entity, $context = array()) {
+  //
+  // In this case we are ignoring the entity and the context. This case of
+  // action is useful when your action does not depend on the context, and
+  // the function must do something regardless the scope of the trigger.
+  // Simply announces that the action was executed using a messages.
+
+  drupal_set_message(t('action_example_basic_action fired'));
+  watchdog('action_example', 'action_example_basic_action fired.');
+}
+
+// ---------------------------------------------------------------------------
+/*
+ * A complex action for different trigger types.
+ *
+ * This action is expecting an entity object user, node or comment. If none of
+ * the above is provided (because it was not called from an user/node/comment
+ * trigger event, then the action will be taken on the current logged in user.
+ *
+ */
+
+/**
+ * Unblock an user. This action can be fired from different trigger types:
+ * - User trigger: this user will be unblocked.
+ * - Node/Comment trigger: the author of the node or comment will be unblocked.
+ * - Other: (including system or custom defined types), current user will be
+ *   unblocked. (Yes, this seems like an incomprehensible use-case.)
+ *
+ * @param $entity
+ *   An optional user object (could be a user, or an author if context is
+ *   node or comment)
+ * @param array $context
+ *   Array with parameters for this action: depends on the trigger. The context
+ *   is not used in this example.
+ *
+ * @ingroup actions
+ */
+function action_example_unblock_user_action(&$entity, $context = array()) {
+
+  // First we check that entity is a user object. If this is the case, then this
+  // is a user-type trigger.
+  if (isset($entity->uid)) {
+    $uid = $entity->uid;
+  }
+  elseif (isset($context['uid'])) {
+    $uid = $context['uid'];
+  }
+  // If neither of those are valid, then block the current user.
+  else {
+    $uid = $GLOBALS['user']->uid;
+  }
+  $account = user_load($uid);
+  $account = user_save($account, array('status' => 1));
+  watchdog('action_example', 'Unblocked user %name.', array('%name' => $account->name));
+  drupal_set_message(t('Unblocked user %name', array('%name' => $account->name)));
+}
+
+// ---------------------------------------------------------------------------
+/*
+ * A complex action using customization.
+ *
+ * The next action requires a configuration form to create/configure the action.
+ * In Drupal these are called 'advanced actions', because they must be
+ * customized to define their functionality.
+ *
+ * The 'action_example_node_sticky_action' allows creating rules to promote and
+ * set sticky content created by selected users on certain events. A form is
+ * used to configure which user is affected by this action, and this form
+ * includes the stanard _validate and _submit hooks.
+ */
+
+
+/**
+ * Generates settings form for action_example_node_sticky_action().
+ *
+ * @param array $context
+ *   An array of options of this action (in case it is being edited)
+ *
+ * @return array $form
+ *
+ */
+function action_example_node_sticky_action_form($context) {
+  /*
+  * We return a configuration form to set the requirements that will
+  * match this action before being executed. This is a regular Drupal form and
+  * may include any type of information you want, but all the fields of the
+  * form will be saved into the $context variable.
+  *
+  * In this case we are promoting all content types submited by this user, but
+  * it is possible to extend these conditions providing more options in the
+  * settings form.
+  */
+  $form['author'] = array(
+    '#title' => t('Author name'),
+    '#type' => 'textfield',
+    '#description' => t('Any content created, presaved or updated by this user will be promoted to front page and set as sticky.'),
+    '#default_value' => isset($context['author']) ? $context['author'] : '',
+  );
+  // Verify user permissions and provide an easier way to fill this field.
+  if (user_access('access user profiles')) {
+    $form['author']['#autocomplete_path'] = 'user/autocomplete';
+  }
+  // No more options, return the form.
+  return $form;
+}
+
+/**
+ * Validates settings form for action_example_node_sticky_action().
+ * Verifies that user exists before continuing.
+ */
+function action_example_node_sticky_action_validate($form, $form_state) {
+  if (! $account = user_load_by_name($form_state['values']['author']) ) {
+    form_set_error('author', t('Please, provide a valid username'));
+  }
+}
+
+/**
+ * Submit handler for action_example_node_sticky_action.
+ *
+ * Returns an associative array of values which will be available in the
+ * $context when an action is executed.
+ */
+function action_example_node_sticky_action_submit($form, $form_state) {
+  return array('author' => $form_state['values']['author']);
+}
+
+/**
+ * Promote and set sticky flag action. This is the special action that has been
+ * customized using the configuration form.
+ *
+ * @param $node
+ *   A node object provided by the associated trigger.
+ * @param $context
+ *   Array with the following elements:
+ *   - 'author': username of the author's content this function will promote and
+ *     set as sticky.
+ *
+ * @ingroup actions
+ */
+function action_example_node_sticky_action($node, $context) {
+  if (function_exists('dsm')) {
+    dsm($node, 'action_example_node_sticky_action is firing. Here is the $node');
+    dsm($context, 'action_example_node_sticky_action is firing. Here is the $context');
+  }
+  // Get the user configured for this special action.
+  $account = user_load_by_name($context['author']);
+  // Is the node created by this user? then promote and set as sticky.
+  if ($account->uid == $node->uid) {
+    $node->promote = NODE_PROMOTED;
+    $node->sticky  = NODE_STICKY;
+    watchdog('action', 'Set @type %title to sticky and promoted by special action for user %username.', array('@type' => node_type_get_name($node), '%title' => $node->title, '%username' => $account->name));
+    drupal_set_message(t('Set @type %title to sticky and promoted by special action for user %username.', array('@type' => node_type_get_name($node), '%title' => $node->title, '%username' => $account->name)));
+  }
+}

@@ -1,0 +1,570 @@
+<?php
+
+/**
+ * @file
+ * This is an example outlining how a module can make use of the new DBTNG
+ * database API in Drupal 7.
+ *
+ * @todo Demonstrate transaction usage.
+ *
+ * General documentation is available at
+ * @link database Database abstraction layer documentation @endlink and
+ * at @link http://drupal.org/node/310069 @endlink.
+ */
+
+/**
+ * @defgroup database_examples Database Examples
+ * @{
+ * These examples show basic database examples, including DBTNG.
+ *
+ * General documentation is available at
+ * @link database Database abstraction layer documentation @endlink and
+ * at @link http://drupal.org/node/310069 @endlink.
+ *
+ * The several examples here demonstrate basic database usage.
+ *
+ * In Drupal 6, the recommended method to save or update an entry in the
+ * database was drupal_write_record() or db_query().
+ *
+ * In Drupal 7 and forward, the usage of db_query()
+ * for INSERT, UPDATE, or DELETE is deprecated, because it is
+ * database-dependent. Instead specific functions are provided to perform these
+ * operations: db_insert(), db_update(), and db_delete() do the job now.
+ * (Note that drupal_write_record() is also deprecated.)
+ *
+ * db_insert() example:
+ * @code
+ *   // INSERT INTO {dbtng_example} (name, surname) VALUES('John, 'Doe')
+ *   db_insert('dbtng_example')
+ *     ->fields(array('name' => 'John', 'surname' => 'Doe'))
+ *     ->execute();
+ * @endcode
+ *
+ * db_update() example:
+ * @code
+ *   // UPDATE {dbtng_example} SET name = 'Jane' WHERE name = 'John'
+ *   db_update('dbtng_example')
+ *     ->fields(array('name' => 'Jane'))
+ *     ->condition('name', 'John')
+ *     ->execute();
+ * @endcode
+ *
+ * db_delete() example:
+ * @code
+ *   // DELETE FROM {dbtng_example} WHERE name = 'Jane'
+ *   db_delete('dbtng_example')
+ *     ->condition('name', 'Jane')
+ *     ->execute();
+ * @endcode
+ *
+ * See @link database Database Abstraction Layer @endlink
+ * @see db_insert()
+ * @see db_update()
+ * @see db_delete()
+ * @see drupal_write_record()
+ * @}
+*/
+
+/**
+ * Save an entry in the database.
+ *
+ * The underlying DBTNG function is db_insert().
+ *
+ * In Drupal 6, this would have been:
+ * @code
+ *   db_query(
+ *     "INSERT INTO {dbtng_example} (name, surname, age)
+ *       VALUES ('%s', '%s', '%d')",
+ *     $entry['name'],
+ *     $entry['surname'],
+ *     $entry['age']
+ *   );
+ * @endcode
+ *
+ * Exception handling is shown in this example. It could be simplified
+ * without the try/catch blocks, but since an insert will throw an exception
+ * and terminate your application if the exception is not handled, it is best
+ * to employ try/catch.
+ *
+ * @param $entry
+ *   An array containing all the fields of the database record.
+ *
+ * @ingroup database_examples
+ * @see db_insert()
+ */
+function dbtng_example_entry_insert($entry) {
+  $return_value = NULL;
+  try {
+    $return_value = db_insert('dbtng_example')
+                    ->fields($entry)
+                    ->execute();
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('db_insert failed. Message = %message, query= %query',
+      array('%message' => $e->getMessage(), '%query' => $e->query_string)), 'error');
+  }
+  return $return_value;
+}
+
+/**
+ * Update an entry in the database.
+ *
+ * The former, deprecated techniques used db_query() or drupal_write_record():
+ * @code
+ *  drupal_write_record('dbtng_example', $entry, $entry['pid']);
+ * @endcode
+ *
+ * @code
+ *  db_query(
+ *    "UPDATE {dbtng_example}
+ *     SET name = '%s', surname = '%s', age = '%d'
+ *     WHERE pid = %d",
+ *     $entry['pid']
+ *  );
+ * @endcode
+ *
+ * @param $entry
+ *   An array containing all the fields of the item to be updated.
+ *
+ * @ingroup database_examples
+ * @see db_update()
+ */
+function dbtng_example_entry_update($entry) {
+  try {
+    // db_update()...->execute() returns the number of rows updated.
+    $count = db_update('dbtng_example')
+              ->fields($entry)
+              ->condition('pid', $entry['pid'])
+              ->execute();
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('db_update failed. Message = %message, query= %query',
+      array('%message' => $e->getMessage(), '%query' => $e->query_string)), 'error');
+  }
+  return $count;
+}
+
+/**
+ * Delete an entry from the database.
+ *
+ * The usage of db_query is deprecated except for static queries.
+ * Formerly, a deletion might have been accomplished like this:
+ * @code
+ *  db_query("DELETE FROM {dbtng_example} WHERE pid = %d", $entry['pid]);
+ * @endcode
+ *
+ * @param $entry
+ *   An array containing at least the person identifier 'pid' element of the
+ *   entry to delete.
+ *
+ * @ingroup database_examples
+ * @see db_delete()
+ */
+function dbtng_example_entry_delete($entry) {
+  db_delete('dbtng_example')
+    ->condition('pid', $entry['pid'])
+    ->execute();
+
+}
+
+
+/**
+ * Read from the database using a filter array.
+ *
+ * In Drupal 6, the standard function to perform reads was db_query(), and
+ * for static queries, it still is.
+ *
+ * db_query() used an SQL query with placeholders and arguments as parameters.
+ *
+ * @code
+ *  // Old way
+ *  $query = "SELECT * FROM {dbtng_example} n WHERE n.uid = %d AND name = '%s'";
+ *  $result = db_query($query, $uid, $name);
+ * @endcode
+ *
+ * Drupal 7 DBTNG provides an abstracted interface that will work with a wide
+ * variety of database engines.
+ *
+ * db_query() is deprecated except when doing a static query. The following is
+ * perfectly acceptable in Drupal 7. See
+ * @link http://drupal.org/node/310072 the handbook page on static queries @endlink
+ *
+ * @code
+ *   // SELECT * FROM {dbtng_example} WHERE uid = 0 AND name = 'John'
+ *   db_query(
+ *     "SELECT * FROM {dbtng_example} WHERE uid = :uid and name = :name",
+ *     array(':uid' => 0, ':name' => 'John')
+ *   )->execute();
+ * @endcode
+ *
+ * But for more dynamic queries, Drupal provides the db_select()
+ * API method, so there are several ways to perform the same SQL query.
+ * See the @link http://drupal.org/node/310075 handbook page on dynamic queries. @endlink
+ *
+ * @code
+ *   // SELECT * FROM {dbtng_example} WHERE uid = 0 AND name = 'John'
+ *   db_select('dbtng_example')
+ *     ->fields('dbtng_example')
+ *     ->condition('uid', 0)
+ *     ->condition('name', 'John')
+ *     ->execute();
+ * @endcode
+ *
+ * Here is db_select with named placeholders:
+ * @code
+ *   // SELECT * FROM {dbtng_example} WHERE uid = 0 AND name = 'John'
+ *   $arguments = array(':name' => 'John', ':uid' => 0);
+ *   db_select('dbtng_example')
+ *     ->fields('dbtng_example')
+ *     ->where('uid = :uid AND name = :name', $arguments)
+ *     ->execute();
+ * @endcode
+ *
+ * Conditions are stacked and evaluated as AND and OR depending on the type of
+ * query. For more information, read the conditional queries handbook page at:
+ * http://drupal.org/node/310086
+ *
+ * The condition argument is an 'equal' evaluation by default, but this can be
+ * altered:
+ * @code
+ *   // SELECT * FROM {dbtng_example} WHERE age > 18
+ *   db_select('dbtng_example')
+ *     ->fields('dbtng_example')
+ *     ->condition('age', 18, '>')
+ *     ->execute();
+ * @endcode
+ *
+ * @param $entry
+ *   An array containing all the fields used to search the entries in the table.
+ * @return
+ *   An object containing the loaded entries if found.
+ *
+ * @ingroup database_examples
+ * @see db_select()
+ * @see db_query()
+ * @see http://drupal.org/node/310072
+ * @see http://drupal.org/node/310075
+ *
+ */
+function dbtng_example_entry_load($entry = array()) {
+  // Read all fields from the dbtng_example table.
+  $select = db_select('dbtng_example', 'example');
+  $select->fields('example');
+
+  // Add each field and value as a condition to this query.
+  foreach ($entry as $field => $value) {
+    $select->condition($field, $value);
+  }
+  // Return the result in object format.
+  return $select->execute()->fetchAll();
+}
+
+/**
+ * Render a filtered list of entries in the database.
+ *
+ * DBTNG also helps processing queries that return several rows, providing the
+ * found objects in the same query execution call.
+ *
+ * This function queries the database using a JOIN between users table and the
+ * example entries, to provide the username that created the entry, and creates
+ * a table with the results, processing each row.
+ *
+ * SELECT
+ *  e.pid as pid, e.name as name, e.surname as surname, e.age as age
+ *  u.name as username
+ * FROM
+ *  {dbtng_example} e
+ * JOIN
+ *  users u ON e.uid = u.uid
+ * WHERE
+ *  e.name = 'John' AND e.age > 18
+ *
+ * @see db_select()
+ * @see http://drupal.org/node/310075
+ */
+function dbtng_example_advanced_list() {
+  $output = '';
+
+  $select = db_select('dbtng_example', 'e');
+  // Join the users table, so we can get the entry creator's username.
+  $select->join('users', 'u', 'e.uid = u.uid');
+  // Select these specific fields for the output.
+  $select->addField('e', 'pid');
+  $select->addField('u', 'name', 'username');
+  $select->addField('e', 'name');
+  $select->addField('e', 'surname');
+  $select->addField('e', 'age');
+  // Filter only persons named "John".
+  $select->condition('e.name', 'John');
+  // Filter only persons older than 18 years.
+  $select->condition('e.age', 18, '>');
+  // Make sure we only get items 0-49, for scalability reasons.
+  $select->range(0, 50);
+
+  // Now, loop all these entries and show them in a table. Note that there is no
+  // db_fetch_* object or array function being called here. Also note that the
+  // following line could have been written as
+  // $entries = $select->execute()->fetchAll() which would return each selected
+  // record as an object instead of an array.
+  $entries = $select->execute()->fetchAll(PDO::FETCH_ASSOC);
+  if (!empty($entries)) {
+    $rows = array();
+    foreach ($entries as $entry) {
+      // Sanitize the data before handing it off to the theme layer.
+      $rows[] = array_map('check_plain', $entry);
+    }
+    // Make a table for them.
+    $header = array(t('Id'), t('Created by'), t('Name'), t('Surname'), t('Age'));
+    $output .= theme('table', array('header' => $header, 'rows' => $rows));
+  }
+  else {
+    drupal_set_message(t('No entries meet the filter criteria (Name = "John" and Age > 18).'));
+  }
+  return $output;
+}
+
+//// Helper functions ////
+
+/**
+ * Implements hook_help().
+ *
+ * Show some help on each form provided by this module.
+ */
+function dbtng_example_help($path) {
+  $output = '';
+  switch ($path) {
+    case 'examples/dbtng':
+      $output = t('Generate a list of all entries in the database. There is no filter in the query.');
+      break;
+    case 'examples/dbtng/advanced':
+      $output  = t('A more complex list of entries in the database.') . ' ';
+      $output .= t('Only the entries with name = "John" and age older than 18 years are shown, the username of the person who created the entry is also shown.');
+      break;
+    case 'examples/dbtng/update':
+      $output = t('Demonstrates a database update operation.');
+      break;
+    case 'examples/dbtng/add':
+      $output = t('Add an entry to the dbtng_example table.');
+      break;
+  }
+  return $output;
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * Set up calls to drupal_get_form() for all our example cases.
+ */
+function dbtng_example_menu() {
+  $items = array();
+
+  $items['examples/dbtng'] = array(
+    'title' => 'DBTNG Example',
+    'page callback' => 'dbtng_example_list',
+    'access callback' => TRUE,
+  );
+  $items['examples/dbtng/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['examples/dbtng/add'] = array(
+    'title' => 'Add entry',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dbtng_example_form_add'),
+    'access callback' => TRUE,
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -9,
+  );
+  $items['examples/dbtng/update'] = array(
+    'title' => 'Update entry',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dbtng_example_form_update'),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => TRUE,
+    'weight' => -5,
+  );
+  $items['examples/dbtng/advanced'] = array(
+    'title' => 'Advanced list',
+    'page callback' => 'dbtng_example_advanced_list',
+    'access callback' => TRUE,
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Render a list of entries in the database.
+ */
+function dbtng_example_list() {
+  $output = '';
+
+  // Get all entries in the dbtng_example table.
+  if ($entries = dbtng_example_entry_load()) {
+    $rows = array();
+    foreach ($entries as $entry) {
+      // Sanitize the data before handing it off to the theme layer.
+      $rows[] = array_map('check_plain', (array) $entry);
+    }
+    // Make a table for them.
+    $header = array(t('Id'), t('uid'), t('Name'), t('Surname'), t('Age'));
+    $output .= theme('table', array('header' => $header, 'rows' => $rows));
+  }
+  else {
+    drupal_set_message(t('No entries have been added yet.'));
+  }
+  return $output;
+}
+
+/**
+ * Prepare a simple form to add an entry, with all the interesting fields.
+ */
+function dbtng_example_form_add($form, &$form_state) {
+  $form = array();
+
+  $form['add'] = array(
+    '#type'  => 'fieldset',
+    '#title' => t('Add a person entry'),
+  );
+  $form['add']['name'] = array(
+    '#type'  => 'textfield',
+    '#title' => t('Name'),
+    '#size'  => 15,
+  );
+  $form['add']['surname'] = array(
+    '#type'  => 'textfield',
+    '#title' => t('Surname'),
+    '#size'  => 15,
+  );
+  $form['add']['age'] = array(
+    '#type'  => 'textfield',
+    '#title' => t('Age'),
+    '#size'  => 5,
+    '#description' => t("Values greater than 127 will cause an exception. Try it - it's a great example why exception handling is needed with DTBNG."),
+  );
+  $form['add']['submit'] = array(
+    '#type'  => 'submit',
+    '#value' => t('Add'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler for 'add entry' form.
+ */
+function dbtng_example_form_add_submit($form, &$form_state) {
+  global $user;
+
+  // Save the submitted entry.
+  $entry = array(
+    'name'    => $form_state['values']['name'],
+    'surname' => $form_state['values']['surname'],
+    'age'     => $form_state['values']['age'],
+    'uid'     => $user->uid,
+  );
+  $return = dbtng_example_entry_insert($entry);
+  if ($return) {
+    drupal_set_message(t("Created entry @entry", array('@entry' => print_r($entry, TRUE))));
+  }
+}
+
+/**
+ * Sample UI to update a record.
+ */
+function dbtng_example_form_update($form, &$form_state) {
+  $form = array(
+    '#prefix' => '<div id="updateform">',
+    '#suffix' => '</div>',
+  );
+
+  $entries = dbtng_example_entry_load();
+  $keyed_entries = array();
+  if (empty($entries)) {
+    $form['no_values'] = array(
+      '#value' => t("No entries exist in the table dbtng_example table."),
+    );
+    return $form;
+  }
+
+  foreach ($entries as $entry) {
+    $options[$entry->pid] = t("@pid: @name @surname (@age)", array('@pid' => $entry->pid, '@name' => $entry->name, '@surname' => $entry->surname, '@age' => $entry->age));
+    $keyed_entries[$entry->pid] = $entry;
+  }
+  $default_entry = !empty($form_state['values']['pid']) ? $keyed_entries[$form_state['values']['pid']] : $entries[0];
+
+  $form_state['entries'] = $keyed_entries;
+
+  $form['pid'] = array(
+    '#type' => 'select',
+    '#options' => $options,
+    '#title' => t('Choose entry to update'),
+    '#default_value' => $default_entry->pid,
+    '#ajax' => array(
+      'wrapper' => 'updateform',
+      'callback' => 'dbtng_example_form_update_callback',
+    ),
+  );
+
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Updated first name'),
+    '#size' => 15,
+    '#default_value' => $default_entry->name,
+  );
+
+  $form['surname'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Updated last name'),
+    '#size' => 15,
+    '#default_value' => $default_entry->surname,
+  );
+  $form['age'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Updated age'),
+    '#size' => 4,
+    '#default_value' => $default_entry->age,
+    '#description' => t("Values greater than 127 will cause an exception"),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update'),
+  );
+  return $form;
+}
+
+/**
+ * AJAX callback handler for the pid select.
+ *
+ * When the pid changes, populates the defaults from the database in the form.
+ */
+function dbtng_example_form_update_callback($form, $form_state) {
+  $entry = $form_state['entries'][$form_state['values']['pid']];
+  // Setting the #value of items is the only way I was able to figure out
+  // to get replaced defaults on these items. #default_value will not do it
+  // and shouldn't.
+  foreach (array('name', 'surname', 'age') as $item) {
+    $form[$item]['#value'] = $entry->$item;
+  }
+  return $form;
+}
+
+/**
+ * Submit handler for 'update entry' form.
+ */
+function dbtng_example_form_update_submit($form, &$form_state) {
+  global $user;
+
+  // Save the submitted entry.
+  $entry = array(
+    'pid' => $form_state['values']['pid'],
+    'name' => $form_state['values']['name'],
+    'surname' => $form_state['values']['surname'],
+    'age' => $form_state['values']['age'],
+    'uid' => $user->uid,
+  );
+  $count = dbtng_example_entry_update($entry);
+  drupal_set_message(t("Updated entry @entry (@count row updated)", array('@count' => $count, '@entry' => print_r($entry, TRUE))));
+}

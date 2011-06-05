@@ -1,0 +1,167 @@
+<?php
+
+/**
+ * @file
+ * This is an example outlining how a module can be used to display a
+ * custom page at a given URL.
+ */
+
+/**
+ * Implements hook_help().
+ *
+ * Throughout Drupal, hook_help() is used to display help text at the top of
+ * pages. Some other parts of Drupal pages get explanatory text from these hooks
+ * as well. We use it here to illustrate how to add help text to the pages your
+ * module defines.
+ */
+function page_example_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#simple':
+      // Here is some help text for a custom page.
+      return t('This sentence contains all the letters in the English alphabet.');
+  }
+}
+
+/**
+ * Implements hook_permission().
+ *
+ * Since the access to our new custom pages will be granted based on
+ * special permissions, we need to define what those permissions are here.
+ * This ensures that they are available to enable on the user role
+ * administration pages.
+ */
+function page_example_permission() {
+  return array(
+    'access simple page' => array(
+      'title' => t('Access simple page'),
+      'description' => t('Allow users to access simple page'),
+    ),
+    'access arguments page' => array(
+      'title' => t('Access page with arguments'),
+      'description' => t('Allow users to access page with arguments'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * hook_menu() must be implemented to emit items to place in the main menu.
+ * This is a required step for modules wishing to display their own pages,
+ * because the process of creating the links also tells Drupal what
+ * callback function to use for a given URL. The menu items returned
+ * here provide this information to the menu system.
+ *
+ * With the below menu definitions, URLs will be interpreted as follows:
+ *
+ * If the user accesses http://example.com/?q=examples/page_example/simple, then
+ * the menu system will first look for a menu item with that path. In this case
+ * it will find a match, and execute page_example_simple().
+ *
+ * If the user accesses http://example.com/?q=examples/page_example/arguments,
+ * no match will be found, so the system will look for 'examples/page_example',
+ * which exists, and that page will be displayed.
+ *
+ * If the user accesses http://example.com/?q=examples/page_example/arguments,
+ * the menu system will find no explicit match so will fall back to execute
+ * page_example_description().
+ *
+ * If the user accesses
+ * http://example.com/?q=examples/page_example/arguments/1/2, the menu
+ * system will first look for examples/page_example/arguments/1/2. Not finding
+ * a match, it will look for examples/page_example/arguments/1/%. Again not
+ * finding a match, it will look for examples/page_example/arguments/%/2.
+ * Yet again not finding a match, it will look for
+ * examples/page_example/arguments/%/%. This time it finds a match, and so will
+ * execute page_example_arguments(1, 2). Since the parameters are passed to
+ * the function after the match, the function can do additional checking or
+ * make use of them without resulting to the arg() function.
+ *
+ * The @link menu_example.module Menu Example @endlink provides extensive
+ * examples for hook_menu().
+ */
+function page_example_menu() {
+
+  // This is the minimum information you can provide for a menu item. This menu
+  // item will be created in the default menu.
+  $items['examples/page_example'] = array(
+    'title' => 'Page Example',
+    'page callback' => 'page_example_description',
+    'access callback' => TRUE,
+    'expanded' => TRUE,
+  );
+
+  $items['examples/page_example/simple'] = array(
+    'title' => 'Simple - no arguments',
+    'page callback' => 'page_example_simple',
+    'access arguments' => array('access simple page'),
+  );
+
+  // By using the MENU_CALLBACK type, we can register the callback for this
+  // path but do not have the item show up in the menu; the admin is not allowed
+  // to enable the item in the menu, either.
+  //
+  // Notice that the 'page arguments' is an array of numbers. These will be
+  // replaced with the corresponding parts of the menu path. In this case a 0
+  // would be replaced by 'example', a 1 by 'arguments', and like wise 2 and 3 will
+  // be replaced by what ever the user provides. These will be passed as
+  // arguments to the page_example_arguments() function.
+  $items['examples/page_example/arguments/%/%'] = array(
+    'page callback' => 'page_example_arguments',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access arguments page'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function page_example_description() {
+  return array('#markup' => t('The page_example provides two pages, "simple" and "arguments". The <a href="@simple_link">simple page</a> just returns a renderable array for display. The <a href="@arguments_link">arguments page</a> takes two arguments and displays them, as in @arguments_link', array('@simple_link' => url('examples/page_example/simple', array('absolute' => TRUE)), '@arguments_link' => url('examples/page_example/arguments/23/56', array('absolute' => TRUE)))));
+}
+/**
+ * A simple page callback.
+ *
+ * Page callbacks return a renderable array with the content area of the page.
+ * The theme system will later render and surround the content in the
+ * appropriate blocks, navigation, and styling.
+ *
+ * If you do not want to use the theme system (for example for outputting an
+ * image or XML), you should print the content yourself and not return anything.
+ */
+function page_example_simple() {
+  return array('#markup' => '<p>' . t('Simple page: The quick brown fox jumps over the lazy dog.') . '</p>');
+}
+
+/**
+ * A more complex page callback that takes arguments.
+ *
+ * The arguments are passed in from the page URL. The in our hook_menu
+ * implementation we instructed the menu system to extract the last two
+ * parameters of the path and pass them to this function as arguments.
+ *
+ * This function also demonstrates a more complex render array in the returned
+ * values. Instead of just rendering the HTML with a theme('item_list'), the
+ * list is left unrendered, and a #theme attached to it so that it can be
+ * rendered as late as possible, giving more parts of the system a chance to
+ * change it if necessary.
+ */
+function page_example_arguments($first, $second) {
+  // Make sure you don't trust the URL to be safe! Always check for exploits.
+  if (!is_numeric($first) || !is_numeric($second)) {
+    // We will just show a standard "access denied" page in this case.
+    drupal_access_denied();
+    return;  // We actually don't get here.
+  }
+
+  $list[] = t("First number was @number.", array('@number' => $first));
+  $list[] = t("Second number was @number.", array('@number' => $second));
+  $list[] = t('The total was @number.', array('@number' => $first + $second));
+
+  $render_array['page_example_arguments'] = array(
+    '#theme' => 'item_list',  // The theme function to apply to the #items
+    '#items' => $list,  // The list itself.
+    '#title' => t('Argument Information'),
+  );
+  return $render_array;
+}

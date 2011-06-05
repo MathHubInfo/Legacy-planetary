@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * @file
+ * test file for action_example module.
+ */
+
+/**
+ * Default test case for the action_example module.
+ */
+class ActionExampleTestCase extends TriggerWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Action example',
+      'description' => 'Perform various tests on action_example module.' ,
+      'group' => 'Examples',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('trigger', 'action_example');
+  }
+
+ /**
+   * Test Action Example.
+   *
+   * 1. action_example_basic_action: Configure a action_example_basic_action to
+   *    happen when user logs in.
+   * 2. action_example_unblock_user_action: When a user's profile is being
+   *    viewed, unblock that user.
+   * 3. action_example_node_sticky_action: Create a user, configure that user
+   *    to always be stickied using advanced configuration. Have the user
+   *    create content; verify that it gets stickied.
+   */
+  function testActionExample() {
+    // Create an administrative user.
+    $admin_user = $this->drupalCreateUser(array('administer actions', 'access comments', 'access content', 'post comments', 'skip comment approval', 'create article content', 'access user profiles', 'administer users'));
+    $this->drupalLogin($admin_user);
+
+    // 1. Assign basic action; then logout and login user and see if it puts
+    // the message on the screen.
+    $hash = drupal_hash_base64('action_example_basic_action');
+    $edit = array('aid' => $hash);
+    $this->drupalPost('admin/structure/trigger/user', $edit, t('Assign'), array(), array(), 'trigger-user-login-assign-form');
+
+    $this->drupalLogout();
+    $this->drupalLogin($admin_user);
+    $this->assertText(t('action_example_basic_action fired'));
+
+    // 2. Unblock: When a user's profile is being viewed, unblock.
+    $normal_user = $this->drupalCreateUser();
+    user_save($normal_user, array('status' => 0));  // Blocked user.
+    $normal_user = user_load($normal_user->uid, TRUE);
+    $this->assertFalse($normal_user->status, t('Normal user status has been set to blocked'));
+
+    $hash = drupal_hash_base64('action_example_unblock_user_action');
+    $edit = array('aid' => $hash);
+    $this->drupalPost('admin/structure/trigger/user', $edit, t('Assign'), array(), array(), 'trigger-user-view-assign-form');
+
+    $this->drupalGet("user/$normal_user->uid");
+    $normal_user = user_load($normal_user->uid, TRUE);
+    $this->assertTrue($normal_user->status, t('Normal user status has been set to unblocked'));
+    $this->assertRaw(t('Unblocked user %name', array('%name' => $normal_user->name)));
+
+    // 3. Create a user whose posts are always to be stickied.
+    $sticky_user = $this->drupalCreateUser(array('access comments', 'access content', 'post comments', 'skip comment approval', 'create article content'));
+
+    $action_label = $this->randomName();
+    $edit = array(
+      'actions_label' => $action_label,
+      'author' => $sticky_user -> name,
+    );
+    $aid = $this->configureAdvancedAction('action_example_node_sticky_action', $edit);
+    $edit = array('aid' => drupal_hash_base64($aid));
+    $this->drupalPost('admin/structure/trigger/node', $edit, t('Assign'), array(), array(), 'trigger-node-insert-assign-form');
+    // Now create a node and verify that it gets stickied.
+    $this->drupalLogout();
+    $this->drupalLogin($sticky_user);
+    $node = $this->drupalCreateNode();
+    $this->assertTrue($node->sticky, t('Node was set to sticky on creation'));
+  }
+}

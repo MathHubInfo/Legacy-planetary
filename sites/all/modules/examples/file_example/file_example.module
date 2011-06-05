@@ -1,0 +1,521 @@
+<?php
+
+/**
+ * @file
+ * Examples demonstrating the Drupal File API (and Stream Wrappers).
+ */
+
+/**
+ * The File Example module is a part of the Examples for Developers Project
+ * and provides various Drupal File API Examples. You can download and
+ * experiment with this code at the
+ * @link http://drupal.org/project/examples Examples for Developers project page. @endlink
+ *
+ * See @link http://drupal.org/node/555118 Drupal File API @endlink for handbook
+ * documentation on the File API and
+ * @link file File summary on api.drupal.org @endlink for the function summary.
+ *
+ * @defgroup file_example Examples: File Examples
+ */
+
+/**
+ * Implements hook_menu() to set up the URLs (menu entries) for the
+ * file examples.
+ */
+function file_example_menu() {
+  $items = array();
+  $items['examples/file_example'] = array(
+    'title' => 'File Example',
+    'page callback' => 'file_example_intro',
+    'access callback' => TRUE,
+    'expanded' => TRUE,
+  );
+  $items['examples/file_example/fileapi'] = array(
+    'title' => 'Use File API to read/write a file',
+    'page callback' => 'drupal_get_form',
+    'access arguments' => array('use file example'),
+    'page arguments' => array('file_example_readwrite'),
+  );
+  $items['examples/file_example/access_session'] = array(
+    'page callback' => 'file_example_session_contents',
+    'access arguments' => array('use file example'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function file_example_permission() {
+  return array(
+    'use file example' =>  array(
+      'title' => t('Use the examples in the File Example module'),
+    ),
+  );
+}
+
+
+/**
+ * Form builder function for the file example readwrite and directory creation
+ * example.
+ *
+ * A simple form that allows creation of a file, managed or unmanaged. It
+ * also allows reading/deleting a file and creation of a directory.
+ * @ingroup file_example
+ */
+function file_example_readwrite($form, &$form_state) {
+  if (empty($_SESSION['file_example_default_file'])) {
+    $_SESSION['file_example_default_file'] = 'public://drupal.txt';
+  }
+  $default_file = $_SESSION['file_example_default_file'];
+  if (empty($_SESSION['file_example_default_directory'])) {
+    $_SESSION['file_example_default_directory'] = 'public://directory1';
+  }
+  $default_directory = $_SESSION['file_example_default_directory'];
+
+  $form['write_file'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Write to a file'),
+  );
+  $form['write_file']['write_contents'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Enter something you would like to write to a file') . ' ' . date('m'),
+    '#default_value' => t('Put some text here or just use this text'),
+  );
+
+  $form['write_file']['destination'] = array(
+    '#type' => 'textfield',
+    '#default_value' => $default_file,
+    '#title' => t('Optional: Enter the streamwrapper saying where it should be written'),
+    '#description' => t('This may be public://some_dir/test_file.txt or private://another_dir/some_file.txt, for example. If you include a directory, it must already exist. The default is "public://". Since this example supports session://, you can also use something like session://somefile.txt.'),
+  );
+
+  $form['write_file']['managed_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Write managed file'),
+    '#submit' => array('file_example_managed_write_submit'),
+  );
+  $form['write_file']['unmanaged_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Write unmanaged file'),
+    '#submit' => array('file_example_unmanaged_write_submit'),
+  );
+  $form['write_file']['unmanaged_php'] = array(
+    '#type' => 'submit',
+    '#value' => t('Unmanaged using PHP'),
+    '#submit' => array('file_example_unmanaged_php_submit'),
+  );
+
+  $form['fileops'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Read from a file'),
+  );
+  $form['fileops']['fileops_file'] = array(
+    '#type' => 'textfield',
+    '#default_value' => $default_file,
+    '#title' => t('Enter the URI of a file'),
+    '#description' => t('This must be a stream-type description like public://some_file.txt or http://drupal.org or private://another_file.txt or (for this example) session://yet_another_file.txt.'),
+  );
+  $form['fileops']['read_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Read the file and store it locally'),
+    '#submit' => array('file_example_read_submit'),
+  );
+  $form['fileops']['delete_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete file'),
+    '#submit' => array('file_example_delete_submit'),
+  );
+  $form['fileops']['check_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Check to see if file exists'),
+    '#submit' => array('file_example_file_check_exists_submit'),
+  );
+
+  $form['directory'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Create or prepare a directory'),
+  );
+
+  $form['directory']['directory_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Directory to create/prepare/delete'),
+    '#default_value' => $default_directory,
+    '#description' => t('This is a directory as in public://some/directory or private://another/dir.'),
+  );
+  $form['directory']['create_directory'] = array(
+    '#type' => 'submit',
+    '#value' => t('Create directory'),
+    '#submit' => array('file_example_create_directory_submit'),
+  );
+  $form['directory']['delete_directory'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete directory'),
+    '#submit' => array('file_example_delete_directory_submit'),
+  );
+  $form['directory']['check_directory'] = array(
+    '#type' => 'submit',
+    '#value' => t('Check to see if directory exists'),
+    '#submit' => array('file_example_check_directory_submit'),
+  );
+
+  $form['debug'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Debugging'),
+  );
+  $form['debug']['show_session'] = array(
+    '#type' => 'submit',
+    '#value' => t('Show $_SESSION contents'),
+    '#submit' => array('file_example_show_session_contents_submit'),
+  );
+  $form['debug']['show_raw_session'] = array(
+    '#type' => 'submit',
+    '#value' => t('Show raw $_SESSION contents'),
+    '#submit' => array('file_example_show_session_contents_submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Submit handler to write a managed file.
+ *
+ * The key functions used here are:
+ * - file_save_data(), which takes a buffer and saves it to a named file and
+ *   also creates a tracking record in the database and returns a file object.
+ *   In this function we use FILE_EXISTS_RENAME (the default) as the argument,
+ *   which means that if there's an existing file, create a new non-colliding
+ *   filename and use it.
+ * - file_create_url(), which converts a URI in the form public://junk.txt or
+ *   private://something/test.txt into a URL like
+ *   http://example.com/sites/default/files/junk.txt.
+ * @ingroup file_example
+ */
+function file_example_managed_write_submit($form, &$form_state) {
+  $data = $form_state['values']['write_contents'];
+  $uri = !empty($form_state['values']['destination']) ? $form_state['values']['destination'] : NULL;
+
+  // Managed operations work with a file object.
+  $file_object = file_save_data($data, $uri, FILE_EXISTS_RENAME);
+  if (!empty($file_object)) {
+    $url = file_create_url($file_object->uri);
+    $_SESSION['file_example_default_file'] = $file_object->uri;
+    drupal_set_message(t('Saved managed file: %file to destination %destination (accessible via !url, actual uri=<span id="uri">@uri</span>)', array('%file' => print_r($file_object, TRUE), '%destination' => $uri, '@uri' => $file_object->uri, '!url' => l(t('this URL'), $url))));
+  }
+  else {
+    drupal_set_message(t('Failed to save the managed file'), 'error');
+  }
+}
+
+/**
+ * Submit handler to write an unmanaged file.
+ *
+ * The key functions used here are:
+ * - file_unmanaged_save_data(), which takes a buffer and saves it to a named
+ *   file, but does not create any kind of tracking record in the database.
+ *   This example uses FILE_EXISTS_REPLACE for the third argument, meaning
+ *   that if there's an existing file at this location, it should be replaced.
+ * - file_create_url(), which converts a URI in the form public://junk.txt or
+ *   private://something/test.txt into a URL like
+ *   http://example.com/sites/default/files/junk.txt.
+ * @ingroup file_example
+ */
+
+function file_example_unmanaged_write_submit($form, &$form_state) {
+  $data = $form_state['values']['write_contents'];
+  $destination = !empty($form_state['values']['destination']) ? $form_state['values']['destination'] : NULL;
+
+  // With the unmanaged file we just get a filename back.
+  $filename = file_unmanaged_save_data($data, $destination, FILE_EXISTS_REPLACE);
+  if ($filename) {
+    $url = file_create_url($filename);
+    $_SESSION['file_example_default_file'] = $filename;
+    drupal_set_message(t('Saved file as %filename (accessible via !url, uri=<span id="uri">@uri</span>)', array('%filename' => $filename, '@uri' => $filename, '!url' => l(t('this URL'), $url))));
+  }
+  else {
+    drupal_set_message(t('Failed to save the file'), 'error');
+  }
+}
+
+
+
+/**
+ * Submit handler to write an unmanaged file using plain PHP functions.
+ *
+ * The key functions used here are:
+ * - file_unmanaged_save_data(), which takes a buffer and saves it to a named
+ *   file, but does not create any kind of tracking record in the database.
+ * - file_create_url(), which converts a URI in the form public://junk.txt or
+ *   private://something/test.txt into a URL like
+ *   http://example.com/sites/default/files/junk.txt.
+ * - drupal_tempnam() generates a temporary filename for use.
+ * @ingroup file_example
+ */
+
+function file_example_unmanaged_php_submit($form, &$form_state) {
+  $data = $form_state['values']['write_contents'];
+  $destination = !empty($form_state['values']['destination']) ? $form_state['values']['destination'] : NULL;
+
+  if (empty($destination)) {
+    // If no destination has been provided, use a generated name.
+    $destination = drupal_tempnam('public://', 'file');
+  }
+
+  // With all traditional PHP functions we can use the stream wrapper notation
+  // for a file as well.
+  $fp = fopen($destination, 'w');
+
+  // To demonstrate the fact that everything is based on streams, we'll do
+  // multiple 5-character writes to put this to the file. We could easily
+  // (and far more conveniently) write it in a single statement with
+  // fwrite($fp, $data).
+  $length = strlen($data);
+  $write_size = 5;
+  for ($i = 0; $i < $length; $i += $write_size) {
+    $result = fwrite($fp, substr($data, $i, $write_size));
+    if ($result === FALSE) {
+      drupal_set_message(t('Failed writing to the file %file', array('%file' => $destination)), 'error');
+      fclose($fp);
+      return;
+    }
+  }
+  $url = file_create_url($destination);
+  $_SESSION['file_example_default_file'] = $destination;
+  drupal_set_message(t('Saved file as %filename (accessible via !url, uri=<span id="uri">@uri</span>)', array('%filename' => $destination, '@uri' => $destination, '!url' => l(t('this URL'), $url))));
+}
+
+/**
+ * Submit handler for reading a stream wrapper.
+ *
+ * Drupal now has full support for PHP's stream wrappers, which means that
+ * instead of the traditional use of all the file functions
+ * ($fp = fopen("/tmp/some_file.txt");) far more sophisticated and generalized
+ * (and extensible) things can be opened as if they were files. Drupal itself
+ * provides the public:// and private:// schemes for handling public and
+ * private files. PHP provides file:// (the default) and http://, so that a
+ * URL can be read or written (as in a POST) as if it were a file. In addition,
+ * new schemes can be provided for custom applications, as will be demonstrated
+ * below.
+ *
+ * Here we take the stream wrapper provided in the form. We grab the
+ * contents with file_get_contents(). Notice that's it's as simple as that:
+ * file_get_contents("http://example.com") or
+ * file_get_contents("public://somefile.txt") just works. Although it's
+ * not necessary, we use file_unmanaged_save_data() to save this file locally
+ * and then find a local URL for it by using file_create_url().
+ * @ingroup file_example
+ */
+function file_example_read_submit($form, &$form_state) {
+  $uri = $form_state['values']['fileops_file'];
+
+  if (!is_file($uri)) {
+    drupal_set_message(t('The file %uri does not exist', array('%uri' => $uri)), 'error');
+    return;
+  }
+
+  // Make a working filename to save this by stripping off the (possible)
+  // file portion of the streamwrapper. If it's an evil file extension,
+  // file_munge_filename() will neuter it.
+  $filename = file_munge_filename(preg_replace('@^.*/@', '', $uri), '', TRUE);
+  $buffer = file_get_contents($uri);
+
+  if ($buffer) {
+    $sourcename = file_unmanaged_save_data($buffer, 'public://' . $filename);
+    if ($sourcename) {
+      $url = file_create_url($sourcename);
+      $_SESSION['file_example_default_file'] = $sourcename;
+      drupal_set_message(t('The file was read and copied to %filename which is accessible at !url', array('%filename' => $sourcename, '!url' => l($url, $url))));
+    }
+    else {
+      drupal_set_message(t('Failed to save the file'));
+    }
+  }
+  else { // We failed to get the contents of the requested file
+    drupal_set_message(t('Failed to retrieve the file %file', array('%file' => $uri)));
+  }
+}
+
+/**
+ * Submit handler to delete a file.
+ */
+function file_example_delete_submit($form, &$form_state) {
+
+  $uri = $form_state['values']['fileops_file'];
+
+  // Since we don't know if the file is managed or not, look in the database
+  // to see. Normally, code would be working with either managed or unmanaged
+  // files, so this is not a typical situation.
+  $file_object = file_example_get_managed_file($uri);
+
+  // If a managed file, use file_delete().
+  if (!empty($file_object)) {
+    $result = file_delete($file_object);
+    if ($result !== TRUE) {
+      drupal_set_message(t('Failed deleting managed file %uri. Result was %result', array('%uri' => $uri, '%result' => print_r($result, TRUE))), 'error');
+    }
+    else {
+      drupal_set_message(t('Successfully deleted managed file %uri', array('%uri' => $uri)));
+      $_SESSION['file_example_default_file'] = $uri;
+    }
+  }
+  // else use file_unmanaged_delete().
+  else {
+    $result = file_unmanaged_delete($uri);
+    if ($result !== TRUE) {
+      drupal_set_message(t('Failed deleting unmanaged file %uri', array('%uri' => $uri, 'error')));
+    }
+    else {
+      drupal_set_message(t('Successfully deleted unmanaged file %uri', array('%uri' => $uri)));
+      $_SESSION['file_example_default_file'] = $uri;
+    }
+  }
+}
+
+/**
+ * Submit handler to check existence of a file.
+ */
+function file_example_file_check_exists_submit($form, &$form_state) {
+  $uri = $form_state['values']['fileops_file'];
+  if (is_file($uri)) {
+    drupal_set_message(t('The file %uri exists.', array('%uri' => $uri)));
+  }
+  else {
+    drupal_set_message(t('The file %uri does not exist.', array('%uri' => $uri)));
+  }
+
+}
+/**
+ * Submit handler for directory creation.
+ * Here we create a directory and set proper permissions on it using
+ * file_prepare_directory().
+ * @ingroup file_example
+ */
+function file_example_create_directory_submit($form, &$form_state) {
+  $directory = $form_state['values']['directory_name'];
+
+  // The options passed to file_prepare_directory are a bitmask, so we can
+  // specify either FILE_MODIFY_PERMISSIONS (set permissions on the directory),
+  // FILE_CREATE_DIRECTORY, or both together:
+  // FILE_MODIFY_PERMISSIONS | FILE_CREATE_DIRECTORY.
+  // FILE_MODIFY_PERMISSIONS will set the permissions of the directory by
+  // by default to 0755, or to the value of the variable 'file_chmod_directory'.
+  if (!file_prepare_directory($directory, FILE_MODIFY_PERMISSIONS | FILE_CREATE_DIRECTORY)) {
+    drupal_set_message(t('Failed to create %directory.', array('%directory' => $directory)), 'error');
+  }
+  else {
+    $result = is_dir($directory);
+    drupal_set_message(t('Directory %directory is ready for use.', array('%directory' => $directory)));
+    $_SESSION['file_example_default_directory'] = $directory;
+  }
+}
+
+/**
+ * Submit handler for directory deletion.
+ *
+ * @see file_unmanaged_delete_recursive()
+ *
+ * @ingroup file_example
+ */
+function file_example_delete_directory_submit($form, &$form_state) {
+  $directory = $form_state['values']['directory_name'];
+
+  $result = file_unmanaged_delete_recursive($directory);
+  if (!$result) {
+    drupal_set_message(t('Failed to delete %directory.', array('%directory' => $directory)), 'error');
+  }
+  else {
+    drupal_set_message(t('Recursively deleted directory %directory.', array('%directory' => $directory)));
+    $_SESSION['file_example_default_directory'] = $directory;
+  }
+}
+
+/**
+ * Submit handler to test directory existence.
+ * This actually just checks to see if the directory is writable
+ * @param unknown_type $form
+ * @param unknown_type $form_state
+ */
+function file_example_check_directory_submit($form, &$form_state) {
+  $directory = $form_state['values']['directory_name'];
+  $result = is_dir($directory);
+  if (!$result) {
+    drupal_set_message(t('Directory %directory does not exist.', array('%directory' => $directory)));
+  }
+  else {
+    drupal_set_message(t('Directory %directory exists.', array('%directory' => $directory)));
+  }
+}
+
+/**
+ * Utility submit function for debugging: Show $_SESSION.
+ */
+function file_example_show_session_contents_submit($form, &$form_state) {
+  if ($form_state['triggering_element']['#value'] == t('Show raw $_SESSION contents')) {
+    drupal_set_message('<pre>' . print_r($_SESSION['file_example'], TRUE) . '</pre>');
+  }
+  else {
+    return file_example_session_contents(NULL);
+  }
+}
+
+/**
+ * Utility function to check for and return a managed file.
+ * In this demonstration code we don't necessarily know if a file is managed
+ * or not, so often need to check to do the correct behavior. Normal code
+ * would not have to do this, as it would be working with either managed or
+ * unmanaged files.
+ *
+ * @param $uri
+ *   The URI of the file, like public://test.txt.
+ */
+function file_example_get_managed_file($uri) {
+  $fid = db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', array(':uri' => $uri))->fetchField();
+  if (!empty($fid)) {
+    $file_object = file_load($fid);
+    return $file_object;
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_stream_wrappers().
+ * hook_stream_wrappers() is Drupal's way of exposing the class that PHP will
+ * use to provide a new stream wrapper class. In this case, we'll expose the
+ * 'session' scheme, so a file reference like "session://example/example.txt"
+ * is readable and writable as a location in the $_SESSION variable.
+ *
+ * @see FileExampleSessionStreamWrapper
+ *
+ * defgroup streamwrapper_example Stream Wrapper Example
+ */
+function file_example_stream_wrappers() {
+  $wrappers = array(
+    'session' => array(
+      'name' => t('Example: $_SESSION variable storage'),
+      'class' => 'FileExampleSessionStreamWrapper',
+      'description' => t('Store files in the $_SESSION variable as an example.'),
+    ),
+  );
+  return $wrappers;
+}
+
+/**
+ * A utility function to allow us to see what is in a session "file".
+ *
+ * @param $session_path
+ *   The path, as in 'example/some/thing.txt'. This actually is a $_SESSION
+ *   key. example/some/thing.txt would be
+ *   $_SESSION['file_example']['some']['thing.txt']
+ */
+function file_example_session_contents() {
+  if (module_exists('devel')) {
+    dsm($_SESSION['file_example'], t('Entire $_SESSION["file_example"]'));
+  }
+  $path_components = func_get_args();
+  $session_path = join('/', $path_components);
+  $content = file_get_contents('session://' . $session_path);
+  return t('Contents of @path:', array('@path' => check_plain($session_path))) . ' ' . print_r($content, TRUE);
+}
+

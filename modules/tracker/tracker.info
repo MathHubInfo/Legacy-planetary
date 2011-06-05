@@ -1,0 +1,13 @@
+name = Tracker
+description = Enables tracking of recent content for users.
+dependencies[] = comment
+package = Core
+version = VERSION
+core = 7.x
+files[] = tracker.test
+
+; Information added by drupal.org packaging script on 2011-05-25
+version = "7.2"
+project = "drupal"
+datestamp = "1306357016"
+

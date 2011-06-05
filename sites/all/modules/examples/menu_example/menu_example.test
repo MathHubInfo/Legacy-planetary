@@ -1,0 +1,148 @@
+<?php
+
+/**
+ * @file
+ * Tests for menu example module.
+ */
+class MenuExampleTestCase extends DrupalWebTestCase {
+  protected $web_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Menu example functionality',
+      'description' => 'Checks behavior of Menu Example.',
+      'group' => 'Examples',
+    );
+  }
+
+  /**
+   * Enable modules and create user with specific permissions.
+   */
+  public function setUp() {
+    parent::setUp('menu_example');
+  }
+
+  /**
+   * Test the various menus.
+   */
+  function testMenuExample() {
+    $this->drupalGet('');
+    $this->clickLink(t('Menu Example'));
+    $this->assertText(t('This is the base page of the Menu Example'));
+
+    $this->clickLink(t('Permissioned Example'));
+    $this->assertText(t('Permissioned Example'));
+
+    $this->clickLink('menu_example/permissioned/controlled');
+    $this->assertResponse(403);
+
+    $this->drupalGet('menu_example');
+
+    $this->clickLink(t('MENU_CALLBACK example'));
+
+    $this->drupalGet('menu_example/path_only/callback');
+    $this->assertText(t('The menu entry for this page is of type MENU_CALLBACK'));
+
+    $this->clickLink(t('Tabs'));
+    $this->assertText(t('This is the "tabs" menu entry'));
+
+    $this->drupalGet('menu_example/tabs/second');
+    $this->assertText(t('This is the tab "second" in the "basic tabs" example'));
+
+    $this->clickLink(t('third'));
+    $this->assertText(t('This is the tab "third" in the "basic tabs" example'));
+
+    $this->clickLink(t('Extra Arguments'));
+
+    $this->drupalGet('menu_example/use_url_arguments/one/two');
+    $this->assertText(t('Argument 1=one'));
+
+    $this->clickLink(t('Placeholder Arguments'));
+
+    $this->clickLink(t('menu_example/placeholder_argument/3343/display'));
+    $this->assertRaw('<div>3343</div>');
+
+    $this->clickLink(t('Processed Placeholder Arguments'));
+    $this->assertText(t('Loaded value was jackpot! default'));
+
+    // Create a user with permissions to access protected menu entry.
+    $web_user = $this->drupalCreateUser(array('access protected menu example'));
+
+    // Use custom overridden drupalLogin function to verify the user is logged
+    // in.
+    $this->drupalLogin($web_user);
+
+    // Check that our title callback changing /user dynamically is working.
+    // Using &#039; because of the format_username function.
+    $this->assertRaw(t("@name&#039;s account", array('@name' => format_username($web_user))), t('Title successfully changed to account name: %name.', array('%name' => $web_user->name)));
+
+    // Now start testing other menu entries.
+    $this->drupalGet('menu_example');
+
+    $this->clickLink(t('Permissioned Example'));
+    $this->clickLink('menu_example/permissioned/controlled');
+    $this->assertResponse(200);
+    $this->assertText('This menu entry will not show');
+
+    // Verify that the 'logout' link has been changed to 'salir', using an 
+    // overridden drupalLogout function.
+    $this->drupalLogout();
+  }
+
+  /**
+   * Log in a user with the internal browser.
+   *
+   * This function overrides default drupalLogin function because the changes
+   * made by this module to the menu entries will make default drupalLogin fail.
+   *
+   * @param $user
+   *   User object representing the user to log in.
+   *
+   * @see drupalCreateUser()
+   */
+  protected function drupalLogin(stdClass $user) {
+    if ($this->loggedInUser) {
+      $this->drupalLogout();
+    }
+
+    $edit = array(
+      'name' => $user->name,
+      'pass' => $user->pass_raw
+    );
+    $this->drupalPost('user', $edit, t('Log in'));
+
+    // menu_example prevents "log out" link from appearing on the page, so the
+    // login function must check other link to verify user has logged in
+    // successfully.
+    $pass = $this->assertLink(t('My account'), 0, t('User %name successfully logged in.', array('%name' => $user->name)), t('User login'));
+
+    if ($pass) {
+      $this->loggedInUser = $user;
+    }
+  }
+
+  /*
+   * Logs a user out of the internal browser, then check the login page to
+   * confirm logout.
+   *
+   * This function overrides default drupalLogout function because the changes
+   * made by this module to the menu entries will make default drupalLogout fail.
+   *
+   * When menu_example module is enabled, logout menu entry is user/salir
+   *
+   */
+  protected function drupalLogout() {
+    // Make a request to the logout page, and redirect to the user page, the
+    // idea being if you were properly logged out you should be seeing a login
+    // screen.
+    $this->drupalGet('user/salir');
+    $this->drupalGet('user');
+    $pass = $this->assertField('name', t('Username field found.'), t('Logout'));
+    $pass = $pass && $this->assertField('pass', t('Password field found.'), t('Logout'));
+
+    if ($pass) {
+      $this->loggedInUser = FALSE;
+    }
+  }
+
+}

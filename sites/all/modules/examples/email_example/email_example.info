@@ -1,0 +1,12 @@
+name = E-mail Example
+description = Demonstrate Drupal's e-mail APIs.
+package = Example modules
+core = 7.x
+files[] = email_example.test
+
+; Information added by drupal.org packaging script on 2011-06-02
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "examples"
+datestamp = "1306974049"
+

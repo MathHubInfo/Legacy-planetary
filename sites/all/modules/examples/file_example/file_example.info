@@ -1,0 +1,13 @@
+name = File example
+description = Examples of using the Drupal File API and Stream Wrappers.
+package = Example modules
+core = 7.x
+files[] = file_example_session_streams.inc
+files[] = file_example.test
+
+; Information added by drupal.org packaging script on 2011-06-02
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "examples"
+datestamp = "1306974049"
+

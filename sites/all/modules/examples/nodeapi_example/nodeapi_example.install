@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the nodeapi_example module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function nodeapi_example_schema() {
+  $schema['nodeapi_example'] = array(
+    'description' => 'Stores information of extended content.',
+    'fields' => array(
+      'nid'    => array(
+        'description' => 'Node ID that the rating is applied to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'vid'    => array(
+        'description' => 'Revision ID, as we are tracking rating with node revisions',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'rating' => array(
+        'description' => 'The rating of the node.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+    ),
+    'primary key' => array('vid'),
+    'indexes' => array(
+      'nid'   => array('nid'),
+    ),
+  );
+
+  return $schema;
+}

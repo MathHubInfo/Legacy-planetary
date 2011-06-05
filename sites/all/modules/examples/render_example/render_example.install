@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the render_example module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function render_example_uninstall() {
+  variable_del('render_example_show_page');
+  variable_del('render_example_show_block');
+  variable_del('render_example_reverse_sidebar');
+  variable_del('render_example_note_about_render_arrays');
+  variable_del('render_example_move_navigation_menu');
+}

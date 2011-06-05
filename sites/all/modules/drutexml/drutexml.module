@@ -1,0 +1,179 @@
+<?php 
+
+/**
+ * @file
+ * A module that allows new input types such as LaTeX and sTeX
+ */
+
+/**
+ * Logging facilities
+ * @param unknown_type $str
+ *  The variable to be logged
+ */
+function clog($str) {
+	error_log(var_export($str, true) . "\n", 3, '/var/www/drupal/php_errors.log');
+}
+
+
+/**
+ * A function to do a POST request to a certain $host with the $data
+ * @param string $host the URL of the backend
+ * @param string $data the POST data formatted as a string
+ */
+function do_post($host, $data){
+	$session = curl_init($host);
+	curl_setopt($session, CURLOPT_POST, true);
+	curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+	curl_setopt($session, CURLOPT_HEADER, false);
+	curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+	$response = curl_exec($session);
+	curl_close($session);
+	return $response;
+}
+
+
+/**
+ * Implements hook_help
+ * 
+ * @param unknown_type $path
+ *  Which path of the site we're using to display help
+ * @param unknown_type $arg
+ *  Array that holds the current path as returned from the arg() function
+ */
+function drutexml_help($path, $arg) {
+	switch ($path) {
+		case "admin/help#drutexml":
+			return '<p>' . t('Allows new input methods such as LaTeX') . '</p>';
+			break;
+	}
+}
+
+
+function drutexml_info() {
+	$blocks['drutexml'] = array(
+	 'info' => t('LaTeX filter'),
+	 'cache' => DRUPAL_CACHE_PER_ROLE,
+	);
+	return $blocks;
+}
+
+/**
+ * Before a new / updated node is saved, this is called
+ * Implements hook_node_insert
+ * @param unknown_type $node
+ *  The node to be inserted
+ */
+function drutexml_node_insert($node) {
+	clog('insert');
+	$host = 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
+	$data = 'formula=' . urlencode($node->body[$node->language][0]['value']);
+	$content = do_post($host, $data);
+	$res = json_decode($content);
+	$res = trim($res->{'result'});
+	$res = str_replace(array("\n", "\r\n"), '', $res);
+	$res = str_replace('  ', ' ', $res);
+  db_insert('drutexml')
+    ->fields(
+      array(
+        'nid' => $node->nid,
+        'format' => 'LaTeX',
+        'titleXHTML' => 'titleFake',
+        'bodyXHTML' => "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">" . $res . '</span>',
+      )
+    )
+    ->execute();
+}
+
+/**
+ * Implements hook_node_load() -- load the node info from the DB
+ * @param $nodes
+ *  Array of nodes
+ * @param $types
+ *  
+ */
+function drutexml_node_load($nodes, $types) {	
+	foreach ($nodes as $node) {		
+		$nids[] = $node->nid;
+	}
+	if (!isset($nids) || !count($nids)) {
+		return;
+	}
+	$result = db_select('drutexml', 'd')
+	   ->fields('d', array(
+	       'nid',
+	       'format',
+	       'titleXHTML',
+	       'bodyXHTML',
+	   ))
+	   ->where('d.nid IN (:nids)', array(':nids' => $nids))
+	   ->execute();	
+	foreach ($result as $record) {		
+		$nodes[$record->nid]->format = $record->format;
+		$nodes[$record->nid]->titleXHTML = $record->titlexhtml;
+		$nodes[$record->nid]->bodyXHTML = $record->bodyxhtml;
+	}
+}
+
+/**
+ * Implements hook_node_view
+ * @param unknown_type $node
+ *  The current node
+ * @param unknown_type $view_mode
+ *  The view mode ... TBD
+ *  From API: $view_mode View mode, e.g. 'full', 'teaser', ...
+ * @param unknown_type $langcode
+ *  The language code used for rendering
+ */
+function drutexml_node_view($node, $view_mode, $langcode) {
+	clog('node_view');
+	$bodyXHTML = $node->bodyXHTML;
+	$node->content['bodyXHTML'] = array(
+	  '#markup' => theme('drutexml', array('bodyXHTML' => $bodyXHTML)),
+	  '#weight' => -1,
+	);
+}
+
+function drutexml_node_delete($node) {
+	clog('node_delete');
+}
+
+function drutexml_node_update($node) {
+	clog('node_update');
+  $host = 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
+  $data = 'formula=' . urlencode($node->body[$node->language][0]['value']);
+  $content = do_post($host, $data);
+  $res = json_decode($content);
+  $res = trim($res->{'result'});
+  $res = str_replace(array("\n", "\r\n"), '', $res);
+  $res = str_replace('  ', ' ', $res);
+  $res = str_replace(array('m:','xml:'),'', $res);
+  
+  $bodyXHTML = db_select('drutexml', 'd')
+      ->fields('d', array('bodyXHTML'))
+      ->where('d.nid = (:nid)', array(':nid' => $node->nid))
+      ->execute()->fetchField();
+      
+  if ($bodyXHTML) {
+  	db_update('drutexml')
+  	   ->fields(array('bodyXHTML' => "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">" . $res . '</span>'))
+  	   ->condition('nid', $node->nid)
+  	   ->execute();
+  } else {
+  	drutexml_node_insert($node);
+  }
+}
+
+function theme_drutexml($variables) {
+	$output = '<div class="drutexml_output">';
+	$output .= $variables['bodyXHTML'];
+	$output .= '</div>';
+	return $output;
+}
+
+function drutexml_theme() {
+	return array(
+	  'drutexml' => array(
+	     'variables' => array('bodyXHTML' => NULL)
+	  ),
+	);
+}

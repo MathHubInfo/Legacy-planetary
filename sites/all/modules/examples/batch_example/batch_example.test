@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * @file
+ * Test case for Testing the batch example module.
+ *
+ * This file contains the test cases to check if module is performing as
+ * expected.
+ *
+ */
+class BatchExampleTestCase extends DrupalWebTestCase {
+  protected $web_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Batch example functionality',
+      'description' => 'Verify the defined batches.',
+      'group' => 'Examples',
+    );
+  }
+
+  /**
+   * Enable modules and create user with specific permissions.
+   */
+  function setUp() {
+    parent::setUp('batch_example');
+    // Create user.
+    $this->web_user = $this->drupalCreateUser();
+  }
+
+  /**
+   * Login user, create 30 nodes and test both batch examples.
+   */
+  function testBatchExampleBasic() {
+    // Login the admin user.
+    $this->drupalLogin($this->web_user);
+
+    // Create 30 nodes
+    for ($count = 0; $count < 30; $count++) {
+      $node = $this->drupalCreateNode();
+    }
+
+    // Launch Batch 1
+    $result = $this->drupalPost('examples/batch_example', array('batch' => 'batch_1'), t('Go'));
+    // Check that 1000 operations were performed.
+    $this->assertText('1000 results processed');
+
+    // Launch Batch 2
+    $result = $this->drupalPost('examples/batch_example', array('batch' => 'batch_2'), t('Go'));
+    // Check that 600 operations were performed.
+    $this->assertText('600 results processed');
+  }
+}

@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the image_example module.
+ */
+
+/**
+ * Implements hook_install(),
+ */
+function image_example_install() {
+  // Set a variable containing the name of the style to use when the module
+  // outputs an image.
+  variable_set('image_example_style_name', 'image_example_style');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function image_example_uninstall() {
+  variable_del('image_example_style_name');
+  variable_del('image_example_image_fid');
+}
+
+/**
+ * Implements hook_enable().
+ */
+function image_example_enable() {
+  // There is currently no way to manually flush an image style which causes
+  // problems when installing a new module that implements
+  // hook_image_styles_alter(). If the new module modifies an image style that
+  // modification will not be applied to any images that have already been
+  // generated unless the styles are flushed. This is one way around that.
+  $styles = image_styles();
+  foreach ($styles as $style) {
+    image_style_flush($style);
+  }
+}
+
+/**
+ * Implemements hook_disable().
+ */
+function image_example_disable() {
+  // Solves the same problem as image_example_enable().
+  image_example_enable();
+}

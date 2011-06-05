@@ -1,0 +1,13 @@
+name = "Taxonomy test module"
+description = "Tests functions and hooks not used in core".
+package = Testing
+version = VERSION
+core = 7.x
+hidden = TRUE
+dependencies[] = taxonomy
+
+; Information added by drupal.org packaging script on 2011-05-25
+version = "7.2"
+project = "drupal"
+datestamp = "1306357016"
+

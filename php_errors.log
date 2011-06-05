@@ -1,0 +1,376 @@
+'node_view''node_view'array (
+  1 => 
+  stdClass::__set_state(array(
+     'vid' => '1',
+     'uid' => '1',
+     'title' => 'fdsgsd',
+     'log' => '',
+     'status' => '1',
+     'comment' => '2',
+     'promote' => '1',
+     'sticky' => '0',
+     'nid' => '1',
+     'type' => 'article',
+     'language' => 'und',
+     'created' => '1306981589',
+     'changed' => '1307243366',
+     'tnid' => '0',
+     'translate' => '0',
+     'revision_timestamp' => '1307243366',
+     'revision_uid' => '1',
+     'body' => 
+    array (
+      'und' => 
+      array (
+        0 => 
+        array (
+          'value' => 'gsfdfsdfsfsf',
+          'summary' => '',
+          'format' => 'filtered_html',
+          'safe_value' => '<p>gsfdfsdfsfsf</p>
+',
+          'safe_summary' => '',
+        ),
+      ),
+    ),
+     'field_tags' => 
+    array (
+    ),
+     'field_image' => 
+    array (
+    ),
+     'rdf_mapping' => 
+    array (
+      'field_image' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'og:image',
+          1 => 'rdfs:seeAlso',
+        ),
+        'type' => 'rel',
+      ),
+      'field_tags' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'dc:subject',
+        ),
+        'type' => 'rel',
+      ),
+      'rdftype' => 
+      array (
+        0 => 'sioc:Item',
+        1 => 'foaf:Document',
+      ),
+      'title' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'dc:title',
+        ),
+      ),
+      'created' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'dc:date',
+          1 => 'dc:created',
+        ),
+        'datatype' => 'xsd:dateTime',
+        'callback' => 'date_iso8601',
+      ),
+      'changed' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'dc:modified',
+        ),
+        'datatype' => 'xsd:dateTime',
+        'callback' => 'date_iso8601',
+      ),
+      'body' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'content:encoded',
+        ),
+      ),
+      'uid' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'sioc:has_creator',
+        ),
+        'type' => 'rel',
+      ),
+      'name' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'foaf:name',
+        ),
+      ),
+      'comment_count' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'sioc:num_replies',
+        ),
+        'datatype' => 'xsd:integer',
+      ),
+      'last_activity' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'sioc:last_activity_date',
+        ),
+        'datatype' => 'xsd:dateTime',
+        'callback' => 'date_iso8601',
+      ),
+    ),
+     'cid' => '2',
+     'last_comment_timestamp' => '1307154578',
+     'last_comment_name' => '',
+     'last_comment_uid' => '1',
+     'comment_count' => '2',
+  )),
+)'node_view'array (
+  1 => 
+  stdClass::__set_state(array(
+     'vid' => '1',
+     'uid' => '1',
+     'title' => 'fdsgsd',
+     'log' => '',
+     'status' => '1',
+     'comment' => '2',
+     'promote' => '1',
+     'sticky' => '0',
+     'nid' => '1',
+     'type' => 'article',
+     'language' => 'und',
+     'created' => '1306981589',
+     'changed' => '1307243366',
+     'tnid' => '0',
+     'translate' => '0',
+     'revision_timestamp' => '1307243366',
+     'revision_uid' => '1',
+     'body' => 
+    array (
+      'und' => 
+      array (
+        0 => 
+        array (
+          'value' => 'gsfdfsdfsfsf',
+          'summary' => '',
+          'format' => 'filtered_html',
+          'safe_value' => '<p>gsfdfsdfsfsf</p>
+',
+          'safe_summary' => '',
+        ),
+      ),
+    ),
+     'field_tags' => 
+    array (
+    ),
+     'field_image' => 
+    array (
+    ),
+     'rdf_mapping' => 
+    array (
+      'field_image' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'og:image',
+          1 => 'rdfs:seeAlso',
+        ),
+        'type' => 'rel',
+      ),
+      'field_tags' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'dc:subject',
+        ),
+        'type' => 'rel',
+      ),
+      'rdftype' => 
+      array (
+        0 => 'sioc:Item',
+        1 => 'foaf:Document',
+      ),
+      'title' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'dc:title',
+        ),
+      ),
+      'created' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'dc:date',
+          1 => 'dc:created',
+        ),
+        'datatype' => 'xsd:dateTime',
+        'callback' => 'date_iso8601',
+      ),
+      'changed' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'dc:modified',
+        ),
+        'datatype' => 'xsd:dateTime',
+        'callback' => 'date_iso8601',
+      ),
+      'body' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'content:encoded',
+        ),
+      ),
+      'uid' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'sioc:has_creator',
+        ),
+        'type' => 'rel',
+      ),
+      'name' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'foaf:name',
+        ),
+      ),
+      'comment_count' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'sioc:num_replies',
+        ),
+        'datatype' => 'xsd:integer',
+      ),
+      'last_activity' => 
+      array (
+        'predicates' => 
+        array (
+          0 => 'sioc:last_activity_date',
+        ),
+        'datatype' => 'xsd:dateTime',
+        'callback' => 'date_iso8601',
+      ),
+    ),
+     'cid' => '2',
+     'last_comment_timestamp' => '1307154578',
+     'last_comment_name' => '',
+     'last_comment_uid' => '1',
+     'comment_count' => '2',
+  )),
+)
+'node_view'
+NULL
+'node_view'
+NULL
+'node_view'
+array (
+  0 => 
+  array (
+    'value' => 'gsfdfsdfsfsf',
+    'summary' => '',
+    'format' => 'filtered_html',
+    'safe_value' => '<p>gsfdfsdfsfsf</p>
+',
+    'safe_summary' => '',
+  ),
+)
+'node_view'
+array (
+  'value' => 'gsfdfsdfsfsf',
+  'summary' => '',
+  'format' => 'filtered_html',
+  'safe_value' => '<p>gsfdfsdfsfsf</p>
+',
+  'safe_summary' => '',
+)
+'node_view'
+'gsfdfsdfsfsf'
+'node_view'
+'node_view'
+'node_view'
+'insert'
+''
+'node_view'
+'node_view'
+'node_update'
+'node_view'
+'node_view'
+'node_update'
+'<div xmlns="http://www.w3.org/1999/xhtml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" class="document">    </div>'
+'node_view'
+'node_view'
+'node_update'
+'<div xmlns="http://www.w3.org/1999/xhtml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" class="document">   <div class="para">  <p style="" class="p"><m:math display="inline" xml:id="p1.m1"><m:semantics><m:msup><m:mi>x</m:mi><m:mn>2</m:mn></m:msup><m:annotation-xml encoding="MathML-Content"><m:apply><m:csymbol cd="ambiguous">superscript</m:csymbol><m:ci>x</m:ci><m:cn>2</m:cn></m:apply></m:annotation-xml><m:annotation encoding="TeX">x^{2}</m:annotation></m:semantics></m:math></p> </div>  </div>'
+'node_view'
+'node_view'
+'node_update'
+'node_view'
+'node_view'
+'node_view'
+'node_update'
+'insert'
+'node_view'
+'node_view'
+'node_view'
+stdClass::__set_state(array(
+   'nid' => '3',
+   'format' => 'LaTeX',
+   'titlexhtml' => 'titleFake',
+   'bodyxhtml' => '<div xmlns="http://www.w3.org/1999/xhtml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" class="document">   <div class="para">  <p style="" class="p"><m:math display="inline" xml:id="p1.m1"><m:semantics><m:msup><m:mi>x</m:mi><m:mn>2</m:mn></m:msup><m:annotation-xml encoding="MathML-Content"><m:apply><m:csymbol cd="ambiguous">superscript</m:csymbol><m:ci>x</m:ci><m:cn>2</m:cn></m:apply></m:annotation-xml><m:annotation encoding="TeX">x^{2}</m:annotation></m:semantics></m:math></p> </div>  </div>',
+))
+'node_view'
+stdClass::__set_state(array(
+   'nid' => '3',
+   'format' => 'LaTeX',
+   'titlexhtml' => 'titleFake',
+   'bodyxhtml' => '<div xmlns="http://www.w3.org/1999/xhtml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" class="document">   <div class="para">  <p style="" class="p"><m:math display="inline" xml:id="p1.m1"><m:semantics><m:msup><m:mi>x</m:mi><m:mn>2</m:mn></m:msup><m:annotation-xml encoding="MathML-Content"><m:apply><m:csymbol cd="ambiguous">superscript</m:csymbol><m:ci>x</m:ci><m:cn>2</m:cn></m:apply></m:annotation-xml><m:annotation encoding="TeX">x^{2}</m:annotation></m:semantics></m:math></p> </div>  </div>',
+))
+'node_view'
+stdClass::__set_state(array(
+   'nid' => '3',
+   'format' => 'LaTeX',
+   'titlexhtml' => 'titleFake',
+   'bodyxhtml' => '<div xmlns="http://www.w3.org/1999/xhtml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" class="document">   <div class="para">  <p style="" class="p"><m:math display="inline" xml:id="p1.m1"><m:semantics><m:msup><m:mi>x</m:mi><m:mn>2</m:mn></m:msup><m:annotation-xml encoding="MathML-Content"><m:apply><m:csymbol cd="ambiguous">superscript</m:csymbol><m:ci>x</m:ci><m:cn>2</m:cn></m:apply></m:annotation-xml><m:annotation encoding="TeX">x^{2}</m:annotation></m:semantics></m:math></p> </div>  </div>',
+))
+'node_view'
+'node_view'
+'node_view'
+'node_view'
+'node_update'
+'node_view'
+'node_view'
+'node_view'
+'node_view'
+'node_view'
+'node_view'
+'node_update'
+'node_view'
+'node_view'
+'node_view'
+'node_view'
+'node_view'
+'node_update'
+'node_view'
+'node_view'
+'node_view'
+'node_view'
+'node_update'
+'node_view'
+'node_view'
+'node_view'
+'node_view'

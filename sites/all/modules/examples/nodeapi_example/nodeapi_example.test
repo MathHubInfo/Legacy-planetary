@@ -1,0 +1,211 @@
+<?php
+
+/**
+ * @file
+ * Test case for Testing the node API example module.
+ *
+ * This file contains the test cases to check if module is performing as
+ * expected.
+ *
+ */
+class NodeApiExampleTestCase extends DrupalWebTestCase {
+  /**
+   * User object to perform site browsing
+   * @var object
+   */
+  protected $web_user;
+
+  /**
+   * Content type to attach the rating system
+   * @var string
+   */
+  protected $type;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Node API example functionality',
+      'description' => 'Demonstrate Node API hooks that allow altering a node. These are the former hook_nodeapi.',
+      'group' => 'Examples',
+    );
+  }
+
+  /**
+   * Enable modules and create user with specific permissions.
+   */
+  function setUp() {
+    parent::setUp('nodeapi_example');
+
+    // Create admin user. This module has no access control, so we can use a
+    // trusted user. Revision access and revert permissions are required too.
+    $this->web_user = $this->drupalCreateUser(array(
+      'administer nodes', // Required to set revision checkbox
+      'administer content types',
+      'bypass node access',
+      'view revisions',
+      'revert revisions'
+    ));
+    // Login the admin user.
+    $this->drupalLogin($this->web_user);
+  }
+
+  /**
+   * Login user, create an example node, and use the rating system
+   */
+  function testNodeExampleBasic() {
+
+    // Login the user.
+    $this->drupalLogin($this->web_user);
+
+    // Create custom content type
+    $content_type = $this->drupalCreateContentType();
+    $type = $content_type->type;
+
+    // Go to edit the settings of this content type
+    $this->drupalGet('admin/structure/types/manage/' . $type);
+    $this->assertResponse(200);
+
+    // Check if the new Rating options appear in the settings page
+    $this->assertText(t('NodeAPI Example Rating'), t('Rating options found in content type.'));
+    $this->assertFieldByName('nodeapi_example', 1, t('Rating is Disabled by default.'));
+
+    // Disable the rating for this content type: 0 for Disabled, 1 for Enabled.
+    $content_settings = array(
+      'nodeapi_example' => 0,
+    );
+    $this->drupalPost('admin/structure/types/manage/' . $type, $content_settings, t('Save content type'));
+    $this->assertResponse(200);
+    $this->assertRaw(' has been updated.', t('Settings modified successfully for content type.'));
+
+    // Create an example node
+    $langcode = LANGUAGE_NONE;
+    $edit = array(
+      "title" => $this->randomName(),
+    );
+    $this->drupalPost('node/add/' . $type, $edit, t('Save'));
+    $this->assertResponse(200);
+
+    // Check that the rating is not shown, as we have not yet enabled it
+    $this->assertNoRaw('Rating: <em>', t('Extended rating information is not shown.'));
+
+    // Save current current url (we are viewing the new node)
+    $node_url = $this->getUrl();
+
+    // Enable the rating for this content type: 0 for Disabled, 1 for Enabled.
+    $content_settings = array(
+      'nodeapi_example' => TRUE,
+    );
+    $this->drupalPost('admin/structure/types/manage/' . $type, $content_settings, t('Save content type'));
+    $this->assertResponse(200);
+    $this->assertRaw(' has been updated.', t('Settings modified successfully for content type.'));
+
+    // Check previously create node. It should be not rated
+    $this->drupalGet($node_url);
+    $this->assertResponse(200);
+    $this->assertRaw(t('Rating: %rating', array('%rating' => t('Unrated'))), t('Content is not rated.'));
+
+    // Rate the content, 4 is for "Good"
+    $rate = array(
+      'nodeapi_example_rating' => 4,
+    );
+    $this->drupalPost($node_url . '/edit', $rate, t('Save'));
+    $this->assertResponse(200);
+
+    // Check that content has been rated
+    $this->assertRaw(t('Rating: %rating', array('%rating' => t('Good'))), t('Content is successfully rated.'));
+
+  }
+
+  /**
+   * Login user, create an example node, and test rating functionality with
+   * a node using revisions.
+   */
+  function testNodeExampleRevision() {
+
+    // Login the user.
+    $this->drupalLogin($this->web_user);
+
+    // Create custom content type
+    $content_type = $this->drupalCreateContentType();
+    $type = $content_type->type;
+
+    // Go to edit the settings of this content type
+    $this->drupalGet('admin/structure/types/manage/' . $type);
+    $this->assertResponse(200);
+
+    // Check if the new Rating options appear in the settings page
+    $this->assertText(t('NodeAPI Example Rating'), t('Rating options found in content type.'));
+    $this->assertFieldByName('nodeapi_example', 1, t('Rating is Disabled by default.'));
+
+    // Disable the rating for this content type: 0 for Disabled, 1 for Enabled.
+    $content_settings = array(
+      'nodeapi_example' => 0,
+    );
+    $this->drupalPost('admin/structure/types/manage/' . $type, $content_settings, t('Save content type'));
+    $this->assertResponse(200);
+    $this->assertRaw(' has been updated.', t('Settings modified successfully for content type.'));
+
+    // Create an example node
+    $langcode = LANGUAGE_NONE;
+    $edit = array(
+      "title" => $this->randomName(),
+    );
+    $this->drupalPost('node/add/' . $type, $edit, t('Save'));
+    $this->assertResponse(200);
+
+    // Check that the rating is not shown, as we have not yet enabled it
+    $this->assertNoRaw('Rating: <em>', t('Extended rating information is not shown.'));
+
+    // Save current current url (we are viewing the new node)
+    $node_url = $this->getUrl();
+
+    // Enable the rating for this content type: 0 for Disabled, 1 for Enabled.
+    $content_settings = array(
+      'nodeapi_example' => TRUE,
+    );
+    $this->drupalPost('admin/structure/types/manage/' . $type, $content_settings, t('Save content type'));
+    $this->assertResponse(200);
+    $this->assertRaw(' has been updated.', t('Settings modified successfully for content type.'));
+
+    // Check previously create node. It should be not rated
+    $this->drupalGet($node_url);
+    $this->assertResponse(200);
+    $this->assertRaw(t('Rating: %rating', array('%rating' => t('Unrated'))), t('Content is not rated.'));
+
+    // Rate the content, 4 is for "Good"
+    $rate = array(
+      'nodeapi_example_rating' => 4,
+    );
+    $this->drupalPost($node_url . '/edit', $rate, t('Save'));
+    $this->assertResponse(200);
+
+    // Check that content has been rated
+    $this->assertRaw(t('Rating: %rating', array('%rating' => t('Good'))), t('Content is successfully rated.'));
+
+    // Rate the content to poor using a new revision, 1 is for "Poor"
+    $rate = array(
+      'nodeapi_example_rating' => 1,
+      'revision'               => 1,
+    );
+    $this->drupalPost($node_url . '/edit', $rate, t('Save'));
+    $this->assertResponse(200);
+
+    // Check that content has been rated
+    $this->assertRaw(t('Rating: %rating', array('%rating' => t('Poor'))), t('Content is successfully rated.'));
+
+    //Now switch back to previous revision of the node.
+    $this->drupalGet($node_url . '/revisions');
+    // There is only a revision, so it must work just clicking the first link..
+    $this->clickLink('revert');
+    $revert_form = $this->getUrl();
+    $this->drupalPost($revert_form, array(), t('Revert'));
+
+    // Go back to the node page.
+    $this->drupalGet($node_url);
+    $this->assertResponse(200);
+
+    // Check that content has been rated
+    $this->assertRaw(t('Rating: %rating', array('%rating' => t('Good'))), t('Content rating matches reverted revision.'));
+
+  }
+
+}

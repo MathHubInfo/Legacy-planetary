@@ -1,0 +1,200 @@
+<?php
+
+/**
+ * @file
+ * An example module showing how to define and use tokens.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function token_example_menu() {
+  $items['examples/token'] = array(
+    'title' => 'Token example',
+    'description' => 'Test replacement tokens in real time.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('token_example_example_form'),
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ *
+ * @todo Remove this when the testbot can properly pick up dependencies
+ * for contrib modules.
+ */
+function token_example_entity_info_alter(&$info) {
+  if (isset($info['taxonomy_term'])) {
+    $info['taxonomy_term']['token type'] = 'term';
+  }
+  if (isset($info['taxonomy_vocabulary'])) {
+    $info['taxonomy_vocabulary']['token type'] = 'vocabulary';
+  }
+}
+
+/**
+ * Form builder; display lists of supported token entities and text to tokenize.
+ */
+function token_example_example_form($form, &$form_state) {
+  $entities = entity_get_info();
+  $token_types = array();
+
+  // Scan through the list of entities for supported token entities.
+  foreach ($entities as $entity => $info) {
+    $object_callback = "_token_example_get_{$entity}";
+    if (function_exists($object_callback) && $objects = $object_callback()) {
+      $form[$entity] = array(
+        '#type' => 'select',
+        '#title' => $info['label'],
+        '#options' => array(0 => t('Not selected')) + $objects,
+        '#default_value' => isset($form_state['storage'][$entity]) ? $form_state['storage'][$entity] : 0,
+        '#access' => !empty($objects),
+      );
+
+      // Build a list of supported token types based on the available entites.
+      if ($form[$entity]['#access']) {
+        $token_types[$entity] = !empty($info['token type']) ? $info['token type'] : $entity;
+      }
+    }
+  }
+
+  $form['text'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Enter your text here'),
+    '#default_value' => 'Hello [current-user:name]!'
+  );
+
+  // Display the results of tokenized text.
+  if (!empty($form_state['storage']['text'])) {
+    $form['text']['#default_value'] = $form_state['storage']['text'];
+
+    $data = array();
+    foreach ($entities as $entity => $info) {
+      if (!empty($form_state['storage'][$entity])) {
+        $objects = entity_load($entity, array($form_state['storage'][$entity]));
+        if ($objects) {
+          $data[$token_types[$entity]] = reset($objects);
+        }
+      }
+    }
+
+    // Display the tokenized text.
+    $form['text_tokenized'] = array(
+      '#type' => 'item',
+      '#title' => t('Result'),
+      '#markup' => token_replace($form_state['storage']['text'], $data),
+    );
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+
+  if (module_exists('token')) {
+    $form['token_tree'] = array(
+      '#theme' => 'token_tree',
+      '#token_types' => $token_types,
+    );
+  }
+  else {
+    $form['token_tree'] = array(
+      '#markup' => '<p>' . t('Enable the <a href="@drupal-token">Token module</a> to view the available token browser.', array('@drupal-token' => 'http://drupal.org/project/token')) . '</p>',
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Submit callback; store the submitted values into storage.
+ */
+function token_example_example_form_submit($form, &$form_state) {
+  $form_state['storage'] = $form_state['values'];
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Build a list of available content.
+ */
+function _token_example_get_node() {
+  if (!user_access('access content') && !user_access('bypass node access')) {
+    return array();
+  }
+
+  $node_query = db_select('node', 'n');
+  $node_query->fields('n', array('nid', 'title'));
+  $node_query->condition('n.status', NODE_PUBLISHED);
+  $node_query->orderBy('n.created', 'DESC');
+  $node_query->range(0, 10);
+  $node_query->addTag('node_access');
+  $nodes = $node_query->execute()->fetchAllKeyed();
+  $nodes = array_map('check_plain', $nodes);
+  return $nodes;
+}
+
+/**
+ * Build a list of available comments.
+ */
+function _token_example_get_comment() {
+  if (!module_exists('comment') || (!user_access('access comments') && !user_access('administer comments'))) {
+    return array();
+  }
+
+  $comment_query = db_select('comment', 'c');
+  $comment_query->innerJoin('node', 'n', 'n.nid = c.nid');
+  $comment_query->fields('c', array('cid', 'subject'));
+  $comment_query->condition('n.status', NODE_PUBLISHED);
+  $comment_query->condition('c.status', COMMENT_PUBLISHED);
+  $comment_query->orderBy('c.created', 'DESC');
+  $comment_query->range(0, 10);
+  $comment_query->addTag('node_access');
+  $comments = $comment_query->execute()->fetchAllKeyed();
+  $comments = array_map('check_plain', $comments);
+  return $comments;
+}
+
+/**
+ * Build a list of available user accounts.
+ */
+function _token_example_get_user() {
+  if (!user_access('access user profiles') && !user_access('administer users')) {
+    return array();
+  }
+
+  $account_query = db_select('users', 'u');
+  $account_query->fields('u', array('uid', 'name'));
+  $account_query->condition('u.uid', 0, '>');
+  $account_query->condition('u.status', 1);
+  $account_query->range(0, 10);
+  $accounts = $account_query->execute()->fetchAllKeyed();
+  $accounts = array_map('check_plain', $accounts);
+  return $accounts;
+}
+
+/**
+ * Build a list of available taxonomy terms.
+ */
+function _token_example_get_taxonomy_term() {
+  $term_query = db_select('taxonomy_term_data', 'ttd');
+  $term_query->fields('ttd', array('tid', 'name'));
+  $term_query->range(0, 10);
+  $term_query->addTag('term_access');
+  $terms = $term_query->execute()->fetchAllKeyed();
+  $terms = array_map('check_plain', $terms);
+  return $terms;
+}
+
+/**
+ * Build a list of available files.
+ */
+function _token_example_get_file() {
+  $file_query = db_select('file_managed', 'f');
+  $file_query->fields('f', array('fid', 'filename'));
+  $file_query->range(0, 10);
+  $files = $file_query->execute()->fetchAllKeyed();
+  $files = array_map('check_plain', $files);
+  return $files;
+}

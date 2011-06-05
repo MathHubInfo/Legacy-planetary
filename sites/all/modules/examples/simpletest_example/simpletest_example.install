@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the simpletest_example module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function simpletest_example_install() {
+  // Ensure the simpletest_example node type is available.
+  node_types_rebuild();
+  $types = node_type_get_types();
+  node_add_body_field($types['simpletest_example']);
+}
+
+/**
+ * Adds a body field to the simpletest_example node type.
+ */
+function simpletest_example_update_7001() {
+  node_types_rebuild();
+  $types = node_type_get_types();
+  node_add_body_field($types['simpletest_example']);
+}

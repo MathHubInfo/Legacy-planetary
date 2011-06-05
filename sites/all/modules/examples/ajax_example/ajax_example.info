@@ -1,0 +1,11 @@
+name = AJAX Example
+description = An example module showing how to use Drupal AJAX forms
+package = Example modules
+core = 7.x
+
+; Information added by drupal.org packaging script on 2011-06-02
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "examples"
+datestamp = "1306974049"
+

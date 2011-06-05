@@ -1,0 +1,13 @@
+name = Simpletest Example
+description = Provides simpletest_example page node type.
+package = Example modules
+core = 7.x
+dependencies[] = simpletest
+files[] = simpletest_example.test
+
+; Information added by drupal.org packaging script on 2011-06-02
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "examples"
+datestamp = "1306974049"
+

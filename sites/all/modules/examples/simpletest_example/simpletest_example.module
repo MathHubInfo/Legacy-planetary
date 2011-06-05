@@ -1,0 +1,111 @@
+<?php
+
+/**
+ * @file
+ * An example of simpletest tests to accompany the tutorial at
+ * http://drupal.org/node/890654.
+ *
+ * This is built on a traditional node-type implementation.
+ */
+
+
+/**
+ * Implements hook_node_info().
+ */
+function simpletest_example_node_info() {
+  return array(
+    'simpletest_example' => array(
+      'name' => t('Simpletest Example Node Type'),
+      'module' => 'simpletest_example',
+      'base' => 'simpletest_example',
+      'description' => t('simpletest_example page node type.'),
+  )
+  );
+}
+
+/**
+ * Implements hook_permission().
+ *
+ * In this case we're adding an addition permission that does the same
+ * as the one the node module offers, just to demonstrate this error.
+ */
+function simpletest_example_permission() {
+  $perms = array();
+  $perms['extra special edit any simpletest_example'] = array('title' => t('Extra special edit any Simpletest Example'), 'description' => t('Extra special edit any Simpletest Example'));
+  return $perms;
+}
+
+/**
+ * Implements hook_node_access().
+ *
+ * Demonstrates a bug that we'll find in our test.
+ *
+ * If this is running on the testbot, we don't want the error to show so will
+ * work around it by testing to see if we're in the 'checkout' directory.
+ */
+function simpletest_example_node_access($node, $op, $account) {
+  // Don't get involved if this isn't a simpletest_example node, etc.
+  $type = is_string($node) ? $node : $node->type;
+  if ($type != 'simpletest_example' || ($op != 'update' && $op != 'delete')) {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  // This code has a BUG that we'll find in testing.
+
+  // This is the incorrect version we'll use to demonstrate test failure.
+  // The correct version should have ($op == 'update' || $op == 'delete').
+  // The author had mistakenly always tested with User 1 so it always
+  // allowed access and the bug wasn't noticed!
+  if ( ($op == 'delete')  && (user_access('extra special edit any simpletest_example', $account) && ($account->uid == $node->uid))) {
+    return NODE_ACCESS_ALLOW;
+  }
+
+  return NODE_ACCESS_DENY;
+}
+
+/**
+ * Implements hook_form().
+ *
+ * Form for the node type.
+ */
+function simpletest_example_form($node, $form_state) {
+  $type = node_type_get_type($node);
+  $form = array();
+  if ($type->has_title) {
+    $form['title'] = array(
+      '#type' => 'textfield',
+      '#title' => check_plain($type->title_label),
+      '#required' => TRUE,
+      '#default_value' => $node->title,
+      '#maxlength' => 255,
+      '#weight' => -5,
+    );
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * Provide an explanation.
+ */
+function simpletest_example_menu() {
+  $items['examples/simpletest_example'] = array(
+    'title'           => 'Simpletest Example',
+    'description'     => 'Explain the simpletest example and allow the error logic to be executed.',
+    'page callback'   => '_simpletest_example_explanation',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Return an explanation of this module.
+ */
+function _simpletest_example_explanation() {
+
+  $explanation =  t("This Simpletest Example is designed to give an introductory tutorial to writing
+    a simpletest test. Please see the <a href='http://drupal.org/node/890654'>associated tutorial</a>.");
+  return $explanation;
+}
+

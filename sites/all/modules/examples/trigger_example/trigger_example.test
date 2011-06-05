@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * @file
+ * test file for trigger_example module.
+ */
+
+/**
+ * Default test case for the trigger_example module.
+ */
+class TriggerExampleTestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Trigger example',
+      'description' => 'Perform various tests on trigger_example module.' ,
+      'group' => 'Examples',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('trigger', 'trigger_example');
+  }
+
+  /**
+   * Test assigning a configurable action to the triggersomething event.
+   */
+  function testTriggersomethingEvent() {
+    // Create an administrative user.
+    $test_user = $this->drupalCreateUser(array('administer actions'));
+    $this->drupalLogin($test_user);
+
+    // Create a configurable action for display a message to the user
+    $hash = drupal_hash_base64('system_message_action');
+    $action_label = $this->randomName();
+    $edit = array(
+      'actions_label' => $action_label,
+      'message' => $action_label,
+    );
+    $this->drupalPost('admin/config/system/actions/configure/' . $hash, $edit, t('Save'));
+    $aid = db_query('SELECT aid FROM {actions} WHERE callback = :callback', array(':callback' => 'system_message_action'))->fetchField();
+    // $aid is likely 3 but if we add more uses for the sequences table in
+    // core it might break, so it is easier to get the value from the database.
+    $edit = array('aid' => drupal_hash_base64($aid));
+
+    // Note that this only works because there's just one item on the page.
+    $this->drupalPost('admin/structure/trigger/trigger_example', $edit, t('Assign'));
+
+    // Request triggersomething form and submit.
+    $this->drupalPost('examples/trigger_example', array(), t('Run triggersomething event'));
+    // Verify the message is shown to the user.
+    $this->assertText($action_label, t('The triggersomething event executed the action.'));
+  }
+
+  function testUserLogin() {
+    // Create an administrative user.
+    $admin_user = $this->drupalCreateUser(array('administer actions'));
+    $this->drupalLogin($admin_user);
+
+    // Create a configurable action for display a message to the user
+    $hash = drupal_hash_base64('system_message_action');
+    $action_label = $this->randomName();
+    $edit = array(
+      'actions_label' => $action_label,
+      'message' => $action_label,
+    );
+    $this->drupalPost('admin/config/system/actions/configure/' . $hash, $edit, t('Save'));
+    $aid = db_query('SELECT aid FROM {actions} WHERE callback = :callback', array(':callback' => 'system_message_action'))->fetchField();
+    $edit = array('aid' => drupal_hash_base64($aid));
+
+    // Find the correct trigger
+    $this->drupalPost('admin/structure/trigger/user', $edit, t('Assign'), array(), array(), 'trigger-user-first-time-login-assign-form');
+
+    $test_user = $this->drupalCreateUser();
+    $this->drupalLogin($test_user);
+    $this->assertText($action_label);
+  }
+}

@@ -1,0 +1,98 @@
+<?php
+
+/**
+ * @file
+ * Simpletest case for email_example module.
+ *
+ * Verify example module functionality.
+ */
+
+/**
+ * Functionality tests for email example module.
+ */
+class EmailExampleTestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Email example',
+      'description' => 'Verify the email submission using the contact form.',
+      'group' => 'Examples',
+    );
+  }
+
+  function setUp() {
+    // Enable the email_example module.
+    parent::setUp('email_example');
+  }
+
+  /**
+   * Verify the functionality of the example module.
+   */
+  function testContactForm() {
+    // Create and login user.
+    $account = $this->drupalCreateUser();
+    $this->drupalLogin($account);
+
+    // Set default language for t() translations
+    $t_options = array(
+      'langcode' => language_default()->language,
+    );
+
+    // First try to send to an invalid email address.
+    $email_options = array(
+      'email'   => $this->randomName(),
+      'message' => $this->randomName(128),
+    );
+    $result = $this->drupalPost('example/email_example', $email_options, t('Submit'));
+
+    // Verify that email address is invalid and email was not sent.
+    $this->assertText(t('That e-mail address is not valid.'), t('Options were validated and form submitted.'));
+    $this->assertTrue(!count($this->drupalGetMails()), t('No email was sent.'));
+
+    // Now try with a valid email address.
+    $email_options['email'] = $this->randomName() . '@' . $this->randomName() . '.drupal';
+    $result = $this->drupalPost('example/email_example', $email_options, t('Submit'));
+
+    // Verify that email address is valid and email was sent.
+ //   $this->assertText(t('Your message has been sent.'), t('Options were validated and form submitted.'));
+    $this->assertTrue(count($this->drupalGetMails()), t('An email has been sent.'));
+
+    // Validate sent email.
+    $email  = $this->drupalGetMails();
+    // Grab the first entry.
+    $email = $email[0];
+
+    // Verify email recipient.
+    $this->assertEqual(
+      $email['to'],
+      $email_options['email'],
+      t('Email recipient successfully verified.')
+    );
+
+    // Verify email subject.
+    $this->assertEqual(
+      $email['subject'],
+      t('E-mail sent from @site-name', array('@site-name' => variable_get('site_name', 'Drupal')), $t_options),
+      t('Email subject successfully verified.')
+    );
+
+    // Verify email body.
+    $this->assertTrue(
+      strstr(
+        $email['body'],
+        t('@name sent you the following message:', array('@name' => $account->name), $t_options)
+      ),
+      t('Email body successfully verified.')
+    );
+
+    // Verify that signature is attached.
+    $this->assertTrue(
+      strstr(
+        $email['body'],
+        t("--\nMail altered by email_example module.", array(), $t_options)
+      ),
+      t('Email signature successfully verified.')
+    );
+  }
+}
+

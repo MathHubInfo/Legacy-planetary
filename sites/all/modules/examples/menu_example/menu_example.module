@@ -1,0 +1,467 @@
+<?php
+
+/**
+ * @file
+ * Demonstrates uses of the Menu APIs in Drupal, including hook_menu(),
+ * hook_menu_alter(), and hook_menu_link_alter().
+ */
+
+/**
+ * Implementatation of hook_menu().
+ */
+function menu_example_menu() {
+
+  // The simplest kind of menu: A simple call to a function with a menu entry.
+  // The key of the menu item (menu_example/simplest) is the path that defines
+  // the menu router entry.
+  $items['menu_example'] = array(
+    // The menu type is not required, as we're using the default.
+    // 'type' => MENU_NORMAL_ITEM,
+
+    // The title - do NOT use t() as t() is called automatically.
+    'title' => 'Menu Example',
+
+    // Description (hover flyover for menu link). Does NOT use t(), which is
+    // called automatically.
+    'description' => 'Simplest possible menu type, and the parent menu entry for others',
+
+    // Function to be called when this path is accessed.
+    'page callback' => '_menu_example_basic_instructions',
+
+    // Arguments to the page callback. Here's we'll use them just to provide
+    // content for our page.
+    'page arguments' => array(t('This page is displayed by the simplest (and base) menu example. Note that the title of the page is the same as the link title. You can also <a href="!link">visit a similar page with no menu link</a>', array('!link' => url('menu_example/path_only')))),
+
+    // This is to be accessible to all users, so 'access callback' can be set
+    // to TRUE, meaning that we should bypass all access checks.
+    'access callback' => TRUE,
+
+    // If the page callback is located in another file, specify it here and
+    // that file will be automatically loaded when needed.
+    // 'file' => 'menu_example.module',
+
+    // We can choose which menu gets the link. The default is 'navigation'.
+    // 'menu_name' => 'navigation',
+
+    // Show the menu link as expanded.
+    'expanded' => TRUE,
+  );
+
+  // Show a menu link in a menu other than the default "Navigation" menu.
+  // The menu must already exist.
+  $items['menu_example_alternate_menu'] = array(
+    'title' => 'Menu Example: Menu in alternate menu',
+
+    // Machine name of the menu in which the link should appear.
+    'menu_name' => 'primary-links',
+
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(t('This will be in the Primary Links menu instead of the default Navigation menu')),
+    'access callback' => TRUE,
+  );
+
+  // A menu entry with simple permissions using user_access().
+
+  // First, provide a courtesy menu item that mentions the existence of the
+  // permissioned item.
+  $items['menu_example/permissioned'] = array(
+    'title' => 'Permissioned Example',
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(t('A menu item that requires the "access protected menu example" permission is at <a href="!link">menu_example/permissioned/controlled</a>', array('!link' => url('menu_example/permissioned/controlled')))),
+    'access callback' => TRUE,
+    'expanded' => TRUE,
+  );
+
+  // Now provide the actual permissioned menu item.
+  $items['menu_example/permissioned/controlled'] = array(
+
+    // The title - do NOT use t() as t() is called automatically.
+    'title' => 'Permissioned Menu Item',
+    'description' => 'This menu entry will not show and the page will not be accessible without the "access protected menu example" permission.',
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(t('This menu entry will not show and the page will not be accessible without the "access protected menu example" permission.')),
+
+    // For a permissioned menu entry, we provide an access callback which
+    // determines whether the current user should have access. The default is
+    // user_access(), which we'll use in this case. Since it's the default,
+    // we don't even have to enter it.
+    // 'access callback' => 'user_access',
+
+    // The 'access arguments' are passed to the 'access callback' to help it
+    // do its job. In the case of user_access(), we need to pass a permission
+    // as the first argument.
+    'access arguments' => array('access protected menu example'),
+
+    // The optional weight element tells how to order the submenu items.
+    // Higher weights are "heavier", dropping to the bottom of the menu.
+    'weight' => 10,
+  );
+
+  // A menu router entry with no menu link. This could be used any time we
+  // don't want the user to see a link in the menu. Otherwise, it's the same
+  // as the "simplest" entry above. MENU_CALLBACK is used for all menu items
+  // which don't need a visible menu link, including services and other pages
+  // that may be linked to but are not intended to be accessed directly.
+
+  // First, provide a courtesy link in the menu so people can find this.
+  $items['menu_example/path_only'] = array(
+    'title' => 'MENU_CALLBACK example',
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(t('A menu entry with no menu link (MENU_CALLBACK) is at <a href="!link">!link</a>', array('!link' => url('menu_example/path_only/callback')))),
+    'access callback' => TRUE,
+    'weight' => 20,
+  );
+  $items['menu_example/path_only/callback'] = array(
+
+    // A type of MENU_CALLBACK means leave the path completely out of the menu
+    // links.
+    'type' => MENU_CALLBACK,
+
+    // The title is still used for the page title, even though it's not used
+    // for the menu link text, since there's no menu link.
+    'title' => 'Callback Only',
+
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(t('The menu entry for this page is of type MENU_CALLBACK, so it provides only a path but not a link in the menu links, but it is the same in every other way to the simplest example.')),
+    'access callback' => TRUE,
+  );
+
+
+  // A menu entry with tabs.
+  // For tabs we need at least 3 things:
+  // 1. A parent MENU_NORMAL_ITEM menu item (menu_example/tabs in this
+  //    example.)
+  // 2. A primary tab (the one that is active when we land on the base menu).
+  //    This tab is of type MENU_DEFAULT_LOCAL_TASK.
+  // 3. Some other menu entries for the other tabs, of type MENU_LOCAL_TASK.
+  $items['menu_example/tabs'] = array(
+    // 'type' => MENU_NORMAL_ITEM,  // Not necessary since this is the default.
+    'title' => 'Tabs',
+    'description' => 'Shows how to create primary and secondary tabs',
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(t('This is the "tabs" menu entry.')),
+    'access callback' => TRUE,
+    'weight' => 30,
+  );
+
+  // For the default local task, we need very little configuration, as the
+  // callback and other conditions are handled by the parent callback.
+  $items['menu_example/tabs/default'] = array(
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'title' => 'Default primary tab',
+    'weight' => 1,
+  );
+  // Now add the rest of the tab entries.
+  foreach (array(t('second') => 2, t('third') => 3, t('fourth') => 4) as $tabname => $weight) {
+    $items["menu_example/tabs/$tabname"] = array(
+      'type' => MENU_LOCAL_TASK,
+      'title' => $tabname,
+      'page callback' => '_menu_example_menu_page',
+      'page arguments' => array(t('This is the tab "@tabname" in the "basic tabs" example', array('@tabname' => $tabname))),
+      'access callback' => TRUE,
+
+    // The weight property overrides the default alphabetic ordering of menu
+    // entries, allowing us to get our tabs in the order we want.
+      'weight' => $weight,
+    );
+  }
+
+  // Finally, we'll add secondary tabs to the default tab of the tabs entry.
+
+  // The default local task needs very little information.
+  $items['menu_example/tabs/default/first'] = array(
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'title' => 'Default secondary tab',
+    // The additional page callback and related items are handled by the
+    // parent menu item.
+  );
+  foreach (array(t('second'), t('third')) as $tabname) {
+    $items["menu_example/tabs/default/$tabname"] = array(
+      'type' => MENU_LOCAL_TASK,
+      'title' => $tabname,
+      'page callback' => '_menu_example_menu_page',
+      'page arguments' => array(t('This is the secondary tab "@tabname" in the "basic tabs" example "default" tab', array('@tabname' => $tabname))),
+      'access callback' => TRUE,
+    );
+  }
+
+  // All the portions of the URL after the base menu are passed to the page
+  // callback as separate arguments, and can be captured by the page callback
+  // in its argument list. Our _menu_example_menu_page() function captures
+  // arguments in its function signature and can output them.
+  $items['menu_example/use_url_arguments'] = array(
+    'title' => 'Extra Arguments',
+    'description' => 'The page callback can use the arguments provided after the path used as key',
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(t('This page demonstrates using arguments in the path (portions of the path after "menu_example/url_arguments". For example, access it with <a href="!link1">!link1</a> or <a href="!link2">!link2</a>).', array('!link1' => url('menu_example/use_url_arguments/one/two'), '!link2' => url('menu_example/use_url_arguments/firstarg/secondarg')))),
+    'access callback' => TRUE,
+    'weight' => 40,
+  );
+
+  // The menu title can be dynamically created by using the 'title callback'
+  // which by default is t(). Here we provide a title callback which adjusts
+  // the menu title based on the current user's username.
+  $items['menu_example/title_callbacks'] = array(
+    'title callback' => '_menu_example_simple_title_callback',
+    'title arguments' => array(t('Dynamic title: username=')),
+    'description' => 'The title of this menu item is dynamically generated',
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(t('The menu title is dynamically changed by the title callback')),
+    'access callback' => TRUE,
+    'weight' => 50,
+  );
+
+  // Sometimes we need to capture a specific argument within the menu path,
+  // as with the menu entry 'menu_example/placeholder_argument/3333/display',
+  // where we need to capture the "3333". In that case, we use a placeholder in
+  // the path provided in the menu entry. The (odd) way this is done is by using
+  // array(numeric_position_value) as the value for 'page arguments'. The
+  // numeric_position_value is the zero-based index of the portion of the URL
+  // which should be passed to the 'page callback'.
+
+  // First we provide a courtesy link with information on how to access
+  // an item with a placeholder.
+  $items['menu_example/placeholder_argument'] = array(
+    'title' => 'Placeholder Arguments',
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(t('Demonstrate placeholders by visiting <a href="!link">menu_example/placeholder_argument/3343/display</a>', array('!link' => url('menu_example/placeholder_argument/3343/display')))),
+    'access callback' => TRUE,
+    'weight' => 60,
+  );
+
+  // Now the actual entry.
+  $items['menu_example/placeholder_argument/%/display'] = array(
+    'title' => 'Placeholder Arguments',
+    'page callback' => '_menu_example_menu_page',
+
+    // Pass the value of '%', which is zero-based argument 2, to the
+    // 'page callback'. So if the URL is
+    // 'menu_example/placeholder_argument/333/display' then the value 333
+    // will be passed into the 'page callback'.
+    'page arguments' => array(2),
+    'access callback' => TRUE,
+  );
+
+  // Drupal provides magic placeholder processing as well, so if the placeholder
+  // is '%menu_example_arg_optional', the function
+  // menu_example_arg_optional_load($arg) will be called to translate the path
+  // argument to a more substantial object. $arg will be the value of the
+  // placeholder. Then the return value of menu_example_id_load($arg) will be
+  // passed to the 'page callback'.
+  // In addition, if (in this case) menu_example_arg_optional_to_arg() exists,
+  // then a menu link can be created using the results of that function as a
+  // default for %menu_example_arg_optional.
+  $items['menu_example/default_arg/%menu_example_arg_optional'] = array(
+    'title' => 'Processed Placeholder Arguments',
+    'page callback' => '_menu_example_menu_page',
+    'page arguments' => array(2),  // arg 2 (3rd arg) is the one we want.
+    'access callback' => TRUE,
+    'weight' => 70,
+  );
+  return $items;
+}
+
+/**
+ * Page callback for the simplest introduction menu entry.
+ *
+ * @param $content
+ *   Some content passed in.
+ */
+function _menu_example_basic_instructions($content = NULL) {
+  $base_content = t(
+  'This is the base page of the Menu Example. There are a number of examples
+  here, from the most basic (like this one) to extravagant mappings of loaded
+  placeholder arguments. Enjoy!');
+  return '<div>' . $base_content . '</div><div>' . $content . '</div>';
+}
+
+/**
+ * Page callback for use with most of the menu entries. The arguments it
+ * receives determine what it outputs.
+ *
+ * @param $content
+ *   The base content to output.
+ * @param $arg1
+ *   First additional argument from the path used to access the menu
+ * @param $arg2
+ *   Second additional argument.
+ */
+function _menu_example_menu_page($content = NULL, $arg1 = NULL, $arg2 = NULL) {
+  $output =  '<div>' . $content . '</div>';
+
+  if (!empty($arg1)) {
+    $output .= '<div>' . t('Argument 1=%arg', array('%arg' => $arg1)) . '</div>';
+  }
+  if (!empty($arg2)) {
+    $output .= '<div>' . t('Argument 2=%arg', array('%arg' => $arg2)) . '</div>';
+  }
+  return $output;
+}
+
+/**
+ * Implements hook_permission() to provide a demonstration access string.
+ */
+function menu_example_permission() {
+  return array(
+    'access protected menu example' =>  array(
+      'title' => t('Access the protected menu example'),
+    ),
+  );
+
+}
+
+/**
+ * Utility function to provide mappings from integers to some strings.
+ * This would normally be some database lookup to get an object or array from
+ * a key.
+ *
+ * @param $id
+ *
+ * @return
+ *   The string to which the integer key mapped, or NULL if it did not map.
+ */
+function _menu_example_mappings($id) {
+  $mapped_value = NULL;
+  static $mappings = array(
+    1 => 'one',
+    2 => 'two',
+    3 => 'three',
+    99 => 'jackpot! default',
+  );
+  if (isset($mappings[$id])) {
+    $mapped_value = $mappings[$id];
+  }
+  return $mapped_value;
+}
+
+/**
+ * The special _load function to load menu_example.
+ *
+ * Given an integer $id, load the string that should be associated with it.
+ * Normally this load function would return an array or object with more
+ * information.
+ *
+ * @param $id
+ *   The integer to load.
+ *
+ * @return
+ *   A string loaded from the integer.
+ */
+function menu_example_id_load($id) {
+  // Just map a magic value here. Normally this would load some more complex
+  // object from the database or other context.
+  $mapped_value = _menu_example_mappings($id);
+  if (!empty($mapped_value)) {
+    return t('Loaded value was %loaded', array('%loaded' => $mapped_value));
+  }
+  else {
+    return t('Sorry, the id %id was not found to be loaded', array('%id' => $id));
+  }
+}
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * Changes the path 'logout' to the Spanish 'salir'.
+ * Changes the title callback of the 'user/UID' menu item.
+ *
+ * Remember that hook_menu_alter() only runs at menu_rebuild() time, not every
+ * time the page is built, so this typically happens only at cache clear time.
+ *
+ * @param $items
+ *   The complete list of menu router items ready to be written to the
+ *   menu_router table.
+ */
+function menu_example_menu_alter(&$items) {
+  // Change the path 'user/logout' to a Spanish 'user/salir'. This change will
+  // prevent the menu "Log out" link from showing up. You should go to user/salir
+  // manually to log out of the site.
+  if (!empty($items['user/logout'])) {
+    $items['user/salir'] = $items['user/logout'];
+    unset($items['user/logout']);
+  }
+
+  // Here we will change the title callback to our own function, changing the
+  // 'user' link from the traditional to always being "username's account".
+  if (!empty($items['user/%user'])) {
+    $items['user/%user']['title callback'] = 'menu_example_user_page_title';
+  }
+}
+
+/**
+ * Title callback to rewrite the '/user' menu link.
+ *
+ * @param $base_string
+ *   string to be prepended to current user's name.
+ */
+function _menu_example_simple_title_callback($base_string) {
+  global $user;
+  $username = !empty($user->name) ? $user->name : t('anonymous');
+  return $base_string . ' ' . $username;
+}
+/**
+ * Title callback to rename the title dynamically, based on user_page_title().
+ *
+ * @param $account
+ *   User account related to the visited page.
+ */
+function menu_example_user_page_title($account) {
+  return is_object($account) ? t("@name's account", array('@name' => format_username($account))) : '';
+}
+
+/**
+ * Implements hook_menu_link_alter().
+ *
+ * This code will get the chance to alter a menu link when it is being saved
+ * in the menu interface at admin/build/menu. Whatever we do here overrides
+ * anything the user/administrator might have been trying to do.
+ *
+ * @param $item
+ *   The menu item being saved.
+ * @param $menu
+ *   The entire menu router table.
+ */
+function menu_example_menu_link_alter(&$item, $menu) {
+  // Force the link title to remain 'Clear Cache' no matter what the admin
+  // does with the web interface.
+  if ($item['link_path'] == 'devel/cache/clear') {
+     $item['link_title'] = 'Clear Cache';
+  };
+}
+
+/**
+ * Load an item based on its $id.
+ *
+ * In this case we're just creating a more extensive string. In a real example
+ * we would load or create some type of object.
+ *
+ * @param $id
+ */
+function menu_example_arg_optional_load($id) {
+  $mapped_value = _menu_example_mappings($id);
+  if (!empty($mapped_value)) {
+    return t('Loaded value was %loaded', array('%loaded' => $mapped_value));
+  }
+  else {
+    return t('Sorry, the id %id was not found to be loaded', array('%id' => $id));
+  }
+}
+
+/**
+ * A to_arg() function is used to provide a default for the arg in the
+ * wildcard. The purpose is to provide a menu link that will function if no
+ * argument is given. For example, in the case of the menu item
+ * 'menu_example/default_arg/%menu_example_arg_optional' the third argument
+ * is required, and the menu system cannot make a menu link using this path
+ * since it contains a placeholder. However, when the to_arg() function is
+ * provided, the menu system will create a menu link pointing to the path
+ * which would be created with the to_arg() function filling in the
+ * %menu_example_arg_optional.
+ *
+ * @param $arg
+ *   The arg (URL fragment) to be tested.
+ */
+function menu_example_arg_optional_to_arg($arg) {
+  // If our argument is not provided, give a default of 99.
+  return (empty($arg) || $arg == '%') ? 99 : $arg;
+}

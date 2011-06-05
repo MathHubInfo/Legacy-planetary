@@ -1,0 +1,167 @@
+<?php
+
+/**
+ * @file
+ * This is an example outlining how a module can be used to define a new
+ * node type.  In Drupal 7 we move most of what was once needed in this file
+ * to the node_example.install file so that it can be managed efficiently.
+ *
+ * Our example node type will allow users to specify multiple "colors",
+ * a "quantity" and an "image" for their nodes; some kind of rudimentary
+ * inventory-tracking system, perhaps?
+ *
+ * In previous versions of Drupal, "teaser" and "page" were node view modes.  In
+ * Drupal 7 we can define custom view modes to let the node know how it should
+ * return it's data.  This module declares a custom view mode called
+ * "example_node_list".
+ *
+ * We no longer need an extra database table to store this content type's
+ * information.
+ *
+ * Most node types that provide fields do not require any custom code for
+ * the fields, as the fields system provides storage and access.
+ *
+ * See @link http://drupal.org/node/707832 Field API Tutorial @endlink
+ *
+ * See @link http://drupal.org/node/443536 Field API Handbook Page @endlink
+ *
+ * See @link field Field API documentation @endlink
+ *
+ * See @link field_example.install field_example.install @endlink
+ *
+ * Remember that most node types do not require any custom code, as one
+ * simply creates them using the fields UI.
+ */
+
+
+/**
+ * Implements hook_menu().
+ *
+ * We are providing a default page to illustrate the use of our custom node view
+ * mode that will live at http://example.com/?q=examples/node_example
+ */
+function node_example_menu() {
+  $items['examples/node_example'] = array(
+    'page callback' => 'node_example_page',
+    'access arguments' => array('access content'),
+    'title' => 'Node Example',
+  );
+  return $items;
+}
+
+/**
+ * Custom callback that builds our content and returns it to the browser.
+ *
+ * @return
+ *   a build array
+ *
+ */
+function node_example_page() {
+  $build = array();
+  $sql = 'SELECT nid FROM {node} n WHERE n.type = :type AND n.status = :status';
+  $result = db_query($sql,
+    array(
+      ':type' => 'node_example',
+      ':status' => 1,
+    )
+  );
+
+  // Loop through each of our node_example nodes and instruct node_view
+  // to use our custom "example_node_list" view.
+  // http://api.drupal.org/api/function/node_load/7
+  // http://api.drupal.org/api/function/node_view/7
+  foreach ($result as $row) {
+    $node = node_load($row->nid);
+    $build['node_list'][]= node_view($node, 'example_node_list');
+  }
+
+  return $build;
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ *
+ * We need to modify the default node entity info by adding a new view mode to
+ * be used in functions like node_view() or node_build_content().
+ *
+ */
+function node_example_entity_info_alter(&$entity_info) {
+  $entity_info['node']['view modes']['example_node_list'] = array(
+    'label' => t('Example Node List'),
+    'custom settings' => TRUE,
+  );
+}
+
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function node_example_field_formatter_info() {
+  return array(
+    'node_example_colors' => array(
+      'label' => t('Node Example Color Handle'),
+      'field types' => array('text'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ *
+ * @todo: We need to provide a formatter for the colors that a user is allowed to enter
+ * during node creation.
+ */
+function node_example_field_formatter_view($object_type, $object, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  switch ($display['type']) {
+    case 'node_example_colors':
+      foreach ($items as $delta => $item) {
+        $element[$delta]['#type'] = 'markup';
+        $color = $item['safe_value'];
+        $element[$delta]['#markup'] = theme('example_node_color', array('color' => $color));
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * This lets us tell Drupal about our theme functions and their arguments.
+ */
+function node_example_theme($existing, $type, $theme, $path) {
+  return array(
+    'example_node_color' => array(
+      'variables' => array('color' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implements hook_help().
+ */
+function node_example_help($path, $arg) {
+  switch ($path) {
+    case 'examples/node_example':
+      return "<p>" . t(
+        "The Node Example module provides a custom node type.
+        You can create new nodes using the <a href='!nodeadd'>node add form</a>.
+        Nodes that you create will be displayed here.",
+        array('!nodeadd' => url('node/add/node-example'))
+      ) . "</p>";
+  }
+}
+
+/**
+ * A custom theme function.
+ *
+ * By using this function to format our node-specific information, themes
+ * can override this presentation if they wish.  This is a simplifed theme
+ * function purely for illustrative purposes.
+ */
+function theme_example_node_color($variables) {
+  $output = '<span style="background-color: #ccc; padding: 1em; margin-bottom: 1em; float: left; color: ' . $variables['color'] . '">' . $variables['color'] . '</span>';
+  return $output;
+}

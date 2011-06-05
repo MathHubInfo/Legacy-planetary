@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the drutexml module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function drutexml_schema() {
+	//add a new table that keeps nid and TitleXHTML and BodyXHTML and Format
+	
+	$schema['drutexml'] = array(
+	 'description' => 'xhtml.',
+	 'fields' => array(	
+	   'nid' => array(
+	     'description' => 'NodeID.',
+	     'type' => 'int',
+	     'unsigned' => TRUE,
+	     'not null' => TRUE,
+	     'default' => 0,
+	   ),	   
+	   'format' => array(
+	     'description' => 'ctype.',
+       'type' => 'text',
+       'size' => 'medium',
+	     'not null' => TRUE,	     
+	   ),	   
+	   'titleXHTML' => array(
+	     'description' => 'Title rendered xhtml.',
+	     'type' => 'text',
+	     'size' => 'medium',
+	     'not null' => TRUE,
+	   ),	   
+	   'bodyXHTML' => array(
+       'description' => 'Content rendered xhtml.',
+       'type' => 'text',
+	     'size' => 'medium',
+       'not null' => TRUE,
+     ),
+	 ),
+	 'primary key' => array('nid'),	 
+	);
+	
+	  
+	
+	
+	//most likely add the same thing for comments...
+	return $schema;
+} 

@@ -1,0 +1,115 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the dbtng_example module.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * In Drupal 7, there is no need to install schema using this hook, the schema
+ * is already installed before this hook is called.
+ *
+ * We will create a default entry in the database.
+ *
+ * @see hook_install()
+ */
+function dbtng_example_install() {
+  // Outside of the .install file we would use drupal_write_record() to
+  // populate the database, but it cannot be used here, so we'll use
+  // db_insert().
+
+  // Add a default entry.
+  $fields = array(
+    'name'    => 'John',
+    'surname' => 'Doe',
+    'age'     => 0,
+  );
+  db_insert('dbtng_example')
+    ->fields($fields)
+    ->execute();
+
+  // Add another entry.
+  $fields = array(
+    'name'    => 'John',
+    'surname' => 'Roe',
+    'age'     => 100,
+    'uid'     => 1,
+  );
+  db_insert('dbtng_example')
+    ->fields($fields)
+    ->execute();
+
+}
+
+/**
+ * Implements hook_uninstall().
+ *
+ * As in hook_install, there is no need to uninstall schema, Drupal will do it
+ * for us.
+ *
+ * @see hook_uninstall()
+ */
+function dbtng_example_uninstall() {
+}
+
+
+/**
+ * Implements hook_schema().
+ *
+ * Define the database tables used by this module.
+ * Remember that the easiest way to create the code for hook_schema is with
+ * the schema module:
+ * @link http://drupal.org/project/schema @endlink
+ *
+ * @see hook_schema()
+ */
+function dbtng_example_schema() {
+
+  $schema['dbtng_example'] = array(
+    'description' => 'Stores example person entries for demonstration purposes.',
+    'fields' => array(
+      'pid'  => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique person ID.',
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "Creator user's {users}.uid",
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Name of the person.',
+      ),
+      'surname' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Surname of the person.',
+      ),
+      'age' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'size' => 'tiny',
+        'description' => 'The age of the person in years.',
+      )
+    ),
+    'primary key' => array('pid'),
+    'indexes' => array(
+      'name'    => array('name'),
+      'surname' => array('surname'),
+      'age'     => array('age'),
+    ),
+  );
+
+  return $schema;
+}

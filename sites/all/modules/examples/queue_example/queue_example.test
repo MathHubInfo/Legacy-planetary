@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * @file
+ * Test the queue example module.
+ */
+class QueueExampleTestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Queue Example functionality',
+      'description' => 'Test Queue Example functionality',
+      'group' => 'Examples',
+    );
+  }
+
+  /**
+   * Enable modules and create user with specific permissions.
+   */
+  function setUp() {
+    parent::setUp('queue_example');
+  }
+
+  /**
+   * Login user, create an example node, and test blog functionality through the admin and user interfaces.
+   */
+  function testQueueExampleBasic() {
+
+    // Load the queue with 5 items.
+    for ($i = 1; $i <= 5; $i++) {
+      $edit = array('queue_name' => 'queue_example_first_queue', 'string_to_add' => "boogie$i");
+      $this->drupalPost('queue_example/insert_remove', $edit, t('Insert into queue'));
+      $this->assertText(t('There are now @number items in the queue', array('@number' => $i)));
+    }
+    // Claim each of the 5 items with a claim time of 0 seconds.
+    for ($i = 1; $i <= 5; $i++) {
+      $edit = array('queue_name' => 'queue_example_first_queue', 'claim_time' => 0);
+      $this->drupalPost(NULL, $edit, t('Claim the next item from the queue'));
+      $this->assertPattern(t('%Claimed item id=.*string=@string for 0 seconds.%', array('@string' => "boogie$i")));
+    }
+    $edit = array('queue_name' => 'queue_example_first_queue', 'claim_time' => 0);
+    $this->drupalPost(NULL, $edit, t('Claim the next item from the queue'));
+    $this->assertText(t('There were no items in the queue available to claim'));
+
+    // Sleep a second so we can make sure that the timeouts actually time out.
+    // Local systems work fine with this but apparently the PIFR server is so
+    /// fast that it needs a sleep before the cron run.
+    sleep(1);
+
+    // Run cron to release expired items.
+    $this->drupalPost(NULL, array(), t('Run cron manually (to expire claimed items)'));
+
+    $queue_items = queue_example_retrieve_queue('queue_example_first_queue');
+
+    // Claim and delete each of the 5 items which should now be available.
+    for ($i = 1; $i <= 5; $i++) {
+      $edit = array('queue_name' => 'queue_example_first_queue', 'claim_time' => 0);
+      $this->drupalPost(NULL, $edit, t('Claim the next item and delete it'));
+      $this->assertPattern(t('%Claimed and deleted item id=.*string=@string for 0 seconds.%', array('@string' => "boogie$i")));
+    }
+    // Verify that nothing is left to claim.
+    $edit = array('queue_name' => 'queue_example_first_queue', 'claim_time' => 0);
+    $this->drupalPost(NULL, $edit, t('Claim the next item from the queue'));
+    $this->assertText(t('There were no items in the queue available to claim'));
+  }
+}

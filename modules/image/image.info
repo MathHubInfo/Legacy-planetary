@@ -1,0 +1,14 @@
+name = Image
+description = Provides image manipulation tools.
+package = Core
+version = VERSION
+core = 7.x
+dependencies[] = file
+files[] = image.test
+configure = admin/config/media/image-styles
+
+; Information added by drupal.org packaging script on 2011-05-25
+version = "7.2"
+project = "drupal"
+datestamp = "1306357016"
+

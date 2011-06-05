@@ -1,0 +1,176 @@
+<?php
+
+/**
+ * @file
+ * This is an example outlining how a module can be used to define a filter
+ * to be run on user-submitted content before it is output to the browser.
+ *
+ * To show all the capabilities of the filter system, we will define two filters
+ * in this module. One will substitute the string "foo" with an administratively-
+ * defined replacement string. The other will find a custom XML tag, <time />, and
+ * replace it by the current time.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function filter_example_menu() {
+  $items['examples/filter_example'] = array(
+    'title' => 'Filter Example',
+    'page callback' => '_filter_example_information',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_filter_info().
+ *
+ * Here we define the diferent filters provided by the module. For this example,
+ * time_filter is a very static and simple replacement, but it requires some
+ * preparation of the string because of the special html tags < and >. The
+ * foo_filter is more complex, including its own settings and inline tips.
+ */
+function filter_example_filter_info() {
+  $filters['filter_foo'] = array(
+    'title' => t('Foo filter'),
+    'description' => t('Every instance of "foo" in the input text will be replaced with a preconfigured replacement.'),
+    'process callback'  => '_filter_example_filter_foo_process',
+    'default settings' => array(
+      'filter_example_foo' => 'bar',
+    ),
+    'settings callback' => '_filter_example_filter_foo_settings',
+    'tips callback' => '_filter_example_filter_foo_tips',
+  );
+  $filters['filter_time'] = array(
+    'title' => t('Time tag'),
+    'description' => t('Every instance of the special &lt;time /&gt; tag will be replaced with the current date and time in the user\'s specified time zone.'),
+    'prepare callback' => '_filter_example_filter_time_prepare',
+    'process callback' => '_filter_example_filter_time_process',
+    'tips callback' => '_filter_example_filter_time_tips',
+  );
+  return $filters;
+}
+
+/*
+ * Foo filter
+ *
+ * Drupal has several content formats (they are not filters), and in our example
+ * the foo replacement can be configured for each one of them, allowing an html
+ * or php replacement, so the module includes a settings callback, with options
+ * to configure that replacements. Also, a Tips callback will help showing the
+ * current replacement for the content type being edited.
+ */
+
+/**
+ * Simply returns a little bit of information about the example.
+ */
+function _filter_example_information() {
+  return t(
+    "There are two filters in this example. The first (foo filter) just replaces
+    'foo' with a configurable replacement. The second replaces the string
+    '<time />' with the current time. To use these filters, go to !link and
+    configure one of the input formats.",
+    array('!link' => l("admin/config/content/formats", "admin/config/content/formats"))
+  );
+}
+
+/**
+ * Settings callback for foo filter
+ *
+ * Make use of $format to have different replacements for every input format.
+ * Since we allow the administrator to define the string that gets substituted
+ * when "foo" is encountered, we need to provide an interface for this kind of
+ * customization. The object format is also an argument of the callback.
+ *
+ * The settings defined in this form are stored in database by the filter module,
+ * and they will be available in the $filter argument
+ */
+function _filter_example_filter_foo_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings['filter_example_foo'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Substitution string'),
+    '#default_value' => isset($filter->settings['filter_example_foo']) ? $filter->settings['filter_example_foo'] : $defaults['filter_example_foo'],
+    '#description' => t('The string to substitute for "foo" everywhere in the text.')
+  );
+  return $settings;
+}
+
+/**
+ * Foo filter process callback
+ *
+ * The actual filtering is performed here. The supplied text should be returned,
+ * once any necessary substitutions have taken place. The example just replaces
+ * foo with our custom defined string in the settings page.
+ */
+function _filter_example_filter_foo_process($text, $filter, $format) {
+  $replacement = isset($filter->settings['filter_example_foo']) ? $filter->settings['filter_example_foo'] : 'bar';
+  return str_replace('foo', $replacement, $text);
+}
+
+
+/**
+ * Filter tips callback for foo filter.
+ *
+ * The tips callback allows filters to provide help text to users during the content
+ * editing process. Short tips are provided on the content editing screen, while
+ * long tips are provided on a separate linked page. Short tips are optional,
+ * but long tips are highly recommended.
+ */
+function _filter_example_filter_foo_tips($filter, $format, $long = FALSE) {
+  $replacement = isset($filter->settings['filter_example_foo']) ? $filter->settings['filter_example_foo'] : 'bar';
+  if (!$long) {
+    // This string will be shown in the content add/edit form
+    return t('<em>foo</em> replaced with %replacement.', array('%replacement' => $replacement));
+  }
+  else {
+    return t('Every instance of "foo" in the input text will be replaced with a configurable value. You can configure this value and put whatever you want there. The replacement value is "%replacement".', array('%replacement' => $replacement));
+  }
+}
+
+/*
+ * Time filter.
+ *
+ * This filter is a little trickier to implement than the previous one.
+ * Since the input involves special HTML characters (< and >) we have to
+ * run the filter before HTML is escaped/stripped by other filters. But
+ * we want to use HTML in our result as well, and so if we run this filter
+ * first our replacement string could be escaped or stripped. The solution
+ * is to use the "prepare" operation to escape the special characters, and
+ * to later replace our escaped version in the "process" step.
+ */
+
+/*
+ * Time filter prepare callback
+ *
+ * We'll use [filter-example-time] as a replacement for the time tag.
+ * Note that in a more complicated filter a closing tag may also be
+ * required. For more information, see "Temporary placeholders and
+ * delimiters" at http://drupal.org/node/209715.
+ */
+function _filter_example_filter_time_prepare($text, $filter) {
+  return preg_replace('!<time ?/>!', '[filter-example-time]', $text);
+}
+
+/*
+ * Time filter process callback
+ *
+ * Now, in the "process" step, we'll search for our escaped time tags and
+ * to the real filtering: replace the xml tag with the date.
+ */
+function _filter_example_filter_time_process($text, $filter) {
+  return str_replace('[filter-example-time]', '<em>' . format_date(time()) . '</em>', $text);
+}
+
+
+/**
+ * Filter tips callback for time filter.
+ *
+ * The tips callback allows filters to provide help text to users during the content
+ * editing process. Short tips are provided on the content editing screen, while
+ * long tips are provided on a separate linked page. Short tips are optional,
+ * but long tips are highly recommended.
+ */
+function _filter_example_filter_time_tips($filter, $format, $long = FALSE) {
+  return t('<em>&lt;time /&gt;</em> is replaced with the current time.');
+}

@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the node_access_example module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function node_access_example_schema() {
+  $schema['node_access_example'] = array(
+    'description' => 'Example table for node_access_example module',
+    'fields' => array(
+      'nid'     => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'private' => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('nid'),
+  );
+
+  return $schema;
+}

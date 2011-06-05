@@ -1,0 +1,144 @@
+<?php
+
+/**
+ * @file
+ * Tests for Field Example.
+ */
+
+class FieldExampleTest extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Field Example',
+      'description' => 'Create a content type with example_field_rgb fields, create a node, check for correct values.',
+      'group' => 'Examples',
+    );
+  }
+  function setUp() {
+    // Enable the email_example module.
+    parent::setUp(array('field_ui', 'field_example'));
+  }
+
+  /**
+   * Test basic functionality of the example field.
+   *
+   * - Creates a content type.
+   * - Adds a single-valued field_example_rgb to it.
+   * - Adds a multivalued field_example_rgb to it.
+   * - Creates a node of the new type.
+   * - Populates the single-valued field.
+   * - Populates the multivalued field with two items.
+   * - Tests the result.
+   */
+  function testExampleFieldBasic() {
+    $content_type_friendly = $this->randomName(20);
+    $content_type_machine = strtolower($this->randomName(10));
+    $title = $this->randomName(20);
+
+    // Create and login user.
+    $account = $this->drupalCreateUser(array('administer content types'));
+    $this->drupalLogin($account);
+
+    $this->drupalGet('admin/structure/types');
+
+    // Create the content type.
+    $this->clickLink(t('Add content type'));
+
+    $single_field_name_friendly = $this->randomName(20);
+    $single_field_name_machine = strtolower($this->randomName(10));
+
+    $edit = array(
+      'name' => $content_type_friendly,
+      'type' => $content_type_machine,
+    );
+    $this->drupalPost(NULL, $edit, t('Save and add fields'));
+    $this->assertText(t('The content type @name has been added.', array('@name' => $content_type_friendly)));
+
+    // Now add a singleton field.
+    $edit = array(
+      'fields[_add_new_field][label]' => $single_field_name_friendly,
+      'fields[_add_new_field][field_name]' => $single_field_name_machine,
+      'fields[_add_new_field][type]' => 'field_example_rgb',
+      'fields[_add_new_field][widget_type]' => 'field_example_3text',
+
+    );
+    $this->drupalPost(NULL, $edit, t('Save'));
+
+    // There are no settings for this, so just press the button.
+    $this->drupalPost(NULL, array(), t('Save field settings'));
+
+    // Using all the default settings, so press the button.
+    $this->drupalPost(NULL, array(), t('Save settings'));
+    $this->assertText(t('Saved @name configuration.', array('@name' => $single_field_name_friendly)));
+
+    // Now we're back on the field-add page.
+    // Now add a multivalued field.
+    $multivalue_field_name_friendly = $this->randomName(20);
+    $multivalue_field_name_machine = strtolower($this->randomName(10));
+    $edit = array(
+      'fields[_add_new_field][label]' => $multivalue_field_name_friendly,
+      'fields[_add_new_field][field_name]' => $multivalue_field_name_machine,
+      'fields[_add_new_field][type]' => 'field_example_rgb',
+      'fields[_add_new_field][widget_type]' => 'field_example_3text',
+    );
+    $this->drupalPost(NULL, $edit, t('Save'));
+
+    $this->drupalPost(NULL, array(), t('Save field settings'));
+
+    $edit = array('field[cardinality]' => (string)(-1));
+    $this->drupalPost(NULL, $edit, t('Save settings'));
+
+    $this->assertText(t('Saved @name configuration.', array('@name' => $multivalue_field_name_friendly)));
+
+    $this->drupalPost(NULL, array(), t('Save'));
+
+    // Somehow clicking "save" isn't enough, and we have to do a
+    // node_types_rebuild().
+    node_types_rebuild();
+    menu_rebuild();
+    $type_exists = db_query('SELECT 1 FROM {node_type} WHERE type = :type', array(':type' => $content_type_machine))->fetchField();
+    $this->assertTrue($type_exists, 'The new content type has been created in the database.');
+
+    $permission = 'create ' . $content_type_machine . ' content';
+    // Reset the permissions cache.
+    $this->checkPermissions(array($permission), TRUE);
+
+    // Now that we have a new content type, create a user that has privileges
+    // on the content type.
+    $account = $this->drupalCreateUser(array($permission));
+    $this->drupalLogin($account);
+
+    $this->drupalGet('node/add/' . $content_type_machine);
+
+    // Add a node.
+    $edit = array(
+      'title' => $title,
+      'field_' . $single_field_name_machine . '[und][0][r]' => 'ff',
+      'field_' . $single_field_name_machine . '[und][0][g]' => '00',
+      'field_' . $single_field_name_machine . '[und][0][b]' => '00',
+
+      'field_' . $multivalue_field_name_machine . '[und][0][r]' => '00',
+      'field_' . $multivalue_field_name_machine . '[und][0][g]' => 'ff',
+      'field_' . $multivalue_field_name_machine . '[und][0][b]' => '00',
+
+    );
+    // We want to add a 2nd item in the multivalue field, so hit "add another".
+    $this->drupalPost(NULL, $edit, t('Add another item'));
+
+    $edit = array(
+      'field_' . $multivalue_field_name_machine . '[und][1][r]' => '00',
+      'field_' . $multivalue_field_name_machine . '[und][1][g]' => '00',
+      'field_' . $multivalue_field_name_machine . '[und][1][b]' => 'ff',
+    );
+    // Now we can fill in the second item in the multivalue field and save.
+    $this->drupalPost(NULL, $edit, t('Save'));
+    $this->assertText(t('@content_type_friendly @title has been created', array('@content_type_friendly' => $content_type_friendly, '@title' => $title)));
+
+
+    $output_strings = $this->xpath("//div[contains(@class,'field-type-field-example-rgb')]/div/div/p/text()");
+
+    $this->assertEqual((string)$output_strings[0], t("The color code in this field is #ff0000"), t('Found first color code #ff0000'));
+    $this->assertEqual((string)$output_strings[1], t("The color code in this field is #00ff00"), t('Found second color code #00ff00'));
+    $this->assertEqual((string)$output_strings[2], t("The color code in this field is #0000ff"), t('Found third color code #0000ff'));
+  }
+}

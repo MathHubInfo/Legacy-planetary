@@ -1,0 +1,312 @@
+<?php
+
+/**
+ * @file
+ * Trigger definition example module.
+ *
+ * Triggers and actions are a pair of special-purpose functions allowing some
+ * Drupal programming without using PHP. Using the
+ * appropriate action in a specific event, a site administrator can
+ * add new functionality. Examples are:
+ *  - Send an email after a node is published or edited.
+ *  - Display a message after a user has logged in.
+ *  - Display a message and send an email after a node has been deleted.
+ *
+ * A Trigger is a special function able to enqueue actions. The trigger module
+ * provides the interface allowing us to associate certain actions with certain
+ * triggers.
+ *
+ * Actions are functions intended to be run by triggers.
+ *
+ * A trigger should build the appropriate context for the action to be fired.
+ * Actions are very often
+ * grouped by functionality: examples are 'user', 'node', 'taxonomy'. When some
+ * actions are grouped it is because they expect the same arguments. This way,
+ * you can enqueue as many actions understanding the 'user' object as you want.
+ *
+ * Not all actions can be used in all triggers because they require different
+ * contexts. But some actions
+ * are generic enough to not require special objects in their
+ * contexts, and so can be used on every available trigger. This 'group' type
+ * is used by actions to be available for this trigger.
+ *
+ * What are good candidates to be triggers? Any function can be a trigger, as
+ * long as it has the code to call the enqueued actions, but to make Drupal
+ * more extensible, you will find hooks (from Drupal and contributed modules)
+ * very good candidates. A trigger should build the arguments, ask for enqueued
+ * actions and run them. You may define a function being a trigger, and run it
+ * through a button in the front page, or you may prepare a trigger for a hook,
+ * and everytime that hook is fired, your trigger will be.
+ *
+ * What are good candidates to be actions? any function is a possible action,
+ * the only problem is finding a trigger able to run it.
+ *
+ * This module describes how to create triggers and actions for Drupal. In this
+ * example we are providing two triggers:
+ *
+ * - A custom trigger, in its simplest form. We provide a page with a button.
+ *   This button does nothing at all, but when you click (and submit the empty
+ *   form), any actions you have configured will be executed.
+ *
+ * - A trigger which extends the capabilities of User triggers.
+ *   This creates a new event which fires the first time a user ever logs in.
+ *   In the module we will create it, and then provide a trigger for
+ *   the administrator to be able to enqueue actions. They will be executed
+ *   only the first time the user logs in the system.
+ *
+ * See:
+ *
+ * @link http://drupal.org/node/375833 Creating Triggers @endlink
+ *
+ * @link http://drupal.org/node/172152 Writing Actions @endlink
+ *
+ * @link http://drupal.org/node/199254 Triggers and Actions in Drupal 6 @endlink
+ *
+ * @see hook_trigger_info()
+ * @see hook_trigger_info_alter()
+ * Also see the @link action_example.module Action Example @endlink.
+ */
+
+/**
+ * Implements hook_trigger_info().
+ *
+ * We call hook_trigger_info when we are defining the triggers we provide.
+ * Triggers are the events that make fire any number of assigned actions. In
+ * this example, we are registering our three new triggers, providing the group
+ * (system, user..), the callback 'hook' (only informative, does not require a
+ * real hook) function and the label to be shown in the triggers interface.
+ *
+ * Example: In the group (a tab) 'system', for the 'mail' functionality, show:
+ * An email is sent by Drupal.
+ */
+function trigger_example_trigger_info() {
+  return array(
+    'user' => array(
+      'user_first_time_login' => array(
+        'label' => t('After a user has logged in for the first time'),
+      ),
+    ),
+    'trigger_example' => array(
+      'triggersomething' => array(
+        'label' => t('After the triggersomething button is clicked'),
+      ),
+    ),
+  );
+}
+
+/**
+ * Triggers are used most of the time to do something when an event happens.
+ * The most common type of event is a hook invocation,
+ * but that is not the only possibility.
+ *
+ */
+
+/**
+ * triggersomething trigger: Run actions associated with an arbitrary event.
+ *
+ * Here pressing a button is a trigger. We have defined a
+ * custom function as a trigger (trigger_example_triggersomething).
+ * It will ask for all actions attached to the 'triggersomething' event,
+ * prepare a basic 'context' for them
+ * and run all of them. This could have been implemented by a hook
+ * implementation, but in this demonstration, it will just be called in a
+ * form's submit.
+ *
+ * This function is executed during the submission of the example form defined
+ * in this module.
+ *
+ * @param array $options arguments used to call the triggersomething function, if any.
+ */
+function trigger_example_triggersomething($options = array()) {
+  // Ask the trigger module for all actions enqueued for the 'triggersomething' trigger.
+  $aids = trigger_get_assigned_actions('triggersomething');
+  // prepare a basic context, indicating group and "hook", and call all the
+  // actions with this context as arguments.
+  $context = array(
+    'group' => 'trigger_example',
+    'hook' => 'triggersomething'
+  );
+  actions_do(array_keys($aids), (object) $options, $context);
+}
+
+
+/**
+ * The next trigger is more complex, we are providing a trigger for a
+ * new event: "user first time login". We need to create this event
+ * first.
+ */
+
+/**
+ * Implements hook_user_login().
+ *
+ * User first login trigger: Run actions on user first login.
+ *
+ * The event "User first time login" does not exist, we should create it before
+ * it can be used. We use hook_user_login to be informed when a user logs in and
+ * try to find if the user has previously logged in before. If the user has not
+ * accessed previously, we make a call to our trigger function.
+ *
+ */
+function trigger_example_user_login(&$edit, $account, $category = NULL) {
+  // Verify user has never accessed the site: last access was creation date.
+  if ($account->access == 0) {
+    // Call the aproppriate trigger function
+    _trigger_example_first_time_login('user_first_time_login', $edit, $account, $category);
+  }
+}
+
+/**
+ * Trigger function for "User first time login"
+ *
+ * This trigger is a user-type triggers, so is grouped with other user-type
+ * triggers. It needs to provide all the context that user-type triggers
+ * provide.  For this example, we are going to copy the trigger.module
+ * implementation for the 'User has logged in' event.
+ *
+ * This function will run all the actions assigned to the
+ * 'user_first_time_login' trigger.
+ *
+ * For testing you can use an update query like this to reset a user to
+ * "never logged in":
+ * @code
+ * update users set access=created where name='test1';
+ * @endcode
+ *
+ * @param string $hook
+ *   the trigger identification.
+ * @param array  $edit
+ *   modifications for the account object (should be empty).
+ * @param object $account
+ *   user object that has logged in.
+ * @param string $category
+ *   category of the profile.
+ *
+ */
+function _trigger_example_first_time_login($hook, &$edit, $account, $category = NULL) {
+  // Keep objects for reuse so that changes actions make to objects can persist.
+  static $objects;
+  // Get all assigned actions for the 'user_first_time_login' trigger.
+  $aids = trigger_get_assigned_actions($hook);
+  $context = array(
+    'group' => 'user',
+    'hook' => $hook,
+    'form_values' => &$edit,
+  );
+  // Instead of making a call to actions_do for all triggers, doing this loop
+  // we provide the oportunity for actions to alter the account object, and
+  // the next action should have this altered account object as argument.
+  foreach ($aids as $aid => $info) {
+    $type = $info['type'];
+    if ($type != 'user') {
+      if (!isset($objects[$type])) {
+        $objects[$type] = _trigger_normalize_user_context($type, $account);
+      }
+      $context['user'] = $account;
+      actions_do($aid, $objects[$type], $context);
+    }
+    else {
+      actions_do($aid, $account, $context, $category);
+    }
+  }
+}
+
+/**
+ * Helper functions for the module interface to test the triggersomething trigger.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function trigger_example_help($path, $arg) {
+  switch ($path) {
+    case 'examples/trigger_example':
+      $explanation = t(
+        'Click the button on this page to call trigger_example_triggersomething()
+        and fire the triggersomething event. First, you need to create an action
+        and assign it to the "After the triggersomething button is clicked" trigger,
+        or nothing will happen.  Use the <a href="@actions-url">Actions settings page</a>
+        and assign these actions to the triggersomething event on the
+        <a href="@triggers-url">Triggers settings page</a>. <br/><br/>
+        The other example is the "user never logged in before" example. For that one,
+        assign an action to the "After a user has logged in for the first time" trigger
+        and then log a user in.', array('@actions-url' => url('admin/config/system/actions'), '@triggers-url' => url('admin/structure/trigger/trigger_example')));
+      return "<p>$explanation</p>";
+    case 'admin/structure/trigger/system':
+      return t('you can assign actions to run everytime an email is sent by Drupal');
+    case 'admin/structure/trigger/trigger_example':
+      $explanation = t(
+      "A trigger is a system event. For the trigger example, it's just a button-press.
+      To demonstrate the trigger example, choose to associate the 'display a message to the user'
+      action with the 'after the triggersomething button is pressed' trigger.");
+      return "<p>$explanation</p>";
+  }
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * Provide a form that can be used to fire the module's triggers.
+ */
+function trigger_example_menu() {
+  $items['examples/trigger_example'] = array(
+    'title'           => 'Trigger Example',
+    'description'     => 'Provides a form to demonstrate the trigger example.',
+    'page callback'   => 'drupal_get_form',
+    'page arguments'  => array('trigger_example_form'),
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Trigger example test form
+ *
+ * Provide a button to run the triggersomething event.
+ */
+function trigger_example_form($form_state) {
+  $form['triggersomething'] = array(
+    '#type'  => 'submit',
+    '#value' => t('Run triggersomething event'),
+  );
+  return $form;
+}
+
+/**
+ * Submit handler for the trigger_example_form.
+ */
+function trigger_example_form_submit($form, $form_state) {
+  // If the user clicked the button, then run the triggersomething trigger.
+  if ($form_state['values']['op'] == t('Run triggersomething event')) {
+    trigger_example_triggersomething();
+  }
+}
+
+
+/**
+ * Optional usage of hook_trigger_info_aler()
+ *
+ * This function is not required to write your own triggers, but it may be
+ * useful when you want to alter existing triggers.
+ *
+ */
+
+/**
+ * Implements hook_trigger_info_alter().
+ *
+ * We call hook_trigger_info_alter when we want to change an existing trigger.
+ * As mentioned earlier, this hook is not required to create your own triggers,
+ * and should only be used when you need to alter current existing triggers. In
+ * this example implementation a little change is done to the existing trigger
+ * provided by core: 'cron'
+ *
+ * @param array $triggers
+ *  Array of trigger information returned by hook_trigger_info()
+ *  implementations.
+ *
+ * @see hook_trigger_info()
+ */
+function trigger_example_trigger_info_alter(&$triggers) {
+  // Make a simple change to an existing core trigger, altering the label
+  // "When cron runs" to our custom label "On cron execution"
+  $triggers['system']['cron']['label'] = t('On cron execution');
+}

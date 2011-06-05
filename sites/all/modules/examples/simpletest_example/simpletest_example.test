@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * @file
+ * An example of simpletest tests to accompany the tutorial at
+ * http://drupal.org/node/890654.
+ */
+
+class SimpletestExampleTestCase extends DrupalWebTestCase {
+  protected $privileged_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Simpletest Example',
+      'description' => 'Ensure that the simpletest_example content type provided functions properly.',
+      'group' => 'Examples',
+    );
+  }
+
+  public function setUp() {
+    parent::setUp('simpletest_example');  // Enable any modules required for the test
+    // Create and log in our user. The user has the arbitrary privilege
+    // 'extra special edit any simpletest_example' which the code uses
+    // to grant access.
+    $this->privileged_user = $this->drupalCreateUser(array('create simpletest_example content', 'extra special edit any simpletest_example'));
+    $this->drupalLogin($this->privileged_user);
+  }
+
+  // Create a simpletest_example node using the node form
+  public function testSimpleTestExampleCreate() {
+    // Create node to edit.
+    $edit = array();
+    $edit['title'] = $this->randomName(8);
+    $edit["body[und][0][value]"] = $this->randomName(16);
+    $this->drupalPost('node/add/simpletest-example', $edit, t('Save'));
+    $this->assertText(t('Simpletest Example Node Type @title has been created.', array('@title' => $edit['title'])));
+  }
+
+  // Create a simpletest_example node and then see if our user can edit it
+  public function testSimpleTestExampleEdit() {
+    $settings = array(
+      'type' => 'simpletest_example',
+      'title' => $this->randomName(32),
+      'body' => array(LANGUAGE_NONE => array(array($this->randomName(64)))),
+    );
+    $node = $this->drupalCreateNode($settings);
+
+    // For debugging, we might output the node structure with $this->verbose()
+    $this->verbose('Node created: ' . var_export($node, TRUE));
+    // It would only be output if the testing settings had 'verbose' set.
+
+    // We'll run this test normally, but not on the testbot, as it would
+    // indicate that the examples module was failing tests.
+    if (!$this->runningOnTestbot()) {
+      // The debug() statement will output information into the test results.
+      // It can also be used in Drupal 7 anywhere in code and will come out
+      // as a drupal_set_message().
+      debug('We are not running on the PIFR testing server, so will go ahead and catch the failure.');
+      $this->drupalGet("node/{$node->nid}/edit");
+      // Make sure we don't get a 401 unauthorized response:
+      $this->assertResponse(200, t('User is allowed to edit the content.'));
+
+      // Looking for title text in the page to determine whether we were
+      // successful opening edit form.
+      $this->assertText(t("@title", array('@title' => $settings['title'])), "Found title in edit form");
+    }
+  }
+
+  /**
+   * Detect if we're running on PIFR testbot; skip intentional failure in that
+   * case.
+   * @return boolean
+   *   TRUE if running on testbot.
+   */
+  public function runningOnTestbot() {
+    $testbot_code_directory = "../checkout";
+    return file_exists($testbot_code_directory);
+  }
+}

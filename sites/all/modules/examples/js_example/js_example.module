@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * @file
+ * An example module showing how to use some of the new JavaScript features in Drupal 7.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function js_example_theme() {
+  return array(
+    'my_accordion' => array(
+      'template' => 'accordion',
+      'variables' => array('title' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function js_example_menu() {
+  $items = array();
+  $items['js_example/weights'] = array(
+    'title' => 'JS Example: see weighting in action',
+    'page callback' => 'js_example_js_weights',
+    'access callback' => TRUE,
+  );
+  $items['js_example/accordion'] = array(
+    'title' => 'JS Example: jQuery UI accordion',
+    'page callback' => 'js_example_accordion',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+
+function js_example_js_weights() {
+  // add some css to show which line is output by which script
+  drupal_add_css(drupal_get_path('module', 'js_example') . '/css/jsweights.css');
+  // 
+  $weights = array(
+    'red' => 100,
+    'blue' => 23,
+    'green' => 3,
+    'brown' => 45,
+    'black' => 5,
+    'purple' => 60
+  );
+  drupal_add_js(array('js_weights' => $weights), array('type' => 'setting'));
+  drupal_add_js(drupal_get_path('module', 'js_example') . '/js/red.js', array('weight' => $weights['red']));
+  drupal_add_js(drupal_get_path('module', 'js_example') . '/js/blue.js', array('weight' => $weights['blue']));
+  drupal_add_js(drupal_get_path('module', 'js_example') . '/js/green.js', array('weight' => $weights['green']));
+  drupal_add_js(drupal_get_path('module', 'js_example') . '/js/brown.js', array('weight' => $weights['brown']));
+  drupal_add_js(drupal_get_path('module', 'js_example') . '/js/black.js', array('weight' => $weights['black']));
+  drupal_add_js(drupal_get_path('module', 'js_example') . '/js/purple.js', array('weight' => $weights['purple']));
+  $output = '<div id="js-weights"></div>';
+  return $output;
+}
+
+function js_example_accordion() {
+  $title = t('Click sections to expand or collapse:');
+  $build['myelement'] = array(
+    '#theme' => 'my_accordion',
+    '#title' => $title,
+  );
+  $build['myelement']['#attached']['library'][] = array('system', 'ui.accordion');
+  $build['myelement']['#attached']['js'][] = array('data' => '(function($){$(function() { $("#accordion").accordion(); })})(jQuery);', 'type' => 'inline');
+  $output = drupal_render($build);
+  return $output;
+}

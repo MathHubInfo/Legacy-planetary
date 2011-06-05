@@ -1,0 +1,12 @@
+name = Filter test module
+description = Tests filter hooks and functions.
+package = Testing
+version = VERSION
+core = 7.x
+hidden = TRUE
+
+; Information added by drupal.org packaging script on 2011-05-25
+version = "7.2"
+project = "drupal"
+datestamp = "1306357016"
+

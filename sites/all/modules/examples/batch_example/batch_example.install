@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the batch_example module.
+ */
+
+/**
+ * Example of batch-driven update function.
+ *
+ * Because some update functions may require the batch API, the $sandbox
+ * provides a place to store state. When $standbox['#finished'] == TRUE,
+ * calls to this update function are completed.
+ *
+ * The $sandbox param provides a way to store data during multiple invocations.
+ * When the $sandbox['#finished'] == 1, execution is complete.
+ *
+ * This dummy 'update' function changes no state in the system. It simply
+ * loads each node.
+ *
+ * To make this update function run again and again, execute the query
+ * "update system set schema_version = 0 where name = 'batch_example';"
+ * and then run /update.php.
+ */
+function batch_example_update_7100(&$sandbox) {
+  $ret = array();
+
+  // Use the sandbox at your convenience to store the information needed
+  // to track progression between successive calls to the function.
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;  // The count of nodes visited so far.
+    // Total nodes that must be visited.
+    $sandbox['max'] = db_query('SELECT COUNT(DISTINCT nid) FROM {node}')->fetchField();
+    // A place to store messages during the run.
+    $sandbox['messages'] = array();
+    $sandbox['current_node'] = -1; // Last node read via the query.
+  }
+
+  // Process nodes by groups of 10 (arbitrary value).
+  // When a group is processed, the batch update engine determines
+  // whether it should continue processing in the same request or provide
+  // progress feedback to the user and wait for the next request.
+  $limit = 10;
+
+  // Retrieve the next group of nids.
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->orderBy('n.nid', 'ASC')
+    ->where('n.nid > :nid', array(':nid' => $sandbox['current_node']))
+    ->extend('PagerDefault')
+    ->limit($limit)
+    ->execute();
+  foreach ($result as $row) {
+    // Here we actually perform a dummy 'update' on the current node.
+    $node = db_query('SELECT nid FROM {node} WHERE nid = :nid', array(':nid' => $row->nid))->fetchField();
+
+    // Update our progress information.
+    $sandbox['progress']++;
+    $sandbox['current_node'] = $row->nid;
+  }
+
+  // Set the "finished" status, to tell batch engine whether this function
+  // needs to run again.
+  $sandbox['#finished'] = ($sandbox['progress'] >= $sandbox['max']);
+
+  // Set up a per-run message; Make a copy of $sandbox so we can change it.
+  // This is simply a debugging stanza to illustrate how to capture status
+  // from each pass through hook_update_N().
+  $sandbox_status = $sandbox;
+  unset($sandbox_status['messages']);  // Don't want them in the output.
+  $sandbox['messages'][] = t('$sandbox=') . print_r($sandbox_status, TRUE);
+
+  if ($sandbox['#finished']) {
+    // hook_update_N() may optionally return a string which will be displayed
+    // to the user.
+    $final_message = '<ul><li>' . implode('</li><li>', $sandbox['messages']) . "</li></ul>";
+    return t('The batch_example demonstration update did what it was supposed to do: @message', array('@message' => $final_message));
+  }
+}

@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * @file
+ * Test case for testing the image example module.
+ *
+ * This file contains the tests cases to check if the module is performing as
+ * expected.
+ */
+class ImageExampleTestCase extends DrupalWebTestCase {
+  protected $web_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Image example functionality',
+      'description' => 'Test functionality of the Image Example module.',
+      'group' => 'Examples',
+    );
+  }
+
+  /**
+   * Enable modules and create user with specific permissions.
+   */
+  function setUp() {
+    parent::setUp('image_example');
+    // Create user with permission to administer image styles.
+    $this->web_user = $this->drupalCreateUser(array('administer image styles', 'administer blocks'));
+  }
+
+  /**
+   * Test implementations of image API hooks.
+   */
+  function testImageExample() {
+    // Login the admin user.
+    $this->drupalLogin($this->web_user);
+
+    // Verify that the default style added by
+    // image_example_image_default_styles() is in the list of image styles.
+    $image_styles = image_styles();
+    $this->assertTrue(isset($image_styles['image_example_style']), t('The default style image_example_style is in the list of image styles.'));
+
+    // Verify that the effect added to the default 'thumbnail' style by
+    // image_example_image_styles_alter() is present.
+    $this->assertTrue((isset($image_styles['thumbnail']['effects'][1]['name']) && $image_styles['thumbnail']['effects'][1]['name'] == 'image_example_colorize'), t('Effect added to the thumbnail style via hook_image_styles_alter() is present.'));
+
+    // Create a new image style and add the effect provided by
+    // image_example_effect_info().
+    $new_style = array('name' => strtolower($this->randomName()));
+    $new_style = image_style_save($new_style);
+    $this->assertTrue(isset($new_style['isid']), t('Image style @style_name created.', array('@style_name' => $new_style['name'])));
+
+    $edit = array(
+      'new' => 'image_example_colorize',
+    );
+    $this->drupalPost('admin/config/media/image-styles/edit/' . $new_style['name'], $edit, t('Add'));
+
+    // Verify the 'color' field provided by image_example_colorize_form()
+    // appears on the effect configuration page. And that we can fill it out.
+    $this->assertField('data[color]', t('Color field provided by image_example_effect_colorize_form is present on effect configuration page.'));
+    $edit = array(
+      'data[color]' => '#000000',
+    );
+    $this->drupalPost(NULL, $edit, t('Add effect'));
+    $this->assertText(t('The image effect was successfully applied.'), t('Colorize effect added to @style_name.', array('@style_name' => $new_style['name'])));
+
+    // Set the variable 'image_example_style_name' to the name of our new style
+    // then rename the style and ensure the variable name is changed.
+    
+    // @todo Enable this block once http://drupal.org/node/713872 is fixed.
+    if (defined('bug_713872_fixed')) {
+      $style = image_style_load($new_style['name']);
+      variable_set('image_example_style_name', $style['name']);
+      $style['name'] = strtolower($this->randomName());
+      $style = image_style_save($style);
+      $variable = variable_get('image_example_style_name', '');
+      $this->assertTrue(($variable == $style['name']), t('Variable image_example_style_name successfully updated when renaming image style.'));
+    }
+  }
+
+  /**
+   * Tests for image block provided by module.
+   */
+  function testImageExamplePage() {
+    // Login the admin user.
+    $this->drupalLogin($this->web_user);
+    $this->drupalCreateNode(array('promote' => 1));
+
+    // Upload an image to the image page.
+    $images = $this->drupalGetTestFiles('image');
+    $edit = array(
+      'files[image_example_image_fid]' => drupal_realpath($images[0]->uri),
+      'image_example_style_name' => 'image_example_style',
+    );
+    $this->drupalPost('image_example/styles', $edit, t('Save'));
+    $this->assertText(t('The image @image_name was uploaded', array('@image_name' => $images[0]->filename)), t('Image uploaded to image block.'));
+
+    // Verify the image is displayed.
+    $this->drupalGet('image_example/styles');
+    $fid = variable_get('image_example_image_fid', FALSE);
+    $image = isset($fid) ? file_load($fid) : NULL;
+    $this->assertRaw(file_uri_target($image->uri), t('Image is displayed'));
+  }
+}

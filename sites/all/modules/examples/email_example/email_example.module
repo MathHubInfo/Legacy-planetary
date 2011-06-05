@@ -1,0 +1,201 @@
+<?php
+
+/**
+ * @file
+ * Example of how to use Drupal's mail API.
+ *
+ * This example module provides two different examples of the Drupal email API.
+ *  - defines a simple contact form and shows how to use drupal_mail()
+ *    to send an e-mail (defined in hook_mail()) when the form is submitted.
+ *  - shows how modules can alter emails defined by other Drupal modules or
+ *    Core using hook_mail_alter by attaching a custom signature before
+ *    they are sent.
+ */
+
+/**
+ * Implement hook_mail().
+ *
+ * This hook defines a list of possible e-mail templates that this module can
+ * send. Each e-mail is given a unique identifier, or 'key'.
+ *
+ * $message comes in with some standard properties already set: 'to' address,
+ * 'from' address, and a set of default 'headers' from drupal_mail(). The goal
+ * of hook_mail() is to set the message's 'subject' and 'body' properties, as
+ * well as make any adjustments to the headers that are necessary.
+ *
+ * The $params argument is an array which can hold any additional data required
+ * to build the mail subject and body; for example, user-entered form data, or
+ * some context information as to where the mail request came from.
+ *
+ * Note that hook_mail() is not actually a hook. It is only called for a single
+ * module, the module named in the first argument of drupal_mail(). So it's
+ * a callback of a type, but not a hook.
+ */
+function email_example_mail($key, &$message, $params) {
+  global $user;
+
+  // Each message is associated with a language, which may or may not be the
+  // current user's selected language, depending on the type of e-mail being
+  // sent. This $options array is used later in the t() calls for subject
+  // and body to ensure the proper translation takes effect.
+  $options = array(
+    'langcode' => $message['language']->language,
+  );
+
+  switch ($key) {
+    // Send a simple message from the contact form.
+    case 'contact_message':
+      $message['subject'] = t('E-mail sent from @site-name', array('@site-name' => variable_get('site_name', 'Drupal')), $options);
+      // Note that the message body is an array, not a string.
+      $message['body'][] = t('@name sent you the following message:', array('@name' => $user->name), $options);
+      // Because this is just user-entered text, we do not need to translate it.
+
+      // Since user-entered text may have unintentional HTML entities in it like
+      // '<' or '>', we need to make sure these entities are properly escaped,
+      // as the body will later be transformed from HTML to text, meaning
+      // that a normal use of '<' will result in truncation of the message.
+      $message['body'][] = check_plain($params['message']);
+      break;
+  }
+}
+
+/**
+ * Send an e-mail.
+ *
+ * @param $form_values
+ *   An array of values from the contact form fields that were submitted.
+ *   There are just two relevant items: $form_values['email'] and
+ *   $form_values['message'].
+ */
+function email_example_mail_send($form_values) {
+  // All system mails need to specify the module and template key (mirrored from
+  // hook_mail()) that the message they want to send comes from.
+  $module = 'email_example';
+  $key = 'contact_message';
+
+  // Specify 'to' and 'from' addresses.
+  $to = $form_values['email'];
+  $from = variable_get('site_mail', 'admin@example.com');
+
+  // "params" loads in additional context for email content completion in
+  // hook_mail(). In this case, we want to pass in the values the user entered
+  // into the form, which include the message body in $form_values['message'].
+  $params = $form_values;
+
+  // The language of the e-mail. This will one of three values:
+  // * user_preferred_language(): Used for sending mail to a particular website
+  //   user, so that the mail appears in their preferred language.
+  // * global $language: Used when sending a mail back to the user currently
+  //   viewing the site. This will send it in the language they're currently
+  //   using.
+  // * language_default(): Used when sending mail to a pre-existing, 'neutral'
+  //   address, such as the system e-mail address, or when you're unsure of the
+  //   language preferences of the intended recipient.
+  //
+  // Since in our case, we are sending a message to a random e-mail address that
+  // is not necessarily tied to a user account, we will use the site's default
+  // language.
+  $language = language_default();
+
+  // Whether or not to automatically send the mail when drupal_mail() is
+  // called. This defaults to TRUE, and is normally what you want unless you
+  // need to do additional processing before drupal_mail_send() is called.
+  $send = TRUE;
+  // Send the mail, and check for success. Note that this does not guarantee
+  // message delivery; only that there were no PHP-related issues encountered
+  // while sending.
+  $result = drupal_mail($module, $key, $to, $language, $params, $from, $send);
+  if ($result['result'] == TRUE) {
+    drupal_set_message(t('Your message has been sent.'));
+  }
+  else {
+    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+  }
+
+}
+
+/**
+ * Implement hook_mail_alter().
+ *
+ * This function is not required to send an email using Drupal's mail system.
+ *
+ * Hook_mail_alter() provides an interface to alter any aspect of email sent by
+ * Drupal. You can use this hook to add a common site footer to all outgoing
+ * email, add extra header fields, and/or modify the email in anyway. HTML-izing
+ * the outgoing email is one possibility.
+ */
+function email_example_mail_alter(&$message) {
+  // For the purpose of this example, modify all the outgoing messages and
+  // attach a site signature. The signature will be translated to the language
+  // in which message was built.
+  $options = array(
+    'langcode' => $message['language']->language,
+  );
+
+  $signature = t("\n--\nMail altered by email_example module.", array(), $options);
+  if (is_array($message['body'])) {
+    $message['body'][] = $signature;
+  }
+  else {  // Some modules use the body as a string, erroneously.
+    $message['body'] .= $signature;
+  }
+}
+
+///// Supporting functions ////
+
+/**
+ * Implement hook_menu().
+ *
+ * Set up a page with an e-mail contact form on it.
+ */
+function email_example_menu() {
+  $items['example/email_example'] = array(
+    'title' => 'E-mail Example: contact form',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('email_example_form'),
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+/**
+ * The contact form.
+ */
+function email_example_form() {
+  $form['intro'] = array(
+    '#markup' => t('Use this form to send a message to an e-mail address. No spamming!'),
+  );
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('E-mail address'),
+    '#required' => TRUE,
+  );
+  $form['message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message'),
+    '#required' => TRUE,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Form validation logic for the contact form.
+ */
+function email_example_form_validate($form, &$form_state) {
+  if (!valid_email_address($form_state['values']['email'])) {
+    form_set_error('email', t('That e-mail address is not valid.'));
+  }
+}
+
+/**
+ * Form submission logic for the contact form.
+ */
+function email_example_form_submit($form, &$form_state) {
+  email_example_mail_send($form_state['values']);
+}

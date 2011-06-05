@@ -1,0 +1,13 @@
+name = Statistics
+description = Logs access statistics for your site.
+package = Core
+version = VERSION
+core = 7.x
+files[] = statistics.test
+configure = admin/config/system/statistics
+
+; Information added by drupal.org packaging script on 2011-05-25
+version = "7.2"
+project = "drupal"
+datestamp = "1306357016"
+

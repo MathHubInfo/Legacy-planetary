@@ -1,0 +1,138 @@
+<?php
+
+/**
+ * @file
+ * Test for the render example module.
+ */
+class RenderExampleTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Render example functionality',
+      'description' => 'Test Render Example',
+      'group' => 'Examples',
+      'dependencies' => array('devel'),
+    );
+  }
+
+  /**
+   * Enable modules and create user with specific permissions.
+   */
+  function setUp() {
+    parent::setUp('devel', 'render_example');
+  }
+
+
+  /**
+   * Assert that all of the xpaths in the array have results.
+   *
+   * @param $xpath_array
+   *   An array of xpaths, each of which must return something.
+   */
+  function assertRenderResults($xpath_array) {
+    foreach ($xpath_array as $xpath) {
+      $result = $this->xpath($xpath);
+      $this->assertTrue(!empty($result), t('Found xpath %xpath', array('%xpath' => $xpath)));
+    }
+  }
+
+
+  /**
+   * Asserts that the string value of the result is the same as the passed text.
+   *
+   * @param $xpath_array
+   *   Array of keyed arrays of tests to be made. Each child array consists of
+   *   $xpath => $expected_text
+   */
+  function assertRenderedText($xpath_array) {
+    foreach ($xpath_array as $xpath => $text) {
+      $result = $this->xpath($xpath);
+      $this->assertTrue((string)$result[0][0] == $text, t('%ary selects text %text', array('%ary' => $xpath, '%text' => $text)));
+    }
+  }
+
+
+  /**
+   * Login user, create an example node, and test blog functionality through the admin and user interfaces.
+   */
+  function testRenderExampleBasic() {
+
+    // Create a user that can access devel information and log in.
+    $web_user = $this->drupalCreateUser(array('access devel information', 'access content'));
+    $this->drupalLogin($web_user);
+
+    // Turn on the block render array display and make sure it shows up.
+    $edit = array(
+      'render_example_show_block' => TRUE,
+    );
+    $this->drupalPost('examples/render_example/altering', $edit, t('Save configuration'));
+
+    $xpath_array = array(
+      "//div[@id='sidebar-first']//fieldset[starts-with(@id, 'edit-render-example-block-fieldset')]",
+      '//*[@id="content"]//fieldset[contains(@id,"edit-render-example-block-fieldset")]',
+    );
+    $this->assertRenderResults($xpath_array);
+
+
+    // Turn off block render array display and turn on the page render array
+    // display.
+    $edit = array(
+      'render_example_show_page' => TRUE,
+      'render_example_show_block' => FALSE,
+    );
+    $this->drupalPost('examples/render_example/altering', $edit, t('Save configuration'));
+
+    $xpath_array = array(
+      '//*[@id="content"]//fieldset[starts-with(@id,"edit-render-example-page-fieldset")]',
+    );
+    $this->assertRenderResults($xpath_array);
+
+    // Add note about render arrays to the top of sidebar_first.
+    $edit = array(
+      'render_example_note_about_render_arrays' => TRUE,
+    );
+    $this->drupalPost('examples/render_example/altering', $edit, t('Save configuration'));
+    $xpath_array = array(
+      '//*[@id="sidebar-first"]//ol//li[starts-with(.,"Render arrays are everywhere")]',
+    );
+    $this->assertRenderResults($xpath_array);
+
+    // Move the navigation menu to the top of the content area.
+    $edit = array(
+      'render_example_move_navigation_menu' => TRUE,
+    );
+    $this->drupalPost('examples/render_example/altering', $edit, t('Save configuration'));
+    $xpath_array = array(
+      '//*[@id="content"]//h2[starts-with(.,"Navigation")]',
+    );
+    $this->assertRenderResults($xpath_array);
+
+    // Skip a test for reversing order of sidebar_first as I think it would
+    // be too fragile.
+
+    // Test the addition of #prefix and #suffix
+    $edit = array(
+      'render_example_prefix' => TRUE,
+    );
+    $this->drupalPost('examples/render_example/altering', $edit, t('Save configuration'));
+    $xpath_array = array(
+      '//*[@id="sidebar-first"]//*[contains(@class, "block-prefix")]/span[contains(@class, "block-suffix")]',
+    );
+    $this->assertRenderResults($xpath_array);
+
+    // Test some rendering facets of the various render examples
+    $this->drupalGet('examples/render_example/arrays');
+    $content = $this->xpath('//*[@class="render-array"][1]');
+
+    $xpath_array = array(
+      '//div[@class="rendered"][starts-with(.,"Some basic text in a #markup")]' => 'Some basic text in a #markup (shows basic markup and how it is rendered)',
+      '//div[@class="rendered"][starts-with(.,"This is some text that should be put to")]' => 'This is some text that should be put together | This is some more text that we need | ',
+      '//div[@class="rendered"][starts-with(.,"The current time was")]' => 'The current time was  when this was cached. Updated every  seconds',
+      '//div[@class="rendered"]/div[text()][starts-with(.,"(prefix)This one")]' => '(prefix)This one adds a prefix and suffix, which put a div around the item(suffix)',
+      '//div[@class="rendered"]/div[text()][starts-with(.,"markup for pre_")]' => 'markup for pre_render and post_render example',
+      '//div[@class="rendered"]/div[text()][starts-with(.,"This markup was added")]' => 'This markup was added after rendering by a #post_render',
+      '//div[@class="rendered"]/div[text()][starts-with(.,"This #suffix")]' => 'This #suffix was added by a #pre_render',
+    );
+    $this->assertRenderedText($xpath_array);
+
+  }
+}
