@@ -5,14 +5,14 @@
  * A module that allows new input types such as LaTeX and sTeX
  */
 
-/**
- * Logging facilities
- * @param unknown_type $str
- *  The variable to be logged
- */
-function clog($str) {
-	error_log(var_export($str, true) . "\n", 3, '/var/www/drupal/php_errors.log');
-}
+///**
+// * Logging facilities
+// * @param unknown_type $str
+// *  The variable to be logged
+// */
+//function clog($str) {
+//	error_log(var_export($str, true) . "\n", 3, '/var/www/drupal/php_errors.log');
+//}
 
 
 /**
@@ -125,7 +125,6 @@ function drutexml_node_load($nodes, $types) {
  *  The language code used for rendering
  */
 function drutexml_node_view($node, $view_mode, $langcode) {
-	clog('node_view');
 	$bodyXHTML = $node->bodyXHTML;
 	$node->content['bodyXHTML'] = array(
 	  '#markup' => theme('drutexml', array('bodyXHTML' => $bodyXHTML)),
@@ -176,4 +175,12 @@ function drutexml_theme() {
 	     'variables' => array('bodyXHTML' => NULL)
 	  ),
 	);
+}
+
+
+function drutexml_theme_registry_alter(&$vars) {
+  //make book navigation function with a jump menu
+  $vars['node']['theme path'] = drupal_get_path('module','drutexml'); 
+  $vars['node']['path'] = drupal_get_path('module','drutexml');
+  $vars['node']['theme paths'] = array(0 => drupal_get_path('module','drutexml'));
 }
