@@ -5,16 +5,6 @@
  * A module that allows new input types such as LaTeX and sTeX
  */
 
-///**
-// * Logging facilities
-// * @param unknown_type $str
-// *  The variable to be logged
-// */
-//function clog($str) {
-//	error_log(var_export($str, true) . "\n", 3, '/var/www/drupal/php_errors.log');
-//}
-
-
 /**
  * A function to do a POST request to a certain $host with the $data
  * @param string $host the URL of the backend
@@ -58,129 +48,98 @@ function drutexml_info() {
 }
 
 /**
- * Before a new / updated node is saved, this is called
- * Implements hook_node_insert
- * @param unknown_type $node
- *  The node to be inserted
+ * Implements hook_menu().
  */
-function drutexml_node_insert($node) {
-	clog('insert');
-	$host = 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
-	$data = 'formula=' . urlencode($node->body[$node->language][0]['value']);
-	$content = do_post($host, $data);
-	$res = json_decode($content);
-	$res = trim($res->{'result'});
-	$res = str_replace(array("\n", "\r\n"), '', $res);
-	$res = str_replace('  ', ' ', $res);
-  db_insert('drutexml')
-    ->fields(
-      array(
-        'nid' => $node->nid,
-        'format' => 'LaTeX',
-        'titleXHTML' => 'titleFake',
-        'bodyXHTML' => "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">" . $res . '</span>',
-      )
-    )
-    ->execute();
-}
-
-/**
- * Implements hook_node_load() -- load the node info from the DB
- * @param $nodes
- *  Array of nodes
- * @param $types
- *  
- */
-function drutexml_node_load($nodes, $types) {	
-	foreach ($nodes as $node) {		
-		$nids[] = $node->nid;
-	}
-	if (!isset($nids) || !count($nids)) {
-		return;
-	}
-	$result = db_select('drutexml', 'd')
-	   ->fields('d', array(
-	       'nid',
-	       'format',
-	       'titleXHTML',
-	       'bodyXHTML',
-	   ))
-	   ->where('d.nid IN (:nids)', array(':nids' => $nids))
-	   ->execute();	
-	foreach ($result as $record) {		
-		$nodes[$record->nid]->format = $record->format;
-		$nodes[$record->nid]->titleXHTML = $record->titlexhtml;
-		$nodes[$record->nid]->bodyXHTML = $record->bodyxhtml;
-	}
-}
-
-/**
- * Implements hook_node_view
- * @param unknown_type $node
- *  The current node
- * @param unknown_type $view_mode
- *  The view mode ... TBD
- *  From API: $view_mode View mode, e.g. 'full', 'teaser', ...
- * @param unknown_type $langcode
- *  The language code used for rendering
- */
-function drutexml_node_view($node, $view_mode, $langcode) {
-	$bodyXHTML = $node->bodyXHTML;
-	$node->content['bodyXHTML'] = array(
-	  '#markup' => theme('drutexml', array('bodyXHTML' => $bodyXHTML)),
-	  '#weight' => -1,
+function drutexml_menu() {
+	$items['drutexml'] = array(
+	 'title' => 'LaTeX filter implemented via LaTeXML',
+	 'page callback' => '_drutexml_information',
+	 'access callback' => TRUE,
 	);
+	return $items;
 }
 
-function drutexml_node_delete($node) {
-	clog('node_delete');
+/**
+ * Implements hook_filter_info().
+ */
+function drutexml_filter_info() {
+  $filters['latex'] = array(
+    'title' => t('LaTeX filter'),
+    'description' => t('The text will be passed as LaTeX to LaTeXML daemon and then shown to the user'),
+    'process callback' => '_drutexml_filter_latex_process',
+    'default settings' => array(
+      'latexml_url' => 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php',
+    ),
+    'settings callback' => '_drutexml_filter_latex_settings',
+    'tips callback' => '_drutexml_filter_latex_tips',
+  );
+  return $filters;
 }
 
-function drutexml_node_update($node) {
-	clog('node_update');
-  $host = 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
-  $data = 'formula=' . urlencode($node->body[$node->language][0]['value']);
-  $content = do_post($host, $data);
+/**
+ * @see drutexml_menu
+ * Returns basic info about the filter.
+ */
+function _drutexml_information() {
+  return t(
+    "We implement here a LaTeX filter that aims at transforming the content from LaTeX
+    to XHTML. To use this filter go to !link and configure the input formats.",
+    array('!link' => l('admin/config/contents/formats', 'admin/config/contents/formats'))
+  );
+}
+
+/**
+ * Settings callback for LaTeX filter
+ * 
+ * @param unknown_type $form
+ * @param unknown_type $form_state
+ * @param unknown_type $filter
+ * @param unknown_type $format
+ * @param unknown_type $defaults
+ */
+function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings['latexml_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('LaTeXML daemon URL'),
+    '#default_value' => isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : $defaults['latexml_url'],
+    '#description' => t('The URL of the LaTeXMl daemon.'),
+  );
+  return $settings;
+}
+
+/**
+ * LaTeX filter process callback
+ * @see drutexml_filter_info
+ * 
+ * @param unknown_type $text
+ * @param unknown_type $filter
+ * @param unknown_type $format
+ */
+function _drutexml_filter_latex_process($text, $filter, $format) {
+  dpm($text);
+  $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
+  $data = 'formula=' . urlencode($text);
+  $content = do_post($host,$data);
   $res = json_decode($content);
   $res = trim($res->{'result'});
   $res = str_replace(array("\n", "\r\n"), '', $res);
   $res = str_replace('  ', ' ', $res);
-  $res = str_replace(array('m:','xml:'),'', $res);
-  
-  $bodyXHTML = db_select('drutexml', 'd')
-      ->fields('d', array('bodyXHTML'))
-      ->where('d.nid = (:nid)', array(':nid' => $node->nid))
-      ->execute()->fetchField();
-      
-  if ($bodyXHTML) {
-  	db_update('drutexml')
-  	   ->fields(array('bodyXHTML' => "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">" . $res . '</span>'))
-  	   ->condition('nid', $node->nid)
-  	   ->execute();
+  $res = str_replace('m:','',$res);
+  //$res = "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">".$res."</span>";
+  return $res;
+}
+
+/**
+ * Filter tips
+ * 
+ * @param unknown_type $filter
+ * @param unknown_type $format
+ * @param unknown_type $long
+ */
+function _drutexml_filter_latex_tips($filter, $format, $long = FALSE) {
+  if (!$long) {
+    return t('<em>LaTeX</em> content replaced with XHTML');
   } else {
-  	drutexml_node_insert($node);
+    return t('You can write LaTeX and you will get back rendered XHTML');
   }
-}
-
-function theme_drutexml($variables) {
-	$output = '<div class="drutexml_output">';
-	$output .= $variables['bodyXHTML'];
-	$output .= '</div>';
-	return $output;
-}
-
-function drutexml_theme() {
-	return array(
-	  'drutexml' => array(
-	     'variables' => array('bodyXHTML' => NULL)
-	  ),
-	);
-}
-
-
-function drutexml_theme_registry_alter(&$vars) {
-  //make book navigation function with a jump menu
-  $vars['node']['theme path'] = drupal_get_path('module','drutexml'); 
-  $vars['node']['path'] = drupal_get_path('module','drutexml');
-  $vars['node']['theme paths'] = array(0 => drupal_get_path('module','drutexml'));
 }
