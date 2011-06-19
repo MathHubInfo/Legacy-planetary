@@ -124,7 +124,7 @@ function _drutexml_filter_latex_process($text, $filter, $format) {
   $res = trim($res->{'result'});
   $res = str_replace(array("\n", "\r\n"), '', $res);
   $res = str_replace('  ', ' ', $res);
-  $res = str_replace('m:','',$res);
+  $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly.
   //$res = "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">".$res."</span>";
   return $res;
 }
