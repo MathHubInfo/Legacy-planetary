@@ -70,6 +70,7 @@ function drutexml_filter_info() {
     'default settings' => array(
       'latexml_url' => 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php',
     ),
+    'cache' => TRUE,
     'settings callback' => '_drutexml_filter_latex_settings',
     'tips callback' => '_drutexml_filter_latex_tips',
   );
@@ -116,7 +117,7 @@ function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $
  * @param unknown_type $format
  */
 function _drutexml_filter_latex_process($text, $filter, $format) {
-  dpm($text);
+  dd($text);
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
   $data = 'formula=' . urlencode($text);
   $content = do_post($host,$data);
