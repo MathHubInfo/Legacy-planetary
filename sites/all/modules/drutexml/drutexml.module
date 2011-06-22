@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * @file
@@ -11,52 +11,52 @@
  * @param string $data the POST data formatted as a string
  */
 function do_post($host, $data){
-	$session = curl_init($host);
-	curl_setopt($session, CURLOPT_POST, true);
-	curl_setopt($session, CURLOPT_POSTFIELDS, $data);
-	curl_setopt($session, CURLOPT_HEADER, false);
-	curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-	$response = curl_exec($session);
-	curl_close($session);
-	return $response;
+  $session = curl_init($host);
+  curl_setopt($session, CURLOPT_POST, true);
+  curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+  curl_setopt($session, CURLOPT_HEADER, false);
+  curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($session);
+  curl_close($session);
+  return $response;
 }
 
 
 /**
  * Implements hook_help
- * 
+ *
  * @param unknown_type $path
  *  Which path of the site we're using to display help
  * @param unknown_type $arg
  *  Array that holds the current path as returned from the arg() function
  */
 function drutexml_help($path, $arg) {
-	switch ($path) {
-		case "admin/help#drutexml":
-			return '<p>' . t('Allows new input methods such as LaTeX') . '</p>';
-			break;
-	}
+  switch ($path) {
+    case "admin/help#drutexml":
+      return '<p>' . t('Allows new input methods such as LaTeX') . '</p>';
+      break;
+  }
 }
 
 
 function drutexml_info() {
-	$blocks['drutexml'] = array(
-	 'info' => t('LaTeX filter'),
-	 'cache' => DRUPAL_CACHE_PER_ROLE,
-	);
-	return $blocks;
+  $blocks['drutexml'] = array(
+    'info' => t('LaTeX filter'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  return $blocks;
 }
 
 /**
  * Implements hook_menu().
  */
 function drutexml_menu() {
-	$items['drutexml'] = array(
-	 'title' => 'LaTeX filter implemented via LaTeXML',
-	 'page callback' => '_drutexml_information',
-	 'access callback' => TRUE,
-	);
-	return $items;
+  $items['drutexml'] = array(
+    'title' => 'LaTeX filter implemented via LaTeXML',
+    'page callback' => '_drutexml_information',
+    'access callback' => TRUE,
+  );
+  return $items;
 }
 
 /**
@@ -91,7 +91,7 @@ function _drutexml_information() {
 
 /**
  * Settings callback for LaTeX filter
- * 
+ *
  * @param unknown_type $form
  * @param unknown_type $form_state
  * @param unknown_type $filter
@@ -111,13 +111,12 @@ function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $
 /**
  * LaTeX filter process callback
  * @see drutexml_filter_info
- * 
+ *
  * @param unknown_type $text
  * @param unknown_type $filter
  * @param unknown_type $format
  */
-function _drutexml_filter_latex_process($text, $filter, $format) {
-  dd($text);
+function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
   $data = 'formula=' . urlencode($text);
   $content = do_post($host,$data);
@@ -125,14 +124,15 @@ function _drutexml_filter_latex_process($text, $filter, $format) {
   $res = trim($res->{'result'});
   $res = str_replace(array("\n", "\r\n"), '', $res);
   $res = str_replace('  ', ' ', $res);
-  $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly.
+  $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly. otherwise, uncomment next line.
   //$res = "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">".$res."</span>";
+
   return $res;
 }
 
 /**
  * Filter tips
- * 
+ *
  * @param unknown_type $filter
  * @param unknown_type $format
  * @param unknown_type $long
