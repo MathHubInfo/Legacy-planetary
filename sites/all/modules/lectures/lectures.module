@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Lectures feature.
+ */
+
+include_once('lectures.features.inc');
