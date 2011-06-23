@@ -5,6 +5,7 @@ description = Danland sub theme. Danland with no frontpage image banner and slid
 engine = phptemplate
 base theme = danland
 stylesheets[all][] = danblog.css
+stylesheets[all][] = omdoc.css
 regions[search_box] = Search region
 regions[superfish_menu] = Superfish menu
 regions[page_top] = Page top
