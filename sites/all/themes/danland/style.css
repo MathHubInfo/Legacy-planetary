@@ -1513,3 +1513,5 @@ width:98%;
 .theme-info ul {
 list-style-image:none;
 }
+
+.block { font-weight: bold; }
