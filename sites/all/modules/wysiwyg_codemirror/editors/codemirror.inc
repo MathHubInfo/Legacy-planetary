@@ -74,7 +74,6 @@ function wysiwyg_codemirror_codemirror_themes($editor, $profile) {
 	 * TODO: just a STUB 
 	 */
 	$plugins = $profile->settings["buttons"]["default"];
-	dd($plugins);
 	foreach ($plugins as $plugin=>$p) {
 		drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
 		drupal_add_js($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.js');
