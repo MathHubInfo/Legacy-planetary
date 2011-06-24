@@ -156,7 +156,7 @@ var tInfoBar = (function(){
 			   function(r){
 					for(var i in r){
 					   r[i] = r[i].replace(/\./g, '\\\\.');
-						com.self.addToken( $('[id="'+r[i]+'"]') );
+						com.self.addToken( $('#'+r[i]) );
 				   }
 			});
 		}
