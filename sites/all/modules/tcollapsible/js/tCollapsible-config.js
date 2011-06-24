@@ -1,6 +1,6 @@
 jQuery(function(){
 
    var $ = jQuery;
-   $('#block-system-main p').tCollapsible();
+   $('#block-system-main').find('div.field-items, div.para, table.equation').tCollapsible();
    
 });
