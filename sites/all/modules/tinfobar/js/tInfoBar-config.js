@@ -16,7 +16,7 @@ window.onload = function(){
 	});
    
    var content = $('#block-system-main'); 
-	var imgDir  = 'sites/all/modules/tinfobar/images/';
+	var imgDir  = '/sites/all/modules/tinfobar/images/';
    
    /*
    var c = 0;
