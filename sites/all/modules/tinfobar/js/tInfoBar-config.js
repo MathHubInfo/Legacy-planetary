@@ -18,14 +18,16 @@ window.onload = function(){
    var content = $('#block-system-main'); 
 	var imgDir  = 'sites/all/modules/tinfobar/images/';
    
+   /*
    var c = 0;
    $('b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));
    });
+   */
    
    var infoBar = new tInfoBar({
 			ajaxFile		: '?q=tInfoBar/getTokens',
-			handle		: $('b, u, i', content),
+			handle		: $(':math, p[id], .omdoc-image[id]', content),
 			context		: getContext(),
 			hoverAttr	: {
 				mathbackground	: 'yellow'
