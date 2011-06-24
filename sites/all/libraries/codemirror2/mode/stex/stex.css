@@ -1,0 +1,12 @@
+.CodeMirror pre {
+	font-size: 1.5em;
+	line-height: 1em;
+}
+
+.cm-s-default span.cm-bracket {
+	color: #000;
+}
+
+.cm-s-default span.cm-tag {
+	color: #00F;
+}

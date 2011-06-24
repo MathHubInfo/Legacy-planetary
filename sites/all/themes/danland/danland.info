@@ -4,6 +4,7 @@ name = Danland
 description = Drupal Theme provided by <a href="http://www.danetsoft.com">Danetsoft</a> developed by <a href="http://www.danpros.com">Danang Probo Sayekti</a> inspired by <a href="http://www.maksimer.no">Maksimer</a>.
 engine = phptemplate
 stylesheets[all][] = style.css
+stylesheets[all][] = css/gencs.css
 ;stylesheets[all][] = local.css
 regions[search_box] = Search region
 regions[superfish_menu] = Superfish menu
