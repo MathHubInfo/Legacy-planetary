@@ -1,0 +1,15 @@
+<?php
+
+//an alternative way to do it is to override the hook
+// hook_form_FORM_ID_alter
+function local_comments_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'comment_node_article_form') {
+    $form['xml_id'] = array(
+      '#type' => 'textfield',
+      '#title' => t("The ID of the element this comment references"),
+      '#required' => FALSE,
+      '#size' => 60,
+      '#maxlength' => 64,
+    );
+  }
+}
