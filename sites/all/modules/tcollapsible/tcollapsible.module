@@ -1,0 +1,35 @@
+<?php
+/**
+* Implements hook_help.
+*
+* Displays help and module information.
+*
+* @param path
+*   Which path of the site we're using to display help
+* @param arg
+*   Array that holds the current path as returned from arg() function
+*/
+function tcollapsible_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#tcollapsible":
+      return '<p>'.  t("Adds mathematica-like collapsing functionality for articles and books") .'</p>';
+      break;
+  }
+}
+
+/**
+* Implements hook_preprocess_node
+*
+* Adds the tCollapsible to the specific node types
+*
+* @param &$variables
+*/
+function tcollapsible_preprocess_node(&$variables = '') {
+   $node = $variables['node'];
+   if (!empty($node) && $node->type == 'lecture' ) {
+      drupal_add_css( drupal_get_path( 'module', 'tCollapsible' ) . '/css/tCollapsible.css' );
+      drupal_add_js( drupal_get_path( 'module', 'tCollapsible' ) . '/js/tCollapsible.js'  );
+      drupal_add_js( drupal_get_path( 'module', 'tCollapsible' ) . '/js/tCollapsible-config.js' );
+   }
+}
+

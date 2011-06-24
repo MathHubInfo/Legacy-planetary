@@ -1,0 +1,5 @@
+name        = tInfoBar
+description = Creates an infobar for specific content types
+version     = 0.1
+package     = Planetary Modules
+core        = 7.x

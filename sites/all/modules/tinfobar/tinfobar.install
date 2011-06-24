@@ -1,0 +1,39 @@
+<?php
+
+require_once('constants.php');
+
+/*
+$schema = array(
+  'fields' => array(
+    'id'       => array('type' => 'int', 'length' => 11, 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'auto increment' => TRUE),
+    'context'  => array('type' => 'varchar', 'length' => 256, 'not null' => TRUE, 'default' => ''),
+    'wordID'   => array('type' => 'text', 'not null' => TRUE),
+    'user'     => array('type' => 'varchar', 'length' => 60, 'not null' => TRUE, 'default' => ''),
+    'text'     => array('type' => 'text', 'not null' => TRUE)
+  ),
+  'primary key' => array('id')
+);
+*/
+
+db_drop_table( TABLE_COMMENTS );
+
+db_query(
+   "CREATE TABLE IF NOT EXISTS `".TABLE_COMMENTS."` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `context` varchar(256) NOT NULL,
+	  `wordID` text NOT NULL,
+	  `user` varchar(60) NOT NULL,
+	  `text` text NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;"
+);
+
+db_insert( TABLE_COMMENTS )
+   ->fields(
+      array(
+         'context'   => 'test-context',
+         'user'      => 'text-user',
+         'wordID'    => 'text-wordID',
+         'text'      => 'test-text'
+      )
+   )->execute();

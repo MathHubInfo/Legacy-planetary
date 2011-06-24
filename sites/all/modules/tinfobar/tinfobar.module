@@ -1,0 +1,153 @@
+<?php
+
+require_once( 'constants.php' );
+
+/**
+* Implements hook_help.
+*
+* Displays help and module information.
+*
+* @param path
+*   Which path of the site we're using to display help
+* @param arg
+*   Array that holds the current path as returned from arg() function
+*/
+function tinfobar_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#tinfobar":
+      return '<p>'.  t("Creates an infobar for specific content types") .'</p>';
+      break;
+  }
+}
+
+/**
+* Implements hook_preprocess_node
+*
+* Adds the infobar to the specific node types
+*
+* @param &$variables
+*/
+function tinfobar_preprocess_node(&$variables = '') {
+   $node = $variables['node'];
+   if (!empty($node) && $node->type == 'lecture' ) {
+      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/tIconMenu.css' );
+      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/tTooltip.css' );
+      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/MathML.css' );
+      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/tInfoBar.css' );
+      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tIconMenu.js'  );
+      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tTooltip.js'  );
+      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tInfoBar.js'  );
+      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tInfoBar-config.js' );
+      
+      global $user;
+      echo '
+      <div id="tInfoBar_info" style="display:none">
+         <div id="info_username">'.$user->name.'</div>
+         <div id="info_nodeType">'.$node->type.'</div>
+         <div id="info_nodeId">'.$node->nid.'</div>
+      </div>';
+   }
+}
+
+/**
+* Implements hook_menu
+*
+*
+*
+*/
+function tinfobar_menu() {
+
+   $items = array();
+   $items['tInfoBar/getTokens'] = array(
+      'title' => 'Return the tokens for the infobar for a specified context',
+      'page callback' => '_tinfobar_getTokens',
+      'access callback' => TRUE
+   );
+   $items['tInfoBar/comment'] = array(
+      'title' => 'Insert a comment into the database',
+      'page callback' => '_tinfobar_comment',
+      'access callback' => TRUE
+   );
+   $items['tInfoBar/getComments'] = array(
+      'title' => 'Retrieve all comments for a specified element',
+      'page callback' => '_tinfobar_getComments',
+      'access callback' => TRUE
+   );
+   
+  return $items;
+}
+
+/**
+*
+*
+*/
+function tinfobar_perm() {
+   return array('access dynamic_products content');
+}
+
+
+/**
+* Retrieve all tokens for a specified context
+*
+* @param $id
+*     The ID of the element
+* @param $context = null
+*     The context of the element
+*/
+function _tinfobar_getTokens( $context ){
+   $query = db_select( TABLE_COMMENTS, 't' );
+   $query->fields( 't' )->condition('t.context', $context);
+   
+   $result = $query->execute();
+   $a = array();
+   foreach( $result as $r ) $a[$r->wordid] = 1;
+   
+   return drupal_json_output( array_keys($a) );
+   exit;
+}
+
+/**
+* Add a comment to the database
+*
+* @param $id
+*     The ID of the element
+* @param $context
+*     The context of the element
+* @param $username
+* @param $text
+*     The Body of the comment
+*/
+function _tinfobar_comment( $id, $context, $username, $text ){
+   db_insert( TABLE_COMMENTS )
+      ->fields(
+         array(
+            'wordID'    => $id,
+            'context'   => $context,
+            'user'      => $username,
+            'text'      => $text
+         )
+      )->execute();
+
+   return drupal_json_output( array( 'result' => 'true' ) );
+}
+
+/**
+* Retrieve all comments from the database for a specified element in a specified context
+*
+* @param $id
+*     The ID of the element
+* @param $context = null
+*     The context of the element
+*/
+function _tinfobar_getComments( $id, $context = null ){
+   $query = db_select( TABLE_COMMENTS, 't' );
+   $query->fields( 't' )->condition('t.wordID', $id);
+   if( $context ) $query->condition('t.context', $context);
+   
+   $result = $query->execute();
+   $a = array();
+   foreach( $result as $r ) $a[] = $r;
+   
+   return drupal_json_output( $a );
+   exit;
+}

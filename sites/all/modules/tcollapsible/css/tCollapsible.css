@@ -1,0 +1,73 @@
+.tCollapsible{
+	position			: relative; /* really, any non-static will do */
+	margin			: 3px 3px 2px 0;
+}
+
+.tCollapsible-content{
+	margin	: 0 5px 0 10px;
+}
+.tCollapsible-wrapper{
+	display			: block;
+	margin			: 0;
+	padding			: 0;
+}
+
+.tCollapsible-handle{
+	position				: absolute;
+	top					: 0;
+	bottom				: 0;
+	width					: 5px;
+	left					: 0;
+	display				: block;
+	text-decoration	: none;
+}
+.tCollapsible-handle-top{
+	position		: absolute;
+	top			: 0;
+	right			: 0;
+	left			: 0;
+	height		: 6px;
+	background	: url(../images/borders/standard/border-top.png) no-repeat 0 0;
+}
+.tCollapsible-handle-middle{
+	position		: absolute;
+	top			: 6px;
+	bottom		: 4px;
+	left			: 0;
+	right			: 0;
+	background	: url(../images/borders/standard/border-mid.png) repeat-y 0 0;
+}
+.tCollapsible-handle-bottom{
+	position		: absolute;
+	right			: 0;
+	bottom		: 0;
+	left			: 0;
+	height		: 4px;
+	background	: url(../images/borders/standard/border-bot.png) no-repeat 0 100%;
+}
+
+
+.tCollapsible-titleHolder{
+	display		: none;
+	padding		: 5px;
+	text-indent	: 20px;
+}
+.tCollapsible-title{
+	display				: block;
+	background			: lightyellow url(../images/icons/standard/expand.png) no-repeat 4px 50%;
+	margin				: 0;
+	padding				: 0;
+	font-weight			: bold;
+	font-family			: verdana, arial;
+	text-decoration	: none;
+	text-indent			: 20px;
+	color					: #333333;
+	
+}
+.tCollapsible-title:hover{
+	background			: lightyellow url(../images/icons/standard/expand2.png) no-repeat 4px 50%;
+}
+
+.tCollapsible-focusContent{
+	background	: #E2EAFF;
+}

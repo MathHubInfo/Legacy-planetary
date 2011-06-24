@@ -1,0 +1,5 @@
+name        = tCollapsible
+description = Adds Mathematica-like collapsible functionality to pages
+version     = 0.1
+package     = Planetary Modules
+core        = 7.x

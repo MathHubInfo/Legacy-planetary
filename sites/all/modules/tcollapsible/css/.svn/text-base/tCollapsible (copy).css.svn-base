@@ -1,0 +1,67 @@
+.tCollapsible{
+/*	padding		: 5px; */
+	padding-left	: 10px;
+}
+.tCollapsible-wrapper{
+	display			: block;
+	margin			: 0;
+	padding			: 0;
+}
+
+.tCollapsible-handle{
+	width				: 5px;
+	height			: 100% !important; 
+	margin 			: 0;
+	padding 			: 0;
+	overflow			: hidden;
+}
+.tCollapsible-handle a{
+	display				: inline-block !important; 
+/* height				: 100% !important; */
+	text-decoration	: none;
+}
+.tCollapsible-handle a:hover{
+	
+}
+.tCollapsible-handle-top{
+	background	: url(../images/borders/standard/border-top.png) no-repeat 0 0;
+	height		: 100%;
+}
+.tCollapsible-handle-middle{
+	background		: url(../images/borders/standard/border-mid.png) repeat-y 0 0;
+	height			: 100%;
+}
+.tCollapsible-handle-bottom{
+	background	: url(../images/borders/standard/border-bot.png) no-repeat 0 100%;
+	height		: 100%;
+}
+
+
+.tCollapsible-titleHolder{
+	display		: none;
+	width			: 100%;
+/*	height		: 100%; */
+	padding		: 5px;
+	text-indent	: 20px;
+}
+.tCollapsible-title{
+	display				: block;
+	background			: lightyellow url(../images/icons/standard/expand.png) no-repeat 4px 50%;
+	width					: 100%;
+/*	height				: 100%; */
+	margin				: 0;
+	padding				: 0;
+	font-weight			: bold;
+	font-family			: verdana, arial;
+	text-decoration	: none;
+	text-indent			: 20px;
+	color					: #333333;
+	
+}
+.tCollapsible-title:hover{
+	background			: lightyellow url(../images/icons/standard/expand2.png) no-repeat 4px 50%;
+}
+
+.tCollapsible-focusContent{
+	background	: #E2EAFF;
+}

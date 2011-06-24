@@ -1,0 +1,213 @@
+// Copyright (C) 2010-2011, Planetary System Developer Group. All rights reserved.
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Affero General Public License for more details.
+
+// You should have received a copy of the GNU Affero General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>
+
+(function($){
+	$.tIconMenu = {
+		options : {
+			// the distance the icons appear from the point of origin
+			distance				: 69,
+			// the time of animation
+			time					: 600,
+			// if set to true, the menu will appear where the pointer is, instead of the middle of the clicked object
+			mousePositioning	: false,
+			// specify whether or not to use static binding or live binding for the handles
+			liveBind				: false
+		}, classes : {
+			main		: 'tIconMenu',
+			item 		: 'tIconMenu-item',
+			handle 	: 'tIconMenu-handle'
+		}
+	}
+})(jQuery);
+
+var tIconMenu = (function(){
+	
+	var uID = 0;
+	
+	return function(options, classes){
+	
+		var opt = {};
+		var cls = {};
+		
+		$.extend(true, opt, $.tIconMenu.options, options);
+		$.extend(true, cls, $.tIconMenu.classes, classes);
+	
+		var com 		= {
+			self		: this,
+			menu 		: $(document.createElement('div')),
+			items		: []
+		};
+		
+		com.menu.addClass(cls.main);
+
+		
+		// EVENTS Section
+
+		
+		// METHODS Section
+		com.self.menu = function(){ return com.menu; };
+		com.self.items = function(){ return com.items; };
+
+		/**
+		 * Attaches the showMenu event to a specific set of elements.
+		 * @param jQ the set of jQuery elements. 
+		 * @param live boolean value to specify if the binding is static or live binding
+		**/
+		com.self.attach = function(jQ, live){
+			
+			jQ.addClass( cls.handle );
+			
+			if(opt.liveBind || live) jQ.live('click.showMenu', function(e){ com.self.showMenu( e, $(this) );} );
+				else jQ.bind('click.showMenu', function(e){ com.self.showMenu( e, $(this) );} );
+				
+			$(document).bind('click.hideMenu', function(){
+				com.self.hideMenu();
+			});
+			com.menu
+				.prependTo( $('body') )
+				.bind('click.stopPropagation', function(e){ e.stopPropagation(); });
+			
+			return com.self;
+		};
+		
+		com.self.showMenu = function( e, origin ){
+			e.stopImmediatePropagation();
+			com.menu.trigger('onShowMenu-before', [e, origin]);
+			
+			var starPos	= -90;	// starting angle
+			var x;
+			var y;
+			var q			= 360 / com.menu.children('.'+cls.item).length;
+			
+			if(opt.mousePositioning){
+					x = e.pageX;
+					y = e.pageY;
+				} else {
+					x = origin.offset().left + (origin.outerWidth() / 2);
+					y = origin.offset().top  + (origin.outerHeight() / 2);
+				}
+
+			var c = 0;
+			com.menu
+				.data('source', origin)
+				.css({
+					position	: 'absolute',
+					left		: x,
+					top		: y
+				})
+				.stop()
+				.show()
+				.css('opacity', 1)
+//				.insertAfter( origin )
+				.children('.'+cls.item)
+				.show()
+				.css({'position':'absolute', 'left':0, 'top':0, 'opacity': 0})
+				.each(function(){
+					var w = $(this).outerWidth() / 2;
+					var h = $(this).outerHeight() / 2;
+					$(this)
+						.stop()
+						.css({
+							left	: -w,
+							top	: -h
+						})
+						.animate({
+							left		: Math.cos((-90 + c*q) * Math.PI/180) * opt.distance - w,
+							top		: Math.sin((-90 + c*q) * Math.PI/180) * opt.distance - h,
+							opacity	: 1
+						}, opt.time);
+					++c;
+				});
+				
+			com.menu.trigger('onShowMenu-after', [e, origin]);
+			return com.self;
+		}
+		
+		com.self.hideMenu = function(){
+			com.menu.stop().animate({'opacity': 0}, opt.time / 2, function(){ com.menu.hide(); });
+			
+			com.menu.trigger('onHideMenu');
+			return com.self;
+		}
+		
+		/**
+		 * Adds an item to the menu 
+		 * @param content The content of the new item. It is sugested to be wrapped in an anchor, but not mandatory
+		 * @param event the function that will be binded to its onclick
+		 * @param name an index name for the item for ease of access. A default one is auto-generated if not passed
+		**/
+		com.self.add = function(content, event, name){
+			var t = $( document.createElement('span') );
+			t.addClass(cls.item)
+				.html(content)
+				.bind('click.event', event)
+				.hide();
+			
+			com.menu.append(t);
+			com.items[name ? name : 'tIconMenu-uID-'+(++uID)] = t;
+			
+			com.menu.trigger('onItemAdd');
+			return com.self;
+		};
+		
+		/**
+		 * Removes an item from the menu
+		 * @param name If it is a string, rmeoves the item with that name. 
+		 *					If it is a number, removes the name-th item (0 based)
+		**/
+		com.self.remove = function(name){
+			if(!name || name == ''){
+				M('tIconMenu.remove(): name parameter is null', 'warn');
+				return com.self;
+			}
+			
+			com.items[name].remove();
+			com.items[name] = null;
+			
+			com.menu.trigger('onItemRemove');
+			return com.self;
+		}
+		/**
+		 * Gets an element from the item list
+		 * @param name The name of the element to get
+		**/
+		com.self.get = function(name){
+			return $(com.items[name]);
+		}
+		
+		// CONFIG
+		com.self.hideMenu();
+		
+	}
+	
+})();
+
+/**
+ * Global debug function. Checks if firebug is initialized and uses its console.
+ * It is degradable (checks forst if console exists so no errors occur when firebug is turned off)
+ * @param obj the thing to print
+ * @param type the type of logging: log, info, warn, error
+**/
+function M(obj, type){
+	type = type ? type : "log";
+	if(typeof console != 'undefined' && console != null){
+		switch(type){
+			case "log"		: console.log( obj ); break;
+			case "info"		: console.info( obj ); break;
+			case "warn"		: console.warn( obj ); break;
+			case "error"	: console.error( obj ); break;
+		}
+	}
+}
