@@ -1,3 +1,4 @@
 name = Localized comments
 description = Provides the ability to attach comments to certain parts of the content.
 core = 7.x
+package     = Planetary Modules
