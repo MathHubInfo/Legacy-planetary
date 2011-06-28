@@ -1,45 +1,65 @@
-<?php
+<?
 
+function local_comments_permission() {
+  return array('view your field');
+}
 
 function local_comments_add_form($cid) {
-	$comment = comment_load($cid);
-	$output = drupal_render(comment_preview($comment));
-	$commands = array();
-	$commands[] = ajax_command_append('#myDiv', $output);
-	$page = array('#type' => 'ajax', '#commands' => $commands);
-	ajax_deliver($page);
+  $comment = comment_load($cid);
+  $output = drupal_render(comment_preview($comment));
+  $commands = array();
+  $commands[] = ajax_command_append('#myDiv', $output);
+  $page = array('#type' => 'ajax', '#commands' => $commands);
+  ajax_deliver($page);
 
 }
 
 function local_comments_preprocess(&$variables, $hook) {
-	drupal_add_library('system', 'drupal.ajax');
-	drupal_add_css(drupal_get_path("module", "testmod")."/css/jquery.contextMenu.css", array("weight"=>4));
-	drupal_add_js(drupal_get_path("module", "testmod")."/lib/jquery.livequery.js", array("weight"=>4));
-	drupal_add_js(drupal_get_path("module", "testmod")."/lib/jquery.contextMenu.js", array("weight"=>5));
-	drupal_add_js(drupal_get_path("module", "testmod")."/js/test.js", array("weight"=>6));
+  drupal_add_library('system', 'drupal.ajax');
+  drupal_add_css(drupal_get_path("module", "local_comments")."/css/jquery.contextMenu.css", array("weight"=>4));
+  drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.livequery.js", array("weight"=>4));
+  drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.contextMenu.js", array("weight"=>5));
+  drupal_add_js(drupal_get_path("module", "local_comments")."/js/test.js", array("weight"=>6));
 }
 
 
 function local_comments_menu() {
-	$items['local_comment/add'] = array(
+  $items['local_comment/add'] = array(
     'page callback' => 'local_comments_add_form',
     'access callback' => 'user_access',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
-	);
-	return $items;
+  );
+  return $items;
 }
 
 //an alternative way to do it is to override the hook
 // hook_form_FORM_ID_alter
 function local_comments_form_alter(&$form, $form_state, $form_id) {
-	if ($form_id == 'comment_node_article_form') {
-		$form['xml_id'] = array(
+  if ($form_id == 'comment_node_article_form') {
+    $form['xml_id'] = array(
       '#type' => 'textfield',
       '#title' => t("The ID of the element this comment references"),
       '#required' => FALSE,
       '#size' => 60,
       '#maxlength' => 64,
-		);
-	}
+    );
+  }
 }
+
+function local_comments_comment_insert($comment) {
+  $xml_id = $comment['xml_id'];
+  dpm($xml_id);
+  //TODO: here insert the data in the database
+}
+
+function local_comments_comment_view($comment, $view_mode, $langcode) {
+  $comment->xml_id = "test";
+}
+
+function drutexml_theme_registry_alter(&$vars) {
+  $vars['comment']['theme path'] = drupal_get_path('module','local_comments');
+  $vars['comment']['path'] = drupal_get_path('module','local_comments');
+  $vars['comment']['theme paths'] = array(0 => drupal_get_path('module','local_comments'));
+}
+
