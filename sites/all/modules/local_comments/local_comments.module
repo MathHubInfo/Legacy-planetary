@@ -54,8 +54,7 @@ function local_comments_article ($nid = -1) {
       'cid' => $record->cid,
     );
   }
-  print json_encode($str);
-  return NULL;
+  drupal_json_output($str);
 }
 
 //an alternative way to do it is to override the hook
