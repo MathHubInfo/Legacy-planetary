@@ -1,2 +1,31 @@
 <?php
 //we don't really need to do anything here... for now
+function local_comments_schema () {
+  $schema['local_comments'] = array(
+    'description' => t('Provides localized discussions'),
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'description' => 'id of comment - content association',
+      ),
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'description' => 'node id',
+      ),
+      'eid' => array( //XML element ID
+        'type' => 'varchar',
+        'length' => 999,
+        'description' => 'element id',
+      ),
+      'cid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'description' => 'comment id',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}

@@ -4,15 +4,15 @@ function local_comments_permission() {
   return array('view your field');
 }
 
-function local_comments_add_form($cid) {
-  $comment = comment_load($cid);
-  $output = drupal_render(comment_preview($comment));
-  $commands = array();
-  $commands[] = ajax_command_append('#myDiv', $output);
-  $page = array('#type' => 'ajax', '#commands' => $commands);
-  ajax_deliver($page);
+/* function local_comments_add_form($cid) { */
+/*   $comment = comment_load($cid); */
+/*   $output = drupal_render(comment_preview($comment)); */
+/*   $commands = array(); */
+/*   $commands[] = ajax_command_append('#myDiv', $output); */
+/*   $page = array('#type' => 'ajax', '#commands' => $commands); */
+/*   ajax_deliver($page); */
 
-}
+/* } */
 
 function local_comments_preprocess(&$variables, $hook) {
   drupal_add_library('system', 'drupal.ajax');
@@ -24,8 +24,15 @@ function local_comments_preprocess(&$variables, $hook) {
 
 
 function local_comments_menu() {
-  $items['local_comment/add'] = array(
-    'page callback' => 'local_comments_add_form',
+  /* $items['local_comments/add'] = array( */
+  /*   'page callback' => 'local_comments_add_form', */
+  /*   'access callback' => 'user_access', */
+  /*   'access arguments' => array('access content'), */
+  /*   'type' => MENU_CALLBACK */
+  /* ); */
+
+  $items['local_comments/article'] = array(
+    'page callback' => 'local_comments_article',
     'access callback' => 'user_access',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
@@ -33,11 +40,29 @@ function local_comments_menu() {
   return $items;
 }
 
+function local_comments_article ($nid = -1) {
+  if ($cid < 0) return;
+  $res = db_query("SELECT * FROM {local_comments} WHERE nid = :nid", array(':nid' => $nid));
+
+  $str = array();
+  dd($res);
+  foreach ($res as $record) {
+    $str[] =  array(
+      'id' => $record->id,
+      'nid' => $record->nid,
+      'eid' => $record->eid,
+      'cid' => $record->cid,
+    );
+  }
+  print json_encode($str);
+  return NULL;
+}
+
 //an alternative way to do it is to override the hook
 // hook_form_FORM_ID_alter
 function local_comments_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'comment_node_article_form') {
-    $form['xml_id'] = array(
+    $form['eid'] = array(
       '#type' => 'textfield',
       '#title' => t("The ID of the element this comment references"),
       '#required' => FALSE,
@@ -48,16 +73,26 @@ function local_comments_form_alter(&$form, $form_state, $form_id) {
 }
 
 function local_comments_comment_insert($comment) {
-  $xml_id = $comment['xml_id'];
-  dpm($xml_id);
-  //TODO: here insert the data in the database
+  //now we have nid, xml_id, cid -- put the data in the DB
+  $eid = $comment->eid;
+  $nid = $comment->nid;
+  $cid = $comment->cid;
+
+  $fields = array('nid' => $nid, 'cid' => $cid, 'eid' => $eid);
+  db_insert('local_comments')->fields($fields)->execute();
 }
 
 function local_comments_comment_view($comment, $view_mode, $langcode) {
-  $comment->xml_id = "test";
+  $lc = db_query("SELECT * FROM {local_comments} WHERE cid = :cid", array(":cid" => $comment->cid))->fetchObject();
+
+  if ($lc) {
+    $comment->eid = $lc->eid;
+  } else {
+    $comment->eid = "";
+  }
 }
 
-function drutexml_theme_registry_alter(&$vars) {
+function local_comments_theme_registry_alter(&$vars) {
   $vars['comment']['theme path'] = drupal_get_path('module','local_comments');
   $vars['comment']['path'] = drupal_get_path('module','local_comments');
   $vars['comment']['theme paths'] = array(0 => drupal_get_path('module','local_comments'));

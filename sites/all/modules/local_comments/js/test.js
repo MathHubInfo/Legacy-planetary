@@ -19,14 +19,15 @@
 				console.log(data);
 			    }
 		    	});
-		    $('#edit-xml-id').val($(el).attr('id'));
-		    alert(
+		    $('#edit-eid').val($(el).attr('id'));
+		    console.log(
 			  "Action: " + action + "\n\n" +
 			  "Element ID: " + $(el).attr("id") + "\n\n" +
 			  "X: " + pos.x + "  Y: " + pos.y + " (relative to element)\n\n" +
 			  "X: " + pos.docX + "  Y: " + pos.docY+ " (relative to document)"
 			  );
 		});
+	    //TODO: implement navigation / highlighting for a.local_comments
 
 	});
 
