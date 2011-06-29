@@ -19,6 +19,7 @@
 			    }
 		    	});
 		    $('#edit-eid').val($(el).attr('id'));
+		    $('#edit-comment-body-und-0-value').focus();
 		    console.log(
 			  "Action: " + action + "\n\n" +
 			  "Element ID: " + $(el).attr("id") + "\n\n" +
@@ -26,12 +27,10 @@
 			  "X: " + pos.docX + "  Y: " + pos.docY+ " (relative to document)"
 			  );
 		});
-	    //TODO: implement navigation / highlighting for a.local_comments
+
 	    $("a.local_comments").click(function(e){
 		    var href = $(e.target).attr('href');
-		    console.log(href);
 		    if (href) {
-			console.log('prev');
 			e.preventDefault();
 			$.scrollTo({top:$(href).offset().top - 200, left:$(href).offset().left}, 1500);
 			$(href).glow('#FFFF99', 5000);
