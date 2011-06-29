@@ -18,6 +18,8 @@ function local_comments_preprocess(&$variables, $hook) {
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_css(drupal_get_path("module", "local_comments")."/css/jquery.contextMenu.css", array("weight"=>4));
   drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.livequery.js", array("weight"=>4));
+  drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.scrollTo-1.4.2-min.js", array("weight"=>4));
+  drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.glow.js", array("weight"=>4));
   drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.contextMenu.js", array("weight"=>5));
   drupal_add_js(drupal_get_path("module", "local_comments")."/js/test.js", array("weight"=>6));
 }
