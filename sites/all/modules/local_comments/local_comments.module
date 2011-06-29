@@ -45,7 +45,6 @@ function local_comments_article ($nid = -1) {
   $res = db_query("SELECT * FROM {local_comments} WHERE nid = :nid", array(':nid' => $nid));
 
   $str = array();
-  dd($res);
   foreach ($res as $record) {
     $str[] =  array(
       'id' => $record->id,
