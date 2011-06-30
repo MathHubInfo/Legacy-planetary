@@ -153,7 +153,7 @@ var tIconMenu = (function(){
 			var t = $( document.createElement('span') );
 			t.addClass(cls.item)
 				.html(content)
-				.bind('click.event', event)
+				.bind('click.itemClick', event)
 				.hide();
 			
 			com.menu.append(t);
@@ -180,6 +180,16 @@ var tIconMenu = (function(){
 			com.menu.trigger('onItemRemove');
 			return com.self;
 		}
+		
+		/**
+		 * Removes all items from the menu
+		 */
+		com.self.clear = function(){
+		   for( var i in com.items ) 
+		      com.items[i].remove();
+		   com.items = [];
+		}
+		
 		/**
 		 * Gets an element from the item list
 		 * @param name The name of the element to get

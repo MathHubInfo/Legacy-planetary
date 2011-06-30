@@ -55,10 +55,12 @@ var tTooltip = (function(){
 		
 			com.tooltip
 				.insertAfter( obj )
-				.css('position', 'absolute');
+				.css({
+				   position : 'absolute'
+				});
 			
 			this.show();
-			
+
 			if(opt.useDefaultPositioning){
 				switch(opt.position){
 					case 'top':
@@ -109,7 +111,7 @@ var tTooltip = (function(){
 	function setup(opt, com){
 		com.tooltip
 			.attr('class', opt.className + ' ' + scheme(opt))
-			.html(opt.html)
+			.html( opt.html )
 			.prependTo($('body'))
 		
 		com.self.hide();

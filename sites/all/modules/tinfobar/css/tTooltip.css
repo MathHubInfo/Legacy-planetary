@@ -16,7 +16,7 @@
 	font-family	: Arial, Helvetica, sans-serif;
 	font-size	: 12px;
 	font-weight	: bold;
-	line-height	: 18px;
+/*	line-height	: 18px; */
 	text-shadow	: 0 1px 1px #0d3474;
 	color			: #fff;
 }
@@ -151,6 +151,33 @@
 	left						: -26px;
 }
 
+/** RIGHT POSSITIONED SIMPLE tTooltip **/
+.scheme-simple-right{
+	border						: 0;
+	background					: rgba(0, 0, 0, 0.8);
+	border-radius				: 0;
+	-moz-border-radius		: 0;
+	-webkit-border-radius	: 0;
+	width                   : auto;
+	padding						: 3px;
+	font-family					: verdana, arial;
+	font-size					: 8pt;
+	font-weight					: normal;
+	text-shadow					: 0;
+}
+.scheme-simple-right:before{ 
+	border-color		: transparent;
+	border-top-color	: rgba(0, 0, 0, 0.0);
+	left					: 100%;
+	top					: 0;
+}
+.scheme-simple-right:after { 
+	border-color		: transparent;
+	border-width      : 10px;
+	border-left-color : rgba(0, 0, 0, 0.8); 
+	left					: 100%;
+	top					: 0;
+}
 
 /** BOTTOM POSSITIONED SIMPLE tTooltip **/
 
@@ -179,7 +206,7 @@
 	top					: 100%;
 }
 
-
+/** LEFT POSSITIONED SIMPLE tTooltip **/
 .scheme-simple-left{
 	border						: 0;
 	background					: rgba(0, 0, 0, 0.8);

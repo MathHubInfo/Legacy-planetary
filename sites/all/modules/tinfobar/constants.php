@@ -1,5 +1,5 @@
 <?php
 
-define( 'TABLE_COMMENTS', 'tInfoBar_comments' );
+define( 'TABLE_TINFOBAR', 'tInfoBar' );
 
 ?>

@@ -15,11 +15,12 @@ $schema = array(
 );
 */
 
-db_drop_table( TABLE_COMMENTS );
+db_drop_table( TABLE_TINFOBAR );
 
 db_query(
-   "CREATE TABLE IF NOT EXISTS `".TABLE_COMMENTS."` (
+   "CREATE TABLE IF NOT EXISTS `".TABLE_TINFOBAR."` (
 	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `type` varchar(256) NOT NULL,
 	  `context` varchar(256) NOT NULL,
 	  `wordID` text NOT NULL,
 	  `user` varchar(60) NOT NULL,
@@ -28,9 +29,10 @@ db_query(
 	) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;"
 );
 
-db_insert( TABLE_COMMENTS )
+db_insert( TABLE_TINFOBAR )
    ->fields(
       array(
+         'type'      => 'text-type',
          'context'   => 'test-context',
          'user'      => 'text-user',
          'wordID'    => 'text-wordID',
