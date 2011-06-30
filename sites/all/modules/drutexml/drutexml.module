@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * @file
+ * A module that allows new input types such as LaTeX and sTeX
+ */
+
+/**
+ * A function to do a POST request to a certain $host with the $data
+ * @param string $host the URL of the backend
+ * @param string $data the POST data formatted as a string
+ */
+function do_post($host, $data){
+  $session = curl_init($host);
+  curl_setopt($session, CURLOPT_POST, true);
+  curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+  curl_setopt($session, CURLOPT_HEADER, false);
+  curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($session);
+  curl_close($session);
+  return $response;
+}
+
+
+/**
+ * Implements hook_help
+ *
+ * @param unknown_type $path
+ *  Which path of the site we're using to display help
+ * @param unknown_type $arg
+ *  Array that holds the current path as returned from the arg() function
+ */
+function drutexml_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#drutexml":
+      return '<p>' . t('Allows new input methods such as LaTeX') . '</p>';
+      break;
+  }
+}
+
+
+function drutexml_info() {
+  $blocks['drutexml'] = array(
+    'info' => t('LaTeX filter'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function drutexml_menu() {
+  $items['drutexml'] = array(
+    'title' => 'LaTeX filter implemented via LaTeXML',
+    'page callback' => '_drutexml_information',
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_filter_info().
+ */
+function drutexml_filter_info() {
+  $filters['latex'] = array(
+    'title' => t('LaTeX filter'),
+    'description' => t('The text will be passed as LaTeX to LaTeXML daemon and then shown to the user'),
+    'process callback' => '_drutexml_filter_latex_process',
+    'default settings' => array(
+      'latexml_url' => 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php',
+    ),
+    'cache' => TRUE,
+    'settings callback' => '_drutexml_filter_latex_settings',
+    'tips callback' => '_drutexml_filter_latex_tips',
+  );
+  return $filters;
+}
+
+/**
+ * @see drutexml_menu
+ * Returns basic info about the filter.
+ */
+function _drutexml_information() {
+  return t(
+    "We implement here a LaTeX filter that aims at transforming the content from LaTeX
+    to XHTML. To use this filter go to !link and configure the input formats.",
+    array('!link' => l('admin/config/contents/formats', 'admin/config/contents/formats'))
+  );
+}
+
+/**
+ * Settings callback for LaTeX filter
+ *
+ * @param unknown_type $form
+ * @param unknown_type $form_state
+ * @param unknown_type $filter
+ * @param unknown_type $format
+ * @param unknown_type $defaults
+ */
+function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings['latexml_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('LaTeXML daemon URL'),
+    '#default_value' => isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : $defaults['latexml_url'],
+    '#description' => t('The URL of the LaTeXMl daemon.'),
+  );
+  return $settings;
+}
+
+/**
+ * LaTeX filter process callback
+ * @see drutexml_filter_info
+ *
+ * @param unknown_type $text
+ * @param unknown_type $filter
+ * @param unknown_type $format
+ */
+function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
+  $data = 'formula=' . urlencode($text);
+  $content = do_post($host,$data);
+  $res = json_decode($content);
+  $res = trim($res->{'result'});
+  $res = str_replace(array("\n", "\r\n"), '', $res);
+  $res = str_replace('  ', ' ', $res);
+  $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly. otherwise, uncomment next line.
+  $res = str_replace('xml:','',$res); //also remove xml:id
+  //$res = "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">".$res."</span>";
+
+  return $res;
+}
+
+/**
+ * Filter tips
+ *
+ * @param unknown_type $filter
+ * @param unknown_type $format
+ * @param unknown_type $long
+ */
+function _drutexml_filter_latex_tips($filter, $format, $long = FALSE) {
+  if (!$long) {
+    return t('<em>LaTeX</em> content replaced with XHTML');
+  } else {
+    return t('You can write LaTeX and you will get back rendered XHTML');
+  }
+}
