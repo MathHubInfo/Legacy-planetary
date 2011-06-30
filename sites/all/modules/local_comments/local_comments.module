@@ -22,6 +22,26 @@ function local_comments_preprocess(&$variables, $hook) {
   drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.glow.js", array("weight"=>4));
   drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.contextMenu.js", array("weight"=>5));
   drupal_add_js(drupal_get_path("module", "local_comments")."/js/test.js", array("weight"=>6));
+  
+  $inlineScript = '<script type="text/x-mathjax-config">
+       MathJax.Hub.Register.StartupHook("MathML Jax Ready",function () {
+         var PARSE = MathJax.InputJax.MathML.Parse;
+         var oldMakeMML = PARSE.prototype.MakeMML;
+         PARSE.Augment({
+           MakeMML: function (node) {
+             if (node.hasAttribute("type")) {node.removeAttribute("type")}
+             return oldMakeMML.apply(this,arguments);
+           }
+         });
+       });
+       </script>
+       <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML"></script>';
+  
+  drupal_add_html_head(
+  	array(
+  		"#markup" => $inlineScript,
+  		"#type" => "markup"), "lala"
+  	);
 }
 
 
