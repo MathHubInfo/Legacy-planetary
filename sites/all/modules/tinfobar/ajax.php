@@ -17,8 +17,6 @@
 	
 	if(!isset($_GET['action']) || $_GET['action'] == '') exit();
 	
-	define( 'USERNAME_ROOT', 'http://localhost/v/trunk/index.php?p=/plugin/getMyUsername' );
-	
 	switch($_GET['action']){
 		case 'getIDs':
 		
@@ -26,32 +24,45 @@
 			if(isset($_GET['context']))
 				$context = "WHERE context='".$_GET['context']."'";
 				
-			$q = mysql_query("SELECT DISTINCT wordID FROM $table_comments $context");
+			$q = mysql_query("SELECT DISTINCT wordID FROM `$table_comments` $context");
 			
-			$h = '';
-			while($r = mysql_fetch_array($q))
-				$h .= ", '".$r['wordID']."'";
-				
-			echo '['.substr($h, 1).']';
+			$a = array();
+			while($r = mysql_fetch_assoc($q))
+			   $a[] = $r['wordID'];
+		   
+		   returnJSON( $a );
 		break;
 		case 'comment':
 			$context	= $_GET['context'];
 			$wordID	= $_GET['wordID'];
-			$user		= 'Guest';
+			$user		= $_GET['user'];
 			$text		= $_GET['text'];
-			$q 		= "INSERT INTO $table_comments(context, wordID, user, text) VALUES ('$context', '$wordID', '$user', '$text')";
-			echo mysql_query($q) ? "true" : mysql_error();
+			$q 		= "INSERT INTO `$table_comments`(context, wordID, user, text) VALUES ('$context', '$wordID', '$user', '$text')";
+			returnJSON( mysql_query($q) ? array('result' => true) : array( 'result' => mysql_error() ) );
 		break;
 		case 'getComments':
 			$wordID	= $_GET['wordID'];
-			$q			= mysql_query("SELECT * FROM $table_comments WHERE wordID='$wordID'");
-			$h 		= '';
-			while($r = mysql_fetch_array($q)){
-				$h .= ", '<b>".$r['user']."</b>: ".htmlspecialchars($r['text'])."'";
+			$q			= mysql_query("SELECT * FROM `$table_comments` WHERE wordID='$wordID'");
+			
+			$a       = array();
+			while($r = mysql_fetch_assoc($q)){
+				$a[] = array(
+				   'user'   => $r['user'],
+				   'text'   => htmlspecialchars( $r['text'] )
+				);
 			}
-			echo '['.substr($h, 1).']';
+			returnJSON( $a );
 		break;
 	}
 
-
+   function returnJSON( $arr ){
+      if( !headers_sent() ){
+         header('Cache-Control: no-cache, must-revalidate');
+         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+         header('Content-type: application/json');
+      }
+      echo json_encode( $arr );
+      
+      exit();
+   }
 ?>

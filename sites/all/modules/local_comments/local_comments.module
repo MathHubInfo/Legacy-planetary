@@ -21,7 +21,7 @@ function local_comments_preprocess(&$variables, $hook) {
   drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.scrollTo-1.4.2-min.js", array("weight"=>4));
   drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.glow.js", array("weight"=>4));
   drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.contextMenu.js", array("weight"=>5));
-  drupal_add_js(drupal_get_path("module", "local_comments")."/js/test.js", array("weight"=>6));
+  drupal_add_js(drupal_get_path("module", "local_comments")."/js/local_comments.js", array("weight"=>6));
 }
 
 
@@ -73,13 +73,26 @@ function local_comments_form_alter(&$form, $form_state, $form_id) {
 }
 
 function local_comments_comment_insert($comment) {
-  //now we have nid, xml_id, cid -- put the data in the DB
-  $eid = $comment->eid;
-  $nid = $comment->nid;
-  $cid = $comment->cid;
 
-  $fields = array('nid' => $nid, 'cid' => $cid, 'eid' => $eid);
-  db_insert('local_comments')->fields($fields)->execute();
+   require_once( drupal_get_path('module', 'tInfoBar').'/constants.php' );
+
+   global $user;
+
+   $eid = $comment->eid;
+   $nid = $comment->nid;
+   $cid = $comment->cid;
+   
+   $fields = array('nid' => $nid, 'cid' => $cid, 'eid' => $eid);
+   db_insert('local_comments')->fields($fields)->execute();
+   
+   $tInfoBar = array(
+      'type'      => 'localComment',
+      'context'   => $nid,
+      'wordID'    => $eid,
+      'user'      => $user->name,
+      'text'      => $comment->comment_body['und'][0]['value']
+   );
+   db_insert( TABLE_TINFOBAR )->fields( $tInfoBar )->execute();
 }
 
 function local_comments_comment_view($comment, $view_mode, $langcode) {
