@@ -57,7 +57,7 @@
  * @see theme_comment()
  */
 ?>
-<div class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
+<div class=" discussion-for-<?php echo $content['comment_body']['#object']->eid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
   <?php print $picture ?>
 
   <?php if ($new): ?>
