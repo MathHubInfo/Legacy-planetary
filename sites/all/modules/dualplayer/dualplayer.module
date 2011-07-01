@@ -58,6 +58,8 @@ function dualplayer_field_formatter_view($entity_type, $entity, $field, $instanc
 function theme_dualplayer_xml($variables) {
 	$file = $variables['file'];
 	$url = file_create_url($file->uri);
+	$base_url = url("<front>");
+	$module = drupal_get_path("module", "dualplayer");
 	
 	$txt = '
 	 <object  width="800" height="375" align="middle" id="tVideoPlayer-viewer" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0">
@@ -67,10 +69,10 @@ function theme_dualplayer_xml($variables) {
         <param name="bgcolor" value="#ffffff" />
         <param name="FlashVars" value="<?php echo $FlashVars; ?>" />
         <embed 
-                src="tVideoPlayer-viewer.swf" 
+                src="'.$base_url.$module.'/players/tVideoPlayer-viewer.swf" 
                 width="800" 
                 height="375" 
-                FlashVars="'.$url.'"
+                FlashVars="dataFile='.$url.'"
                 autostart="false" 
                 quality="high" 
                 bgcolor="#ffffff"        
