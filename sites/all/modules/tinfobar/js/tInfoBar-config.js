@@ -25,8 +25,8 @@ $(function(){
    });
    
    infoBar = new tInfoBar({
-//			handle		: $(':math, p[id], .omdoc-image[id]', content),
-			handle		: $('b, u, i', content),
+			handle		: $(':math, p[id], .omdoc-image[id]', content),
+//			handle		: $('b, u, i', content),
 			context		: getContext(),
 			hoverAttr	: {
 				mathbackground	: 'yellow'
