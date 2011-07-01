@@ -1,0 +1,88 @@
+<?php
+/**
+ * Creating a new formatter for the File data type
+ * Implements hook_field_formatter_info().
+ */
+function dualplayer_field_formatter_info() {
+	return array(
+    'dualplayer' => array(
+      'label' => t('Dual Player'),
+      'field types' => array('file'),
+	),
+	);
+}
+
+/**
+ * Implements hook_theme().
+ */
+function dualplayer_theme() {
+	return array(
+	// file.module.
+    'dualplayer_xml' => array(
+      'variables' => array('file' => NULL, 'icon_directory' => NULL),
+	)
+	);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function dualplayer_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+
+	switch ($display['type']) {
+		case 'dualplayer':
+			foreach ($items as $delta => $item) {
+				$element[$delta] = array(
+          '#theme' => 'dualplayer_xml',
+          '#file' => (object) $item,
+				);
+			}
+			break;
+	}
+
+	return $element;
+}
+
+/**
+ * Returns HTML for a link to a file.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - file: A file object to which the link will be created.
+ *   - icon_directory: (optional) A path to a directory of icons to be used for
+ *     files. Defaults to the value of the "file_icon_directory" variable.
+ *
+ * @ingroup themeable
+ */
+function theme_dualplayer_xml($variables) {
+	$file = $variables['file'];
+	$url = file_create_url($file->uri);
+	
+	$txt = '
+	 <object  width="800" height="375" align="middle" id="tVideoPlayer-viewer" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0">
+        <param name="allowScriptAccess" value="sameDotVideoPlayer-viewer" />
+        <param name="movie" value="tVideoPlayer-viewer.swf" />
+        <param name="quality" value="high" />
+        <param name="bgcolor" value="#ffffff" />
+        <param name="FlashVars" value="<?php echo $FlashVars; ?>" />
+        <embed 
+                src="tVideoPlayer-viewer.swf" 
+                width="800" 
+                height="375" 
+                FlashVars="'.$url.'"
+                autostart="false" 
+                quality="high" 
+                bgcolor="#ffffff"        
+                name="tVideoPlayer-viewer"
+                align="middle"
+                allowScriptAccess="sameDotVideoPlayer-viewer"
+                type="application/x-shockwave-flash"
+                pluginspage="http://www.macromedia.com/go/getflashplayer" 
+        />
+</object>';
+
+	return $txt;
+}
+
+?>
