@@ -27,16 +27,22 @@ $(function() {
 		         
 		         var selectedClass = 'discussion-selected';
 		         
-		         var id = infoBar.data.com.menu.menu().data('source').attr('id');
+		         var id         = infoBar.data.com.menu.menu().data('source').attr('id');
+		         var textfield  = CKEDITOR ? $(CKEDITOR.instances['edit-comment-body-und-0-value'].document.getBody().$) : $('#edit-comment-body-und-0-value');
 		         
 		         $('#comments .'+selectedClass).removeClass( selectedClass );
 		         $('.discussion-for-'+id).addClass( selectedClass );
 		         
+		         
                $('#edit-eid').val( id );
-               if( CKEDITOR )
-                  $(CKEDITOR.instances['edit-comment-body-und-0-value'].document.getBody().$).focus();
-               else
-                  $('#edit-comment-body-und-0-value').focus();
+               
+               textfield.focus();
+               $.scrollTo({
+                     top   : textfield.offset().top - 200, 
+                     left  : textfield.offset().left - 50
+                  },
+                  1500
+               )
 		      }, 'local_comments'
          );
       
@@ -50,9 +56,9 @@ $(function() {
        $("a.local_comments").click(function(e){
           var href = $(e.target).attr('href');
           if (href) {
-         e.preventDefault();
-         $.scrollTo({top:$(href).offset().top - 200, left:$(href).offset().left}, 1500);
-         $(href).glow('#FFFF99', 5000);
+            e.preventDefault();
+            $.scrollTo({top:$(href).offset().top - 200, left:$(href).offset().left}, 1500);
+            $(href).glow('#FFFF99', 5000);
           }
       });
 
