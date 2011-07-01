@@ -1,9 +1,9 @@
 <?php
 
-function mathjax_preprocess( &$variables, $hook ){
+function mathjax_preprocess_node( &$variables, $hook ){
    
 	if ( !stristr($_SERVER["HTTP_USER_AGENT"], "Firefox") ) {
-		$inlineScript = '<script type="text/x-mathjax-config">
+		drupal_add_js(<<<JS
       if (!jQuery.browser.mozilla) {
        MathJax.Hub.Register.StartupHook("MathML Jax Ready",function () {
          var PARSE = MathJax.InputJax.MathML.Parse;
@@ -16,10 +16,10 @@ function mathjax_preprocess( &$variables, $hook ){
          });
        });
        }
-       </script>
-       <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML"></script>
-  ';
-
+JS
+, 'inline' );
+      drupal_add_js('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML', 'external');
+      
 		drupal_add_html_head(
 		   array(
        		"#markup" => $inlineScript,
