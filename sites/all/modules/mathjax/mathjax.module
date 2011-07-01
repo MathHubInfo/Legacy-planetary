@@ -1,8 +1,9 @@
 <?php
 
-function mathjax_preprocess_node( &$variables, $hook ){
+function mathjax_preprocess( &$variables, $hook ){
    
 	if ( !stristr($_SERVER["HTTP_USER_AGENT"], "Firefox") ) {
+      drupal_add_js('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML', array( 'type' => 'external', 'weight' => 2 ) );
 		drupal_add_js(<<<JS
       if (!jQuery.browser.mozilla) {
        MathJax.Hub.Register.StartupHook("MathML Jax Ready",function () {
@@ -17,8 +18,7 @@ function mathjax_preprocess_node( &$variables, $hook ){
        });
        }
 JS
-, 'inline' );
-      drupal_add_js('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML', 'external');
+, array('type' => 'inline', 'weight' => 3) );
       
 		drupal_add_html_head(
 		   array(
