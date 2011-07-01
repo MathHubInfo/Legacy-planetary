@@ -29,15 +29,17 @@ function tinfobar_help($path, $arg) {
 */
 function tinfobar_preprocess_node(&$variables = '') {
    $node = $variables['node'];
-   if (!empty($node) && $node->type == 'lecture' ) {
-      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/tIconMenu.css' );
-      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/tTooltip.css' );
-      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/MathML.css' );
-      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/tInfoBar.css' );
-      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tIconMenu.js'  );
-      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tTooltip.js'  );
-      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tInfoBar.js'  );
-      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tInfoBar-config.js' );
+   $acceptedTypes = array( 'article', 'lecture' );
+
+   if (!empty($node) && in_array($node->type, $acceptedTypes) ) {
+      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/tIconMenu.css', array('weight'=>1) );
+      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/tTooltip.css', array('weight'=>1) );
+      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/MathML.css', array('weight'=>1) );
+      drupal_add_css( drupal_get_path( 'module', 'tinfobar' ) . '/css/tInfoBar.css', array('weight'=>1) );
+      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tIconMenu.js', array('weight'=>1)  );
+      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tTooltip.js', array('weight'=>1)  );
+      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tInfoBar.js', array('weight'=>2)  );
+      drupal_add_js( drupal_get_path( 'module', 'tinfobar' ) . '/js/tInfoBar-config.js', array('weight'=>3) );
       
       global $user;
       echo '
@@ -63,14 +65,14 @@ function tinfobar_menu() {
       'page callback' => '_tinfobar_getTokens',
       'access callback' => TRUE
    );
-   $items['tInfoBar/comment'] = array(
-      'title' => 'Insert a comment into the database',
-      'page callback' => '_tinfobar_comment',
+   $items['tInfoBar/add'] = array(
+      'title' => 'Insert an item into the table',
+      'page callback' => '_tinfobar_addItem',
       'access callback' => TRUE
    );
-   $items['tInfoBar/getComments'] = array(
-      'title' => 'Retrieve all comments for a specified element',
-      'page callback' => '_tinfobar_getComments',
+   $items['tInfoBar/get'] = array(
+      'title' => 'Retrieve all items for a specified element',
+      'page callback' => '_tinfobar_getItems',
       'access callback' => TRUE
    );
    
@@ -80,35 +82,51 @@ function tinfobar_menu() {
 /**
 *
 *
-*/
+*
 function tinfobar_perm() {
    return array('access dynamic_products content');
 }
-
+*/
 
 /**
-* Retrieve all tokens for a specified context
+* Retrieve all tokens for a specified context and of specific type
 *
-* @param $id
-*     The ID of the element
-* @param $context = null
+* @param $context
 *     The context of the element
+* @param $type = null
+*     The type of the element
 */
-function _tinfobar_getTokens( $context ){
-   $query = db_select( TABLE_COMMENTS, 't' );
-   $query->fields( 't' )->condition('t.context', $context);
+function _tinfobar_getTokens( $context, $type = null ){
+   $query = db_select( TABLE_TINFOBAR, 't' );
+   $query->fields( 't' );
+   
+   $query->condition('t.context', $context);
+   if( $type ) $query->condition('t.type', $type);
    
    $result = $query->execute();
-   $a = array();
-   foreach( $result as $r ) $a[$r->wordid] = 1;
    
-   return drupal_json_output( array_keys($a) );
+   $a = array();
+   foreach( $result as $r ) 
+      if( !isset( $a[$r->wordid] ) )
+         $a[$r->wordid] = array( $r->type => true );
+      else
+         $a[$r->wordid][$r->type] = true;
+   
+   $output = array();
+   foreach( $a as $w => $v ){
+      foreach( $v as $t => $p )
+         $output[] = array( 'type' => $t, 'wordID' => $w );
+   }
+   
+   return drupal_json_output( $output );
    exit;
 }
 
 /**
-* Add a comment to the database
+* Add an item to the database
 *
+* @param $type
+*     The type of the item
 * @param $id
 *     The ID of the element
 * @param $context
@@ -117,10 +135,11 @@ function _tinfobar_getTokens( $context ){
 * @param $text
 *     The Body of the comment
 */
-function _tinfobar_comment( $id, $context, $username, $text ){
-   db_insert( TABLE_COMMENTS )
+function _tinfobar_addItem( $type, $id, $context, $username, $text ){
+   db_insert( TABLE_TINFOBAR )
       ->fields(
          array(
+            'type'      => $type,
             'wordID'    => $id,
             'context'   => $context,
             'user'      => $username,
@@ -132,17 +151,23 @@ function _tinfobar_comment( $id, $context, $username, $text ){
 }
 
 /**
-* Retrieve all comments from the database for a specified element in a specified context
+* Retrieve all items from the database for a specified element of a specified type in a specified context
 *
+* @param $type
+*     The type of the item
 * @param $id
 *     The ID of the element
 * @param $context = null
 *     The context of the element
 */
-function _tinfobar_getComments( $id, $context = null ){
-   $query = db_select( TABLE_COMMENTS, 't' );
-   $query->fields( 't' )->condition('t.wordID', $id);
-   if( $context ) $query->condition('t.context', $context);
+function _tinfobar_getItems( $type, $id, $context = null ){
+   $query = db_select( TABLE_TINFOBAR, 't' );
+   $query->fields( 't' );
+   
+   if( $context ) 
+      $query->condition('t.context', $context);
+   $query->condition('t.type', $type);
+   $query->condition('t.wordID', $id);
    
    $result = $query->execute();
    $a = array();
