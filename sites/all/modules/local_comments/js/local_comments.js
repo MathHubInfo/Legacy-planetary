@@ -24,8 +24,19 @@ $(function() {
 						   }) 
 				   )
 		      , function(e){
-                $('#edit-eid').val( infoBar.data.com.menu.menu().data('source').attr('id') );
-                $('#edit-comment-body-und-0-value').focus();
+		         
+		         var selectedClass = 'discussion-selected';
+		         
+		         var id = infoBar.data.com.menu.menu().data('source').attr('id');
+		         
+		         $('#comments .'+selectedClass).removeClass( selectedClass );
+		         $('.discussion-for-'+id).addClass( selectedClass );
+		         
+               $('#edit-eid').val( id );
+               if( CKEDITOR )
+                  $(CKEDITOR.instances['edit-comment-body-und-0-value'].document.getBody().$).focus();
+               else
+                  $('#edit-comment-body-und-0-value').focus();
 		      }, 'local_comments'
          );
       
