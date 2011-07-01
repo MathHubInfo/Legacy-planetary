@@ -19,7 +19,7 @@ $(function(){
    var content = $('#block-system-main .content').eq(1); 
 //	var imgDir  = '/sites/all/modules/tinfobar/images/';
    
-	var imgDir  = location.pathname+'sites/all/modules/tinfobar/images/';
+	var imgDir  = '/sites/all/modules/tinfobar/images/';
    var c = 0;
    $('b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));
@@ -152,7 +152,10 @@ $(function(){
 					   })
 					   .append( 
 						   $(document.createElement('img'))
-							   .attr('src', path) 
+							   .attr({
+							      src   : path,
+							      alt   : title
+							   }) 
 					   );
 	   }
    }

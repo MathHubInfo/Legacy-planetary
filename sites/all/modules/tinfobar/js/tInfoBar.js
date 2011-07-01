@@ -175,7 +175,7 @@ var tInfoBar = (function(){
          t.data('target', obj)
             .data('type', type)
             .addClass( cls.token )
-            .append( $(document.createElement('img')).attr('src', img.info) )
+            .append( $(document.createElement('img')).attr({src: img.info, alt: '(!)'}) )
             .attr('title', opt.tokenTypes.info.msg )
             .insertBefore(obj)
             .css({
@@ -291,7 +291,7 @@ var tInfoBar = (function(){
 				      })
 				      .data('type', i)
 				      .addClass( cls.token )
-				      .append( $(document.createElement('img')).attr({ 'src' : opt.tokenTypes[i].img, 'alt' : '(!)' }) )
+				      .append( $(document.createElement('img')).attr({ 'src' : opt.tokenTypes[i].img, 'alt' : '('+i+')' }) )
                   .bind('mouseenter.showInfo', {opt:opt, com:com, cls: cls, show:true, top:top, type:i}, showInfo)
                   .bind('mouseleave.hideInfo', {opt:opt, com: com, cls: cls}, showInfo),
 		         null,
