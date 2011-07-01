@@ -24,6 +24,7 @@ function local_comments_preprocess(&$variables, $hook) {
   drupal_add_js(drupal_get_path("module", "local_comments")."/js/local_comments.js", array("weight"=>6));
   
   $inlineScript = '<script type="text/x-mathjax-config">
+      if (!jQuery.browser.mozilla) {
        MathJax.Hub.Register.StartupHook("MathML Jax Ready",function () {
          var PARSE = MathJax.InputJax.MathML.Parse;
          var oldMakeMML = PARSE.prototype.MakeMML;
@@ -34,8 +35,10 @@ function local_comments_preprocess(&$variables, $hook) {
            }
          });
        });
+       }
        </script>
-       <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML"></script>';
+       <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML"></script>
+  ';
   
   drupal_add_html_head(
   	array(
