@@ -25,7 +25,7 @@ $(function(){
    });
    
    infoBar = new tInfoBar({
-			handle		: $(':math, p[id], .omdoc-image[id]', content),
+			handle		: $(':math, p[id], .omdoc-image[id], .MathJax_Display', content),
 //			handle		: $('b, u, i', content),
 			context		: getContext(),
 			hoverAttr	: {
