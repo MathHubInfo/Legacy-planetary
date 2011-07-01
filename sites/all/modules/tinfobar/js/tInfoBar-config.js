@@ -17,7 +17,6 @@ $(function(){
 	});
    
    var content = $('#block-system-main .content').eq(1); 
-//	var imgDir  = '/sites/all/modules/tinfobar/images/';
    
 	var imgDir  = '/sites/all/modules/tinfobar/images/';
    var c = 0;

@@ -22,7 +22,6 @@ function local_comments_preprocess(&$variables, $hook) {
   drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.glow.js", array("weight"=>4));
   drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.contextMenu.js", array("weight"=>5));
   drupal_add_js(drupal_get_path("module", "local_comments")."/js/local_comments.js", array("weight"=>6));
-  drupal_add_js(drupal_get_path("module", "local_comments")."/js/test.js", array("weight"=>6));
   
   $inlineScript = '<script type="text/x-mathjax-config">
        MathJax.Hub.Register.StartupHook("MathML Jax Ready",function () {
