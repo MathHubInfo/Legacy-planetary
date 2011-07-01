@@ -1,0 +1,34 @@
+<?php
+
+function mathjax_preprocess( &$variables, $hook ){
+   
+	if ( !stristr($_SERVER["HTTP_USER_AGENT"], "Firefox") ) {
+		$inlineScript = '<script type="text/x-mathjax-config">
+      if (!jQuery.browser.mozilla) {
+       MathJax.Hub.Register.StartupHook("MathML Jax Ready",function () {
+         var PARSE = MathJax.InputJax.MathML.Parse;
+         var oldMakeMML = PARSE.prototype.MakeMML;
+         PARSE.Augment({
+           MakeMML: function (node) {
+             if (node.hasAttribute("type")) {node.removeAttribute("type")}
+             return oldMakeMML.apply(this,arguments);
+           }
+         });
+       });
+       }
+       </script>
+       <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML"></script>
+  ';
+
+		drupal_add_html_head(
+		   array(
+       		"#markup" => $inlineScript,
+       		"#type" => "markup",
+       		"#weight" => 40, 
+   	   ), 
+   	   "lala"
+	   );
+	}
+
+   
+}

@@ -214,7 +214,7 @@ function lectures_field_default_fields() {
         'settings' => array(
           'allowed_schemes' => array(
             'public' => 'public',
-            'youtube' => 'youtube',
+            'tvideoplayer' => 'tvideoplayer',
           ),
           'allowed_types' => array(
             'audio' => 'audio',
