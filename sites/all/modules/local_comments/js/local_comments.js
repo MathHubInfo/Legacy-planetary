@@ -38,8 +38,8 @@ $(function() {
                
                textfield.focus();
                $.scrollTo({
-                     top   : textfield.offset().top - 200, 
-                     left  : textfield.offset().left - 50
+                     top   : $('#comment-body-add-more-wrapper').offset().top - 200, 
+                     left  : $('#comment-body-add-more-wrapper.offset().left - 50
                   },
                   1500
                )
