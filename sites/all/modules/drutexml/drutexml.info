@@ -2,4 +2,4 @@ name = DruTeXML
 description = A module that allows a new formatting method for Drupal
 core = 7.x
 package     = Planetary Modules
-
+dependencies[] = ctools

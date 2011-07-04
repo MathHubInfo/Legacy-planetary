@@ -1,7 +1,7 @@
 <?php
 
 function local_comments_permission() {
-  return array('view your field');
+	return array('view your field');
 }
 
 /* function local_comments_add_form($cid) { */
@@ -15,120 +15,100 @@ function local_comments_permission() {
 /* } */
 
 function local_comments_preprocess(&$variables, $hook) {
-  drupal_add_library('system', 'drupal.ajax');
-  drupal_add_css(drupal_get_path("module", "local_comments")."/css/jquery.contextMenu.css", array("weight"=>4));
-  drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.livequery.js", array("weight"=>4));
-  drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.scrollTo-1.4.2-min.js", array("weight"=>4));
-  drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.glow.js", array("weight"=>4));
-  drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.contextMenu.js", array("weight"=>5));
-  drupal_add_js(drupal_get_path("module", "local_comments")."/js/local_comments.js", array("weight"=>6));
-  drupal_add_js(drupal_get_path("module", "local_comments")."/js/test.js", array("weight"=>6));
-  
-  $inlineScript = '<script type="text/x-mathjax-config">
-       MathJax.Hub.Register.StartupHook("MathML Jax Ready",function () {
-         var PARSE = MathJax.InputJax.MathML.Parse;
-         var oldMakeMML = PARSE.prototype.MakeMML;
-         PARSE.Augment({
-           MakeMML: function (node) {
-             if (node.hasAttribute("type")) {node.removeAttribute("type")}
-             return oldMakeMML.apply(this,arguments);
-           }
-         });
-       });
-       </script>
-       <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML"></script>';
-  
-  drupal_add_html_head(
-  	array(
-  		"#markup" => $inlineScript,
-  		"#type" => "markup"), "lala"
-  	);
+	drupal_add_library('system', 'drupal.ajax');
+	//  drupal_add_css(drupal_get_path("module", "local_comments")."/css/jquery.contextMenu.css", array("weight"=>4));
+	drupal_add_css(drupal_get_path("module", "local_comments")."/css/local_comments.css", array("weight"=>4));
+	drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.livequery.js", array("weight"=>4));
+	drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.scrollTo-1.4.2-min.js", array("weight"=>4));
+	drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.glow.js", array("weight"=>4));
+	drupal_add_js(drupal_get_path("module", "local_comments")."/lib/jquery.contextMenu.js", array("weight"=>5));
+	drupal_add_js(drupal_get_path("module", "local_comments")."/js/local_comments.js", array("weight"=>6));
 }
 
 
 function local_comments_menu() {
-  /* $items['local_comments/add'] = array( */
-  /*   'page callback' => 'local_comments_add_form', */
-  /*   'access callback' => 'user_access', */
-  /*   'access arguments' => array('access content'), */
-  /*   'type' => MENU_CALLBACK */
-  /* ); */
+	/* $items['local_comments/add'] = array( */
+	/*   'page callback' => 'local_comments_add_form', */
+	/*   'access callback' => 'user_access', */
+	/*   'access arguments' => array('access content'), */
+	/*   'type' => MENU_CALLBACK */
+	/* ); */
 
-  $items['local_comments/article'] = array(
+	$items['local_comments/article'] = array(
     'page callback' => 'local_comments_article',
     'access callback' => 'user_access',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
-  );
-  return $items;
+	);
+	return $items;
 }
 
 function local_comments_article ($nid = -1) {
-  if ($cid < 0) return;
-  $res = db_query("SELECT * FROM {local_comments} WHERE nid = :nid", array(':nid' => $nid));
+	if ($cid < 0) return;
+	$res = db_query("SELECT * FROM {local_comments} WHERE nid = :nid", array(':nid' => $nid));
 
-  $str = array();
-  foreach ($res as $record) {
-    $str[] =  array(
+	$str = array();
+	foreach ($res as $record) {
+		$str[] =  array(
       'id' => $record->id,
       'nid' => $record->nid,
       'eid' => $record->eid,
       'cid' => $record->cid,
-    );
-  }
-  drupal_json_output($str);
+		);
+	}
+	drupal_json_output($str);
 }
 
 //an alternative way to do it is to override the hook
 // hook_form_FORM_ID_alter
 function local_comments_form_alter(&$form, $form_state, $form_id) {
-  if ($form_id == 'comment_node_article_form') {
-    $form['eid'] = array(
+	if ($form_id == 'comment_node_article_form') {
+		$form['eid'] = array(
       '#type' => 'textfield',
       '#title' => t("The ID of the element this comment references"),
       '#required' => FALSE,
       '#size' => 60,
       '#maxlength' => 64,
-    );
-  }
+		);
+	}
 }
 
 function local_comments_comment_insert($comment) {
 
-   require_once( drupal_get_path('module', 'tInfoBar').'/constants.php' );
+	require_once( drupal_get_path('module', 'tInfoBar').'/constants.php' );
 
-   global $user;
+	global $user;
 
-   $eid = $comment->eid;
-   $nid = $comment->nid;
-   $cid = $comment->cid;
-   
-   $fields = array('nid' => $nid, 'cid' => $cid, 'eid' => $eid);
-   db_insert('local_comments')->fields($fields)->execute();
-   
-   $tInfoBar = array(
+	$eid = $comment->eid;
+	$nid = $comment->nid;
+	$cid = $comment->cid;
+
+	$fields = array('nid' => $nid, 'cid' => $cid, 'eid' => $eid);
+	db_insert('local_comments')->fields($fields)->execute();
+
+	$tInfoBar = array(
       'type'      => 'localComment',
       'context'   => $nid,
       'wordID'    => $eid,
       'user'      => $user->name,
       'text'      => $comment->comment_body['und'][0]['value']
-   );
-   db_insert( TABLE_TINFOBAR )->fields( $tInfoBar )->execute();
+	);
+	db_insert( TABLE_TINFOBAR )->fields( $tInfoBar )->execute();
 }
 
 function local_comments_comment_view($comment, $view_mode, $langcode) {
-  $lc = db_query("SELECT * FROM {local_comments} WHERE cid = :cid", array(":cid" => $comment->cid))->fetchObject();
+	$lc = db_query("SELECT * FROM {local_comments} WHERE cid = :cid", array(":cid" => $comment->cid))->fetchObject();
 
-  if ($lc) {
-    $comment->eid = $lc->eid;
-  } else {
-    $comment->eid = "";
-  }
+	if ($lc) {
+		$comment->eid = $lc->eid;
+	} else {
+		$comment->eid = "";
+	}
 }
 
 function local_comments_theme_registry_alter(&$vars) {
-  $vars['comment']['theme path'] = drupal_get_path('module','local_comments');
-  $vars['comment']['path'] = drupal_get_path('module','local_comments');
-  $vars['comment']['theme paths'] = array(0 => drupal_get_path('module','local_comments'));
+	$vars['comment']['theme path'] = drupal_get_path('module','local_comments');
+	$vars['comment']['path'] = drupal_get_path('module','local_comments');
+	$vars['comment']['theme paths'] = array(0 => drupal_get_path('module','local_comments'));
 }
 

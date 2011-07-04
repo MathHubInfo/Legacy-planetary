@@ -32,25 +32,27 @@
          // specify the floating of the bar. Only supported values are left/right
          position    : 'right',
          // specify data for the menu animation: time and distance
-         menu        : { // check tIconMenu.js for info regarding the options
-                           time                 : 400, 
-                           distance             : 40,
-                           mousePositioning     : false,
-                           liveBind             : false
-                        },
+         menu              : { // check tIconMenu.js for info regarding the options
+                                 time                 : 400, 
+                                 distance             : 40,
+                                 mousePositioning     : false,
+                                 liveBind             : false
+                              },
          // specify options for the tooltip. You can also modify them later
-         tooltip     :  { // check tTooltip.js for info regarding the options
-                           position : 'left',
-                           color    : 'blue'
-                        },
+         tooltip           :  { // check tTooltip.js for info regarding the options
+                                 position : 'left',
+                                 color    : 'blue'
+                              },
          // specify the elements to which to bind the showMenu events
-         handle      : $('.clickable'),
+         handle            : $('.clickable'),
          // associative object of attributes -> values to be added upon infoBar token hover to the elements
-         hoverAttr   : null,
+         hoverAttr         : null,
+         // whether to use absolute positioning for tokens and refresh it every time the window resizes or leave it to the CSS to decide
+         hardPositioning   : false,
          // specify the context filter for the IDs in the database if you are using the default ajax file
-         context     : null,
+         context           : null,
          // specify the token types. By default, only the 'info' token type is defined
-         tokenTypes  : {
+         tokenTypes        : {
             info  : {
                img   : 'images/sIcon_info.png',
                msg   : 'Click to expand'
@@ -101,6 +103,15 @@ var tInfoBar = (function(){
          wrapper        : null,
          // an object that contains all the items currently being focused on-hover of the infoBar's tokens
          focusObj       : null,
+         // an object of timers and their properties
+         timers         : {
+            position : {
+               timeout     : 100,
+               timer       : null,
+               window      : $(window),
+               windowSize  : $(window).width()
+            }
+         },
          // an instance of the tIconMenu
          menu           : new tIconMenu( opt.menu ),
          // an instance of the tTooltip
@@ -147,6 +158,27 @@ var tInfoBar = (function(){
          // ---- SETUP ---- //
          setupMenu( dataPack );
          
+         if( opt.hardPositioning ){
+            com.timers
+               .position
+               .window
+               .resize(function() {
+                  if( com.timers.position.window.width() != com.timers.position.windowSize && com.infoBar.data('tokenArr').length > 0 ){
+                     clearTimeout( com.timers.position.timer );
+                     com.timers.position.windowSize = com.timers.position.window.width();
+                     com.timers.position.timer = setTimeout(
+                        function(){
+                           var pos = com.infoBar.offset().left + (com.infoBar.outerWidth() - com.infoBar.data('tokenArr')[0].width()) / 2 + 1;
+                           console.log( com.infoBar.offset().left, com.infoBar.outerWidth(), com.infoBar.data('tokenArr')[0].width() );
+                           for( var i in com.infoBar.data('tokenArr') )
+                              com.infoBar.data('tokenArr')[i].offset({ left: pos });
+                        }, 
+                        com.timers.position.timeout
+                     );
+                  }
+               });
+         }
+         
          // ---- Save for later use ---- //
          
          com.main
@@ -175,7 +207,7 @@ var tInfoBar = (function(){
          t.data('target', obj)
             .data('type', type)
             .addClass( cls.token )
-            .append( $(document.createElement('img')).attr('src', img.info) )
+            .append( $(document.createElement('img')).attr({src: img.info, alt: '(!)'}) )
             .attr('title', opt.tokenTypes.info.msg )
             .insertBefore(obj)
             .css({
@@ -185,16 +217,25 @@ var tInfoBar = (function(){
             .bind('mouseenter.showInfo', {opt:opt, com:com, cls: cls, show:true}, showInfo)
             .bind('mouseleave.hideInfo', {opt:opt, com: com, cls: cls}, showInfo)
             .bind('click.showTokens', {opt:opt, com: com, cls: cls}, showTokens);
-//            .offset({ 
-//               left   : com.infoBar.offset().left + (com.infoBar.outerWidth() - t.width()) / 2 + 1
-//            });
+         
+         if( opt.hardPositioning ){
+            t.css('position', 'absolute');
+            com.self.positionToken( t );
+         }
+            
          obj.data('infoBarIcon', t);
-         com.infoBar.data('tokenArr').push(t);
+         com.infoBar.data('tokenArr').push( t );
       }
       
       this.setTokenType = function( type, value ){
          opt.tokenTypes[ type ] = value;
          return this; 
+      };
+      
+      this.positionToken = function( token ){
+         token.offset({
+            left  : com.infoBar.offset().left + (com.infoBar.outerWidth() - token.width()) / 2 + 1
+         });
       };
       
       this.getMenu = function(){ return com.menu; };
@@ -291,7 +332,7 @@ var tInfoBar = (function(){
 				      })
 				      .data('type', i)
 				      .addClass( cls.token )
-				      .append( $(document.createElement('img')).attr({ 'src' : opt.tokenTypes[i].img, 'alt' : '(!)' }) )
+				      .append( $(document.createElement('img')).attr({ 'src' : opt.tokenTypes[i].img, 'alt' : '('+i+')' }) )
                   .bind('mouseenter.showInfo', {opt:opt, com:com, cls: cls, show:true, top:top, type:i}, showInfo)
                   .bind('mouseleave.hideInfo', {opt:opt, com: com, cls: cls}, showInfo),
 		         null,

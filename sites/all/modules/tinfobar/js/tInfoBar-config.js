@@ -16,32 +16,32 @@ $(function(){
 		}
 	});
    
-   var content = $('#block-system-main .content').eq(1); 
-//	var imgDir  = '/sites/all/modules/tinfobar/images/';
+   var content = $('.node').eq(0); 
    
-	var imgDir  = location.pathname+'sites/all/modules/tinfobar/images/';
+	var imgDir  = '/sites/all/modules/tinfobar/images/';
    var c = 0;
    $('b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));
    });
    
    infoBar = new tInfoBar({
-//			handle		: $(':math, p[id], .omdoc-image[id]', content),
-			handle		: $('b, u, i', content),
-			context		: getContext(),
-			hoverAttr	: {
+			handle		      : $(':math, p[id], .omdoc-image[id], .MathJax_Display', content),
+//			handle		      : $('b, u, i', content),
+			context		      : getContext(),
+			hardPositioning   : true,
+			hoverAttr	      : {
 				mathbackground	: 'yellow'
 			},
-			menu			: {
+			menu			      : {
 				liveBind				: true,
 				distance				: 45,
 				mousePositioning	: true
 			},
-			tooltip		: {
+			tooltip		      : {
 //				scheme	: 'scheme-simple-left',
 				position	: 'left'
 			},
-			tokenTypes  : {
+			tokenTypes        : {
 			   info  : {
 			      img   : imgDir+'sIcon_info.png',
 			      msg   : 'Click to expand'
@@ -152,7 +152,10 @@ $(function(){
 					   })
 					   .append( 
 						   $(document.createElement('img'))
-							   .attr('src', path) 
+							   .attr({
+							      src   : path,
+							      alt   : title
+							   }) 
 					   );
 	   }
    }

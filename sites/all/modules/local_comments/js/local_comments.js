@@ -3,7 +3,7 @@ var $ = jQuery;
 
 $(function() {
       
-      var imgDir = location.pathname+'sites/all/modules/local_comments/images/';
+      var imgDir = '/sites/all/modules/local_comments/images/';
       
       infoBar
          .data
@@ -24,8 +24,25 @@ $(function() {
 						   }) 
 				   )
 		      , function(e){
-                $('#edit-eid').val( infoBar.data.com.menu.menu().data('source').attr('id') );
-                $('#edit-comment-body-und-0-value').focus();
+		         
+		         var selectedClass = 'discussion-selected';
+		         
+		         var id         = infoBar.data.com.menu.menu().data('source').attr('id');
+		         var textfield  = CKEDITOR ? $(CKEDITOR.instances['edit-comment-body-und-0-value'].document.getBody().$) : $('#edit-comment-body-und-0-value');
+		         
+		         $('#comments .'+selectedClass).removeClass( selectedClass );
+		         $('.discussion-for-'+id).addClass( selectedClass );
+		         
+		         
+               $('#edit-eid').val( id );
+               
+               textfield.focus();
+               $.scrollTo({
+                     top   : $('#comment-body-add-more-wrapper').offset().top - 200, 
+                     left  : $('#comment-body-add-more-wrapper').offset().left - 50
+                  },
+                  1500
+               )
 		      }, 'local_comments'
          );
       
@@ -39,9 +56,9 @@ $(function() {
        $("a.local_comments").click(function(e){
           var href = $(e.target).attr('href');
           if (href) {
-         e.preventDefault();
-         $.scrollTo({top:$(href).offset().top - 200, left:$(href).offset().left}, 1500);
-         $(href).glow('#FFFF99', 5000);
+            e.preventDefault();
+            $.scrollTo({top:$(href).offset().top - 200, left:$(href).offset().left}, 1500);
+            $(href).glow('#FFFF99', 5000);
           }
       });
 

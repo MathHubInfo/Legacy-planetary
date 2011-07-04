@@ -53,9 +53,6 @@ function tinfobar_preprocess_node(&$variables = '') {
 
 /**
 * Implements hook_menu
-*
-*
-*
 */
 function tinfobar_menu() {
 

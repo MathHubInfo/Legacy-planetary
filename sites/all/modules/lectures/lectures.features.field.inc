@@ -49,16 +49,20 @@ function lectures_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '0',
+          'weight' => '5',
+        ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '5',
         ),
         'teaser' => array(
           'label' => 'hidden',
-          'module' => 'text',
-          'settings' => array(
-            'trim_length' => 600,
-          ),
-          'type' => 'text_summary_or_trimmed',
-          'weight' => 0,
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => '11',
         ),
       ),
       'entity_type' => 'node',
@@ -79,6 +83,82 @@ function lectures_field_default_fields() {
         ),
         'type' => 'text_textarea_with_summary',
         'weight' => '1',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-lecture-field_affiliation'
+  $fields['node-lecture-field_affiliation'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_affiliation',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '1',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'lecture',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '4',
+        ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '4',
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_plain',
+          'weight' => '3',
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_affiliation',
+      'label' => 'Affiliation',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '6',
       ),
     ),
   );
@@ -122,6 +202,16 @@ function lectures_field_default_fields() {
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
+            'image_style' => 'thumbnail',
+          ),
+          'type' => 'image',
+          'weight' => '1',
+        ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
             'image_style' => 'medium',
           ),
           'type' => 'image',
@@ -131,7 +221,7 @@ function lectures_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => 0,
+          'weight' => '9',
         ),
       ),
       'entity_type' => 'node',
@@ -161,6 +251,82 @@ function lectures_field_default_fields() {
     ),
   );
 
+  // Exported field: 'node-lecture-field_speaker'
+  $fields['node-lecture-field_speaker'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_speaker',
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '1',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'lecture',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '0',
+        ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '0',
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_plain',
+          'weight' => '2',
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_speaker',
+      'label' => 'Speaker',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '5',
+      ),
+    ),
+  );
+
   // Exported field: 'node-lecture-field_video'
   $fields['node-lecture-field_video'] = array(
     'field_config' => array(
@@ -169,16 +335,27 @@ function lectures_field_default_fields() {
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_video',
-      'foreign keys' => array(),
+      'foreign keys' => array(
+        'fid' => array(
+          'columns' => array(
+            'fid' => 'fid',
+          ),
+          'table' => 'file_managed',
+        ),
+      ),
       'indexes' => array(
         'fid' => array(
           0 => 'fid',
         ),
       ),
-      'module' => 'media',
-      'settings' => array(),
+      'module' => 'file',
+      'settings' => array(
+        'display_default' => 0,
+        'display_field' => 0,
+        'uri_scheme' => 'public',
+      ),
       'translatable' => '1',
-      'type' => 'media',
+      'type' => 'file',
     ),
     'field_instance' => array(
       'bundle' => 'lecture',
@@ -187,11 +364,16 @@ function lectures_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'hidden',
-          'module' => 'media',
-          'settings' => array(
-            'file_view_mode' => 'media_original',
-          ),
-          'type' => 'media',
+          'module' => 'dualplayer',
+          'settings' => array(),
+          'type' => 'dualplayer',
+          'weight' => '2',
+        ),
+        'full' => array(
+          'label' => 'hidden',
+          'module' => 'dualplayer',
+          'settings' => array(),
+          'type' => 'dualplayer',
           'weight' => '2',
         ),
         'teaser' => array(
@@ -206,25 +388,19 @@ function lectures_field_default_fields() {
       'label' => 'Video',
       'required' => 0,
       'settings' => array(
+        'description_field' => 0,
+        'file_directory' => 'video',
+        'file_extensions' => 'xml',
+        'max_filesize' => '',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'media',
+        'module' => 'file',
         'settings' => array(
-          'allowed_schemes' => array(
-            'public' => 'public',
-            'youtube' => 'youtube',
-          ),
-          'allowed_types' => array(
-            'audio' => 'audio',
-            'default' => 'default',
-            'image' => 'image',
-            'video' => 'video',
-          ),
           'progress_indicator' => 'throbber',
         ),
-        'type' => 'media_generic',
+        'type' => 'file_generic',
         'weight' => '3',
       ),
     ),
@@ -269,11 +445,18 @@ function lectures_field_default_fields() {
           'type' => 'text_default',
           'weight' => '3',
         ),
+        'full' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '3',
+        ),
         'teaser' => array(
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => 0,
+          'weight' => '8',
         ),
       ),
       'entity_type' => 'node',
@@ -281,7 +464,7 @@ function lectures_field_default_fields() {
       'label' => 'Write up',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
+        'text_processing' => '1',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
@@ -298,8 +481,10 @@ function lectures_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Affiliation');
   t('Biography');
   t('Picture');
+  t('Speaker');
   t('Video');
   t('Write up');
 

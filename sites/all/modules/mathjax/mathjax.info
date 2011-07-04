@@ -1,0 +1,7 @@
+
+name = MathJAX
+description = Adds MathJAX support to non-Firefox Browsers
+package = "Planetary Modules"
+
+version = "1.0"
+core = "7.x"

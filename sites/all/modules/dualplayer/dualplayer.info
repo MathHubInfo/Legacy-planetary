@@ -1,0 +1,13 @@
+
+name = Media: Dual Player
+description = Provides Dual Player support to the Media module.
+package = "Planetary Modules"
+core = 7.x
+
+dependencies[] = media
+
+version = "7.x-1.0-alpha5"
+core = "7.x"
+project = "media_youtube"
+datestamp = "1306891017"
+
