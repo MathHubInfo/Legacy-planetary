@@ -117,6 +117,13 @@ function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $
  * @param unknown_type $format
  */
 function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  $key = md5($text);
+  ctools_include("object-cache");
+  $cached = ctools_object_cache_get("drutexml_cache", $key);
+  if (isset($cached)) { 
+  	return $cached;
+  }
+  
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
   $data = 'formula=' . urlencode($text);
   $content = do_post($host,$data);
@@ -128,6 +135,7 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   $res = str_replace('xml:','',$res); //also remove xml:id
   //$res = "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">".$res."</span>";
 
+  ctools_object_cache_set("drutexml_cache", $key, $res);
   return $res;
 }
 
