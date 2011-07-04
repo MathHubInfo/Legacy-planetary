@@ -25,22 +25,23 @@ $(function(){
    });
    
    infoBar = new tInfoBar({
-			handle		: $(':math, p[id], .omdoc-image[id], .MathJax_Display', content),
-//			handle		: $('b, u, i', content),
-			context		: getContext(),
-			hoverAttr	: {
+			handle		      : $(':math, p[id], .omdoc-image[id], .MathJax_Display', content),
+//			handle		      : $('b, u, i', content),
+			context		      : getContext(),
+			hardPositioning   : true,
+			hoverAttr	      : {
 				mathbackground	: 'yellow'
 			},
-			menu			: {
+			menu			      : {
 				liveBind				: true,
 				distance				: 45,
 				mousePositioning	: true
 			},
-			tooltip		: {
+			tooltip		      : {
 //				scheme	: 'scheme-simple-left',
 				position	: 'left'
 			},
-			tokenTypes  : {
+			tokenTypes        : {
 			   info  : {
 			      img   : imgDir+'sIcon_info.png',
 			      msg   : 'Click to expand'
