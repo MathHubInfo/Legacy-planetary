@@ -6,12 +6,27 @@
 .ds-left {
   width: 20%;
   float: left;
+  margin-left: 10px;
 }
 
 .ds-right {
-  width: 80%;
+  width: 75%;
   float: right;
+  margin-left:20px;
+  margin-right:20px;
 }
 
 .ds-center {
+}
+
+.ds-profile {
+	background: #F4F4F4;
+	border-radius: 14px;
+	margin-bottom: 20px;
+}
+
+.shadow {
+  -moz-box-shadow: 5px 5px 5px #ccc;
+  -webkit-box-shadow: 5px 5px 5px #ccc;
+  box-shadow: 5px 5px 5px #ccc;
 }

@@ -27,7 +27,7 @@
 
 
   <!-- regions -->
-  <div >
+  <div class="ds-profile shadow">
   <?php if ($profile_left): ?>
     <div class="ds-left<?php print $profile_left_classes; ?>">
       <?php print $profile_left; ?>
@@ -39,6 +39,7 @@
       <?php print $profile_right; ?>
     </div>
   <?php endif; ?>
+  <div style="clear:both"></div>
   </div>
   
   <?php if ($content): ?>
