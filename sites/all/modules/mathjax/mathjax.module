@@ -19,15 +19,6 @@ function mathjax_preprocess( &$variables, $hook ){
        }
 JS
 , array('type' => 'inline', 'weight' => 3) );
-      
-		drupal_add_html_head(
-		   array(
-       		"#markup" => $inlineScript,
-       		"#type" => "markup",
-       		"#weight" => 40, 
-   	   ), 
-   	   "lala"
-	   );
 	}
 
    
