@@ -72,7 +72,7 @@ function theme_dualplayer_xml($variables) {
         <embed 
                 src="'.$base_url.$module.'/players/tVideoPlayer-viewer.swf" 
                 width="100%" 
-                height="375" 
+                height="500" 
                 FlashVars="dataFile='.$url.'"
                 autostart="false" 
                 quality="high" 
