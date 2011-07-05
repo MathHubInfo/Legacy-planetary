@@ -1,9 +1,5 @@
 <?php
 
-function local_comments_permission() {
-	return array('view your field');
-}
-
 function tryPrintExcerpt($content, $eid) {
 	$pos = strpos($content, "id='".$eid."'");
 	if ($pos === false) {
@@ -11,8 +7,7 @@ function tryPrintExcerpt($content, $eid) {
 		if ($pos === false) {
 			drupal_set_message("Could not generate preview", "warning");
 		}
-	}
-	
+	}	
 }
 
 /**
@@ -85,23 +80,12 @@ function local_comments_preprocess(&$variables, $hook) {
 
 
 function local_comments_menu() {
-	/* $items['local_comments/add'] = array( */
-	/*   'page callback' => 'local_comments_add_form', */
-	/*   'access callback' => 'user_access', */
-	/*   'access arguments' => array('access content'), */
-	/*   'type' => MENU_CALLBACK */
-	/* ); */
-
 	$items['local_comments/article'] = array(
     'page callback' => 'local_comments_article',
-    'access callback' => 'user_access',
-    'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
 	);
 	$items["local_comments/showthread"] = array(
 			'page callback' => 'local_comments_showthread',
-    		'access callback' => 'user_access',
-    		'access arguments' => array('access content'),
 	);
 	return $items;
 }
