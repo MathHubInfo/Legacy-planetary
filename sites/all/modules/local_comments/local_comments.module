@@ -4,6 +4,17 @@ function local_comments_permission() {
 	return array('view your field');
 }
 
+function tryPrintExcerpt($content, $eid) {
+	$pos = strpos($content, "id='".$eid."'");
+	if ($pos === false) {
+		$pos = strpos($content, 'id="'.$eid.'"');
+		if ($pos === false) {
+			drupal_set_message("Could not generate preview", "warning");
+		}
+	}
+	
+}
+
 /**
  * 
  * Render 
@@ -17,13 +28,18 @@ function local_comments_showthread($nid, $eid) {
 		array(':nid' => $nid,
 			  ':eid' => $eid));
 
-	global $user;
+	$node = node_load($nid);
+	$build = node_view($node);
+	$content = drupal_render($build);
+	$excerpt = tryPrintExcerpt($content, $eid);
+	/*global $user;
 	$node = (object) array(
 		'uid'=>$user->uid,
 		'type'=>'node',
 		'name'=> isset($user->name)?$user->name:'',
 		'comment' => COMMENT_NODE_OPEN,
-	);
+	);*/
+	
 	$result = "";
 	$str = array();
 	$any = false;
@@ -55,16 +71,6 @@ function local_comments_showthread($nid, $eid) {
 	}
 	return $result;
 }
-
-/* function local_comments_add_form($cid) { */
-/*   $comment = comment_load($cid); */
-/*   $output = drupal_render(comment_preview($comment)); */
-/*   $commands = aarray(); */
-/*   $commands[] = ajax_command_append('#myDiv', $output); */
-/*   $page = array('#type' => 'ajax', '#commands' => $commands); */
-/*   ajax_deliver($page); */
-
-/* } */
 
 function local_comments_preprocess(&$variables, $hook) {
 	drupal_add_library('system', 'drupal.ajax');
