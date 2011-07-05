@@ -3,7 +3,7 @@ var $ = jQuery;
 
 $(function() {
       
-      var imgDir = '/sites/all/modules/local_comments/images/';
+      var imgDir = '/imsss/sites/all/modules/local_comments/images/';
       
       infoBar
          .data
@@ -33,8 +33,7 @@ $(function() {
 		         $('#comments .'+selectedClass).removeClass( selectedClass );
 		         $('.discussion-for-'+id).addClass( selectedClass );
 		         
-		         
-               $('#edit-eid').val( id );
+               $('input[name="eid"]').attr( "value", id );
                
                textfield.focus();
                $.scrollTo({
