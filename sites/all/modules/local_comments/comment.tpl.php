@@ -76,7 +76,7 @@
   <div class="content"<?php print $content_attributes; ?>>
   <div class="eid_link">
    <?php if ($content['comment_body']['#object']->eid) {
-     print "<a class='local_comments' href='#" . $content['comment_body']['#object']->eid . "'>Click to see the associated content</a>";
+     print "<a class='local_comments' href='" . $content['comment_body']['#object']->eid . "'>Click to see the associated content</a>";
    } else {
      print "<i>This comment has no content associated to it</i>";
    }

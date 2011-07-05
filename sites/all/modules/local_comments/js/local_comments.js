@@ -31,9 +31,9 @@ $(function() {
 		         var textfield  = CKEDITOR ? $(CKEDITOR.instances['edit-comment-body-und-0-value'].document.getBody().$) : $('#edit-comment-body-und-0-value');
 		         
 		         $('#comments .'+selectedClass).removeClass( selectedClass );
-		         $('.discussion-for-'+id).addClass( selectedClass );
+		         $('.discussion-for-'+id.replace(/\./g, '\\.')).addClass( selectedClass );
 		         
-               $('input[name="eid"]').attr( "value", id );
+               $('input[name="eid"]').val( id );
                
                textfield.focus();
                $.scrollTo({
@@ -53,11 +53,14 @@ $(function() {
       });
       
        $("a.local_comments").click(function(e){
-          var href = $(e.target).attr('href');
+          var href = e.target.href;
           if (href) {
             e.preventDefault();
-            $.scrollTo({top:$(href).offset().top - 200, left:$(href).offset().left}, 1500);
-            $(href).glow('#FFFF99', 5000);
+            href = href.slice( href.lastIndexOf('/')+1 );
+            var comment = $('#'+href.replace(/\./g, '\\.'));
+            console.log( comment, href );
+            $.scrollTo({top:comment.offset().top - 200, left:comment.offset().left}, 1500);
+            comment.glow('#FFFF99', 5000);
           }
       });
 
