@@ -9,16 +9,24 @@ function local_comments_permission() {
  * Render 
  */
 function local_comments_showthread($nid, $eid) {
-	if ($cid < 0) return;
+	if (!ctype_digit($nid)) {
+		drupal_set_message("Invalid arguments ", "error");
+		return "";
+	}
 	$res = db_query("SELECT loc.cid, c.thread FROM {local_comments} as loc, {comment} as c WHERE loc.nid = :nid and loc.eid=:eid and loc.cid=c.cid", 
 		array(':nid' => $nid,
 			  ':eid' => $eid));
 
+	if (count($res)==0) {
+		echo "No thread";
+	}
+	
 	global $user;
 	$node = (object) array(
 		'uid'=>$user->uid,
 		'type'=>'node',
-		'name'=> isset($user->name)?$user->name:''
+		'name'=> isset($user->name)?$user->name:'',
+		'comment' => COMMENT_NODE_OPEN,
 	);
 	$result = "";
 	$str = array();
@@ -159,4 +167,3 @@ function local_comments_theme_registry_alter(&$vars) {
 	$vars['comment']['path'] = drupal_get_path('module','local_comments');
 	$vars['comment']['theme paths'] = array(0 => drupal_get_path('module','local_comments'));
 }
-
