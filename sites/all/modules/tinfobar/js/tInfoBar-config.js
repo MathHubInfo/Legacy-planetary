@@ -18,7 +18,7 @@ $(function(){
    
    var content = $('.node').eq(0); 
    
-	var imgDir  = '/sites/all/modules/tinfobar/images/';
+	var imgDir  = Drupal.extraInfo.root + 'sites/all/modules/tinfobar/images/';
    var c = 0;
    $('b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));

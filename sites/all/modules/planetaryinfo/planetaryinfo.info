@@ -1,0 +1,5 @@
+name        = Planetary Info
+description = Extends Drupals "Drupal" javascript object, adding aditional information required by other modules
+version     = 0.1
+package     = Planetary Modules
+core        = 7.x

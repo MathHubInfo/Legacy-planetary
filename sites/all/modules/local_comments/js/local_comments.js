@@ -3,7 +3,7 @@ var $ = jQuery;
 
 $(function() {
       
-      var imgDir = '/sites/all/modules/local_comments/images/';
+      var imgDir = Drupal.extraInfo.root + 'sites/all/modules/local_comments/images/';
       
       infoBar
          .data
