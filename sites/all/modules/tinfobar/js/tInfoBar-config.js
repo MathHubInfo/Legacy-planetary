@@ -18,14 +18,23 @@ $(function(){
    
    var content = $('.node').eq(0); 
    
-	var imgDir  = '/sites/all/modules/tinfobar/images/';
-   var c = 0;
+	var imgDir  = Drupal.extraInfo.baseURL + 'sites/all/modules/tinfobar/images/';
+
+/*   var c = 0;
    $('b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));
    });
+*/   
+
+   var infoBar_handle;
+   
+   if( $.browser.mozilla )
+      infoBar_handle = $(':math, .omdoc-image[id]', content);
+   else
+      infoBar_handle = $('.math, .omdoc-image[id]', content);
    
    infoBar = new tInfoBar({
-			handle		      : $(':math, p[id], .omdoc-image[id], .MathJax_Display', content),
+			handle		      : infoBar_handle,
 //			handle		      : $('b, u, i', content),
 			context		      : getContext(),
 			hardPositioning   : true,

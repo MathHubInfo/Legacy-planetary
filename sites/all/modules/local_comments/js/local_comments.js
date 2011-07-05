@@ -3,7 +3,7 @@ var $ = jQuery;
 
 $(function() {
       
-      var imgDir = '/sites/all/modules/local_comments/images/';
+      var imgDir = Drupal.extraInfo.baseURL + 'sites/all/modules/local_comments/images/';
       
       infoBar
          .data
@@ -35,7 +35,7 @@ $(function() {
             menuItem( 'View local threads for this item', imgDir+'icon_comments.png' ),
             function(e){
                e.preventDefault();
-               window.location = '/local_comments/showthread/' + GI('nodeId') + '/' + infoBar.data.com.menu.menu().data('source').attr('id');
+               window.location = Drupal.extraInfo.baseURL + 'local_comments/showthread/' + GI('nodeId') + '/' + infoBar.data.com.menu.menu().data('source').attr('id');
             }, 
             'local_comments_view'
          );
@@ -53,7 +53,6 @@ $(function() {
             e.preventDefault();
             href = href.slice( href.lastIndexOf('/')+1 );
             var comment = $('#'+href.replace(/\./g, '\\.'));
-            console.log( comment, href );
             $.scrollTo({top:comment.offset().top - 200, left:comment.offset().left}, 1500);
             comment.glow('#FFFF99', 5000);
           }

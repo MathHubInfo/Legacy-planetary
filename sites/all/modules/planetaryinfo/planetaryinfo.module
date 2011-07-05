@@ -1,0 +1,37 @@
+<?php
+/**
+* Implements hook_preprocess_node
+*
+* @param &$variables
+*/
+function planetaryinfo_preprocess_node(&$variables = '') {
+   $node = $variables['node'];
+
+   unset( $node->body );
+   unset( $node->rdf_mapping );
+
+   global $user;
+
+   $root = trim(base_path(), '/') . '/';
+   
+   $data = array(
+      'baseURL'      => 'http://' . $_SERVER['HTTP_HOST'] . '/' . $root,
+      'documentRoot' => $_SERVER['DOCUMENT_ROOT'],
+      'root'         => $root,
+      'user'         => $user,
+      'node'         => $node
+   );
+
+   $dataObject = @json_encode( $data );
+
+   drupal_add_js( <<<JS
+      jQuery(function(){
+         $.extend( Drupal, { extraInfo : $dataObject } );
+      });
+JS
+      , 
+      array( 'type' => 'inline', 'weight' => 0 ) 
+   );
+   
+}
+
