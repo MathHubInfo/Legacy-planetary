@@ -125,7 +125,7 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   }
 
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
-  $data = 'formula=' . urlencode($text);
+  $data = 'profile=fragment&tex=' . urlencode($text);
   $content = do_post($host,$data);
   $res = json_decode($content);
   $res = trim($res->{'result'});
