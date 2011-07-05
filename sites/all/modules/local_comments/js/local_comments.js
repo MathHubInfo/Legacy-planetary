@@ -35,7 +35,7 @@ $(function() {
             menuItem( 'View local threads for this item', imgDir+'icon_comments.png' ),
             function(e){
                e.preventDefault();
-               window.location = Drupal.extraInfo.baseURL + '/local_comments/showthread/' + GI('nodeId') + '/' + infoBar.data.com.menu.menu().data('source').attr('id');
+               window.location = Drupal.extraInfo.baseURL + 'local_comments/showthread/' + GI('nodeId') + '/' + infoBar.data.com.menu.menu().data('source').attr('id');
             }, 
             'local_comments_view'
          );
