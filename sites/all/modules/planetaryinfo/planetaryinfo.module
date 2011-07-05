@@ -5,7 +5,6 @@
 * @param &$variables
 */
 function planetaryinfo_preprocess_node(&$variables = '') {
-
    $node = $variables['node'];
 
    unset( $node->body );
@@ -13,13 +12,16 @@ function planetaryinfo_preprocess_node(&$variables = '') {
 
    global $user;
 
+   $root = trim(base_path(), '/') . '/';
+   
    $data = array(
+      'baseURL'      => 'http://' . $_SERVER['HTTP_HOST'] . '/' . $root,
       'documentRoot' => $_SERVER['DOCUMENT_ROOT'],
-      'root'         => getDir( $_SERVER['PHP_SELF'] ),
+      'root'         => $root,
       'user'         => $user,
       'node'         => $node
    );
-   
+
    $dataObject = @json_encode( $data );
 
    drupal_add_js( <<<JS
@@ -31,9 +33,5 @@ JS
       array( 'type' => 'inline', 'weight' => 0 ) 
    );
    
-}
-
-function getDir( $str ){
-   return substr( $str, 0, strrpos( $str, "/" ) ) . '/';
 }
 
