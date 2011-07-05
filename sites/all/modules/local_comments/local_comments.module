@@ -20,14 +20,12 @@ function local_comments_showthread($nid, $eid) {
 		'type'=>'node',
 		'name'=> isset($user->name)?$user->name:''
 	);
-	dd($node->type);
 	$result = "";
 	$str = array();
 	foreach ($res as $record) {
 		$cid = $record->cid;
 		$thread = $record->thread;
 		$thread = substr($thread, 0, strlen($thread)-1);
-		dd($cid." ".$thread,"cid thread:");
 		
 		$query = db_select('comment', 'c');
 		$query->addField('c', 'cid');
