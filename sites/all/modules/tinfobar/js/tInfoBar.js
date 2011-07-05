@@ -36,7 +36,7 @@
                                  time                 : 400, 
                                  distance             : 40,
                                  mousePositioning     : false,
-                                 liveBind             : false
+                                 liveBind             : true
                               },
          // specify options for the tooltip. You can also modify them later
          tooltip           :  { // check tTooltip.js for info regarding the options

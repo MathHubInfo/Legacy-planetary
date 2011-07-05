@@ -1,18 +1,71 @@
-<?
+<?php
 
-function local_comments_permission() {
-	return array('view your field');
+function tryPrintExcerpt($content, $eid) {
+	$pos = strpos($content, "id='".$eid."'");
+	if ($pos === false) {
+		$pos = strpos($content, 'id="'.$eid.'"');
+		if ($pos === false) {
+			drupal_set_message("Could not generate preview", "warning");
+		}
+	}	
 }
 
-/* function local_comments_add_form($cid) { */
-/*   $comment = comment_load($cid); */
-/*   $output = drupal_render(comment_preview($comment)); */
-/*   $commands = array(); */
-/*   $commands[] = ajax_command_append('#myDiv', $output); */
-/*   $page = array('#type' => 'ajax', '#commands' => $commands); */
-/*   ajax_deliver($page); */
+/**
+ * 
+ * Render 
+ */
+function local_comments_showthread($nid, $eid) {
+	if (!ctype_digit($nid)) {
+		drupal_set_message("Invalid arguments ", "error");
+		return "";
+	}
+	$res = db_query("SELECT loc.cid, c.thread FROM {local_comments} as loc, {comment} as c WHERE loc.nid = :nid and loc.eid=:eid and loc.cid=c.cid", 
+		array(':nid' => $nid,
+			  ':eid' => $eid));
 
-/* } */
+	$node = node_load($nid);
+	$build = node_view($node);
+	$content = drupal_render($build);
+	$excerpt = tryPrintExcerpt($content, $eid);
+	/*global $user;
+	$node = (object) array(
+		'uid'=>$user->uid,
+		'type'=>'node',
+		'name'=> isset($user->name)?$user->name:'',
+		'comment' => COMMENT_NODE_OPEN,
+	);*/
+	
+	$result = "";
+	$str = array();
+	$any = false;
+	foreach ($res as $record) {
+		$any = true;
+		$cid = $record->cid;
+		$thread = $record->thread;
+		$thread = substr($thread, 0, strlen($thread)-1);
+		
+		$query = db_select('comment', 'c');
+		$query->addField('c', 'cid');
+		$query
+		->condition('c.nid', $nid)
+		->addTag('node_access')
+		->addTag('comment_filter');
+		if (!user_access('administer comments')) {
+			$query->condition('c.status', COMMENT_PUBLISHED);
+		}
+		$query->where('SUBSTRING(c.thread, 1, '.strlen($thread).')=:tthread',array(":tthread"=>$thread));
+		$query->orderBy('thread', 'DESC');
+		$cids = comment_load_multiple($query->execute()->fetchCol());
+		comment_prepare_thread($cids);
+		$build = comment_view_multiple($cids, $node);
+		$result.=drupal_render($build);
+	}
+	if (!$any) {
+		drupal_set_message("No thread found", "warning");
+		return "";
+	}
+	return $result;
+}
 
 function local_comments_preprocess(&$variables, $hook) {
 	drupal_add_library('system', 'drupal.ajax');
@@ -27,18 +80,12 @@ function local_comments_preprocess(&$variables, $hook) {
 
 
 function local_comments_menu() {
-	/* $items['local_comments/add'] = array( */
-	/*   'page callback' => 'local_comments_add_form', */
-	/*   'access callback' => 'user_access', */
-	/*   'access arguments' => array('access content'), */
-	/*   'type' => MENU_CALLBACK */
-	/* ); */
-
 	$items['local_comments/article'] = array(
     'page callback' => 'local_comments_article',
-    'access callback' => 'user_access',
-    'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
+	);
+	$items["local_comments/showthread"] = array(
+			'page callback' => 'local_comments_showthread',
 	);
 	return $items;
 }
@@ -62,9 +109,10 @@ function local_comments_article ($nid = -1) {
 //an alternative way to do it is to override the hook
 // hook_form_FORM_ID_alter
 function local_comments_form_alter(&$form, $form_state, $form_id) {
-	if ($form_id == 'comment_node_article_form') {
+	if ($form_id == 'comment_node_lecture_form') {
 		$form['eid'] = array(
-      '#type' => 'textfield',
+      '#type' => 'hidden',
+      '#id' => 'eid',
       '#title' => t("The ID of the element this comment references"),
       '#required' => FALSE,
       '#size' => 60,
@@ -111,4 +159,3 @@ function local_comments_theme_registry_alter(&$vars) {
 	$vars['comment']['path'] = drupal_get_path('module','local_comments');
 	$vars['comment']['theme paths'] = array(0 => drupal_get_path('module','local_comments'));
 }
-

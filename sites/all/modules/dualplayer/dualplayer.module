@@ -64,7 +64,7 @@ function theme_dualplayer_xml($variables) {
 	$base_url = url("<front>");
 	$module = drupal_get_path("module", "dualplayer");
 	$txt = '
-	 <object  width="100%" height="375" align="middle" id="tVideoPlayer-viewer" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0">
+	 <object  width="100%" height="550" align="middle" id="tVideoPlayer-viewer" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0">
         <param name="movie" value="'.$base_url.$module.'/players/tVideoPlayer-viewer.swf" />
         <param name="quality" value="high" />
         <param name="bgcolor" value="#ffffff" />
@@ -72,7 +72,7 @@ function theme_dualplayer_xml($variables) {
         <embed 
                 src="'.$base_url.$module.'/players/tVideoPlayer-viewer.swf" 
                 width="100%" 
-                height="375" 
+                height="500" 
                 FlashVars="dataFile='.$url.'"
                 autostart="false" 
                 quality="high" 

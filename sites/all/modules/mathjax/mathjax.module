@@ -4,30 +4,7 @@ function mathjax_preprocess( &$variables, $hook ){
    
 	if ( !stristr($_SERVER["HTTP_USER_AGENT"], "Firefox") ) {
       drupal_add_js('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML', array( 'type' => 'external', 'weight' => 2 ) );
-		drupal_add_js(<<<JS
-      if (!jQuery.browser.mozilla) {
-       MathJax.Hub.Register.StartupHook("MathML Jax Ready",function () {
-         var PARSE = MathJax.InputJax.MathML.Parse;
-         var oldMakeMML = PARSE.prototype.MakeMML;
-         PARSE.Augment({
-           MakeMML: function (node) {
-             if (node.hasAttribute("type")) {node.removeAttribute("type")}
-             return oldMakeMML.apply(this,arguments);
-           }
-         });
-       });
-       }
-JS
-, array('type' => 'inline', 'weight' => 3) );
-      
-		drupal_add_html_head(
-		   array(
-       		"#markup" => $inlineScript,
-       		"#type" => "markup",
-       		"#weight" => 40, 
-   	   ), 
-   	   "lala"
-	   );
+      drupal_add_js(drupal_get_path("module","mathjax")."/mathjax.js", array('type' => 'file', 'weight' => 3) );
 	}
 
    

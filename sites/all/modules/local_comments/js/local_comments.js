@@ -3,38 +3,23 @@ var $ = jQuery;
 
 $(function() {
       
-      var imgDir = '/sites/all/modules/local_comments/images/';
+      var imgDir = Drupal.extraInfo.baseURL + 'sites/all/modules/local_comments/images/';
       
       infoBar
          .data
          .com
          .menu
-         .add(
-            $(document.createElement('a'))
-				   .attr({
-					   'href'	: 'javascript:void(0)',
-					   'class'	: infoBar.data.cls.popItem,
-					   'title'	: 'Add a local comment'
-				   })
-				   .append( 
-					   $(document.createElement('img'))
-						   .attr({
-						      'src' : imgDir+'icon_comments.png',
-						      'alt' : 'Local Comment'
-						   }) 
-				   )
-		      , function(e){
-		         
-		         var selectedClass = 'discussion-selected';
+         .add( menuItem( 'Create a new local thread', imgDir+'icon_comment.png' ), 
+            function(e){
+//		         var selectedClass = 'discussion-selected';
 		         
 		         var id         = infoBar.data.com.menu.menu().data('source').attr('id');
 		         var textfield  = CKEDITOR ? $(CKEDITOR.instances['edit-comment-body-und-0-value'].document.getBody().$) : $('#edit-comment-body-und-0-value');
 		         
-		         $('#comments .'+selectedClass).removeClass( selectedClass );
-		         $('.discussion-for-'+id).addClass( selectedClass );
+//		         $('#comments .'+selectedClass).removeClass( selectedClass );
+//		         $('.discussion-for-'+id.replace(/\./g, '\\.')).addClass( selectedClass );
 		         
-		         
-               $('#edit-eid').val( id );
+               $('input[name="eid"]').val( id );
                
                textfield.focus();
                $.scrollTo({
@@ -43,9 +28,18 @@ $(function() {
                   },
                   1500
                )
-		      }, 'local_comments'
+		      }, 
+		      'local_comments_add'
+         )
+         .add( 
+            menuItem( 'View local threads for this item', imgDir+'icon_comments.png' ),
+            function(e){
+               e.preventDefault();
+               window.location = Drupal.extraInfo.baseURL + 'local_comments/showthread/' + GI('nodeId') + '/' + infoBar.data.com.menu.menu().data('source').attr('id');
+            }, 
+            'local_comments_view'
          );
-      
+                  
       infoBar
          .setTokenType(
             'localComment', {
@@ -54,12 +48,38 @@ $(function() {
       });
       
        $("a.local_comments").click(function(e){
-          var href = $(e.target).attr('href');
+          var href = e.target.href;
           if (href) {
             e.preventDefault();
-            $.scrollTo({top:$(href).offset().top - 200, left:$(href).offset().left}, 1500);
-            $(href).glow('#FFFF99', 5000);
+            href = href.slice( href.lastIndexOf('/')+1 );
+            var comment = $('#'+href.replace(/\./g, '\\.'));
+            $.scrollTo({top:comment.offset().top - 200, left:comment.offset().left}, 1500);
+            comment.glow('#FFFF99', 5000);
           }
       });
+      
+	   function menuItem( title, path, attributes ){
+	      attributes = attributes || {};
+		   return $(document.createElement('a'))
+					   .attr({
+						   'href'	: 'javascript:void(0)',
+						   'class'	: infoBar.data.cls.popItem,
+						   'title'	: title
+					   })
+					   .attr( attributes )
+					   .append( 
+						   $(document.createElement('img'))
+							   .attr({
+							      src   : path,
+							      alt   : title
+							   }) 
+					   );
+	   }
+
+   function GI( name ){
+      var wrapper = 'tInfoBar_info';
+      var prefix  = 'info_';
+      return $('#'+wrapper).find('#'+prefix+name).html();
+   }
 
 });
