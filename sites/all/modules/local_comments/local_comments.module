@@ -4,10 +4,54 @@ function local_comments_permission() {
 	return array('view your field');
 }
 
+/**
+ * 
+ * Render 
+ */
+function local_comments_showthread($nid, $eid) {
+	if ($cid < 0) return;
+	$res = db_query("SELECT loc.cid, c.thread FROM {local_comments} as loc, {comment} as c WHERE loc.nid = :nid and loc.eid=:eid and loc.cid=c.cid", 
+		array(':nid' => $nid,
+			  ':eid' => $eid));
+
+	global $user;
+	$node = (object) array(
+		'uid'=>$user->uid,
+		'type'=>'node',
+		'name'=> isset($user->name)?$user->name:''
+	);
+	dd($node->type);
+	$result = "";
+	$str = array();
+	foreach ($res as $record) {
+		$cid = $record->cid;
+		$thread = $record->thread;
+		$thread = substr($thread, 0, strlen($thread)-1);
+		dd($cid." ".$thread,"cid thread:");
+		
+		$query = db_select('comment', 'c');
+		$query->addField('c', 'cid');
+		$query
+		->condition('c.nid', $nid)
+		->addTag('node_access')
+		->addTag('comment_filter');
+		if (!user_access('administer comments')) {
+			$query->condition('c.status', COMMENT_PUBLISHED);
+		}
+		$query->where('SUBSTRING(c.thread, 1, '.strlen($thread).')=:tthread',array(":tthread"=>$thread));
+		$query->orderBy('thread', 'DESC');
+		$cids = comment_load_multiple($query->execute()->fetchCol());
+		comment_prepare_thread($cids);
+		$build = comment_view_multiple($cids, $node);
+		$result.=drupal_render($build);
+	}
+	return $result;
+}
+
 /* function local_comments_add_form($cid) { */
 /*   $comment = comment_load($cid); */
 /*   $output = drupal_render(comment_preview($comment)); */
-/*   $commands = array(); */
+/*   $commands = aarray(); */
 /*   $commands[] = ajax_command_append('#myDiv', $output); */
 /*   $page = array('#type' => 'ajax', '#commands' => $commands); */
 /*   ajax_deliver($page); */
@@ -39,6 +83,11 @@ function local_comments_menu() {
     'access callback' => 'user_access',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
+	);
+	$items["local_comments/showthread"] = array(
+			'page callback' => 'local_comments_showthread',
+    		'access callback' => 'user_access',
+    		'access arguments' => array('access content'),
 	);
 	return $items;
 }
