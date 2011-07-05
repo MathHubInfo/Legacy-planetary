@@ -15,7 +15,7 @@ function planetaryinfo_preprocess_node(&$variables = '') {
 
    $data = array(
       'documentRoot' => $_SERVER['DOCUMENT_ROOT'],
-      'root'         => dirname( $_SERVER['PHP_SELF'] ),
+      'root'         => getDir( $_SERVER['PHP_SELF'] ),
       'user'         => $user,
       'node'         => $node
    );
@@ -31,5 +31,9 @@ JS
       array( 'type' => 'inline', 'weight' => 0 ) 
    );
    
+}
+
+function getDir( $str ){
+   return substr( $str, 0, strrpos( $str, "/" ) ) . '/';
 }
 
