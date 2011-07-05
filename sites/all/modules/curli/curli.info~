@@ -1,4 +1,0 @@
-name = curl
-description = A module that provides cURL interaction
-core = 7.x
-package = Planetary Modules
