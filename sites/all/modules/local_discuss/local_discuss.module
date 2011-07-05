@@ -1,4 +1,0 @@
-
-function local_discuss_page_alter(&$page) {
-	
-}

@@ -1,4 +1,4 @@
-<?
+<?php
 
 function local_comments_permission() {
 	return array('view your field');
