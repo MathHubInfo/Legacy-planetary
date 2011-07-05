@@ -17,10 +17,6 @@ function local_comments_showthread($nid, $eid) {
 		array(':nid' => $nid,
 			  ':eid' => $eid));
 
-	if (count($res)==0) {
-		echo "No thread";
-	}
-	
 	global $user;
 	$node = (object) array(
 		'uid'=>$user->uid,
@@ -30,7 +26,9 @@ function local_comments_showthread($nid, $eid) {
 	);
 	$result = "";
 	$str = array();
+	$any = false;
 	foreach ($res as $record) {
+		$any = true;
 		$cid = $record->cid;
 		$thread = $record->thread;
 		$thread = substr($thread, 0, strlen($thread)-1);
@@ -50,6 +48,10 @@ function local_comments_showthread($nid, $eid) {
 		comment_prepare_thread($cids);
 		$build = comment_view_multiple($cids, $node);
 		$result.=drupal_render($build);
+	}
+	if (!$any) {
+		drupal_set_message("No thread found", "warning");
+		return "";
 	}
 	return $result;
 }
