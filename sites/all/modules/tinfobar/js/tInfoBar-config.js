@@ -46,10 +46,10 @@ $(function(){
 			      img   : imgDir+'sIcon_info.png',
 			      msg   : 'Click to expand'
 			   },
-			   comment  : {
+/*			   comment  : {
 			      img   : imgDir+'sIcon_comment.png',
 			      msg   : 'Highlight words with comments'
-			   },
+			   },*/
 			   error    : {
 			      img   : imgDir+'sIcon_bug.png',
 			      msg   : 'Show all error type comments on this row'
@@ -89,7 +89,7 @@ $(function(){
    function iconMenu_setup( infoBar ){
 	
 	   com.menu
-		   .add( menuItem('Ask a question', img.comment), null, 'question')
+//		   .add( menuItem('Ask a question', img.comment), null, 'question')
 		   .add( menuItem('Report an error', img.bug), null, 'error')
 	   ;
 	
@@ -134,9 +134,9 @@ $(function(){
 			   menu.data('tooltip').hide();
 		   });
 	
-	   com.menu
+/*	   com.menu
 		   .get('question')
-		   .bind('click.questionToken', { type:'comment' }, getItems );
+		   .bind('click.questionToken', { type:'comment' }, getItems ); */
 		
       com.menu
          .get('error')

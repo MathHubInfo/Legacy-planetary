@@ -9,29 +9,15 @@ $(function() {
          .data
          .com
          .menu
-         .add(
-            $(document.createElement('a'))
-				   .attr({
-					   'href'	: 'javascript:void(0)',
-					   'class'	: infoBar.data.cls.popItem,
-					   'title'	: 'Add a local comment'
-				   })
-				   .append( 
-					   $(document.createElement('img'))
-						   .attr({
-						      'src' : imgDir+'icon_comments.png',
-						      'alt' : 'Local Comment'
-						   }) 
-				   )
-		      , function(e){
-		         
-		         var selectedClass = 'discussion-selected';
+         .add( menuItem( 'Create a new local thread', imgDir+'icon_comment.png' ), 
+            function(e){
+//		         var selectedClass = 'discussion-selected';
 		         
 		         var id         = infoBar.data.com.menu.menu().data('source').attr('id');
 		         var textfield  = CKEDITOR ? $(CKEDITOR.instances['edit-comment-body-und-0-value'].document.getBody().$) : $('#edit-comment-body-und-0-value');
 		         
-		         $('#comments .'+selectedClass).removeClass( selectedClass );
-		         $('.discussion-for-'+id.replace(/\./g, '\\.')).addClass( selectedClass );
+//		         $('#comments .'+selectedClass).removeClass( selectedClass );
+//		         $('.discussion-for-'+id.replace(/\./g, '\\.')).addClass( selectedClass );
 		         
                $('input[name="eid"]').val( id );
                
@@ -42,9 +28,18 @@ $(function() {
                   },
                   1500
                )
-		      }, 'local_comments'
+		      }, 
+		      'local_comments_add'
+         )
+         .add( 
+            menuItem( 'View local threads for this item', imgDir+'icon_comments.png' ),
+            function(e){
+               e.preventDefault();
+               window.location = '/local_comments/showthread/' + GI('nodeId') + '/' + infoBar.data.com.menu.menu().data('source').attr('id');
+            }, 
+            'local_comments_view'
          );
-      
+                  
       infoBar
          .setTokenType(
             'localComment', {
@@ -63,5 +58,29 @@ $(function() {
             comment.glow('#FFFF99', 5000);
           }
       });
+      
+	   function menuItem( title, path, attributes ){
+	      attributes = attributes || {};
+		   return $(document.createElement('a'))
+					   .attr({
+						   'href'	: 'javascript:void(0)',
+						   'class'	: infoBar.data.cls.popItem,
+						   'title'	: title
+					   })
+					   .attr( attributes )
+					   .append( 
+						   $(document.createElement('img'))
+							   .attr({
+							      src   : path,
+							      alt   : title
+							   }) 
+					   );
+	   }
+
+   function GI( name ){
+      var wrapper = 'tInfoBar_info';
+      var prefix  = 'info_';
+      return $('#'+wrapper).find('#'+prefix+name).html();
+   }
 
 });
