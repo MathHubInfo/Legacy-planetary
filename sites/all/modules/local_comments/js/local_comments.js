@@ -53,7 +53,6 @@ $(function() {
             e.preventDefault();
             href = href.slice( href.lastIndexOf('/')+1 );
             var comment = $('#'+href.replace(/\./g, '\\.'));
-            console.log( comment, href );
             $.scrollTo({top:comment.offset().top - 200, left:comment.offset().left}, 1500);
             comment.glow('#FFFF99', 5000);
           }
