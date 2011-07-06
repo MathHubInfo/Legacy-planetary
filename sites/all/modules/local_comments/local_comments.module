@@ -4,17 +4,37 @@ function tryPrintExcerpt($content, $eid) {
   $doc = new DOMDocument();
 
   //Do dirty stuff here until DOMDocument supports HTML5 tags such as math
-  $xml = $content;
-  libxml_use_internal_errors(true);
-  $doc->loadHTML($xml);
-  libxml_clear_errors();
-
+  $xml = "<?xml version='1.0' encoding='utf-8'?>\n".
+    "<!DOCTYPE root [\n".
+    "<!ENTITY nbsp \"&#160;\">\n".
+    "]>\n".
+    $content;
+  libxml_use_internal_errors(true); //turn off warning just in case you have
+  $doc->loadXML($xml);              //undefined XML entities (but HTML) in the
+  libxml_clear_errors();            //$xml and then turn it back on
 
   $xpath = new DOMXPath($doc);
   $query = "//*[@id='$eid']";
   $nodelist = $xpath->query($query);
-  if ($nodelist && $nodelist->item(0) && $nodelist->item(0)->nodeValue) {
-    return $nodelist->item(0)->nodeValue;
+
+  $new = new DomDocument();
+
+  if ($nodelist->item(0)->previousSibling) {
+    $new->appendChild($new->importNode($nodelist->item(0)->previousSibling, true));
+  }
+
+  $new->appendChild($new->importNode($nodelist->item(0), true));
+
+  if ($nodelist->item(0)->nextSibling) {
+    $new->appendChild($new->importNode($nodelist->item(0)->nextSibling, true));
+  }
+
+  $str = $new->saveHTML();
+
+  if ($str) {
+    $str = '<div class="local_comments_relevant" style="background-color:#D1D1D1;">'.$str.'</div>';
+    $str = '<div class="local_comments_title" style="font-weight:bold;">Relevant context:</div>' . $str;
+    return $str;
   } else {
     return FALSE;
   }
@@ -45,7 +65,7 @@ function local_comments_showthread($nid, $eid) {
     'comment' => COMMENT_NODE_OPEN,
     );*/
 
-  $result = "";
+  $result = $excerpt;
   $str = array();
   $any = false;
   foreach ($res as $record) {
@@ -117,22 +137,22 @@ function local_comments_getThreads( $nid, $eid ){
 	$query->fields( 'l' );
 	$query->condition( 'l.eid', $eid )->condition( 'l.nid', $nid );
 	$result = $query->execute();
-	 
+
 	$q = db_select( 'comment', 'c' );
 	//   $q->fields( array( 'c.subject', 'c.created', 'c.name' ) );
 	$q->fields( 'c' );
 	$q->condition( 'c.nid', $nid );
-	 
+
 	if( $result->rowCount() <= 0 ) exit( drupal_json_output( array() ) );
-	 
+
 	$or = db_or();
 	foreach( $result as $r )
 	$or->condition( 'c.cid', $r->cid );
-	 
+
 	$q->condition( $or );
 
 	$a = array();
-	 
+
 	$res = $q->execute();
 	foreach( $res as $r )
 	$a[] = array(
@@ -140,14 +160,14 @@ function local_comments_getThreads( $nid, $eid ){
          'subject'   => $r->subject,
          'name'      => $r->name
 	);
-	 
-	 
+
+
 	echo drupal_json_output( $a );
 }
 
 function local_comments_addNewComment( $pid = '', $nid = '', $eid = '', $subject = '', $comment = '' ){
 	global $user;
-	 
+
 	$c = (object) array(
       'pid'            => $pid,
       'nid'            => $nid,
@@ -170,7 +190,7 @@ function local_comments_addNewComment( $pid = '', $nid = '', $eid = '', $subject
 
 	$newComment = comment_submit( $c );
 	comment_save( $c );
-	 
+
 	local_comments_comment_insert(
 	(object) array(
          'eid'    => $eid,
@@ -179,9 +199,9 @@ function local_comments_addNewComment( $pid = '', $nid = '', $eid = '', $subject
          'text'   => $comment
 	)
 	);
-	 
+
 	echo drupal_json_output( array( 'result' => true ) );
-	 
+
 }
 
 function local_comments_article ($nid = -1) {
