@@ -77,15 +77,6 @@ function tinfobar_menu() {
 }
 
 /**
-*
-*
-*
-function tinfobar_perm() {
-   return array('access dynamic_products content');
-}
-*/
-
-/**
 * Retrieve all tokens for a specified context and of specific type
 *
 * @param $context

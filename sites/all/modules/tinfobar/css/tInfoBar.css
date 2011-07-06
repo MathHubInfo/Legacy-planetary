@@ -56,3 +56,7 @@ img{ border: 0; }
 	overflow		: hidden;
 	clear 		: both;
 }
+
+.tokenView td, .tokenView th, .tokenView tbody{
+   border   : 0;
+}

@@ -152,7 +152,7 @@ var tInfoBar = (function(){
          $('body').prepend( com.tokenMenu.menu() );
          
          var dataPack = { com:com, opt:opt, cls:cls, img:img };
-         
+
          com.self.data = dataPack;
          
          // ---- SETUP ---- //

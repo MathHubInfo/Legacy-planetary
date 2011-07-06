@@ -20,90 +20,115 @@ $(function(){
    
 	var imgDir  = Drupal.extraInfo.baseURL + 'sites/all/modules/tinfobar/images/';
 
-/*   var c = 0;
+///*
+   var c = 0;
    $('b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));
    });
-*/   
-
-   var infoBar_handle;
+//*/   
    
-   if( $.browser.mozilla )
-      infoBar_handle = $(':math, .omdoc-image[id]', content);
-   else
-      infoBar_handle = $('.math, .omdoc-image[id]', content);
-   
-   infoBar = new tInfoBar({
-			handle		      : infoBar_handle,
-//			handle		      : $('b, u, i', content),
-			context		      : getContext(),
-			hardPositioning   : true,
-			hoverAttr	      : {
-				mathbackground	: 'yellow'
-			},
-			menu			      : {
-				liveBind				: true,
-				distance				: 45,
-				mousePositioning	: true
-			},
-			tooltip		      : {
+   var infoBar_options = {
+		handle		      : null,
+		context		      : getContext(),
+		hardPositioning   : true,
+		hoverAttr	      : {
+			mathbackground	: 'yellow'
+		},
+		menu			      : {
+			liveBind				: true,
+			distance				: 45,
+			mousePositioning	: true
+		},
+		tooltip		      : {
 //				scheme	: 'scheme-simple-left',
-				position	: 'left'
-			},
-			tokenTypes        : {
-			   info  : {
-			      img   : imgDir+'sIcon_info.png',
-			      msg   : 'Click to expand'
-			   },
+			position	: 'left'
+		},
+		tokenTypes        : {
+		   info  : {
+		      img   : imgDir+'sIcon_info.png',
+		      msg   : 'Click to expand'
+		   },
 /*			   comment  : {
-			      img   : imgDir+'sIcon_comment.png',
-			      msg   : 'Highlight words with comments'
-			   },*/
-			   error    : {
-			      img   : imgDir+'sIcon_bug.png',
-			      msg   : 'Show all error type comments on this row'
-			   }
-			}
-		}, null, {		// redefine path to images
-			ajax				: imgDir+'ajax.gif',
-			info				: imgDir+'sIcon_info.png',
-			bug				: imgDir+'icon_bug.png',
-			comment			: imgDir+'icon_comment.png'
-			
+		      img   : imgDir+'sIcon_comment.png',
+		      msg   : 'Highlight words with comments'
+		   },*/
+		   error    : {
+		      img   : imgDir+'sIcon_bug.png',
+		      msg   : 'Show all error type comments on this row'
+		   }
 		}
-	);
+	}
 	
-	infoBar.attach( content );
-
-   $.get( '?q=tInfoBar/getTokens/'+getContext(),
-      function(r){
-         for( var i in r )
-            infoBar.addToken( $("[id='"+r[i].wordID+"']"), r[i].type );
-   });
-
-   var opt 	= infoBar.data.opt;
-   var cls 	= infoBar.data.cls;
-   var img 	= infoBar.data.img;
-   var com 	= infoBar.data.com;
+	var infoBar_classes = {};
    
-   var menu    = com.menu.menu();
-   var tooltip = com.tooltip.get();
-	
-	iconMenu_setup( infoBar );
+   var infoBar_images = { // redefine path to images
+		ajax				: imgDir+'ajax.gif',
+		info				: imgDir+'sIcon_info.png',
+		bug				: imgDir+'icon_bug.png',
+		comment			: imgDir+'icon_comment.png'
+	}
+      
+   if( $.browser.mozilla ){
+      infoBar_options.handle = $(':math, .omdoc-image[id]', content);
+      setup_infoBar();
+   } else {
+      infoBar_options.handle = $('.math, .omdoc-image[id]', content);
+/*      if( MathJax )
+         MathJax.Hub.Queue( setup_infoBar );
+      else */
+         setup_infoBar();
+   }
+   
+   var opt; 
+   var cls; 
+   var img; 
+   var com;   
+   var menu;
+   var tooltip;
+
 
    /**********************\
    |** Helper Functions **|
    \**********************/
 
+   function setup_infoBar(){
+      
+      infoBar_options.handle = $('b, u, i', content);
+   
+      infoBar = new tInfoBar( infoBar_options, infoBar_classes, infoBar_images );
+	
+	   infoBar.attach( content );
+
+      $.get( '?q=tInfoBar/getTokens/'+getContext(),
+         function(r){
+            for( var i in r )
+               infoBar.addToken( $("[id='"+r[i].wordID+"']"), r[i].type );
+      });
+
+      opt 	= infoBar.data.opt;
+      cls 	= infoBar.data.cls;
+      img 	= infoBar.data.img;
+      com 	= infoBar.data.com;
+      
+      menu    = com.menu.menu();
+      tooltip = com.tooltip.get();
+	
+	   iconMenu_setup( infoBar );
+	   
+	   infoBar.tooltipView = function( view ){
+	      tooltip.find('.tokenView').hide();
+	      tooltip.find('#'+view).show();
+	   }
+	   
+   }
+
    function iconMenu_setup( infoBar ){
 	
 	   com.menu
-//		   .add( menuItem('Ask a question', img.comment), null, 'question')
-		   .add( menuItem('Report an error', img.bug), null, 'error')
-	   ;
+		   .add( menuItem('Report an error', img.bug, {view:'commentView'}), null, 'error');
 	
 	   tooltip
-		   .html(	'<table cellspacing="0" cellpadding="0" id="questionView" class="tokenView">'+
+		   .html(	'<table cellspacing="0" cellpadding="0" id="commentView" class="tokenView">'+
 						   '<tr><td class="'+cls.comments+'"></td></tr>'+
 						   '<tr><td><textarea style="width:155px;resize:none"></textarea></td></tr>'+
 						   '<tr><td style="text-align:right">'+
@@ -113,7 +138,7 @@ $(function(){
 					   '</table>'
 		   ).hide()
 		   .find('.closeMe')
-		   .bind('click.closeMe', function(){ com.tooltip.hide(); })
+		   .live('click.closeMe', function(){ com.tooltip.hide(); })
 		   .end()
 		   .find('.submit')
 		   .bind('click.sendMessage', function(){
@@ -143,22 +168,20 @@ $(function(){
 			   menu.data('tooltip').hide();
 		   });
 	
-/*	   com.menu
-		   .get('question')
-		   .bind('click.questionToken', { type:'comment' }, getItems ); */
-		
       com.menu
          .get('error')
          .bind('click.errorToken', { type:'error' }, getItems );
 			
 	   /** Inner Functions defined bellow **/
-	   function menuItem(title, path){
+	   function menuItem( title, path, attributes ){
+	      attributes = attributes || {};
 		   return $(document.createElement('a'))
 					   .attr({
 						   'href'	: 'javascript:void(0)',
-						   'class'	: cls.popItem,
+						   'class'	: infoBar.data.cls.popItem,
 						   'title'	: title
 					   })
+					   .attr( attributes )
 					   .append( 
 						   $(document.createElement('img'))
 							   .attr({
@@ -172,9 +195,10 @@ $(function(){
    function getItems( e ){
       
       var type = e.data.type;
-      
+
 	   infoBar.getTooltip().target( $(this) );
-	
+   	infoBar.tooltipView( 'commentView' );
+   	
 	   menu
 	      .data('source-type', type)
 		   .find('.'+cls.comments)
