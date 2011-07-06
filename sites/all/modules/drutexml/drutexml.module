@@ -1,10 +1,8 @@
 <?php
 
 /**
- * @file
  * A module that allows new input types such as LaTeX and sTeX
  */
-
 /**
  * A function to do a POST request to a certain $host with the $data
  * @param string $host the URL of the backend
@@ -74,6 +72,12 @@ function drutexml_filter_info() {
     'settings callback' => '_drutexml_filter_latex_settings',
     'tips callback' => '_drutexml_filter_latex_tips',
   );
+  $filters['image_sanetizer'] = array(
+    'title' => t('Image Sanetizer'),
+    'description' => t('Replaces images with src="some local path" to images pointing to src="sites/default/files/nodeid"'),
+    'process callback' => '_drutexml_image_sanetizer',
+    'cache' => false,
+  );
   return $filters;
 }
 
@@ -137,6 +141,29 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
 
   ctools_object_cache_set("drutexml_cache", $key, $res);
   return $res;
+}
+
+/**
+ * 
+ * Image Sanetizer Filter
+ * @param unknown_type $text
+ * @param unknown_type $filter
+ * @param unknown_type $format
+ * @param unknown_type $langcode
+ * @param unknown_type $cache
+ * @param unknown_type $cache_id
+ */
+function _drutexml_image_sanetizer($text, $filter, $format, $langcode, $cache, $cache_id) {
+	$webroot = "/webroot='([^']+)'/";
+	$count = preg_match($webroot, $text, $arr, PREG_OFFSET_CAPTURE);
+	if ($count == 0) // no webroot found 
+		return $text;
+	$webpath = url('<front>').$arr[1][0]."/";
+	
+	$pattern = "/<img([^>]*)src\s*=\s*[\"']([^\"'\/]+)[\"']([^>]*)>/";
+	$replace = "<img$1 src='".$webpath."$2' $3>";
+	$result = preg_replace($pattern, $replace, $text);
+	return $result;
 }
 
 /**
