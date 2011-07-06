@@ -15,9 +15,9 @@ $(function(){
 			return !!$(a).data('contextPoint');
 		}
 	});
-   
-   var content = $('.node').eq(0); 
-   
+
+   var content = $('.node').eq(0);
+
 	var imgDir  = Drupal.extraInfo.baseURL + 'sites/all/modules/tinfobar/images/';
 
 ///*
@@ -25,8 +25,8 @@ $(function(){
    $('b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));
    });
-//*/   
-   
+//*/
+
    var infoBar_options = {
 		handle		      : null,
 		context		      : getContext(),
@@ -58,16 +58,16 @@ $(function(){
 		   }
 		}
 	}
-	
+
 	var infoBar_classes = {};
-   
+
    var infoBar_images = { // redefine path to images
 		ajax				: imgDir+'ajax.gif',
 		info				: imgDir+'sIcon_info.png',
 		bug				: imgDir+'icon_bug.png',
 		comment			: imgDir+'icon_comment.png'
 	}
-      
+
    if( $.browser.mozilla ){
       infoBar_options.handle = $(':math, .omdoc-image[id]', content);
       setup_infoBar();
@@ -78,11 +78,11 @@ $(function(){
       else */
          setup_infoBar();
    }
-   
-   var opt; 
-   var cls; 
-   var img; 
-   var com;   
+
+   var opt;
+   var cls;
+   var img;
+   var com;
    var menu;
    var tooltip;
 
@@ -92,11 +92,11 @@ $(function(){
    \**********************/
 
    function setup_infoBar(){
-      
+
       infoBar_options.handle = $('b, u, i', content);
-   
+
       infoBar = new tInfoBar( infoBar_options, infoBar_classes, infoBar_images );
-	
+
 	   infoBar.attach( content );
 
       $.get( '?q=tInfoBar/getTokens/'+getContext(),
@@ -109,24 +109,24 @@ $(function(){
       cls 	= infoBar.data.cls;
       img 	= infoBar.data.img;
       com 	= infoBar.data.com;
-      
+
       menu    = com.menu.menu();
       tooltip = com.tooltip.get();
-	
+
 	   iconMenu_setup( infoBar );
-	   
+
 	   infoBar.tooltipView = function( view ){
 	      tooltip.find('.tokenView').hide();
 	      tooltip.find('#'+view).show();
 	   }
-	   
+
    }
 
    function iconMenu_setup( infoBar ){
-	
+
 	   com.menu
 		   .add( menuItem('Report an error', img.bug, {view:'commentView'}), null, 'error');
-	
+
 	   tooltip
 		   .html(	'<table cellspacing="0" cellpadding="0" id="commentView" class="tokenView">'+
 						   '<tr><td class="'+cls.comments+'"></td></tr>'+
@@ -143,16 +143,16 @@ $(function(){
 		   .find('.submit')
 		   .bind('click.sendMessage', function(){
 			   var s 		= menu.data('source');
-            
+
             var context = getContext();
             var type    = menu.data('source-type');
-            
-			   $.get( '?q=tInfoBar/add/' + 
+
+			   $.get( '?q=tInfoBar/add/' +
 			            type + '/' +
-      		   	   (s.attr('id') || 'ERROR') + '/' + 
-			            context + '/' + 
-			            GI('username') + '/' + 
-			            escape( tooltip.find('textarea').eq(0).val() ), 
+      		   	   (s.attr('id') || 'ERROR') + '/' +
+			            context + '/' +
+			            GI('username') + '/' +
+			            escape( tooltip.find('textarea').eq(0).val() ),
 			      function(r){
 					   if(r['result'] == 'true'){
 						   if(!s.data('infoBarIcon')) com.self.addToken(s, type);
@@ -161,17 +161,19 @@ $(function(){
 					   } else M(r, 'error');
 			   });
 		   });
-		
+	   // UGLY COMMENT BY CATALIN: IS THIS SUPPOSED TO BE HERE?
+	   com.menu.attach($('.node [id]'));
+
 	   menu.append( tooltip )
 		   .data('tooltip', tooltip)
 		   .bind('onHideMenu', function(){
 			   menu.data('tooltip').hide();
 		   });
-	
+
       com.menu
          .get('error')
          .bind('click.errorToken', { type:'error' }, getItems );
-			
+
 	   /** Inner Functions defined bellow **/
 	   function menuItem( title, path, attributes ){
 	      attributes = attributes || {};
@@ -182,32 +184,32 @@ $(function(){
 						   'title'	: title
 					   })
 					   .attr( attributes )
-					   .append( 
+					   .append(
 						   $(document.createElement('img'))
 							   .attr({
 							      src   : path,
 							      alt   : title
-							   }) 
+							   })
 					   );
 	   }
    }
 
    function getItems( e ){
-      
+
       var type = e.data.type;
 
 	   infoBar.getTooltip().target( $(this) );
    	infoBar.tooltipView( 'commentView' );
-   	
+
 	   menu
 	      .data('source-type', type)
 		   .find('.'+cls.comments)
 		   .html( $(document.createElement('img')).attr({'src':img.ajax, 'height':16}) );
-	
-	   $.get( '?q=tInfoBar/get/' + 
+
+	   $.get( '?q=tInfoBar/get/' +
 	            type + '/' +
-			      menu.data('source').attr('id') + '/' + 
-			      getContext(), 
+			      menu.data('source').attr('id') + '/' +
+			      getContext(),
 	      function(r){
 			   var h = '';
 			   for(var i in r)
