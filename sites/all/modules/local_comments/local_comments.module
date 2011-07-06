@@ -6,15 +6,22 @@ function local_comments_permission() {
 
 function tryPrintExcerpt($content, $eid) {
   $doc = new DOMDocument();
-  @$doc->loadHTML($content);
-  dd($content);
-  dd($eid);
+
+  //Do dirty stuff here until DOMDocument supports HTML5 tags such as math
+  $xml = $content;
+  libxml_use_internal_errors(true);
+  $doc->loadHTML($xml);
+  libxml_clear_errors();
+
+
   $xpath = new DOMXPath($doc);
-  $query = '//*';
-  $elements = $xpath->query($query);
-  //  $response = $nodelist->item(0)->nodeValue;
-  dpm($elements);
-  //  return $response;
+  $query = "//*[@id='$eid']";
+  $nodelist = $xpath->query($query);
+  if ($nodelist && $nodelist->item(0) && $nodelist->item(0)->nodeValue) {
+    return $nodelist->item(0)->nodeValue;
+  } else {
+    return FALSE;
+  }
 }
 
 /**
