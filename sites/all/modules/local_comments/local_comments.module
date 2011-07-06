@@ -94,6 +94,7 @@ function local_comments_preprocess(&$variables, $hook) {
 
 
 function local_comments_menu() {
+<<<<<<< HEAD
   /* $items['local_comments/add'] = array( */
   /*   'page callback' => 'local_comments_add_form', */
   /*   'access callback' => 'user_access', */
@@ -102,10 +103,12 @@ function local_comments_menu() {
   /* ); */
 
   $items['local_comments/article'] = array(
+=======
+	$items['local_comments/article'] = array(
+>>>>>>> a12c4ac45364f1b90b8e8ab149311b629fc5f6e3
     'page callback' => 'local_comments_article',
-    'access callback' => 'user_access',
-    'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
+<<<<<<< HEAD
   );
   $items["local_comments/showthread"] = array(
     'page callback' => 'local_comments_showthread',
@@ -113,6 +116,13 @@ function local_comments_menu() {
     'access arguments' => array('access content'),
   );
   return $items;
+=======
+	);
+	$items["local_comments/showthread"] = array(
+			'page callback' => 'local_comments_showthread',
+	);
+	return $items;
+>>>>>>> a12c4ac45364f1b90b8e8ab149311b629fc5f6e3
 }
 
 function local_comments_article ($nid = -1) {
