@@ -9,15 +9,37 @@ $(function() {
          .data
          .com
          .menu
-         .add( menuItem( 'Create a new local thread', imgDir+'icon_comment.png' ), 
+         .add( menuItem( 'Create a new local thread', imgDir+'icon_comment.png', {view:'localCommentView'} ), 
             function(e){
-//		         var selectedClass = 'discussion-selected';
+		         infoBar.getTooltip().target( $(this) )
+         	   infoBar.tooltipView( 'localCommentView' );
+		         
+		         var menu = infoBar.data.com.menu.menu();
+		         var id   = infoBar.data.com.menu.menu().data('source').attr('id');
+		         var view = menu.find('#localCommentView');
+		         
+	            view
+		            .find('.'+infoBar.data.cls.comments)
+		            .html( $(document.createElement('img')).attr({'src':infoBar.data.img.ajax, 'height':16}) );
+	
+	            $.get( '/' + Drupal.extraInfo.root + 'local_comments/get/' + 
+	                     Drupal.extraInfo.node.nid + '/' +
+			               menu.data('source').attr('id'),
+	               function(r){
+			            var h = '';
+			            for(var i in r)
+				            h += '<div>'+r[i].subject+'</div>';
+
+			            view.find('.'+infoBar.data.cls.comments).html( h );
+	            });
+		         
+/*		         var selectedClass = 'discussion-selected';
 		         
 		         var id         = infoBar.data.com.menu.menu().data('source').attr('id');
 		         var textfield  = CKEDITOR ? $(CKEDITOR.instances['edit-comment-body-und-0-value'].document.getBody().$) : $('#edit-comment-body-und-0-value');
 		         
-//		         $('#comments .'+selectedClass).removeClass( selectedClass );
-//		         $('.discussion-for-'+id.replace(/\./g, '\\.')).addClass( selectedClass );
+		         $('#comments .'+selectedClass).removeClass( selectedClass );
+		         $('.discussion-for-'+id.replace(/\./g, '\\.')).addClass( selectedClass );
 		         
                $('input[name="eid"]').val( id );
                
@@ -28,6 +50,7 @@ $(function() {
                   },
                   1500
                )
+               */
 		      }, 
 		      'local_comments_add'
          )
@@ -46,6 +69,42 @@ $(function() {
                img   : imgDir+'sIcon_comments.png',
                msg   : 'View items with local comments attached'
       });
+      
+      infoBar
+         .data
+         .com
+         .tooltip
+         .get()
+         .append( '<table cellspacing="0" cellpadding="0" id="localCommentView" class="tokenView">'+
+						   '<tr><td class="'+infoBar.data.cls.comments+'"></td></tr>'+
+						   '<tr><td><input type="text" style="width:155px;resize:none" id="localComments_subject" /></td></tr>'+
+						   '<tr><td><textarea style="width:155px;resize:none" id="localComments_text" ></textarea></td></tr>'+
+						   '<tr><td style="text-align:right">'+
+							   '<input type="button" value="Cancel" class="closeMe" />'+
+							   '<input type="button" value="Create Thread" id="submitLocalComment" />'+
+						   '</td></tr>'+
+					   '</table>'
+		   )
+		   .find('#submitLocalComment')
+		   .bind('click.sendMessage', function(){
+		      var s       = infoBar.data.com.menu.menu().data('source');
+            var id      = s.attr('id');
+            var type    = 'localComment';
+            
+			   $.get( '/' + Drupal.extraInfo.root + 'local_comments/add/' +
+			            0 + '/' +
+			            Drupal.extraInfo.node.nid + '/' + 
+      		   	   (id || 'ERROR') + '/' + 
+			            escape( $('#localComments_subject').val() ) + '/' + 
+			            escape( $('#localComments_text').val() ), 
+			      function(r){
+					   if( r['result'] === true ){
+						   if( !s.data('infoBarIcon') ) infoBar.addToken(s, type);
+						   infoBar.data.com.tooltip.get().find('#localComments_subject, #localComments_text').val('');
+						   infoBar.data.com.menu.hideMenu();
+					   } else M(r, 'error');
+			   });
+		   });
       
        $("a.local_comments").click(function(e){
           var href = e.target.href;

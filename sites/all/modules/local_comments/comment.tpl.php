@@ -57,7 +57,14 @@
  * @see theme_comment()
  */
 ?>
-<div class=" discussion-for-<?php echo $content['comment_body']['#object']->eid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
+
+<?php
+
+   $targetClass = $content['comment_body']['#object']->eid ? 'inlineComment discussion-for-'.$content['comment_body']['#object']->eid : '';
+
+?>
+
+<div class=" <?php echo $targetClass; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
   <?php print $picture ?>
 
   <?php if ($new): ?>

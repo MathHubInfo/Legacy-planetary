@@ -1,9 +1,5 @@
 <?php
 
-function local_comments_permission() {
-  return array('view your field');
-}
-
 function tryPrintExcerpt($content, $eid) {
   $doc = new DOMDocument();
 
@@ -94,35 +90,98 @@ function local_comments_preprocess(&$variables, $hook) {
 
 
 function local_comments_menu() {
-<<<<<<< HEAD
-  /* $items['local_comments/add'] = array( */
-  /*   'page callback' => 'local_comments_add_form', */
-  /*   'access callback' => 'user_access', */
-  /*   'access arguments' => array('access content'), */
-  /*   'type' => MENU_CALLBACK */
-  /* ); */
-
-  $items['local_comments/article'] = array(
-=======
-	$items['local_comments/article'] = array(
->>>>>>> a12c4ac45364f1b90b8e8ab149311b629fc5f6e3
+    $items['local_comments/article'] = array(
     'page callback' => 'local_comments_article',
     'type' => MENU_CALLBACK
-<<<<<<< HEAD
   );
   $items["local_comments/showthread"] = array(
     'page callback' => 'local_comments_showthread',
     'access callback' => 'user_access',
     'access arguments' => array('access content'),
   );
+  $items['local_comments/add'] = array(
+  	   'title'              => '',
+        'page callback'      => 'local_comments_addNewComment',
+        'access callback'    => TRUE
+  );
+  $items['local_comments/get'] = array(
+  	   'title'              => '',
+        'page callback'      => 'local_comments_getThreads',
+        'access callback'    => TRUE
+  );
   return $items;
-=======
+}
+
+function local_comments_getThreads( $nid, $eid ){
+	$query = db_select( 'local_comments', 'l' );
+	$query->fields( 'l' );
+	$query->condition( 'l.eid', $eid )->condition( 'l.nid', $nid );
+	$result = $query->execute();
+	 
+	$q = db_select( 'comment', 'c' );
+	//   $q->fields( array( 'c.subject', 'c.created', 'c.name' ) );
+	$q->fields( 'c' );
+	$q->condition( 'c.nid', $nid );
+	 
+	if( $result->rowCount() <= 0 ) exit( drupal_json_output( array() ) );
+	 
+	$or = db_or();
+	foreach( $result as $r )
+	$or->condition( 'c.cid', $r->cid );
+	 
+	$q->condition( $or );
+
+	$a = array();
+	 
+	$res = $q->execute();
+	foreach( $res as $r )
+	$a[] = array(
+         'cid'       => $r->cid,
+         'subject'   => $r->subject,
+         'name'      => $r->name
 	);
-	$items["local_comments/showthread"] = array(
-			'page callback' => 'local_comments_showthread',
+	 
+	 
+	echo drupal_json_output( $a );
+}
+
+function local_comments_addNewComment( $pid = '', $nid = '', $eid = '', $subject = '', $comment = '' ){
+	global $user;
+	 
+	$c = (object) array(
+      'pid'            => $pid,
+      'nid'            => $nid,
+      'uid'            => $user->uid,
+      'mail'           => '',
+      'is_anonymous'   => 0,
+      'homepage'       => '',
+      'status'         => COMMENT_PUBLISHED,
+      'subject'        => $subject,
+      'language'       => LANGUAGE_NONE,
+      'comment_body' => array(
+	LANGUAGE_NONE => array(
+	0 => array (
+             'value' => $comment,
+             'format' => 'filtered_html'
+	)
+	)
+	),
 	);
-	return $items;
->>>>>>> a12c4ac45364f1b90b8e8ab149311b629fc5f6e3
+
+	$newComment = comment_submit( $c );
+	comment_save( $c );
+	 
+	local_comments_comment_insert(
+	(object) array(
+         'eid'    => $eid,
+         'nid'    => $nid,
+         'cid'    => $newComment->cid,
+         'text'   => $comment
+	)
+	);
+	 
+	echo drupal_json_output( array( 'result' => true ) );
+	 
 }
 
 function local_comments_article ($nid = -1) {
@@ -158,26 +217,28 @@ function local_comments_form_alter(&$form, $form_state, $form_id) {
 
 function local_comments_comment_insert($comment) {
 
-  require_once( drupal_get_path('module', 'tInfoBar').'/constants.php' );
+	require_once( drupal_get_path('module', 'tInfoBar').'/constants.php' );
 
-  global $user;
+   if( isset( $comment->eid ) ){
+   	global $user;
+	   $eid = $comment->eid;
+	   $nid = $comment->nid;
+	   $cid = $comment->cid;
 
-  $eid = $comment->eid;
-  $nid = $comment->nid;
-  $cid = $comment->cid;
+	   $fields = array('nid' => $nid, 'cid' => $cid, 'eid' => $eid);
+	   db_insert('local_comments')->fields($fields)->execute();
 
-  $fields = array('nid' => $nid, 'cid' => $cid, 'eid' => $eid);
-  db_insert('local_comments')->fields($fields)->execute();
-
-  $tInfoBar = array(
-    'type'      => 'localComment',
-    'context'   => $nid,
-    'wordID'    => $eid,
-    'user'      => $user->name,
-    'text'      => $comment->comment_body['und'][0]['value']
-  );
-  db_insert( TABLE_TINFOBAR )->fields( $tInfoBar )->execute();
+	   $tInfoBar = array(
+         'type'      => 'localComment',
+         'context'   => $nid,
+         'wordID'    => $eid,
+         'user'      => $user->name,
+         'text'      => isset( $comment->text ) ? $comment->text : $comment->comment_body['und'][0]['value']
+	   );
+	   db_insert( TABLE_TINFOBAR )->fields( $tInfoBar )->execute();
+	}
 }
+
 
 function local_comments_comment_view($comment, $view_mode, $langcode) {
   $lc = db_query("SELECT * FROM {local_comments} WHERE cid = :cid", array(":cid" => $comment->cid))->fetchObject();
