@@ -2,3 +2,18 @@
    border-color      : #D66A02!important;
    background-color  : #FFF6CC!important;
 }
+
+.eid_link {
+	position: relative;
+	float:right;
+	top:-10px;
+}
+
+.inlineComment {
+	position: relative;
+}
+
+.links.inline {
+	float: right;
+	margin: 0px;
+}

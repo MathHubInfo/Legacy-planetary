@@ -61,7 +61,7 @@
 <?php
 
    $targetClass = $content['comment_body']['#object']->eid ? 'inlineComment discussion-for-'.$content['comment_body']['#object']->eid : '';
-
+   $imgroot = url("<front>").drupal_get_path("module", "local_comments")."/images";
 ?>
 
 <div class=" <?php echo $targetClass; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
@@ -71,6 +71,13 @@
     <span class="new"><?php print $new ?></span>
   <?php endif; ?>
 
+  <div class="eid_link">
+   <?php if ($content['comment_body']['#object']->eid) {
+     print "<a title='Click here to see associated text' class='local_comments' href='" . $content['comment_body']['#object']->eid . "'><img src='$imgroot/arrow-up.png'></a>";
+   } 
+   ?>
+  </div>
+   
   <?php print render($title_prefix); ?>
   <h3<?php print $title_attributes; ?>><?php print $title ?></h3>
   <?php print render($title_suffix); ?>
@@ -81,14 +88,6 @@
   </div>
 
   <div class="content"<?php print $content_attributes; ?>>
-  <div class="eid_link">
-   <?php if ($content['comment_body']['#object']->eid) {
-     print "<a class='local_comments' href='" . $content['comment_body']['#object']->eid . "'>Click to see the associated content</a>";
-   } else {
-     print "<i>This comment has no content associated to it</i>";
-   }
-   ?>
-</div>
     <?php
       // We hide the comments and links now so that we can render them later.
       hide($content['links']);
@@ -100,6 +99,6 @@
     </div>
     <?php endif; ?>
   </div>
-
   <?php print render($content['links']) ?>
+
 </div>

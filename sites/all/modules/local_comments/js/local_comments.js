@@ -107,14 +107,15 @@ $(function() {
 		   });
       
        $("a.local_comments").click(function(e){
-          var href = e.target.href;
+          var href = $(this).attr("href");
           if (href) {
             e.preventDefault();
             href = href.slice( href.lastIndexOf('/')+1 );
             var comment = $('#'+href.replace(/\./g, '\\.'));
             $.scrollTo({top:comment.offset().top - 200, left:comment.offset().left}, 1500);
             comment.glow('#FFFF99', 5000);
-          }
+          } else
+        	  return false;
       });
       
 	   function menuItem( title, path, attributes ){
