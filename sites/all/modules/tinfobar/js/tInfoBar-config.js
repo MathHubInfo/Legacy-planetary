@@ -168,7 +168,7 @@ $(function(){
 		   .data('lastSelection', $())
 		   .data('lastSelectionCSS', $())
 		   .bind('onShowMenu-before', function( e, origin ){
-		      var lscss = menu.data('lastSelectionCSS');
+/*		      var lscss = menu.data('lastSelectionCSS');
 		      menu.data('lastSelection')
 		         .removeClass( 'tInfoBar-selected' )
 		         .attr( 'mathbackground', lscss.mathbackground );
@@ -176,15 +176,17 @@ $(function(){
 		      menu.data('lastSelectionCSS', {
 		         mathbackground : $(origin.target).attr('mathbackground')}
 		      );
+		      */
 		      menu.data('lastSelection', $(origin.target));
 		      $(origin.target).addClass( 'tInfoBar-selected' );
 		   })
 		   .bind('onHideMenu', function(){
+		   /*
 		      var lscss = menu.data('lastSelectionCSS');
 		      menu.data('lastSelection')
 		         .removeClass( 'tInfoBar-selected' )
 		         .attr( 'mathbackground', lscss.mathbackground );
-		         
+		     */    
 			   menu.data('tooltip').hide();
 		   });
 
