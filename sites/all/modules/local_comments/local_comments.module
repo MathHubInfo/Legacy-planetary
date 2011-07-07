@@ -168,6 +168,13 @@ function local_comments_getThreads( $nid, $eid ){
 function local_comments_addNewComment( $pid = '', $nid = '', $eid = '', $subject = '', $comment = '' ){
 	global $user;
 
+   if( !isset($user) || !isset($user->name) ){
+      exit( drupal_json_output( array(
+         'result' => false, 
+         'error' => 'You must be logged in to create a discussion thread'
+      ) ) );
+   }
+
 	$c = (object) array(
       'pid'            => $pid,
       'nid'            => $nid,

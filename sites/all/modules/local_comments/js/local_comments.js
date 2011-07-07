@@ -26,9 +26,12 @@ $(function() {
 	                     Drupal.extraInfo.node.nid + '/' +
 			               menu.data('source').attr('id'),
 	               function(r){
-			            var h = '';
+			            var h = '<div style="text-align:center"><a href="'+getThreadsLink()+'">View threads</a></div>';
 			            for(var i in r)
-				            h += '<div>'+r[i].subject+'</div>';
+				            h += '<div class="localComments-thread">' +
+				                     '<div class="localComments-subject">' + r[i].subject + '</div>' +
+				                     '<div class="localComments-meta">' + r[i].name + '</div>' +
+				                 '</div>';
 
 			            view.find('.'+infoBar.data.cls.comments).html( h );
 	            });
@@ -58,11 +61,11 @@ $(function() {
             menuItem( 'View local threads for this item', imgDir+'icon_comments.png' ),
             function(e){
                e.preventDefault();
-               window.location = Drupal.extraInfo.baseURL + 'local_comments/showthread/' + GI('nodeId') + '/' + infoBar.data.com.menu.menu().data('source').attr('id');
+               window.location = getThreadsLink();
             }, 
             'local_comments_view'
          );
-                  
+      
       infoBar
          .setTokenType(
             'localComment', {
@@ -102,7 +105,7 @@ $(function() {
 						   if( !s.data('infoBarIcon') ) infoBar.addToken(s, type);
 						   infoBar.data.com.tooltip.get().find('#localComments_subject, #localComments_text').val('');
 						   infoBar.data.com.menu.hideMenu();
-					   } else M(r, 'error');
+					   } else M(r.error, 'warn');
 			   });
 		   });
       
@@ -135,11 +138,11 @@ $(function() {
 							   }) 
 					   );
 	   }
-
-   function GI( name ){
-      var wrapper = 'tInfoBar_info';
-      var prefix  = 'info_';
-      return $('#'+wrapper).find('#'+prefix+name).html();
-   }
-
+   
+   function getThreadsLink( id ){
+      id = id || infoBar.data.com.menu.menu().data('source').attr('id');
+      
+      return Drupal.extraInfo.baseURL + 'local_comments/showthread/' + Drupal.extraInfo.node.nid + '/' + id;
+   }   
+   
 });

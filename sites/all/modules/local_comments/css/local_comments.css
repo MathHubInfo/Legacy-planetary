@@ -17,3 +17,42 @@
 	float: right;
 	margin: 0px;
 }
+
+.localComments-thread{
+   text-align  : right;
+}
+
+.localComments-thread *{
+   text-shadow : none!important;
+}
+
+.localComments-thread a{
+   color : orange;
+}
+
+.localComments-thread a:hover{
+   color : lightgreen;
+}
+
+.localComments-thread .localComments-subject{
+   border         : 1px solid #ccc;
+   border-radius  : 5px 5px 0 5px;
+   background     : #fff;
+   padding        : 2px;
+   font-size      : 8pt!important;
+   text-align     : left;
+   color          : #696969!important;
+}
+
+.localComments-thread .localComments-meta{
+   display        : inline-block;
+   border         : 1px solid #ccc;
+   border-top     : 0;
+   border-radius  : 0 0 5px 5px;
+   background     : #fff;
+   padding        : 1px 4px;
+   font-size      : 7pt!important;
+   font-weight    : normal;
+   text-align     : right;
+   color          : #696969!important;
+}
