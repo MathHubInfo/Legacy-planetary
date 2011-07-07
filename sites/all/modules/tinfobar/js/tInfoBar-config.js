@@ -92,7 +92,7 @@ $(function(){
 
    function setup_infoBar(){
 
-      infoBar_options.handle = $('b, u, i', content);
+//      infoBar_options.handle = $('b, u, i', content);
 
       infoBar = new tInfoBar( infoBar_options, infoBar_classes, infoBar_images );
 
