@@ -22,7 +22,7 @@ $(function(){
 
 // /*
    var c = 0;
-   $('b, u, i').each(function(){
+   $('p, b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));
    });
 // */
@@ -93,6 +93,7 @@ $(function(){
    function setup_infoBar(){
 
 //      infoBar_options.handle = infoBar_options.handle.add( $('b, u, i', content) );
+      infoBar_options.handle = $('p, b, u, i', content);
 
       infoBar = new tInfoBar( infoBar_options, infoBar_classes, infoBar_images );
 
@@ -161,10 +162,18 @@ $(function(){
 			   });
 		   });
 
-	   menu.append( tooltip )
+	   menu
+	      .append( tooltip )
 		   .data('tooltip', tooltip)
+		   .data('lastSelection', $())
+		   .bind('onShowMenu-before', function( e, origin ){
+		      menu.data('lastSelection').removeClass( 'tInfoBar-selected' );
+		      menu.data('lastSelection', $(origin.target));
+		      $(origin.target).addClass( 'tInfoBar-selected' );
+		   })
 		   .bind('onHideMenu', function(){
 			   menu.data('tooltip').hide();
+			   menu.data('lastSelection').removeClass( 'tInfoBar-selected' );
 		   });
 
       com.menu
