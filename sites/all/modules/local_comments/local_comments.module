@@ -179,25 +179,25 @@ function local_comments_addNewComment( $pid = '', $nid = '', $eid = '', $subject
       'subject'        => $subject,
       'language'       => LANGUAGE_NONE,
       'comment_body' => array(
-	LANGUAGE_NONE => array(
-	0 => array (
-             'value' => $comment,
-             'format' => 'filtered_html'
-	)
-	)
-	),
+	      LANGUAGE_NONE => array(
+            0 => array (
+                   'value' => $comment,
+                   'format' => 'filtered_html'
+            )
+	      )
+	   ),
 	);
 
 	$newComment = comment_submit( $c );
 	comment_save( $c );
 
 	local_comments_comment_insert(
-	(object) array(
-         'eid'    => $eid,
-         'nid'    => $nid,
-         'cid'    => $newComment->cid,
-         'text'   => $comment
-	)
+      (object) array(
+            'eid'    => $eid,
+            'nid'    => $nid,
+            'cid'    => $newComment->cid,
+            'text'   => $comment
+      )
 	);
 
 	echo drupal_json_output( array( 'result' => true ) );
@@ -237,7 +237,7 @@ function local_comments_form_alter(&$form, $form_state, $form_id) {
 
 function local_comments_comment_insert($comment) {
 
-	require_once( drupal_get_path('module', 'tInfoBar').'/constants.php' );
+	require_once( drupal_get_path('module', 'tinfobar').'/constants.php' );
 
    if( isset( $comment->eid ) ){
    	global $user;

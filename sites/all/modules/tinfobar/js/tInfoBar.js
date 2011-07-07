@@ -49,8 +49,6 @@
          hoverAttr         : null,
          // whether to use absolute positioning for tokens and refresh it every time the window resizes or leave it to the CSS to decide
          hardPositioning   : false,
-         // specify the context filter for the IDs in the database if you are using the default ajax file
-         context           : null,
          // specify the token types. By default, only the 'info' token type is defined
          tokenTypes        : {
             info  : {

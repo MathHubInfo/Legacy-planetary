@@ -44,7 +44,7 @@ function tinfobar_preprocess_node(&$variables = '') {
       global $user;
       echo '
       <div id="tInfoBar_info" style="display:none">
-         <div id="info_username">'.$user->name.'</div>
+         <div id="info_username">'.(isset($user->name) ? $user->name : 'Guest').'</div>
          <div id="info_nodeType">'.$node->type.'</div>
          <div id="info_nodeId">'.$node->nid.'</div>
       </div>';

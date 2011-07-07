@@ -20,16 +20,15 @@ $(function(){
 
 	var imgDir  = Drupal.extraInfo.baseURL + 'sites/all/modules/tinfobar/images/';
 
-///*
+// /*
    var c = 0;
    $('b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));
    });
-//*/
+// */
 
    var infoBar_options = {
 		handle		      : null,
-		context		      : getContext(),
 		hardPositioning   : true,
 		hoverAttr	      : {
 			mathbackground	: 'yellow'
@@ -161,8 +160,6 @@ $(function(){
 					   } else M(r, 'error');
 			   });
 		   });
-	   // UGLY COMMENT BY CATALIN: IS THIS SUPPOSED TO BE HERE?
-	   com.menu.attach($('.node [id]'));
 
 	   menu.append( tooltip )
 		   .data('tooltip', tooltip)
