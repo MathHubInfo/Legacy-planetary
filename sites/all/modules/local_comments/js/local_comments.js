@@ -22,7 +22,7 @@ $(function() {
 		            .find('.'+infoBar.data.cls.comments)
 		            .html( $(document.createElement('img')).attr({'src':infoBar.data.img.ajax, 'height':16}) );
 	
-	            $.get( '/' + Drupal.extraInfo.root + 'local_comments/get/' + 
+	            $.get( '/' + Drupal.extraInfo.baseURL + 'local_comments/get/' + 
 	                     Drupal.extraInfo.node.nid + '/' +
 			               menu.data('source').attr('id'),
 	               function(r){
