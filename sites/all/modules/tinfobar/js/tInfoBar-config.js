@@ -20,7 +20,7 @@ $(function(){
 
 	var imgDir  = Drupal.extraInfo.baseURL + 'sites/all/modules/tinfobar/images/';
 
-// /*
+ /*
    var c = 0;
    $('p, b, u, i').each(function(){
       $(this).attr('id', 'UID_'+(++c));
@@ -167,13 +167,24 @@ $(function(){
 		   .data('tooltip', tooltip)
 		   .data('lastSelection', $())
 		   .bind('onShowMenu-before', function( e, origin ){
-		      menu.data('lastSelection').removeClass( 'tInfoBar-selected' );
+		      var lscss = menu.data('lastSelectionCSS');
+		      menu.data('lastSelection')
+		         .removeClass( 'tInfoBar-selected' )
+		         .attr( 'mathbackground', lscss.mathbackground );
+		         
+		      menu.data('lastSelectionCSS', {
+		         mathbackground : $(origin.target).attr('mathbackground')}
+		      );
 		      menu.data('lastSelection', $(origin.target));
 		      $(origin.target).addClass( 'tInfoBar-selected' );
 		   })
 		   .bind('onHideMenu', function(){
+		      var lscss = menu.data('lastSelectionCSS');
+		      menu.data('lastSelection')
+		         .removeClass( 'tInfoBar-selected' )
+		         .attr( 'mathbackground', lscss.mathbackground );
+		         
 			   menu.data('tooltip').hide();
-			   menu.data('lastSelection').removeClass( 'tInfoBar-selected' );
 		   });
 
       com.menu
