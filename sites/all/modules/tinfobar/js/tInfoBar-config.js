@@ -68,10 +68,10 @@ $(function(){
 	}
 
    if( $.browser.mozilla ){
-      infoBar_options.handle = $(':math, .omdoc-image[id]', content);
+      infoBar_options.handle = $('p[id], :math, .omdoc-image[id]', content);
       setup_infoBar();
    } else {
-      infoBar_options.handle = $('.math, .omdoc-image[id]', content);
+      infoBar_options.handle = $('p[id], .math, .omdoc-image[id]', content);
 /*      if( MathJax )
          MathJax.Hub.Queue( setup_infoBar );
       else */
@@ -92,7 +92,7 @@ $(function(){
 
    function setup_infoBar(){
 
-//      infoBar_options.handle = $('b, u, i', content);
+//      infoBar_options.handle = infoBar_options.handle.add( $('b, u, i', content) );
 
       infoBar = new tInfoBar( infoBar_options, infoBar_classes, infoBar_images );
 

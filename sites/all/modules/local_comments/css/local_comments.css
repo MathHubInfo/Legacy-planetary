@@ -45,6 +45,8 @@
 }
 
 .localComments-thread .localComments-meta{
+   position       : relative;
+   top            : -1px;
    display        : inline-block;
    border         : 1px solid #ccc;
    border-top     : 0;
