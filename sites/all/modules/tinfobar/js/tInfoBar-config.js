@@ -166,6 +166,7 @@ $(function(){
 	      .append( tooltip )
 		   .data('tooltip', tooltip)
 		   .data('lastSelection', $())
+		   .data('lastSelectionCSS', $())
 		   .bind('onShowMenu-before', function( e, origin ){
 		      var lscss = menu.data('lastSelectionCSS');
 		      menu.data('lastSelection')
