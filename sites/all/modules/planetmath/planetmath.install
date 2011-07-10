@@ -1,0 +1,24 @@
+<?php
+
+
+function planetmath_enable() {
+  Migration::registerMigration('PMUserMigration');
+  Migration::registerMigration('PMForumOPMigration');
+  Migration::registerMigration('PMForumFirstCommentMigration');
+  Migration::registerMigration('PMForumCommentMigration');
+  Migration::registerMigration('PMObjectMigration');
+  Migration::registerMigration('PMObjectCommentMigration');
+  }
+
+function planetmath_uninstall() {
+  // 
+}
+
+function planetmath_disable() {
+  Migration::deregisterMigration('PMUserMigration');
+  Migration::deregisterMigration('PMForumOPMigration');
+  Migration::deregisterMigration('PMForumFirstCommentMigration');
+  Migration::deregisterMigration('PMForumCommentMigration');
+  Migration::deregisterMigration('PMObjectMigration');
+  Migration::deregisterMigration('PMObjectCommentMigration');
+}
