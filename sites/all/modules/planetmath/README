@@ -1,0 +1,10 @@
+These files import ONE database table (users) into Drupal.
+
+Some key issues to note for the record:
+
+ * getting the name of the hook right in planetmath.module
+   (it should be MODULENAME_migrate_api).
+
+ * make sure to clear the cache after the module is
+   imported (drush cc all).  This should help identify any
+   coding errors!
