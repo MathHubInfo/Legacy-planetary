@@ -66,7 +66,7 @@ function drutexml_filter_info() {
     'description' => t('The text will be passed as LaTeX to LaTeXML daemon and then shown to the user'),
     'process callback' => '_drutexml_filter_latex_process',
     'default settings' => array(
-      'latexml_url' => 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php',
+      'latexml_url' => 'http://latexml.mathweb.org/convert',
     ),
     'cache' => TRUE,
     'settings callback' => '_drutexml_filter_latex_settings',
@@ -128,7 +128,7 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   	return $cached;
   }
 
-  $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
+  $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
   $data = 'profile=fragment&tex=' . urlencode($text);
   $content = do_post($host,$data);
   $res = json_decode($content);
