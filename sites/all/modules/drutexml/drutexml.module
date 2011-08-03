@@ -128,16 +128,13 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   	return $cached;
   }
 
-  $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php';
+  $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
   $data = 'profile=fragment&tex=' . urlencode($text);
   $content = do_post($host,$data);
   $res = json_decode($content);
   $res = trim($res->{'result'});
-  $res = str_replace(array("\n", "\r\n"), '', $res);
-  $res = str_replace('  ', ' ', $res);
   $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly. otherwise, uncomment next line.
-  $res = str_replace('xml:','',$res); //also remove xml:id
-  //$res = "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">".$res."</span>";
+   $res = str_replace('xml:','',$res); //also remove xml:id
 
   ctools_object_cache_set("drutexml_cache", $key, $res);
   return $res;
