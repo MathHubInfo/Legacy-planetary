@@ -129,7 +129,6 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   }
 
   $hasPreamble = '/^([\s\S]*)\\\\begin{document}([\s\S]*)\\\\end{document}([\s\S]*)$/';
-  dd($hasPreamble);
   $m = preg_match($hasPreamble, $text, $matches);
   
   if ($m > 0) {
