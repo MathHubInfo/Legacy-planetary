@@ -146,8 +146,8 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   $res = json_decode($content);
   $res = trim($res->{'result'});
   $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly. otherwise, uncomment next line.
-   $res = str_replace('xml:','',$res); //also remove xml:id
-  //ctools_object_cache_set("drutexml_cache", $key, $res);
+  $res = str_replace('xml:','',$res); //also remove xml:id
+  ctools_object_cache_set("drutexml_cache", $key, $res);
   return $res;
 }
 
