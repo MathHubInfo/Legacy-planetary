@@ -128,15 +128,27 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   	return $cached;
   }
 
+  $hasPreamble = '/^([\s\S]*)\\\\begin{document}([\s\S]*)\\\\end{document}([\s\S]*)$/';
+  dd($hasPreamble);
+  $m = preg_match($hasPreamble, $text, $matches);
+  
+  if ($m > 0) {
+	$preamble = $matches[1];
+	$text = $matches[2];	
+  }
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
+  
   $data = 'profile=fragment&tex=' . urlencode($text);
-  $content = do_post($host,$data);
+  if (isset($preamble)) {
+  	$data .= "&preamble=" . urlencode($preamble);
+  }
+  
+   $content = do_post($host,$data);
   $res = json_decode($content);
   $res = trim($res->{'result'});
   $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly. otherwise, uncomment next line.
    $res = str_replace('xml:','',$res); //also remove xml:id
-
-  ctools_object_cache_set("drutexml_cache", $key, $res);
+  //ctools_object_cache_set("drutexml_cache", $key, $res);
   return $res;
 }
 
