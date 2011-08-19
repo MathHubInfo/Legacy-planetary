@@ -74,10 +74,15 @@ function wysiwyg_codemirror_codemirror_themes($editor, $profile) {
 	 * TODO: just a STUB 
 	 */
 	$plugins = $profile->settings["buttons"]["default"];
+	drupal_add_css(drupal_get_path("module", "wysiwyg_codemirror")."/css/codemirror.css", 
+	array(
+		"type" => "internal"
+	));
 	foreach ($plugins as $plugin=>$p) {
 		drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
 		drupal_add_js($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.js');
 	}
+	
 	return array('default');
 }
 
