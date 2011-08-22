@@ -1,0 +1,128 @@
+<?php
+
+  include_once("counter_field.inc");
+  
+  function advbooks_menu() {
+    $items['content/relations'] = array(
+      'page callback' => 'advbooks_show_page',
+      'access callback' => true, 
+    ); 
+    return $items;
+  }
+    
+  function advbooks_theme() {
+  	$result=array();
+  	
+  	/*
+	$result['advanced_book_node_form'] = array(
+		'template' => 'templates/advbooks_edit_form',
+		'render element' => 'form',
+	);
+	 */	
+	return $result;  	
+  } 
+  
+  function advbooks_get_count($element) {
+  	for ($i=0; isset($element[$i]); $i++);
+  	return $i;
+  }
+  
+  function advbooks_get_value($element, $i) {
+  	
+  }
+  
+  function advbooks_form_advanced_book_node_form_alter(&$form, &$form_state, $form_id) {
+  	$lang = $form["language"]["#value"];
+  	if (isset($form_state["input"]) && isset($form_state["input"]["field_counters"])) {
+  		$counters = $form_state["input"]["field_counters"][$lang];  		
+  	} else 
+  		$counters = array();
+  	$ncounter = advbooks_get_count($form["field_counters"][$lang]);
+  	$names = array("No parent");
+  	dd($ncounter, "counter");
+  	dd($counters, "data");
+  	for ($i=0; $i<$ncounter; $i++) {
+  		$form["field_counters"][$lang][$i]["counter_parent"]["#options"] = $names;
+  		if (isset($counters[$i])) {
+  			$name = $counters[$i]["counter_name"];
+  		} else
+  			$name = "";
+  		if (strlen($name) == 0)
+  			continue;
+  		array_push($names, $name);
+  	} 
+  }
+
+  function getRel($relid) {
+	if ($relid == "importFrom") {
+		return array(
+		    	'relation_type'   => 'importFrom',
+		        'label' => 'imports from',
+		        'directional' => TRUE,
+		        'source_bundles' => array('node:*'),
+		        'target_bundles' => array('node:*'),
+		);		
+	}
+	return array();  	
+  }
+  
+  function advbooks_init() {
+  	try {
+  		relation_type_save(getRel("importFrom"));
+  	} catch (Exception $E) {  		
+  	}
+  }
+
+  function refresh_all_nodes($node_type) {
+  	$result = db_query("SELECT nid FROM node WHERE type = :type ", array(':type' => $node_type));
+  	
+  	$nids = array();
+  	foreach ($result as $obj) {
+  		refresh_node($obj->nid);
+  	}
+  }
+
+  function advbooks_add_import($n1, $n2) {
+  	dpm($n1, "n1=");
+  	dpm($n2, "n2=");
+  	$endpoints = array(
+  		array('entity_type' => 'node', 'entity_id' => $n1),
+  		array('entity_type' => 'node', 'entity_id' => $n2),
+  	);
+  	$relation = relation_create("importFrom", $endpoints);
+  	$rid = relation_save($relation);  	
+  }
+  
+  function deleteExitingRelations($nid) {
+  	$relations = entity_load('relation', array_keys(relation_query('node', $nid)->execute()));
+  	$rid=array();
+  	foreach ($relations as $obj) array_push($rid, $obj->rid);
+  	relation_multiple_delete($rid);
+  }
+  
+  function refresh_node($nid) {
+  	deleteExitingRelations($nid);
+  	$node = (array) node_load($nid);
+  	$lang = $node["language"];
+  	$body = $node["body"][$lang][0]["value"];
+  	$xml = new SimpleXMLElement("<xml>".$body."</xml>");
+  	$expandableLinks = $xml->xpath('//div[@class="omdoc-expandableref"]');
+  	while(list( , $node) = each($expandableLinks)) {
+  		$links = $node->xpath('.//a[@class="expandable"]');
+  		while(list( , $lnk) = each($links)) {
+  			$attr = $lnk->attributes();
+  			$href = (string)$attr["href"];
+  			preg_match("/^[a-zA-Z-_\/]*node\/([0-9]*)/", $href, $matches);
+  			if (count($matches)>0) {
+  				advbooks_add_import($nid, $matches[1]);
+  			}
+  		}
+  	}
+  }
+  
+  
+  function advbooks_show_page() {
+  	refresh_all_nodes("article"); // can find this on the node type's "edit" screen in the Drupal admin section.
+  	return "a";
+  }
+?>
