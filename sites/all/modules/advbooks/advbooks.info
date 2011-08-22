@@ -1,0 +1,6 @@
+name = Advanced Books
+description = Module to keep track of different relations between nodes
+core = 7.x
+dependencies[] = relation
+
+files[] = counter_field.inc
