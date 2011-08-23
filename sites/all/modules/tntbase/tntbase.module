@@ -418,3 +418,212 @@ function tntbase_delete_file($FilePath) {
   // It is either false or the number
   return $Revision;
 }
+
+
+////////////////////////////////////////???NOT DONE/////////////////////////
+
+
+/**
+ * Method for executing any query to TNTBase
+ * @param string $Query the query to execute
+ * @return the result
+ */
+function tntbase_query($Query) {
+  $Response = curli_POST($Query, variable_get('TNTBase.XQueryURL'));
+  return tntbase_strip_tntbase_results($Response);
+}
+
+/**
+ * This method should be used to split responses wrapped into a <tnt:results> tag and strip the inner <tnt:result> tag as well.
+ *
+ * @param string $Response the response to be stripped
+ */
+function tntbase_strip_tntbase_results($Response, $StripEach = true) {
+  $Results = array();
+  $Document = new DOMDocument();
+  $Document->loadXML($Response);
+
+  $Xpath = new DOMXPath($Document);
+  $Xpath->registerNamespace('tnt', "http://tntbase.mathweb.org/ns");
+
+  $Query = "//tnt:error";
+  $Nodelist = $Xpath->query($Query);
+  if(0 < $Nodelist->length) {
+    return $Results;
+  }
+
+  $Query = "//tnt:results";
+  $Nodelist = $Xpath->query($Query);
+  $Nodelist = $Nodelist->item(0)->childNodes;
+
+  for($i = 0; $i < $Nodelist->length; $i++) {
+    if($StripEach == true) {
+      $Results[] = substr($Document->saveXML($Nodelist->item($i)), strlen("<tnt:result>"), (-1) * strlen("</tnt:result>"));
+    } else {
+      $Results[] = $Document->saveXML($Nodelist->item($i));
+    }
+  }
+  return $Results;
+}
+
+/**
+ * Internal method used to interpret the return message and retrieve the revision of the last change
+ * @param string $Message the message returned by the last commit
+ * @return the last revision number change or <b>false</b> if the message does not containt one
+ */
+function tntbase_get_result_revision($Message) {
+  $Pattern = "/Commit info: r([0-9]*) /";
+  $Matches = array();
+  preg_match($Pattern, $Message, $Matches);
+
+  if(empty($Matches[1])) {
+    return false;
+  }
+
+  return $Matches[1];
+}
+
+/**
+ * Method for getting all the necessary pieces of a document bundled up together in key => value array form
+ * @param string $FilePath the path to the OMDOC file in question
+ * @return an associative array or <b>false</b> if the path is not proper
+ */
+function tntbase_get_document($FilePath) {
+  $Source = tntbase_get_source($FilePath);
+  $Presentation = tntbase_get_presentation($FilePath);
+  $Title = tntbase_get_title($FilePath);
+  $Revision = tntbase_get_revisions($FilePath, true);
+  $Document = array(
+          'Body' => $Source,
+          'BodyXHTML' => $Presentation,
+          'TitleXHTML' => $Title,
+          'Revision' => $Revision,
+          'Path' => $FilePath
+  );
+
+  if(false == $Source ||
+      false == $Presentation ||
+      false == $Title ||
+      false == $Revision ||
+      false == $FilePath) {
+    //TODO: MAKE THIS RETURN PROPER MEANINGFUL ERROR
+    //        return false;
+  }
+
+  return $Document;
+}
+
+/**
+ * Method used to get all the names of all the omdoc files in TNTBase under a certain folder structure.
+ * <i>Note: This method recurses into all subfolders!</i>
+ * @param string $RootPath the path to the root of the folder structure
+ * @return an array of all the paths starting from the repository root of all the files under the given folder, else <b>false</b> otherwise
+ */
+function tntbase_get_document_names($RootPath) {
+  $Response = curli_GET(variable_get('TNTBase.DocumentNamesURL').$RootPath.'?recursive=true');
+
+  if(empty($Response)) {
+    return false;
+  }
+
+  $Document = new DOMDocument();
+  $Document->loadXML($Response);
+
+  $Xpath = new DOMXPath($Document);
+  $Xpath->registerNamespace('tnt', "http://tntbase.mathweb.org/ns");
+  $Query = "//tnt:docname";
+  $Nodelist = $Xpath->query($Query);
+
+  $Result = array();
+  for($i = 0; $i < $Nodelist->length; $i++) {
+    $Result[] = $Nodelist->item($i)->nodeValue;
+  }
+
+  if(empty($Result)) {
+    return false;
+  }
+
+  return $Result;
+}
+
+/**
+ * Method for getting the actual SVN log from TNTBase
+ * @param int $StartRev
+ * @param int $EndRev
+ * @return an array of A and D corresponding to the resolved added and deleted files
+ */
+function tntbase_get_log($StartRev, $EndRev) {
+  $Log = curli_GET(variable_get('TNTBase.LogURL')."?startrev=$StartRev&endrev=$EndRev");
+  $Revisions = explode(",", $Log);
+
+  $D = array();
+  $A = array();
+
+  foreach($Revisions as $Rev)
+  {
+    $Lines = explode("\n", $Rev);
+    $Dump = false;
+    foreach($Lines as $Line)
+    {
+      if(false == $Dump)
+      {
+        if(0 == strpos($Line, "svn:date"))
+        {
+          $Dump = true;
+        }
+      }
+      else
+      {
+        if("A" == $Line[0])
+        {
+          $File = substr($Line, 2);
+          $Ret = array_search($File, $D);
+          $A[] = $File;
+          if(false == $Ret)
+          {
+            //
+          }
+          else
+          {
+            unset($D[$Ret]);
+
+          }
+        }
+        elseif("D" == $Line[0])
+        {
+          $File = substr($Line, 2);
+          $Ret = array_search($File, $A);
+          $D[] = $File;
+          if(false == $Ret)
+          {
+            //
+          }
+          else
+          {
+            unset($A[$Ret]);
+
+          }
+        }
+      }
+    }
+  }
+
+  $Modifications = array("A" => $A, "D" => $D);
+  return $Modifications;
+}
+
+function Setup() {
+  SaveToConfig('TNTBase.sTeXTransform', '1');
+  SaveToConfig('TNTBase.FetchSourceURL' , 'https://tnt.kwarc.info/repos/stc');
+  SaveToConfig('TNTBase.FetchPresentationURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/planet/children');
+  SaveToConfig('TNTBase.CreatePresentationURL' , "https://tnt.kwarc.info/tntbase/stc/restful/jomdoc/render");
+  SaveToConfig('TNTBase.CommitFilesURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/commit');
+  SaveToConfig('TNTBase.CommitXMLURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/doc');
+  SaveToConfig('TNTBase.Username' , 'planetarybroker');
+  SaveToConfig('TNTBase.Password' , 'n3pt4n3');
+  SaveToConfig('TNTBase.XQueryURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/query');
+  SaveToConfig('TNTBase.DocumentNamesURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/names/getDocNames');
+  SaveToConfig('TNTBase.FolderContentsURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/urlContent');
+  SaveToConfig('TNTBase.LogURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/log');
+  SaveToConfig('TNTBase.FileRevisionURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/file-revs');
+}
