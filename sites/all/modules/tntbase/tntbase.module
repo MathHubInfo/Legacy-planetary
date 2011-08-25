@@ -4,8 +4,58 @@
 
 function tntbase_menu() {
   //create page where the paths can be configured
-  // create a permission and give it by default to admins
+  $items = array();
+  $items['admin/config/content/tntbase'] = array(
+    'title' => 'TNTBase configuration',
+    'description' => 'Configure the TNTBase URLs with which we will interact',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tntbase_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  return $items;
 }
+
+function tntbase_form($form, &$form_state) {
+  $form['tntbase_stex'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use sTeX?'),
+    '#default_value' => variable_get('TNTBase.sTeXTransform', 1),    
+    '#description' => t('Determine if we are using sTeX or normal LaTeX'),    
+  );
+  
+  $form['tntbase_fetch_source_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Repository source root URL'),
+    '#default_value' => variable_get('TNTBase.FetchSourceURL', 'https://tnt.kwarc.info/repos/stc'),    
+    '#description' => t('The base URL to fetch the sources'),    
+  );
+  
+  $form['tntbase_fetch_presentation_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Repository presentation root URL'),
+    '#default_value' => variable_get('TNTBase.FetchPresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/planet/children'),    
+    '#description' => t('The base URL to fetch the HTML'),    
+  );
+  
+  $form['tntbase_create_presentation_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URL to transform OMDoc to XHTML'),
+    '#default_value' => variable_get('TNTBase.CreatePresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/jomdoc/render'),    
+    '#description' => t('The URL to convert OMDoc to XHTML'),    
+  );
+  
+}
+
+function tntbase_help() {
+  switch ($path) {
+    case "admin/help#tntbase":
+      return '<p>'.  t("Provides an API to communicate with TNTBase") .'</p>';
+      break;
+  }
+}
+
 
 /**
  * Method for importing the entire content under a specific
@@ -498,10 +548,10 @@ function tntbase_get_document($FilePath) {
   );
 
   if(false == $Source ||
-      false == $Presentation ||
-      false == $Title ||
-      false == $Revision ||
-      false == $FilePath) {
+  false == $Presentation ||
+  false == $Title ||
+  false == $Revision ||
+  false == $FilePath) {
     //TODO: MAKE THIS RETURN PROPER MEANINGFUL ERROR
     //        return false;
   }
