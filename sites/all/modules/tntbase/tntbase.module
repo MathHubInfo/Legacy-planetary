@@ -13,42 +13,118 @@ function tntbase_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
   );
-  
+
+  $items['admin/config/content/tntbase_import'] = array(
+    'title' => 'TNTBase import document',
+    'description' => 'Import TNTBase articles',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tntbase_import_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
   return $items;
+}
+
+function tntbase_import_form($form, &$form_state) {
 }
 
 function tntbase_form($form, &$form_state) {
   $form['tntbase_stex'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use sTeX?'),
-    '#default_value' => variable_get('TNTBase.sTeXTransform', 1),    
-    '#description' => t('Determine if we are using sTeX or normal LaTeX'),    
+    '#default_value' => variable_get('TNTBase.sTeXTransform', 1),
+    '#description' => t('Determine if we are using sTeX or normal LaTeX'),
   );
-  
+
   $form['tntbase_fetch_source_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Repository source root URL'),
-    '#default_value' => variable_get('TNTBase.FetchSourceURL', 'https://tnt.kwarc.info/repos/stc'),    
-    '#description' => t('The base URL to fetch the sources'),    
+    '#default_value' => variable_get('TNTBase.FetchSourceURL', 'https://tnt.kwarc.info/repos/stc'),
+    '#description' => t('The base URL to fetch the sources'),
   );
-  
+
   $form['tntbase_fetch_presentation_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Repository presentation root URL'),
-    '#default_value' => variable_get('TNTBase.FetchPresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/planet/children'),    
-    '#description' => t('The base URL to fetch the HTML'),    
+    '#default_value' => variable_get('TNTBase.FetchPresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/planet/children'),
+    '#description' => t('The base URL to fetch the HTML'),
   );
-  
+
   $form['tntbase_create_presentation_url'] = array(
     '#type' => 'textfield',
     '#title' => t('URL to transform OMDoc to XHTML'),
-    '#default_value' => variable_get('TNTBase.CreatePresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/jomdoc/render'),    
-    '#description' => t('The URL to convert OMDoc to XHTML'),    
+    '#default_value' => variable_get('TNTBase.CreatePresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/jomdoc/render'),
+    '#description' => t('The URL to convert OMDoc to XHTML'),
   );
-  
+
+  $form['tnthbase_commit_files_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URL to commit files to'),
+    '#default_value' => variable_get('TNTBase.CommitFilesURL', 'https://tnt.kwarc.info/tntbase/stc/restful/content/commit'),
+    '#description' => t('The URL to convert the files to'),
+  );
+
+  $form['tntbase_commit_xml_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URL to commit XML files (OMDoc) to'),
+    '#default_value' => variable_get('TNTBase.CommitXMLURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/doc'),
+    '#description' => t('The URL to which OMDoc files should be committed in TNTBase'),
+  );
+
+  $form['tntbase_username'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The username to log on to TNTBase'),
+    '#default_value' => variable_get('TNTBase.Username' , 'planetarybroker'),
+    '#description' => t('The username to log on to TNTBase'),
+  );
+
+  $form['tntbase_passowrd'] = array(
+    '#type' => 'password_confirm',
+    '#title' => t('The password to connect to TNTBase'),
+    //    '#default_value' => variable_get('TNTBase.Password' , ''),
+    '#description' => t('The passowrd to connect to TNTBase'),
+  );
+
+  $form['tntbase_xquery_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to execute XQuery-s'),
+    '#default_value' =>   variable_get('TNTBase.XQueryURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/query'),
+    '#description' => t('The URL in TNTBase to execute XQuery-s'),
+  );
+
+  $form['tntbase_document_names_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to retrieve document names'),
+    '#default_value' =>   variable_get('TNTBase.DocumentNamesURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/names/getDocNames'),
+    '#description' => t('The URL in TNTBase to retrieve document names'),
+  );
+
+  $form['tntbase_folder_contents_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to retrieve the contents of a TNTBase folder'),
+    '#default_value' => variable_get('TNTBase.FolderContentsURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/urlContent'),
+    '#description' => t('The URL in TNTBase to retrieve the contents of a TNTBase folder'),
+  );
+
+  $form['tntbase_log_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to fetch the log'),
+    '#default_value' => variable_get('TNTBase.LogURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/log'),
+    '#description' => t('The URL in TNTBase to fetch the log'),
+  );
+
+  $form['tntbase_file_revision_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to fetch the revision of a file path'),
+    '#default_value' => variable_get('TNTBase.FileRevisionURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/file-revs'),
+    '#description' => t('The URL in TNTBase to fetch the revision of a file path'),
+  );
+
+  return system_settings_form($form);
+  //  return $form;
 }
 
-function tntbase_help() {
+function tntbase_help($path) {
   switch ($path) {
     case "admin/help#tntbase":
       return '<p>'.  t("Provides an API to communicate with TNTBase") .'</p>';
