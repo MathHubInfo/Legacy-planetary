@@ -4,8 +4,149 @@
 
 function tntbase_menu() {
   //create page where the paths can be configured
-  // create a permission and give it by default to admins
+  $items = array();
+  $items['admin/config/content/tntbase'] = array(
+    'title' => 'TNTBase configuration',
+    'description' => 'Configure the TNTBase URLs with which we will interact',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tntbase_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/config/content/tntbase_import'] = array(
+    'title' => 'TNTBase import document',
+    'description' => 'Import TNTBase articles',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tntbase_import_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
 }
+
+function tntbase_import_form($form, &$form_state) {
+  $form['tntbase_import_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Path to document in TNTBase'),
+  );
+  $form['tntbase_import_submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Load article'),
+  );
+
+  return $form;
+}
+
+function tntbase_import_form_submit($form, &$form_state) {
+  drupal_set_message(t('bla'));
+  //need to fetch article from TNTBase
+}
+
+function tntbase_form($form, &$form_state) {
+  $form['tntbase_stex'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use sTeX?'),
+    '#default_value' => variable_get('TNTBase.sTeXTransform', 1),
+    '#description' => t('Determine if we are using sTeX or normal LaTeX'),
+  );
+
+  $form['tntbase_fetch_source_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Repository source root URL'),
+    '#default_value' => variable_get('TNTBase.FetchSourceURL', 'https://tnt.kwarc.info/repos/stc'),
+    '#description' => t('The base URL to fetch the sources'),
+  );
+
+  $form['tntbase_fetch_presentation_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Repository presentation root URL'),
+    '#default_value' => variable_get('TNTBase.FetchPresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/planet/children'),
+    '#description' => t('The base URL to fetch the HTML'),
+  );
+
+  $form['tntbase_create_presentation_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URL to transform OMDoc to XHTML'),
+    '#default_value' => variable_get('TNTBase.CreatePresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/jomdoc/render'),
+    '#description' => t('The URL to convert OMDoc to XHTML'),
+  );
+
+  $form['tnthbase_commit_files_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URL to commit files to'),
+    '#default_value' => variable_get('TNTBase.CommitFilesURL', 'https://tnt.kwarc.info/tntbase/stc/restful/content/commit'),
+    '#description' => t('The URL to convert the files to'),
+  );
+
+  $form['tntbase_commit_xml_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('URL to commit XML files (OMDoc) to'),
+    '#default_value' => variable_get('TNTBase.CommitXMLURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/doc'),
+    '#description' => t('The URL to which OMDoc files should be committed in TNTBase'),
+  );
+
+  $form['tntbase_username'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The username to log on to TNTBase'),
+    '#default_value' => variable_get('TNTBase.Username' , 'planetarybroker'),
+    '#description' => t('The username to log on to TNTBase'),
+  );
+
+  $form['tntbase_passowrd'] = array(
+    '#type' => 'password_confirm',
+    '#title' => t('The password to connect to TNTBase'),
+    //    '#default_value' => variable_get('TNTBase.Password' , ''),
+    '#description' => t('The passowrd to connect to TNTBase'),
+  );
+
+  $form['tntbase_xquery_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to execute XQuery-s'),
+    '#default_value' =>   variable_get('TNTBase.XQueryURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/query'),
+    '#description' => t('The URL in TNTBase to execute XQuery-s'),
+  );
+
+  $form['tntbase_document_names_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to retrieve document names'),
+    '#default_value' =>   variable_get('TNTBase.DocumentNamesURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/names/getDocNames'),
+    '#description' => t('The URL in TNTBase to retrieve document names'),
+  );
+
+  $form['tntbase_folder_contents_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to retrieve the contents of a TNTBase folder'),
+    '#default_value' => variable_get('TNTBase.FolderContentsURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/urlContent'),
+    '#description' => t('The URL in TNTBase to retrieve the contents of a TNTBase folder'),
+  );
+
+  $form['tntbase_log_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to fetch the log'),
+    '#default_value' => variable_get('TNTBase.LogURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/log'),
+    '#description' => t('The URL in TNTBase to fetch the log'),
+  );
+
+  $form['tntbase_file_revision_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL in TNTBase to fetch the revision of a file path'),
+    '#default_value' => variable_get('TNTBase.FileRevisionURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/file-revs'),
+    '#description' => t('The URL in TNTBase to fetch the revision of a file path'),
+  );
+
+  return system_settings_form($form);
+  //  return $form;
+}
+
+function tntbase_help($path) {
+  switch ($path) {
+    case "admin/help#tntbase":
+      return '<p>'.  t("Provides an API to communicate with TNTBase") .'</p>';
+      break;
+  }
+}
+
 
 /**
  * Method for importing the entire content under a specific
@@ -141,4 +282,470 @@ function tntbase_get_path_contents($file_path) {
   return $result;
 }
 
+/**
+ * Method used to get a set of bibliography entries for some keys at a particular location
+ * @param array $Keys the keys that need bib resolving
+ * @param string $Location the path towards to location of the bib item
+ * @return an array of key => (text OR anchor to URL of the entry matched in the bib)
+ */
+function tntbase_get_bibliography($Keys, $Location = "/kwarc.xml") {
+  $KeyString = "";
+  foreach($Keys as $Key) {
+    $KeyString .= '"'.$Key.'",';
+  }
+  $KeyString = substr($KeyString, 0, -1);
+  $Query =
+      "declare namespace b = ".'"http://bibtexml.sf.net/"'.';
+       declare variable $keys := ('.$KeyString.');'.
+
+      'declare function tnt:get-authors($e as element(b:entry)) {
+        let $a := for $p in $e//b:person return concat ($p/b:first, " ", $p/b:last)
+        return string-join($a, ", ")
+      };'.
+
+      'declare function tnt:get-title($e as element(b:entry)) {
+        let $t := $e//b:title
+      return $t
+      };'.
+  /*
+   (* let $t := replace($t, "\{", "") *)
+   (* let $t := replace($t, "\}", "") *)
+   */
+      'let $entries := tnt:doc('.'"'.$Location.'"'.')//b:entry[@id=$keys]
+          return
+          for $e in $entries return
+          <div class ="bibtex-entry" id="{ $e//@id }"><a name="{ $e//@id }"></a>
+          {
+            if(not(empty($e//b:url)))
+            then <a href="{$e//b:url}">{concat(tnt:get-authors($e), ". ", tnt:get-title($e))}</a>
+            else concat(tnt:get-authors($e), ". ", tnt:get-title($e))
+          }
+          </div>';
+
+  $Results = array();
+  $Response = tntbase_query($Query);
+  $Document = new DOMDocument();
+  foreach($Response as $DIV) {
+    $Document->loadXML($DIV);
+    $Root = $Document->documentElement;
+    $ID = $Root->getAttribute('id');
+    $Results[$ID] = $Document->saveXML($Root);
+    /*
+     $Anchors = $Root->getElementsByTagName('a');
+     if(0 == $Anchors->length) {
+     $Results[$ID] = $Root->nodeValue;
+     } else {
+     $Results[$ID] = $Document->saveXML($Anchors->item(0));
+     }
+     */
+    $Results[$ID] = str_replace(array("{", "}"), "", $Results[$ID]);
+  }
+
+  return $Results;
+}
+
+/**
+ * Method to be used for fetching the source of a specific (S)TEX article corresponding file at the given path from TNTBase
+ *
+ * May get a .tex or .omdoc file and will look for the .tex source file
+ *
+ * @param string $FilePath the path into TNTBase of the OMDOC file
+ * @return the actual source file at that path or <b>false</b> if it didn't exist
+ */
+function tntbase_get_source($FilePath) {
+  // Checking if FilePath is .omdoc to convert it to tex
+  $PathInfo = pathinfo($FilePath);
+  if('omdoc' == $PathInfo['extension']) {
+    $FilePath = $PathInfo['dirname'].'/'.$PathInfo['filename'].'.tex';
+  }
+
+  $Response = curli_GET(variable_get('TNTBase.FetchSourceURL').$FilePath);
+  //TODO: FIX THIS HACK
+  $Response = trim($Response);
+  if($Response[0] == "<") {
+    return false;
+  }
+
+  return $Response;
+}
+
+/**
+ * Method to be used for fetching the presentation of a specific article that exists in TNTBase
+ *
+ * Needs a wrapper of '<span xmlns:m="http://www.w3.org/1998/Math/MathML">'
+ *
+ * @param string $FilePath the path into TNTBase of the file in question
+ * @return the presentation format of the requested file or <b>content saying error</b> if it didn't exist
+ */
+function tntbase_get_presentation($FilePath) {
+  $Error = "<div>Error: could not properly get the presentation of your article!</div>";
+  // Checking for FilePath to be .omdoc else if .tex, querying for the .omdoc as needed
+  $PathInfo = pathinfo($FilePath);
+  if('tex' == $PathInfo['extension']) {
+    $FilePath = $PathInfo['dirname'].'/'.$PathInfo['filename'].'.omdoc';
+  } elseif('omdoc' != $PathInfo['extension']) {
+    return $Error;
+  }
+
+  $Response = curli_GET(variable_get('TNTBase.FetchPresentationURL').$FilePath);
+  $OK = (substr($Response, 0, 5) != "Error");
+
+  if($OK == false) {
+    return $Error;
+  }
+
+  return $Response;
+}
+
+/**
+ * Method to be used for creating Presentation format on the fly.
+ *
+ * Can be used in tandem with a repo, in which case, the $FilePath is needed for handling imports
+ *
+ * @param string $Content the OMDoc content
+ * @param string $FilePath the optional path to the file
+ * @return XHTML representing the Presentation format of the input OMDoc, or false on errors.
+ */
+function tntbase_create_presentation($Content, $FilePath = false) {
+  //TODO: make this work
+  //define a converter URL
+  //use the converter URL and send the OMDoc there.
+}
+
+/**
+ * Method to be used for fetching the title of a specific article that exists in TNTBase
+ * @param string $FilePath the path into TNTBase of the file in question
+ * @return the title of the specific file if it exists, else <b>a title saying error<b>
+ */
+function tntbase_get_title($FilePath) {
+  // Checking for FilePath to be .omdoc else if .tex, querying for the .omdoc as needed
+  $PathInfo = pathinfo($FilePath);
+  $Error = $PathInfo['filename'];
+  if('tex' == $PathInfo['extension']) {
+    $FilePath = $PathInfo['dirname'].'/'.$PathInfo['filename'].'.omdoc';
+  } elseif('omdoc' != $PathInfo['extension']) {
+    return $Error;
+  }
+
+  $Data =
+      'declare default element namespace "http://omdoc.org/ns";'
+      .'declare namespace dc = "http://purl.org/dc/elements/1.1/";'
+      .'(tnt:doc("'.$FilePath.'")'
+      .'//dc:title)[1]'
+      ;
+
+      $Response = curli_POST($Data, variable_get('TNTBase.XQueryURL'));
+      $Title = tntbase_strip_tntbase_results($Response, true);
+      if(empty($Title)) {
+        return $Error;
+      }
+
+      return $Title[0];
+}
+
+/**
+ * Method to be used for committing specific articles into TNTBase
+ * May be used to either add new files or update existing ones
+ * <i>Note: Only support sending valid sTeX files and will fail if sTeX is not proper</i>
+ * @param array $Files an array of file structs with <b>Content</b> and <b>Path</b> fields
+ * @return the head revision after the commit or <b>false</b> if the commit failed
+ */
+function tntbase_commit_files($Files) {
+  $Request = array();
+
+  if(false == variable_get('TNTBase.sTeXTransform')) {
+    $host = variable_get('Plugins.LaTeXEditor.LaTeXEditor');
+  } else {
+    $host = variable_get('Plugins.LaTeXEditor.sTeXEditor');
+  }
+  foreach($Files as $File) {
+    $File['Content-Type'] = 'text/plain';
+    $PathInfo = pathinfo($File['Path']);
+    if($PathInfo['extension'] != 'tex') {
+      //TODO: return something more meaningful
+      return false;
+    }
+    $Request[] = $File;
+
+    $NewFile = array();
+    $NewFile['Path'] = $PathInfo['dirname'].'/'.$PathInfo['filename'].'.omdoc';
+    $NewFile['Content-Type'] = 'text/xml';
+    // Getting OMDoc
+    //TODO: get this from Deyan's daemon
+    $data = 'formula=' . urlencode($File['Content']);
+    $content = curli_POST($data, $host);
+    $res = json_decode($content);
+
+    $NewFile['Content'] = trim($res->{'result'});
+    if(false == $NewFile['Content']) {
+      //TODO: return something more meaningful
+      return false;
+    }
+    $Request[] = $NewFile;
+  }
+  if(empty($Request)) {
+    //TODO: return something more meaningful
+    return false;
+  }
+
+  $Response = curli_PUT_MultipartFiles($Request, variable_get('TNTBase.CommitFilesURL'));
+
+  $Document = new DOMDocument();
+  $Document->loadXML($Response);
+
+  $Xpath = new DOMXPath($Document);
+  $Xpath->registerNamespace('tnt', "http://tntbase.mathweb.org/ns");
+  $Query = "//tnt:revision";
+  $Nodelist = $Xpath->query($Query);
+  $Response = $Nodelist->item(0)->nodeValue;
+
+  return $Response;
+}
+
+/**
+ * Method to be used for committing a specific article into TNTBase
+ * May be used to either add a new file or update an existing one
+ * @param string $Content the content to try to commit
+ * @param string $FilePath the FilePath into TNTBase under which to save the content
+ * @return the revision number of the file just commited or <b>false</b> if the commit failed
+ */
+function tntbase_commit_xml($Content, $FilePath) {
+  $Response = curli_PUT($Content, variable_get('TNTBase.CommitURL').$FilePath);
+  $Message = tntbase_strip_tntbase_results($Response, false);
+
+  // check message
+  if(! $Message) {
+    return false;
+  }
+
+  $Revision = tntbase_get_result_revision($Message);
+
+  // It is either false or the number
+  return $Revision;
+}
+
+/**
+ * Method to be used for deleting a specific article from TNTBase
+ * @param string $FilePath the path into TNTBase of the file in question
+ */
+function tntbase_delete_file($FilePath) {
+  // Checking for FilePath to be .omdoc else if .tex, querying for the .omdoc as needed
+  $PathInfo = pathinfo($FilePath);
+  if(!('tex' == $PathInfo['extension'] || 'omdoc' == $PathInfo['extension'])) {
+    return false;
+  }
+
+  $Response = curli_DELETE(variable_get('TNTBase.CommitURL').$PathInfo['dirname'].'/'.$PathInfo['filename'].'.tex');
+  $Message = tntbase_strip_tntbase_results($Response, false);
+  /*
+   // check message
+   if(! $Message) {
+   return false;
+   }
+   */
+
+  $Response = curli_DELETE(variable_get('TNTBase.CommitURL').$PathInfo['dirname'].'/'.$PathInfo['filename'].'.omdoc');
+  $Message = tntbase_strip_tntbase_results($Response, false);
+  /*
+   // check message
+   if(! $Message) {
+   return false;
+   }
+   */
+
+  //TODO: you can extract a revision count from this!!!
+  //$Revision = TNTBaseComm::_GetResultRevision($Message);
+
+  // It is either false or the number
+  return $Revision;
+}
+
+/**
+ * Method for executing any query to TNTBase
+ * @param string $Query the query to execute
+ * @return the result
+ */
+function tntbase_query($Query) {
+  $Response = curli_POST($Query, variable_get('TNTBase.XQueryURL'));
+  return tntbase_strip_tntbase_results($Response);
+}
+
+/**
+ * This method should be used to split responses wrapped into a <tnt:results> tag and strip the inner <tnt:result> tag as well.
+ *
+ * @param string $Response the response to be stripped
+ */
+function tntbase_strip_tntbase_results($Response, $StripEach = true) {
+  $Results = array();
+  $Document = new DOMDocument();
+  $Document->loadXML($Response);
+
+  $Xpath = new DOMXPath($Document);
+  $Xpath->registerNamespace('tnt', "http://tntbase.mathweb.org/ns");
+
+  $Query = "//tnt:error";
+  $Nodelist = $Xpath->query($Query);
+  if(0 < $Nodelist->length) {
+    return $Results;
+  }
+
+  $Query = "//tnt:results";
+  $Nodelist = $Xpath->query($Query);
+  $Nodelist = $Nodelist->item(0)->childNodes;
+
+  for($i = 0; $i < $Nodelist->length; $i++) {
+    if($StripEach == true) {
+      $Results[] = substr($Document->saveXML($Nodelist->item($i)), strlen("<tnt:result>"), (-1) * strlen("</tnt:result>"));
+    } else {
+      $Results[] = $Document->saveXML($Nodelist->item($i));
+    }
+  }
+  return $Results;
+}
+
+/**
+ * Internal method used to interpret the return message and retrieve the revision of the last change
+ * @param string $Message the message returned by the last commit
+ * @return the last revision number change or <b>false</b> if the message does not containt one
+ */
+function tntbase_get_result_revision($Message) {
+  $Pattern = "/Commit info: r([0-9]*) /";
+  $Matches = array();
+  preg_match($Pattern, $Message, $Matches);
+
+  if(empty($Matches[1])) {
+    return false;
+  }
+
+  return $Matches[1];
+}
+
+/**
+ * Method for getting all the necessary pieces of a document bundled up together in key => value array form
+ * @param string $FilePath the path to the OMDOC file in question
+ * @return an associative array or <b>false</b> if the path is not proper
+ */
+function tntbase_get_document($FilePath) {
+  $Source = tntbase_get_source($FilePath);
+  $Presentation = tntbase_get_presentation($FilePath);
+  $Title = tntbase_get_title($FilePath);
+  $Revision = tntbase_get_revisions($FilePath, true);
+  $Document = array(
+          'Body' => $Source,
+          'BodyXHTML' => $Presentation,
+          'TitleXHTML' => $Title,
+          'Revision' => $Revision,
+          'Path' => $FilePath
+  );
+
+  if(false == $Source ||
+  false == $Presentation ||
+  false == $Title ||
+  false == $Revision ||
+  false == $FilePath) {
+    //TODO: MAKE THIS RETURN PROPER MEANINGFUL ERROR
+    //        return false;
+  }
+
+  return $Document;
+}
+
+/**
+ * Method used to get all the names of all the omdoc files in TNTBase under a certain folder structure.
+ * <i>Note: This method recurses into all subfolders!</i>
+ * @param string $RootPath the path to the root of the folder structure
+ * @return an array of all the paths starting from the repository root of all the files under the given folder, else <b>false</b> otherwise
+ */
+function tntbase_get_document_names($RootPath) {
+  $Response = curli_GET(variable_get('TNTBase.DocumentNamesURL').$RootPath.'?recursive=true');
+
+  if(empty($Response)) {
+    return false;
+  }
+
+  $Document = new DOMDocument();
+  $Document->loadXML($Response);
+
+  $Xpath = new DOMXPath($Document);
+  $Xpath->registerNamespace('tnt', "http://tntbase.mathweb.org/ns");
+  $Query = "//tnt:docname";
+  $Nodelist = $Xpath->query($Query);
+
+  $Result = array();
+  for($i = 0; $i < $Nodelist->length; $i++) {
+    $Result[] = $Nodelist->item($i)->nodeValue;
+  }
+
+  if(empty($Result)) {
+    return false;
+  }
+
+  return $Result;
+}
+
+/**
+ * Method for getting the actual SVN log from TNTBase
+ * @param int $StartRev
+ * @param int $EndRev
+ * @return an array of A and D corresponding to the resolved added and deleted files
+ */
+function tntbase_get_log($StartRev, $EndRev) {
+  $Log = curli_GET(variable_get('TNTBase.LogURL')."?startrev=$StartRev&endrev=$EndRev");
+  $Revisions = explode(",", $Log);
+
+  $D = array();
+  $A = array();
+
+  foreach($Revisions as $Rev)
+  {
+    $Lines = explode("\n", $Rev);
+    $Dump = false;
+    foreach($Lines as $Line)
+    {
+      if(false == $Dump)
+      {
+        if(0 == strpos($Line, "svn:date"))
+        {
+          $Dump = true;
+        }
+      }
+      else
+      {
+        if("A" == $Line[0])
+        {
+          $File = substr($Line, 2);
+          $Ret = array_search($File, $D);
+          $A[] = $File;
+          if(false == $Ret)
+          {
+            //
+          }
+          else
+          {
+            unset($D[$Ret]);
+
+          }
+        }
+        elseif("D" == $Line[0])
+        {
+          $File = substr($Line, 2);
+          $Ret = array_search($File, $A);
+          $D[] = $File;
+          if(false == $Ret)
+          {
+            //
+          }
+          else
+          {
+            unset($A[$Ret]);
+
+          }
+        }
+      }
+    }
+  }
+
+  $Modifications = array("A" => $A, "D" => $D);
+  return $Modifications;
+}
 
