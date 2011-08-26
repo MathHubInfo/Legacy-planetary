@@ -15,7 +15,7 @@
   * Implements hook_field_is_empty().
   */  
   function advbooks_field_is_empty($item, $field) {
-  	return empty($item['counter']);
+  	return empty($item['counter_name']);
   }
   
   /**
@@ -80,7 +80,7 @@
   * 'rgb' form element.
   */
   function advbooks_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
-  	$value = isset($items[$delta]['counter']) ? $items[$delta]['counter'] : '';
+  	$value = isset($items[$delta]['counter_name']) ? $items[$delta] : array();
   	$element = array(
       '#delta' => $delta,
       '#type' => "fieldset"
@@ -93,23 +93,29 @@
   		   $element['counter_name'] = array(
   		   		"#type" => "textfield",
   		   		"#title" => "Counter name",
-  		   		"#default_value" => isset($state["counter_name"])?$state["counter_name"]:"",
+  		   		"#default_value" => isset($value["counter_name"])?$value["counter_name"]:"",
   		   );
   		   
   		   $element['counter_parent'] = array(
   		   		"#type" => "select",
   		   		"#title" => "Counter parent",
-  		   		"#default_value" => isset($state["counter_parent"])?$state["counter_parent"]:"",
+  		   		"#default_value" => isset($value["counter_parent"])?$value["counter_parent"]:"",
   		   		"#options" => array("No parent")
   		   );
   		   $element['counter_formatter'] = array(
   		   		"#type" => "select",
   		   		"#title" => "Counter formatter",
-  		   		"#default_value" => isset($state["counter_formatter"])?$state["counter_formatter"]:"",
+  		   		"#default_value" => isset($value["counter_formatter"])?$value["counter_formatter"]:"",
   		   		"#options" => array("Arabic", "Roman")
   		   );
+  		   if (isset($delta))
+  		   	for ($i = 0; $i<$delta; $i++) {
+  		   		if (isset($items[$i]["counter_name"])) {
+  		   			$element['counter_parent']["#options"][] =$items[$i]["counter_name"];   		   			
+  		   		}
+  		   	}
   		   break;
   	}
   	return $element;
   }
-  ?>
+?>
