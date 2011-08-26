@@ -1,0 +1,32 @@
+<?php 
+function powered_planetary_block_block_info() {
+
+	$blocks['powered_planetary_block'] = array(
+		'info' => "Powered by Planetary Block",
+	);
+	return $blocks;
+}
+
+/**
+* Implementation of hook_block_view().
+*/
+function powered_planetary_block_block_view($delta='') {
+$block = array();
+switch ($delta) {
+case 'powered_planetary_block':
+    $block['subject'] = t('Powered by Planetary Block');
+    $block['content'] = powered_planetary_block_contents();
+    break;
+}
+return $block;
+}
+
+/**
+* custom html block
+* @return string
+*/
+function powered_planetary_block_contents() {
+	$mod_path = drupal_get_path('module', "powered_planetary_block");
+  return theme_render_template($mod_path."/theme/powered.tpl.php", array("path" => url("<front>").$mod_path));
+}
+?>
