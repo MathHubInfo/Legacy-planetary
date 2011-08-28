@@ -88,7 +88,13 @@ function tntbase_import_form_submit($form, &$form_state) {
   $node->body[$node->language][0]['format'] = 'latex_filter_2';
   $node->body[$node->language][0]['value'] = '\begin{itemize} \item asdasdaas \item asdsada \end{itemize}';
 
-  dpm(tntbase_get_document('/slides/dmath/en/nat-basic.tex'));
+  $FilePath = '/slides/dmath/en/nat-basic.tex';
+  
+  dpm(tntbase_get_source($FilePath));
+  dpm(tntbase_get_presentation($FilePath));
+  dpm(tntbase_get_title($FilePath));
+  dpm(tntbase_get_revisions($FilePath, true));
+    
   return;
 
   $node = node_submit($node);
@@ -499,7 +505,7 @@ function tntbase_get_title($FilePath) {
       .'//dc:title)[1]'
       ;
 
-      $Response = tntabse_post($Data, variable_get('tntbase_xquery_url'));
+      $Response = tntbase_post($Data, variable_get('tntbase_xquery_url'));
       $Title = tntbase_strip_tntbase_results($Response, true);
       if(empty($Title)) {
         return $Error;
