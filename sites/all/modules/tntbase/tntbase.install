@@ -17,4 +17,36 @@ function tntbase_install() {
   variable_set('tntbase_latexml_stex_url' , 'http://tex2xml.kwarc.info/test/ajax/convert_fragment_beta.php');
 }
 
+/**
+* Implements hook_schema().
+*/
+function tntbase_schema() {
+	$schema['tntbase_url'] = array(
+    'description' => 'Stores link to TNTBase path.',
+    'fields' => array(
+      'nid'    => array(
+        'description' => 'Node ID that the rating is applied to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+	),
+      'tnt_rev'    => array(
+        'description' => 'TNTBase revision.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0
+	),
+  	   'tnt_path' => array(
+        'description' => 'The TNTBase path.',
+        'type' => 'varchar',
+        'length' => '1024',
+        'default' => '',
+	),
+	),
+    'primary key' => array('nid'),
+	);
+
+	return $schema;
+}
 ?>

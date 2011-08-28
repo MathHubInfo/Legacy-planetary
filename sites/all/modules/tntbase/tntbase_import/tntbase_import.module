@@ -1,0 +1,52 @@
+<?php 
+
+function tntbase_import_menu() {
+	$item = array();
+	$item["content/tntbase/import"] = array(
+			'page callback' => 'drupal_get_form',
+		    'page arguments' => array('tntbase_import_page'),
+		    'access callback' => TRUE,
+		    'type' => MENU_CALLBACK,
+	);
+
+	return $item;
+}
+
+function tntbase_import_page($form, &$form_status) {
+	
+	$form["TNTPath"] = array(
+			'#type' => 'textfield', 
+			'#title'=>'Please enter the path of the file to import from TNTBase',
+			'#default_value' => '/slides/gencs/notes/notes.tex'
+	);
+	$form["TNTImport"] = array(
+			'#type' => 'submit',
+			'#value' => 'import',
+			'#submit' => array('tntbase_import_doImport'),
+	);
+	return $form;
+}
+
+function tntbase_import_doImport($form, &$form_state) {
+	$path = $form_state["values"]["TNTPath"];
+	$doc = tntbase_get_document($path);
+	dpm($doc);
+	$body_text = $doc["Body"];
+	
+	$node = new stdClass();
+	$node->type = 'article';
+	node_object_prepare($node);
+	
+	$node->title    = $doc["TitleXHTML"];
+	$node->language = LANGUAGE_NONE;
+	$node->tnt_path = $doc["Path"];
+	$node->tnt_rev = $doc["Revision"];
+	
+	$node->body[$node->language][0]['value']   = $body_text;
+	$node->body[$node->language][0]['format']  = 'latex';
+	
+	node_save($node);
+	
+}
+
+?>

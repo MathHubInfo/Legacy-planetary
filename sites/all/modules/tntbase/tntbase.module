@@ -1,5 +1,6 @@
 <?php
 
+include_once("tntbase_api.inc");
 
 function tntbase_get($Host) {
   $User = variable_get('tntbase_username', '');
@@ -426,6 +427,7 @@ function tntbase_get_bibliography($Keys, $Location = "/kwarc.xml") {
 function tntbase_get_source($FilePath) {
   // Checking if FilePath is .omdoc to convert it to tex
   $PathInfo = pathinfo($FilePath);
+
   if('omdoc' == $PathInfo['extension']) {
     $FilePath = $PathInfo['dirname'].'/'.$PathInfo['filename'].'.tex';
   }
