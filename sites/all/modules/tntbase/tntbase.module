@@ -1,6 +1,40 @@
 <?php
 
-//TODO: adjust documentation arguments
+
+function tntbase_get($Host) {
+  $User = variable_get('tntbase_username', '');
+  $Pass = variable_get('tntbase_pass', '');
+
+  return curli_GET($Host, $User, $Pass);
+}
+
+function tntbase_post($Data, $Host) {
+  $User = variable_get('tntbase_username', '');
+  $Pass = variable_get('tntbase_pass', '');
+
+  return curli_POST($Data, $Host, $User, $Pass);
+}
+
+function tntbase_put($Data, $Host) {
+  $User = variable_get('tntbase_username', '');
+  $Pass = variable_get('tntbase_pass', '');
+
+  return curli_PUT($Data, $Host, $User, $Pass);
+}
+
+function tntbase_putmpf($Data, $Host) {
+  $User = variable_get('tntbase_username', '');
+  $Pass = variable_get('tntbase_pass', '');
+
+  return curli_PUT_MultipartFiles($Data, $Host, $User, $Pass);
+}
+
+function tntbase_delete($Host) {
+  $User = variable_get('tntbase_username', '');
+  $Pass = variable_get('tntbase_pass', '');
+
+  return curli_DELETE($Host, $User, $Pass);
+}
 
 function tntbase_menu() {
   //create page where the paths can be configured
@@ -41,102 +75,133 @@ function tntbase_import_form($form, &$form_state) {
 function tntbase_import_form_submit($form, &$form_state) {
   drupal_set_message(t('bla'));
   //need to fetch article from TNTBase
+  global $user;
+
+  $node = new stdClass();
+  $node->type = 'article';
+  $node->uid = $user->uid;
+  $node->language = LANGUAGE_NONE;
+  $node->comment = 2;
+  $node->promote = 1;
+  $node->title = 'testing123';
+
+  $node->body[$node->language][0]['format'] = 'latex_filter_2';
+  $node->body[$node->language][0]['value'] = '\begin{itemize} \item asdasdaas \item asdsada \end{itemize}';
+
+  dpm(tntbase_get_document('/slides/dmath/en/nat-basic.tex'));
+  return;
+
+  $node = node_submit($node);
+  node_save($node);
 }
 
 function tntbase_form($form, &$form_state) {
   $form['tntbase_stex'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use sTeX?'),
-    '#default_value' => variable_get('TNTBase.sTeXTransform', 1),
+    '#default_value' => variable_get('tntbase_stex', 1),
     '#description' => t('Determine if we are using sTeX or normal LaTeX'),
   );
 
   $form['tntbase_fetch_source_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Repository source root URL'),
-    '#default_value' => variable_get('TNTBase.FetchSourceURL', 'https://tnt.kwarc.info/repos/stc'),
+    '#default_value' => variable_get('tntbase_fetch_source_url', 'https://tnt.kwarc.info/repos/stc'),
     '#description' => t('The base URL to fetch the sources'),
   );
 
   $form['tntbase_fetch_presentation_url'] = array(
     '#type' => 'textfield',
     '#title' => t('Repository presentation root URL'),
-    '#default_value' => variable_get('TNTBase.FetchPresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/planet/children'),
+    '#default_value' => variable_get('tntbase_fetch_presentation_url', 'https://tnt.kwarc.info/repos/stc/restful/planet/children'),
     '#description' => t('The base URL to fetch the HTML'),
   );
 
   $form['tntbase_create_presentation_url'] = array(
     '#type' => 'textfield',
     '#title' => t('URL to transform OMDoc to XHTML'),
-    '#default_value' => variable_get('TNTBase.CreatePresentationURL', 'https://tnt.kwarc.info/repos/stc/restful/jomdoc/render'),
+    '#default_value' => variable_get('tntbase_create_presentation_url', 'https://tnt.kwarc.info/repos/stc/restful/jomdoc/render'),
     '#description' => t('The URL to convert OMDoc to XHTML'),
   );
 
   $form['tnthbase_commit_files_url'] = array(
     '#type' => 'textfield',
     '#title' => t('URL to commit files to'),
-    '#default_value' => variable_get('TNTBase.CommitFilesURL', 'https://tnt.kwarc.info/tntbase/stc/restful/content/commit'),
+    '#default_value' => variable_get('tntbase_commit_files_url', 'https://tnt.kwarc.info/tntbase/stc/restful/content/commit'),
     '#description' => t('The URL to convert the files to'),
   );
 
   $form['tntbase_commit_xml_url'] = array(
     '#type' => 'textfield',
     '#title' => t('URL to commit XML files (OMDoc) to'),
-    '#default_value' => variable_get('TNTBase.CommitXMLURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/doc'),
+    '#default_value' => variable_get('tntbase_commit_xml_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/doc'),
     '#description' => t('The URL to which OMDoc files should be committed in TNTBase'),
   );
 
   $form['tntbase_username'] = array(
     '#type' => 'textfield',
     '#title' => t('The username to log on to TNTBase'),
-    '#default_value' => variable_get('TNTBase.Username' , 'planetarybroker'),
+    '#default_value' => variable_get('tntbase_username' , 'planetarybroker'),
     '#description' => t('The username to log on to TNTBase'),
   );
 
-  $form['tntbase_passowrd'] = array(
-    '#type' => 'password_confirm',
+  $form['tntbase_pass'] = array(
+    '#type' => 'password',
     '#title' => t('The password to connect to TNTBase'),
-    //    '#default_value' => variable_get('TNTBase.Password' , ''),
     '#description' => t('The passowrd to connect to TNTBase'),
   );
 
   $form['tntbase_xquery_url'] = array(
     '#type' => 'textfield',
     '#title' => t('The URL in TNTBase to execute XQuery-s'),
-    '#default_value' =>   variable_get('TNTBase.XQueryURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/query'),
+    '#default_value' =>   variable_get('tntbase_xquery_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/query'),
     '#description' => t('The URL in TNTBase to execute XQuery-s'),
   );
 
   $form['tntbase_document_names_url'] = array(
     '#type' => 'textfield',
     '#title' => t('The URL in TNTBase to retrieve document names'),
-    '#default_value' =>   variable_get('TNTBase.DocumentNamesURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/names/getDocNames'),
+    '#default_value' =>   variable_get('tntbase_document_names_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/names/getDocNames'),
     '#description' => t('The URL in TNTBase to retrieve document names'),
   );
 
   $form['tntbase_folder_contents_url'] = array(
     '#type' => 'textfield',
     '#title' => t('The URL in TNTBase to retrieve the contents of a TNTBase folder'),
-    '#default_value' => variable_get('TNTBase.FolderContentsURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/urlContent'),
+    '#default_value' => variable_get('tntbase_folder_contents_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/urlContent'),
     '#description' => t('The URL in TNTBase to retrieve the contents of a TNTBase folder'),
   );
 
   $form['tntbase_log_url'] = array(
     '#type' => 'textfield',
     '#title' => t('The URL in TNTBase to fetch the log'),
-    '#default_value' => variable_get('TNTBase.LogURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/log'),
+    '#default_value' => variable_get('tntbase_log_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/log'),
     '#description' => t('The URL in TNTBase to fetch the log'),
   );
 
   $form['tntbase_file_revision_url'] = array(
     '#type' => 'textfield',
     '#title' => t('The URL in TNTBase to fetch the revision of a file path'),
-    '#default_value' => variable_get('TNTBase.FileRevisionURL' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/file-revs'),
+    '#default_value' => variable_get('tntbase_file_revision_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/file-revs'),
     '#description' => t('The URL in TNTBase to fetch the revision of a file path'),
   );
 
+  $form['tntbase_latexml_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL to transform LaTeX to HTML'),
+    '#default_value' =>   variable_get('tntbase_latexml_url' , 'http://latexml.mathweb.org/convert'),
+    '#description' => t('The URL to transform LaTeX to HTML'),
+  );
+
+  $form['tntbase_latexml_stex_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('The URL to transform sTeX to OMDoc'),
+    '#default_value' =>   variable_get('tntbase_latexml_stex_url' , 'http://tex2xml.kwarc.info/test/ajax/convert_fragment_beta.php'),
+    '#description' => t('The URL to transform sTeX to OMDoc'),
+  );
+
+
   return system_settings_form($form);
-  //  return $form;
 }
 
 function tntbase_help($path) {
@@ -197,11 +262,11 @@ function tntbase_import_documents($documents) {
  * @return an array of the revision numbers of a file in which it was modified, if they exist, <b>false</b> otherwise
  */
 function tntbase_get_revisions($file_path, $revision = false) {
-  $url = variable_get('TNTBase.FileRevisionURL') . $file_path;
+  $url = variable_get('tntbase_file_revision_url') . $file_path;
   if (false !== $revision) {
     $url .= "?$revision";
   }
-  $response = curli_get($url);
+  $response = tntbase_get($url);
   return $response;
 }
 
@@ -210,7 +275,7 @@ function tntbase_get_revisions($file_path, $revision = false) {
  * @return int the head revision number or <b>false</b> in case of errors
  */
 function tntbase_get_head_revision() {
-  $response = curli_get(variable_get('TNTBase.XQueryURL') .
+  $response = tntbase_get(variable_get('tntbase_xquery_url') .
               '/tnt:last-revnum()');
   $response = tntbase_strip_tntbase_results($response);
   $response = $response[0];
@@ -258,7 +323,7 @@ function tntbase_get_content_changes($revision) {
  * @return the contents of the path in a key=>value array, with keys as FileName and values as types ('file' or 'directory or 'vdoc'')
  */
 function tntbase_get_path_contents($file_path) {
-  $response = curli_get(variable_get('TNTBase.FolderContentsURL') . $file_path);
+  $response = tntbase_get(variable_get('tntbase_folder_contents_url') . $file_path);
 
   $document = new DOMDocument();
   $document->loadXML($response);
@@ -359,7 +424,7 @@ function tntbase_get_source($FilePath) {
     $FilePath = $PathInfo['dirname'].'/'.$PathInfo['filename'].'.tex';
   }
 
-  $Response = curli_GET(variable_get('TNTBase.FetchSourceURL').$FilePath);
+  $Response = tntbase_get(variable_get('tntbase_fetch_source_url').$FilePath);
   //TODO: FIX THIS HACK
   $Response = trim($Response);
   if($Response[0] == "<") {
@@ -387,7 +452,7 @@ function tntbase_get_presentation($FilePath) {
     return $Error;
   }
 
-  $Response = curli_GET(variable_get('TNTBase.FetchPresentationURL').$FilePath);
+  $Response = tntbase_get(variable_get('tntbase_fetch_presentation_url').$FilePath);
   $OK = (substr($Response, 0, 5) != "Error");
 
   if($OK == false) {
@@ -434,7 +499,7 @@ function tntbase_get_title($FilePath) {
       .'//dc:title)[1]'
       ;
 
-      $Response = curli_POST($Data, variable_get('TNTBase.XQueryURL'));
+      $Response = tntabse_post($Data, variable_get('tntbase_xquery_url'));
       $Title = tntbase_strip_tntbase_results($Response, true);
       if(empty($Title)) {
         return $Error;
@@ -453,10 +518,12 @@ function tntbase_get_title($FilePath) {
 function tntbase_commit_files($Files) {
   $Request = array();
 
-  if(false == variable_get('TNTBase.sTeXTransform')) {
-    $host = variable_get('Plugins.LaTeXEditor.LaTeXEditor');
+
+  //TODO: fix this code from Vanilla.
+  if(false == variable_get('tntbase_stex')) {
+    $host = variable_get('tntbase_latexml_url');
   } else {
-    $host = variable_get('Plugins.LaTeXEditor.sTeXEditor');
+    $host = variable_get('tntbase_latexml_stex_url');
   }
   foreach($Files as $File) {
     $File['Content-Type'] = 'text/plain';
@@ -473,7 +540,7 @@ function tntbase_commit_files($Files) {
     // Getting OMDoc
     //TODO: get this from Deyan's daemon
     $data = 'formula=' . urlencode($File['Content']);
-    $content = curli_POST($data, $host);
+    $content = tntbase_post($data, $host);
     $res = json_decode($content);
 
     $NewFile['Content'] = trim($res->{'result'});
@@ -488,7 +555,7 @@ function tntbase_commit_files($Files) {
     return false;
   }
 
-  $Response = curli_PUT_MultipartFiles($Request, variable_get('TNTBase.CommitFilesURL'));
+  $Response = tntbase_putmpf($Request, variable_get('tntbase_commit_files_url'));
 
   $Document = new DOMDocument();
   $Document->loadXML($Response);
@@ -510,7 +577,7 @@ function tntbase_commit_files($Files) {
  * @return the revision number of the file just commited or <b>false</b> if the commit failed
  */
 function tntbase_commit_xml($Content, $FilePath) {
-  $Response = curli_PUT($Content, variable_get('TNTBase.CommitURL').$FilePath);
+  $Response = tntbase_put($Content, variable_get('tntbase_commit_url').$FilePath);
   $Message = tntbase_strip_tntbase_results($Response, false);
 
   // check message
@@ -535,7 +602,7 @@ function tntbase_delete_file($FilePath) {
     return false;
   }
 
-  $Response = curli_DELETE(variable_get('TNTBase.CommitURL').$PathInfo['dirname'].'/'.$PathInfo['filename'].'.tex');
+  $Response = tntbase_delete(variable_get('tntbase_commit_url').$PathInfo['dirname'].'/'.$PathInfo['filename'].'.tex');
   $Message = tntbase_strip_tntbase_results($Response, false);
   /*
    // check message
@@ -544,7 +611,7 @@ function tntbase_delete_file($FilePath) {
    }
    */
 
-  $Response = curli_DELETE(variable_get('TNTBase.CommitURL').$PathInfo['dirname'].'/'.$PathInfo['filename'].'.omdoc');
+  $Response = tntbase_delete(variable_get('tntbase_commit_url').$PathInfo['dirname'].'/'.$PathInfo['filename'].'.omdoc');
   $Message = tntbase_strip_tntbase_results($Response, false);
   /*
    // check message
@@ -566,7 +633,7 @@ function tntbase_delete_file($FilePath) {
  * @return the result
  */
 function tntbase_query($Query) {
-  $Response = curli_POST($Query, variable_get('TNTBase.XQueryURL'));
+  $Response = tntbase_post($Query, variable_get('tntbase_xquery_url'));
   return tntbase_strip_tntbase_results($Response);
 }
 
@@ -657,7 +724,7 @@ function tntbase_get_document($FilePath) {
  * @return an array of all the paths starting from the repository root of all the files under the given folder, else <b>false</b> otherwise
  */
 function tntbase_get_document_names($RootPath) {
-  $Response = curli_GET(variable_get('TNTBase.DocumentNamesURL').$RootPath.'?recursive=true');
+  $Response = tntbase_get(variable_get('tntbase_document_names_url').$RootPath.'?recursive=true');
 
   if(empty($Response)) {
     return false;
@@ -690,7 +757,7 @@ function tntbase_get_document_names($RootPath) {
  * @return an array of A and D corresponding to the resolved added and deleted files
  */
 function tntbase_get_log($StartRev, $EndRev) {
-  $Log = curli_GET(variable_get('TNTBase.LogURL')."?startrev=$StartRev&endrev=$EndRev");
+  $Log = tntbase_get(variable_get('tntbase_log_url')."?startrev=$StartRev&endrev=$EndRev");
   $Revisions = explode(",", $Log);
 
   $D = array();
