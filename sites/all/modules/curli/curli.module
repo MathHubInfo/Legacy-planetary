@@ -1,14 +1,15 @@
 <?php
 
-  /**
-   * Method for doing a GET request.
-   *
-   * @param string $Host the hostname where the GET request is to be done
-   * @param string $User the username to use for the secure GET
-   * @param string $Pass the password to use for the secure GET
-   * @return the trimmed response received from the GET
-   */
+/**
+ * Method for doing a GET request.
+ *
+ * @param string $Host the hostname where the GET request is to be done
+ * @param string $User the username to use for the secure GET
+ * @param string $Pass the password to use for the secure GET
+ * @return the trimmed response received from the GET
+ */
 function curli_GET($Host, $User = false, $Pass = false) {
+
   $Session = curl_init();
   curl_setopt($Session, CURLOPT_URL, $Host);
   curl_setopt($Session, CURLOPT_SSL_VERIFYPEER, false);
@@ -18,7 +19,7 @@ function curli_GET($Host, $User = false, $Pass = false) {
   $Output = curl_exec($Session);
   curl_close($Session);
   return trim($Output);
-  }
+}
 
 /**
  * Method for doing a POST request.
@@ -30,6 +31,7 @@ function curli_GET($Host, $User = false, $Pass = false) {
  * @return the response received by the POST
  */
 function curli_POST($Data, $Host, $User = false, $Pass = false) {
+
   $Session = curl_init($Host);
   curl_setopt($Session, CURLOPT_SSL_VERIFYPEER, false);
   curl_setopt($Session, CURLOPT_USERPWD, "$User:$Pass");
@@ -54,6 +56,7 @@ function curli_POST($Data, $Host, $User = false, $Pass = false) {
  * @return the response received by the PUT
  */
 function curli_PUT($Data, $Host, $Header = array('Content-Type: text/xml'), $User = false, $Pass = false) {
+
   // Start curl
   $Session = curl_init($Host);
   curl_setopt($Session, CURLOPT_SSL_VERIFYPEER, false);
@@ -102,7 +105,8 @@ function curli_PUT($Data, $Host, $Header = array('Content-Type: text/xml'), $Use
  * @param array $Files an array of file structs with <b>Content</b>, <b>Path</b> and <b>Content-Type</b> fields
  * @return the response from the server from the PUT request
  */
-function curli_PUT_MultipartFiles($Files, $URL) {
+function curli_PUT_MultipartFiles($Files, $URL, $User = false, $Pass = false) {
+
   $EOL = "\n";
   $Data = '';
   $Boundary = md5(time());
@@ -119,9 +123,10 @@ function curli_PUT_MultipartFiles($Files, $URL) {
   $Data .= '--'.$Boundary.'--'.$EOL;
   $Header = 'Content-Type: multipart/mixed; boundary="' . $Boundary.'"';
 
-  $Response = curl_interface_PUT($Data, $URL, array($Header));
+  $Response = curli_PUT($Data, $URL, array($Header), $User, $Pass);
   return $Response;
 }
+
 /**
  * Method for doing a DELETE request.
  *
@@ -131,6 +136,7 @@ function curli_PUT_MultipartFiles($Files, $URL) {
  * @return the response received by the POST
  */
 function curli_DELETE($Host, $User = false, $Pass = false) {
+  
   $Session = curl_init($Host);
   curl_setopt($Session, CURLOPT_SSL_VERIFYPEER, false);
   curl_setopt($Session, CURLOPT_USERPWD, "$User:$Pass");

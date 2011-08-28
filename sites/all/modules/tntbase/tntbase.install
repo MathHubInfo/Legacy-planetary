@@ -1,0 +1,20 @@
+<?php
+function tntbase_install() {
+  variable_set('tntbase_stex', '1');
+  variable_set('tntbase_fetch_source_url' , 'https://tnt.kwarc.info/repos/stc');
+  variable_set('tntbase_fetch_presentation_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/planet/children');
+  variable_set('tntbase_create_presentation_url' , "https://tnt.kwarc.info/tntbase/stc/restful/jomdoc/render");
+  variable_set('tntbase_commit_files_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/commit');
+  variable_set('tntbase_commit_xml_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/doc');
+  variable_set('tntbase_username' , 'planetarybroker');
+  variable_set('tntbase_password' , '');
+  variable_set('tntbase_xquery_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/query');
+  variable_set('tntbase_documents_name_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/names/getDocNames');
+  variable_set('tntbase_folder_contents_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/urlContent');
+  variable_set('tntbase_log_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/log');
+  variable_set('tntbase_file_revision_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/file-revs');
+  variable_set('tntbase_latexml_url' , 'http://latexml.mathweb.org/convert');
+  variable_set('tntbase_latexml_stex_url' , 'http://tex2xml.kwarc.info/test/ajax/convert_fragment_beta.php');
+}
+
+?>
