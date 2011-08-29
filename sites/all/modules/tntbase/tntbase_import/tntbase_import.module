@@ -9,7 +9,39 @@ function tntbase_import_menu() {
 		    'type' => MENU_CALLBACK,
 	);
 
+	$item["content/tntbase/update"] = array(
+				'page callback' => 'drupal_get_form',
+			    'page arguments' => array('tntbase_update_page'),
+			    'access callback' => TRUE,
+			    'type' => MENU_CALLBACK,
+	);
 	return $item;
+}
+
+function tntbase_update_page($form, &$form_status) {
+	$taxonomy = array();
+	foreach (taxonomy_get_vocabularies() as $terms) {
+		foreach (taxonomy_get_tree($terms->vid) as $term) {
+			$taxonomy[$term->tid]=$term->name;
+		}
+	}
+	$form["taxonomy_update"] = array(
+		'#type' => 'select', 
+		'#title'=>'Please select which pages should be updated based on a taxonomy term',
+		'#options' => $taxonomy,
+	);
+	$form["taxonomy_submit"] = array(
+		'#type' => 'submit',
+		'#submit' => array('tntbase_update_taxonomy_based'),
+		'#value' => 'Update'
+	);
+	return $form;	
+}
+
+function tntbase_update_taxonomy_based($form, &$form_state) {
+	$tid = $form_state["values"]["taxonomy_update"];
+	$nids = taxonomy_select_nodes($tid, false);
+	tntbase_sync_nodes($nids);
 }
 
 function tntbase_import_page($form, &$form_status) {
@@ -29,23 +61,15 @@ function tntbase_import_page($form, &$form_status) {
 
 function tntbase_import_doImport($form, &$form_state) {
 	$path = $form_state["values"]["TNTPath"];
-	$doc = tntbase_get_document($path);
-	dpm($doc);
-	$body_text = $doc["Body"];
-	
-	$node = new stdClass();
-	$node->type = 'article';
-	node_object_prepare($node);
-	
-	$node->title    = $doc["TitleXHTML"];
-	$node->language = LANGUAGE_NONE;
-	$node->tnt_path = $doc["Path"];
-	$node->tnt_rev = $doc["Revision"];
-	
-	$node->body[$node->language][0]['value']   = $body_text;
-	$node->body[$node->language][0]['format']  = 'latex';
-	
-	node_save($node);
+	$nid = tntbase_node_getNodeFromPath($path);
+	if (isset($nid)) {
+		$nodes = array($nid); 
+		tntbase_sync_nodes($nodes);
+		drupal_set_message("Node id=".$nid." was updated!");
+	} else {
+		$nid = tntbase_node_import($path);
+		drupal_set_message("Node saved and has id ".$nid);
+	}
 	
 }
 

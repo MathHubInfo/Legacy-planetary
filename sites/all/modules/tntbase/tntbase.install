@@ -45,6 +45,9 @@ function tntbase_schema() {
 	),
 	),
     'primary key' => array('nid'),
+ 	'indexes' => array(
+      'tnt_path_index' => array('tnt_path'), 	
+    )
 	);
 
 	return $schema;
