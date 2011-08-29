@@ -16,11 +16,11 @@ function tntbase_post($Data, $Host) {
   return curli_POST($Data, $Host, $User, $Pass);
 }
 
-function tntbase_put($Data, $Host) {
+function tntbase_put($Data, $Host, $Header = array('Content-Type: text/xml')) {
   $User = variable_get('tntbase_username', '');
   $Pass = variable_get('tntbase_pass', '');
 
-  return curli_PUT($Data, $Host, $User, $Pass);
+  return curli_PUT($Data, $Host, $Header, $User, $Pass);
 }
 
 function tntbase_putmpf($Data, $Host) {
@@ -91,11 +91,16 @@ function tntbase_import_form_submit($form, &$form_state) {
 
   $FilePath = '/slides/dmath/en/nat-basic.tex';
   
-  dpm(tntbase_get_source($FilePath));
-  dpm(tntbase_get_presentation($FilePath));
-  dpm(tntbase_get_title($FilePath));
-  dpm(tntbase_get_revisions($FilePath, true));
-    
+  $src = tntbase_get_source($FilePath);
+  
+  dpm($src);
+  //dpm(tntbase_get_presentation($FilePath));
+  //dpm(tntbase_get_title($FilePath));
+  //dpm(tntbase_get_revisions($FilePath, true));
+
+  dpm(tntbase_commit_files(array(array('Path' => $FilePath, 'Content' => addslashes($src),
+    'Content-Type' => 'text/plain'))));
+  
   return;
 
   $node = node_submit($node);
@@ -534,7 +539,7 @@ function tntbase_commit_files($Files) {
     $host = variable_get('tntbase_latexml_stex_url');
   }
   foreach($Files as $File) {
-    $File['Content-Type'] = 'text/plain';
+    $File['Content-Type'] = $File['Content-Type'] ? $File['Content-Type'] : 'text/plain';
     $PathInfo = pathinfo($File['Path']);
     if($PathInfo['extension'] != 'tex') {
       //TODO: return something more meaningful
@@ -542,21 +547,22 @@ function tntbase_commit_files($Files) {
     }
     $Request[] = $File;
 
-    $NewFile = array();
-    $NewFile['Path'] = $PathInfo['dirname'].'/'.$PathInfo['filename'].'.omdoc';
-    $NewFile['Content-Type'] = 'text/xml';
-    // Getting OMDoc
-    //TODO: get this from Deyan's daemon
-    $data = 'formula=' . urlencode($File['Content']);
-    $content = tntbase_post($data, $host);
-    $res = json_decode($content);
-
-    $NewFile['Content'] = trim($res->{'result'});
-    if(false == $NewFile['Content']) {
-      //TODO: return something more meaningful
-      return false;
-    }
-    $Request[] = $NewFile;
+    //TODO: CD -- fix this
+//    $NewFile = array();
+//    $NewFile['Path'] = $PathInfo['dirname'].'/'.$PathInfo['filename'].'.omdoc';
+//    $NewFile['Content-Type'] = 'text/xml';
+//    // Getting OMDoc
+//    //TODO: get this from Deyan's daemon
+//    $data = 'formula=' . urlencode($File['Content']);
+//    $content = tntbase_post($data, $host);
+//    $res = json_decode($content);
+//
+//    $NewFile['Content'] = trim($res->{'result'});
+//    if(false == $NewFile['Content']) {
+//      //TODO: return something more meaningful
+//      return false;
+//    }
+//    $Request[] = $NewFile;
   }
   if(empty($Request)) {
     //TODO: return something more meaningful
@@ -586,6 +592,7 @@ function tntbase_commit_files($Files) {
  */
 function tntbase_commit_xml($Content, $FilePath) {
   $Response = tntbase_put($Content, variable_get('tntbase_commit_url').$FilePath);
+  dpm($Response);
   $Message = tntbase_strip_tntbase_results($Response, false);
 
   // check message
