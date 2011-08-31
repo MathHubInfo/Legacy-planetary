@@ -2,18 +2,22 @@
 
 function tntbase_import_menu() {
 	$item = array();
-	$item["content/tntbase/import"] = array(
-			'page callback' => 'drupal_get_form',
-		    'page arguments' => array('tntbase_import_page'),
-		    'access callback' => TRUE,
-		    'type' => MENU_CALLBACK,
+	$item["admin/config/content/tntbase_import"] = array(
+   			'title' => 'TNTBase import document',
+    		'description' => 'Import TNTBase articles',
+    		'access arguments' => array('access administration pages'),
+    		'type' => MENU_NORMAL_ITEM,
+    		'page callback' => 'drupal_get_form',
+			'page arguments' => array('tntbase_import_page'),
 	);
 
-	$item["content/tntbase/update"] = array(
-				'page callback' => 'drupal_get_form',
-			    'page arguments' => array('tntbase_update_page'),
-			    'access callback' => TRUE,
-			    'type' => MENU_CALLBACK,
+	$item["admin/config/content/tntbase_update"] = array(
+	   		'title' => 'TNTBase synchronise',
+	    	'description' => 'Synchronise TNTBase articles',
+	    	'access arguments' => array('access administration pages'),
+	    	'type' => MENU_NORMAL_ITEM,
+    		'page callback' => 'drupal_get_form',
+			'page arguments' => array('tntbase_update_page'),
 	);
 	return $item;
 }
@@ -65,10 +69,10 @@ function tntbase_import_doImport($form, &$form_state) {
 	if (isset($nid)) {
 		$nodes = array($nid); 
 		tntbase_sync_nodes($nodes);
-		drupal_set_message("Node id=".$nid." was updated!");
+		return $nid;
 	} else {
 		$nid = tntbase_node_import($path);
-		drupal_set_message("Node saved and has id ".$nid);
+		return $nid;
 	}
 	
 }

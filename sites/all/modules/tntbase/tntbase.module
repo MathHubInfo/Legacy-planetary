@@ -48,64 +48,9 @@ function tntbase_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
   );
-
-  $items['admin/config/content/tntbase_import'] = array(
-    'title' => 'TNTBase import document',
-    'description' => 'Import TNTBase articles',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('tntbase_import_form'),
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_NORMAL_ITEM,
-  );
   return $items;
 }
 
-function tntbase_import_form($form, &$form_state) {
-  $form['tntbase_import_path'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Path to document in TNTBase'),
-  );
-  $form['tntbase_import_submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Load article'),
-  );
-
-  return $form;
-}
-
-function tntbase_import_form_submit($form, &$form_state) {
-  drupal_set_message(t('bla'));
-  //need to fetch article from TNTBase
-  global $user;
-
-  $node = new stdClass();
-  $node->type = 'article';
-  $node->uid = $user->uid;
-  $node->language = LANGUAGE_NONE;
-  $node->comment = 2;
-  $node->promote = 1;
-  $node->title = 'testing123';
-
-  $node->body[$node->language][0]['format'] = 'latex_filter_2';
-  $node->body[$node->language][0]['value'] = '\begin{itemize} \item asdasdaas \item asdsada \end{itemize}';
-
-  $FilePath = '/slides/dmath/en/nat-basic.tex';
-  
-  $src = tntbase_get_source($FilePath);
-  
-  dpm($src);
-  //dpm(tntbase_get_presentation($FilePath));
-  //dpm(tntbase_get_title($FilePath));
-  //dpm(tntbase_get_revisions($FilePath, true));
-
-  dpm(tntbase_commit_files(array(array('Path' => $FilePath, 'Content' => addslashes($src),
-    'Content-Type' => 'text/plain'))));
-  
-  return;
-
-  $node = node_submit($node);
-  node_save($node);
-}
 
 function tntbase_form($form, &$form_state) {
   $form['tntbase_stex'] = array(
