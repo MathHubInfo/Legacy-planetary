@@ -49,20 +49,51 @@ function tntbase_node_load($nodes, $form) {
 	foreach ($result as $record) {
 		$nodes[$record->nid]->tnt_path = $record->tnt_path;
 		$nodes[$record->nid]->tnt_rev = $record->tnt_rev;
-		if (strlen($record->tnt_path)>0) {
-			$rev = tntbase_get_revisions($record->tnt_path);
-			if ($record->tnt_rev != $rev) {
-				tntbase_update_node($nodes[$record->nid]);
-			}
-		}
 	} 
 }
 
-function tntbase_update_node(&$node) {
-	$language = $node->language;
-	$content = tntbase_get_document($node->tnt_path);
-	$node->body[$language][0]["value"] = $content["Body"];
-	$node->tnt_rev = $content["Revision"];
+function tntbase_sync_nodes($nids) {
+	foreach(node_load_multiple($nids) as $node) {
+		if (strlen($node->tnt_path)>0) {
+			$rev = tntbase_get_revisions($node->tnt_path);
+			if ($node->tnt_rev != $rev) {
+				$language = $node->language;
+				$content = tntbase_get_document($node->tnt_path);
+				$node->body[$language][0]["value"] = $content["Body"];
+				$node->tnt_rev = $content["Revision"];
+				node_save($node);				
+			}
+		}		
+	}
+}
+
+function tntbase_node_load_or_import($tnt_path) {
+	$nid = tntbase_node_getNodeFromPath($tnt_path);
+	if ($nid) {
+		return $nid;
+	} else {
+		return tntbase_node_import($tnt_path);
+	}
+}
+
+function tntbase_node_import($tnt_path) {
+	$doc = tntbase_get_document($path);
+	$body_text = $doc["Body"];
+	
+	$node = new stdClass();
+	$node->type = 'article';
+	node_object_prepare($node);
+	
+	$node->title    = $doc["TitleXHTML"];
+	$node->language = LANGUAGE_NONE;
+	$node->tnt_path = $doc["Path"];
+	$node->tnt_rev = $doc["Revision"];
+	
+	$node->body[$node->language][0]['value']   = $body_text;
+	$node->body[$node->language][0]['format']  = 'latex';
+	
+	node_save($node);
+	return $node->id;	
 }
 
 function tntbase_node_insert($node) {
@@ -81,6 +112,19 @@ function tntbase_node_delete($node) {
 	->condition('nid', $node->nid)
 	->execute();
 }
+
+function tntbase_node_getNodeFromPath($tnt_path) {
+	$nid = db_select('tntbase_url', 'e')
+	->fields('e', array(
+			'nid',
+	))
+	->where('e.tnt_path = (:tnt_path)', array(':tnt_path' => $tnt_path))
+	->execute()->fetchField();
+	if ($nid) {
+		return $nid;
+	} 
+}
+
 
 function tntbase_node_update($node) {
 	// If may happen that this node does not have a previous saved rating
@@ -109,13 +153,6 @@ function tntbase_node_update($node) {
 	$language = $node->language;
 	$original = $node->original;
 	if (strlen($node->tnt_path)>0 && $node->body[$language][0]["value"]!=$original->body[$language][0]["value"]) {
-		/*$files = array();
-		dpm("updating");
-		$files[] = array(
-			"Content" => $node->body[$language][0]["value"],
-			"Path" => $node->tnt_path
-		);
-		tntbase_commit_files($files); */
 		tntbase_commit_xml($node->body[$language][0]["value"], $node->tnt_path);
 	}
 }
