@@ -97,6 +97,11 @@ function tntbase_node_import($tnt_path) {
 }
 
 function tntbase_node_insert($node) {
+	if (strlen($node->tnt_path)==0)
+		return;
+	if (!is_numeric($node->tnt_rev)) {
+		$node->tnt_rev = 0;
+	}
 	db_insert('tntbase_url')
 	->fields(array(
 	    'nid' => $node->nid,
