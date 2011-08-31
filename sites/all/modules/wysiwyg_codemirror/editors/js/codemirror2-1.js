@@ -6,8 +6,12 @@
 Drupal.wysiwyg.editor.attach.codemirror2 = function(context, params, settings) {
   // Attach editor.
   var editorID = "#"+params.field;
+  if (settings["enabled"]===undefined || settings["enabled"][0]===undefined)
+    mode = "sTeX";
+  else
+    mode = settings["enabled"][0];
   var editorSettings = {
-		  'mode' : settings["enabled"][0],
+		  'mode' : mode,
 		  'lineNumbers' : true,
   };
   $(editorID).each(function (c, obj) {
