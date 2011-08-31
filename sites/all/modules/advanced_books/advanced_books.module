@@ -1,5 +1,5 @@
 <?php
-
+  include_once('advanced_books.features.inc');
   include_once("counter_field.inc");
   
   function advbooks_menu() {
@@ -23,7 +23,7 @@
   function advbooks_form_advanced_book_node_form_alter(&$form, &$form_state, $form_id) {
   		$form["actions"]["regenerate"] = array(
   		  			"#type" => "submit",
-  		  			"#name" => "regenerate",
+  		  			"#title" => "regenerate",
   		  			"#submit" => array("node_form_submit", "advbooks_regenerate"),
   		  			"#value" => "Save & Regenerate",
   		);
@@ -31,9 +31,15 @@
   		$lang = $form["language"]["#value"];
   		
   		foreach ($counterObjects as $cnt) {
-  			$form[$cnt][$lang]["lala"]="lala";
+  			$form[$cnt][$lang]["#validate"] = array("ignore_basically");
+  			$form[$cnt][$lang]["#options"][] = "fff"; 
+  			$form[$cnt][$lang]["#options"][] = "ffg"; 
   		}
   		dpm($form);
+  }
+  
+  function ignore_basically($form, &$form_state) {
+  	dpm("ignorring");
   }
   
   function advbooks_regenerate($form, &$form_state) {

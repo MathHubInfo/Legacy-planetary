@@ -1,5 +1,5 @@
 <?php
-function advbooks_field_schema($field) {
+function advanced_books_field_schema($field) {
   $columns = array(
     'counter_name' => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE),
     'counter_parent' => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE),
