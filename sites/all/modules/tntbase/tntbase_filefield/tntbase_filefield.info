@@ -1,0 +1,6 @@
+name = TNTBase File Field Source Extension
+description = Allows files to point to TNTBase Repository
+core = 7.x
+package     = Planetary Modules
+dependencies[] = curli
+dependencies[] = filefield_sources

@@ -1,0 +1,1 @@
+Powered By <span> <img style="position: relative; top: 8px" src="<?php echo $path; ?>/images/planetary.png"> on <a href="http://drupal.org">Drupal</a> </span> 

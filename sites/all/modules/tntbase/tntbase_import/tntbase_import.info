@@ -1,0 +1,6 @@
+name = TNTBase Importer
+description = Allows importing several documents into Drupal
+core = 7.x
+package     = Planetary Modules
+dependencies[] = curli
+dependencies[] = tntbase

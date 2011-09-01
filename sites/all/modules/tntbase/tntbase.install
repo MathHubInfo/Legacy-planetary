@@ -1,0 +1,55 @@
+<?php
+function tntbase_install() {
+  variable_set('tntbase_stex', '1');
+  variable_set('tntbase_fetch_source_url' , 'https://tnt.kwarc.info/repos/stc');
+  variable_set('tntbase_fetch_presentation_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/planet/children');
+  variable_set('tntbase_create_presentation_url' , "https://tnt.kwarc.info/tntbase/stc/restful/jomdoc/render");
+  variable_set('tntbase_commit_files_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/commit');
+  variable_set('tntbase_commit_xml_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/content/doc');
+  variable_set('tntbase_username' , 'planetarybroker');
+  variable_set('tntbase_password' , '');
+  variable_set('tntbase_xquery_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/query');
+  variable_set('tntbase_documents_name_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/names/getDocNames');
+  variable_set('tntbase_folder_contents_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/urlContent');
+  variable_set('tntbase_log_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/log');
+  variable_set('tntbase_file_revision_url' , 'https://tnt.kwarc.info/tntbase/stc/restful/util/file-revs');
+  variable_set('tntbase_latexml_url' , 'http://latexml.mathweb.org/convert');
+  variable_set('tntbase_latexml_stex_url' , 'http://tex2xml.kwarc.info/test/ajax/convert_fragment_beta.php');
+}
+
+/**
+* Implements hook_schema().
+*/
+function tntbase_schema() {
+	$schema['tntbase_url'] = array(
+    'description' => 'Stores link to TNTBase path.',
+    'fields' => array(
+      'nid'    => array(
+        'description' => 'Node ID that the rating is applied to.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+	),
+      'tnt_rev'    => array(
+        'description' => 'TNTBase revision.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0
+	),
+  	   'tnt_path' => array(
+        'description' => 'The TNTBase path.',
+        'type' => 'varchar',
+        'length' => '1024',
+        'default' => '',
+	),
+	),
+    'primary key' => array('nid'),
+ 	'indexes' => array(
+      'tnt_path_index' => array('tnt_path'), 	
+    )
+	);
+
+	return $schema;
+}
+?>

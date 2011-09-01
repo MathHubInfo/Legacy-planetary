@@ -109,7 +109,21 @@ function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $
     '#default_value' => isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : $defaults['latexml_url'],
     '#description' => t('The URL of the LaTeXMl daemon.'),
   );
+  $settings['latexml_reset'] = array(
+    '#type' => 'submit',
+    '#title' => t('Reset LaTeXML cache'),
+    '#default_value' => false,
+    '#description' => t('Reset cache.'),
+    '#submit' => '_drutexml_filter_reset_cache',
+  );
   return $settings;
+}
+
+function _drutexml_filter_reset_cache($form, &$form_state) {
+	ctools_include("cache");
+	cache_clear_all("drutexml_cache");
+	
+	$cached = ctools_cache_("drutexml_cache");
 }
 
 /**
@@ -122,8 +136,8 @@ function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $
  */
 function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   $key = md5($text);
-  ctools_include("object-cache");
-  $cached = ctools_object_cache_get("drutexml_cache", $key);
+  ctools_include("cache");
+  $cached = ctools_cache_get("drutexml_cache", $key);
   if (isset($cached)) {
   	return $cached;
   }

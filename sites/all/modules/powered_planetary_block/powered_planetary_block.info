@@ -1,0 +1,12 @@
+name = "Powered by Planetary block"
+description = "Add the Powered by Planetary block."
+package = "Development"
+core = 7.x
+
+files[] = powered_planetary_block.module
+
+; Information added by drupal.org packaging script on 2011-05-26
+version = "7.x-2.1"
+core = "7.x"
+datestamp = "1306420317"
+

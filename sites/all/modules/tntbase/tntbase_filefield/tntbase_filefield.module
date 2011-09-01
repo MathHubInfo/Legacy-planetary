@@ -1,0 +1,130 @@
+<?php 
+/**
+ * Implementation of hook_filefield_source_info().
+*/
+
+function tntbase_filefield_filefield_sources_info(){
+	$params = array();
+	return tntbase_filefield_hooks('info', $params);
+}
+
+function tntbase_filefield_hooks($method, &$params) {
+	$return = array();
+	//include_once('elfinder.inc');
+	$source = 'tntbase';
+
+	$function = 'filefield_source_' . $source . '_' . $method;
+	if (function_exists($function)) {
+		$result = call_user_func_array($function, $params);
+		if (isset($result) && is_array($result)) {
+			$return = array_merge_recursive($return, $result);
+		}
+		else if (isset($result)) {
+			$return[] = $result;
+		}
+	}
+	return $return;
+}
+
+function filefield_source_tntbase_info() {
+  $source = array();
+  
+  if (!module_exists('tntbase')) {
+    return $source;
+  }
+
+  $source['tntbase'] = array(
+    'name' => t('TNTBase'),
+    'label' => t('TNTBase repository'),
+    'description' => t('Select a file to use from TNTBase.'),
+    'process' => 'filefield_source_tntbase_process',
+    'value' => 'filefield_source_tntbase_value',
+    'weight' => -1,
+  );
+  return $source;
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function tntbase_filefield_menu() {
+  $items = array();
+  $items['filefield/tntbase/%/%'] = array(
+    'page callback' => 'filefield_source_elfinder_page',
+    'page arguments' => array(2, 3),
+    'access callback' => 'filefield_edit_access',
+    'access arguments' => array(2, 3),
+    //'file' => 'elfinder.inc',
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_theme().
+ *
+ */
+function tntbase_filefield_theme() {
+  return array(
+    'filefield_source_tntbase_element' => array(
+      'render element' => 'element',
+    )
+  );
+}
+
+/**
+ * Implementation of hook_filefield_source_settings().
+ */
+function filefield_source_tntbase_settings($op, $field) {
+  $return = array();
+
+  // Add settings to the FileField widget form.
+
+  return $return;
+
+}
+
+/**
+ * A #process callback to extend the filefield_widget element type.
+ */
+function filefield_source_tntbase_process($element, &$form_state, $form) {
+	$element['filefield_tntbase'] = array(
+    '#weight' => 100.5,
+  	'#theme' => "filefield_source_tntbase_element",
+  	'#filefield_source' => TRUE
+  );
+  
+  $element['filefield_tntbase']['path'] =  array(
+  	 '#type' => 'textfield',
+  	 '#title' => 'TNTBase File Path',
+  );
+
+  $element['filefield_tntbase']['submit'] =  array(
+    	 '#type' => 'submit',
+    	 '#value' => 'Add',
+  		 '#submit' => array('filefield_sources_field_submit'),
+  		 '#limit_validation_errors' => array($element['#parents']),
+  );
+  
+  return $element;
+}
+
+/**
+ * A #filefield_value_callback function.
+ */
+function filefield_source_tntbase_value($element, &$item) {
+  	if (!empty($item['filefield_attach']['filename'])) {
+	}
+}
+/**
+ * Theme the output of the autocomplete field.
+ */
+
+function theme_filefield_source_tntbase_element($element) {
+	$e = $element["element"];
+	$text = drupal_render($e["path"]);
+	$text.= drupal_render($e["submit"]);
+	$output = '<div class="filefield-source filefield-source-tntbase clear-block">'.$text.'</div>';
+  return $output;
+}
+?>

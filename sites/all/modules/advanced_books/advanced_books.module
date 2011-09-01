@@ -1,0 +1,174 @@
+<?php
+  include_once('advanced_books.features.inc');
+  include_once("counter_field.inc");
+  
+  function advbooks_menu() {
+    $items['content/relations'] = array(
+      'page callback' => 'advbooks_show_page',
+      'access callback' => true, 
+    ); 
+    return $items;
+  }
+    
+  function advbooks_theme() {
+  	$result=array();
+	return $result;  	
+  } 
+  
+  function advbooks_get_count($element) {
+  	for ($i=0; isset($element[$i]); $i++);
+  	return $i;
+  }
+  
+  function advbooks_form_advanced_book_node_form_alter(&$form, &$form_state, $form_id) {
+  		$form["actions"]["regenerate"] = array(
+  		  			"#type" => "submit",
+  		  			"#title" => "regenerate",
+  		  			"#submit" => array("node_form_submit", "advbooks_regenerate"),
+  		  			"#value" => "Save & Regenerate",
+  		);
+  		$counterObjects = array("field_seccounter", "field_tablecounter", "field_imagecounter", "field_statementcounter");
+  		$lang = $form["language"]["#value"];
+  		
+  		foreach ($counterObjects as $cnt) {
+  			$form[$cnt][$lang]["#validate"] = array("ignore_basically");
+  			$form[$cnt][$lang]["#options"][] = "fff"; 
+  			$form[$cnt][$lang]["#options"][] = "ffg"; 
+  		}
+  		dpm($form);
+  }
+  
+  function ignore_basically($form, &$form_state) {
+  	dpm("ignorring");
+  }
+  
+  function advbooks_regenerate($form, &$form_state) {
+  	$bid = $form["nid"]["#value"];
+  	$lang = $form["language"]["#value"];
+  	$nid = $form_state["values"]["field_root"][$lang][0]["value"];
+  	deleteAllRelations($bid);
+  	addHasRoot($bid, $nid);
+  	advbooks_createBook($bid, $nid);
+  }
+  
+  function getLinks($nid) {
+  	$node = (array) node_load($nid);
+  	$lang = $node["language"];
+  	$val = $node["body"][$lang][0]["value"];
+  	$xml = new SimpleXMLElement("<xml>".$body."</xml>");
+  	$expandableLinks = $xml->xpath('//div[@class="omdoc-expandableref"]');
+  	while(list( , $node) = each($expandableLinks)) {
+  		$links = $node->xpath('.//a[@class="expandable"]');
+  		while(list( , $lnk) = each($links)) {
+  			$attr = $lnk->attributes();
+  			$href = (string)$attr["href"];
+  			$res = preg_match("/^[0-9a-zA-Z-_\/]*node\/([0-9]*)/", $href, $matches);
+  			if ($res>0) {
+  				$new_link = $matches[1];
+  				
+  			}
+  		}
+  	}
+  }
+  
+  function advbooks_createBook($bid, $nid) {
+  	getLinks($nid);
+  }
+
+  function getRel($relid) {
+	if ($relid == "hasLabel")
+		return array(
+		    	'relation_type'   => 'hasLabel',
+		        'label' => 'has label',
+		        'directional' => TRUE,
+		        'source_bundles' => array('node:*', 'node:*'),
+		        'target_bundles' => array('string'),
+		);		
+  	if ($relid == "hasRoot")
+		return array(
+		    	'relation_type'   => 'hasRoot',
+		        'label' => 'has label',
+		        'directional' => TRUE,
+		        'source_bundles' => array('node:*'),
+		        'target_bundles' => array('node:*'),
+		);		
+	return array();
+  }
+  
+  function deleteAllRelations($bid) {
+  	$relations = relation_query('node', $bid, 1)->execute();
+  	foreach ($relations as $key => $val) {
+  		relation_delete($val->rid);
+  	}
+  }
+  
+  function addHasRoot($bid, $nid) {
+  	$endpoints = array(
+  		array('entity_type' => 'node', 'entity_id' => $bid),
+  		array('entity_type' => 'node', 'entity_id' => $nid),
+  	);
+  	$relation = relation_create("hasRoot", $endpoints);
+  	$rid = relation_save($relation);
+  }
+
+  function addHasLabel($bid, $nid, $label) {
+  	$endpoints = array(
+  	array('entity_type' => 'node', 'entity_id' => $bid),
+  	array('entity_type' => 'node', 'entity_id' => $nid),
+  	array('entity_type' => 'node', 'entity_id' => $nid),
+  	);
+  	$relation = relation_create("hasLabel", $endpoints);
+  	$rid = relation_save($relation);
+  }
+  
+ 
+  function advbooks_init() {
+    $types = array("hasRoot", "hasLabel");
+    foreach ($types as $t) {
+  	try {
+  		relation_type_save(getRel($t));
+  	} catch (Exception $E) {  		
+  	}    	
+    }
+  }
+
+  function refresh_all_nodes($node_type) {
+  	$result = db_query("SELECT nid FROM node WHERE type = :type ", array(':type' => $node_type));
+  	
+  	$nids = array();
+  	foreach ($result as $obj) {
+  		refresh_node($obj->nid);
+  	}
+  }
+
+  function advbooks_add_import($n1, $n2) {
+  	dpm($n1, "n1=");
+  	dpm($n2, "n2=");
+  	$endpoints = array(
+  		array('entity_type' => 'node', 'entity_id' => $n1),
+  		array('entity_type' => 'node', 'entity_id' => $n2),
+  	);
+  	$relation = relation_create("importFrom", $endpoints);
+  	$rid = relation_save($relation);  	
+  }
+  
+  function deleteExitingRelations($nid) {
+  	$relations = entity_load('relation', array_keys(relation_query('node', $nid)->execute()));
+  	$rid=array();
+  	foreach ($relations as $obj) array_push($rid, $obj->rid);
+  	relation_multiple_delete($rid);
+  }
+  
+  function refresh_node($nid) {
+  	deleteExitingRelations($nid);
+  	$node = (array) node_load($nid);
+  	$lang = $node["language"];
+  	$body = $node["body"][$lang][0]["value"];
+  }
+  
+  
+  function advbooks_show_page() {
+  	refresh_all_nodes("article"); // can find this on the node type's "edit" screen in the Drupal admin section.
+  	return "a";
+  }
+?>

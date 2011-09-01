@@ -1,6 +1,6 @@
 <?php 
 
-  function advbooks_field_info() {
+  function advanced_books_field_info() {
   	return array(
       'field_counter' => array(
         'label' => t('Book counter'),
@@ -14,14 +14,14 @@
  /**
   * Implements hook_field_is_empty().
   */  
-  function advbooks_field_is_empty($item, $field) {
-  	return empty($item['counter']);
+  function advanced_books_field_is_empty($item, $field) {
+  	return empty($item['counter_name']);
   }
   
   /**
   * Implements hook_field_formatter_info().
   */
-  function advbooks_field_formatter_info() {
+  function advanced_books_field_formatter_info() {
   	return array(
   	// This formatter just displays the hex value in the color indicated.
       'field_counter_formatter' => array(
@@ -35,7 +35,7 @@
   * Implements hook_field_formatter_view().
   *
   */
-  function advbooks_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  function advanced_books_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   	$element = array();
   
   	switch ($display['type']) {
@@ -55,7 +55,7 @@
   *   separately.
   * - A farbtastic colorpicker widget that chooses the value graphically.
   */
-  function advbooks_field_widget_info() {
+  function advanced_books_field_widget_info() {
   	return array(
       'field_counter_widget' => array(
         'label' => t('Counter widget'),
@@ -79,8 +79,8 @@
   * handler that converts our r, g, and b fields into a simulated single
   * 'rgb' form element.
   */
-  function advbooks_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
-  	$value = isset($items[$delta]['counter']) ? $items[$delta]['counter'] : '';
+  function advanced_books_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  	$value = isset($items[$delta]['counter_name']) ? $items[$delta] : array();
   	$element = array(
       '#delta' => $delta,
       '#type' => "fieldset"
@@ -93,23 +93,29 @@
   		   $element['counter_name'] = array(
   		   		"#type" => "textfield",
   		   		"#title" => "Counter name",
-  		   		"#default_value" => isset($state["counter_name"])?$state["counter_name"]:"",
+  		   		"#default_value" => isset($value["counter_name"])?$value["counter_name"]:"",
   		   );
   		   
   		   $element['counter_parent'] = array(
   		   		"#type" => "select",
   		   		"#title" => "Counter parent",
-  		   		"#default_value" => isset($state["counter_parent"])?$state["counter_parent"]:"",
+  		   		"#default_value" => isset($value["counter_parent"])?$value["counter_parent"]:"",
   		   		"#options" => array("No parent")
   		   );
   		   $element['counter_formatter'] = array(
   		   		"#type" => "select",
   		   		"#title" => "Counter formatter",
-  		   		"#default_value" => isset($state["counter_formatter"])?$state["counter_formatter"]:"",
+  		   		"#default_value" => isset($value["counter_formatter"])?$value["counter_formatter"]:"",
   		   		"#options" => array("Arabic", "Roman")
   		   );
+  		   if (isset($delta))
+  		   	for ($i = 0; $i<$delta; $i++) {
+  		   		if (isset($items[$i]["counter_name"])) {
+  		   			$element['counter_parent']["#options"][] =$items[$i]["counter_name"];   		   			
+  		   		}
+  		   	}
   		   break;
   	}
   	return $element;
   }
-  ?>
+?>
