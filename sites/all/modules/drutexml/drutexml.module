@@ -136,8 +136,8 @@ function _drutexml_filter_reset_cache($form, &$form_state) {
  */
 function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   $key = md5($text);
-  ctools_include("cache");
-  $cached = ctools_cache_get("drutexml_cache", $key);
+  ctools_include("object-cache");
+  $cached = ctools_object_cache_get("drutexml_cache", $key);
   if (isset($cached)) {
   	return $cached;
   }

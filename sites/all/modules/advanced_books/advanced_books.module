@@ -2,29 +2,29 @@
   include_once('advanced_books.features.inc');
   include_once("counter_field.inc");
   
-  function advbooks_menu() {
+  function advanced_books_menu() {
     $items['content/relations'] = array(
-      'page callback' => 'advbooks_show_page',
+      'page callback' => 'advanced_books_show_page',
       'access callback' => true, 
     ); 
     return $items;
   }
     
-  function advbooks_theme() {
+  function advanced_books_theme() {
   	$result=array();
 	return $result;  	
   } 
   
-  function advbooks_get_count($element) {
+  function advanced_books_get_count($element) {
   	for ($i=0; isset($element[$i]); $i++);
   	return $i;
   }
   
-  function advbooks_form_advanced_book_node_form_alter(&$form, &$form_state, $form_id) {
+  function advanced_books_form_advanced_book_node_form_alter(&$form, &$form_state, $form_id) {
   		$form["actions"]["regenerate"] = array(
   		  			"#type" => "submit",
   		  			"#title" => "regenerate",
-  		  			"#submit" => array("node_form_submit", "advbooks_regenerate"),
+  		  			"#submit" => array("node_form_submit", "advanced_books_regenerate"),
   		  			"#value" => "Save & Regenerate",
   		);
   		$counterObjects = array("field_seccounter", "field_tablecounter", "field_imagecounter", "field_statementcounter");
@@ -35,20 +35,18 @@
   			$form[$cnt][$lang]["#options"][] = "fff"; 
   			$form[$cnt][$lang]["#options"][] = "ffg"; 
   		}
-  		dpm($form);
   }
   
   function ignore_basically($form, &$form_state) {
-  	dpm("ignorring");
   }
   
-  function advbooks_regenerate($form, &$form_state) {
+  function advanced_books_regenerate($form, &$form_state) {
   	$bid = $form["nid"]["#value"];
   	$lang = $form["language"]["#value"];
   	$nid = $form_state["values"]["field_root"][$lang][0]["value"];
   	deleteAllRelations($bid);
   	addHasRoot($bid, $nid);
-  	advbooks_createBook($bid, $nid);
+  	advanced_books_createBook($bid, $nid);
   }
   
   function getLinks($nid) {
@@ -71,7 +69,7 @@
   	}
   }
   
-  function advbooks_createBook($bid, $nid) {
+  function advanced_books_createBook($bid, $nid) {
   	getLinks($nid);
   }
 
@@ -122,7 +120,7 @@
   }
   
  
-  function advbooks_init() {
+  function advanced_books_init() {
     $types = array("hasRoot", "hasLabel");
     foreach ($types as $t) {
   	try {
@@ -141,9 +139,7 @@
   	}
   }
 
-  function advbooks_add_import($n1, $n2) {
-  	dpm($n1, "n1=");
-  	dpm($n2, "n2=");
+  function advanced_books_add_import($n1, $n2) {
   	$endpoints = array(
   		array('entity_type' => 'node', 'entity_id' => $n1),
   		array('entity_type' => 'node', 'entity_id' => $n2),
@@ -167,7 +163,7 @@
   }
   
   
-  function advbooks_show_page() {
+  function advanced_books_show_page() {
   	refresh_all_nodes("article"); // can find this on the node type's "edit" screen in the Drupal admin section.
   	return "a";
   }
