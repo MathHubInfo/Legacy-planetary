@@ -34,6 +34,7 @@ function tntbase_update_page($form, &$form_status) {
 		'#title'=>'Please select which pages should be updated based on a taxonomy term',
 		'#options' => $taxonomy,
 	);
+	
 	$form["taxonomy_submit"] = array(
 		'#type' => 'submit',
 		'#submit' => array('tntbase_update_taxonomy_based'),
@@ -49,12 +50,39 @@ function tntbase_update_taxonomy_based($form, &$form_state) {
 }
 
 function tntbase_import_page($form, &$form_status) {
+	drupal_add_js(drupal_get_path("module","tntbase_import")."/tntbase_import.js");
+	tntbase_sfbrowser_initialize();
+	
+	$options = array();
+	foreach (field_info_bundles("node") as $key => $bundle) {
+		$options[$key]=$bundle["label"];
+	}
+	
+	$form["ImportType"] = array(
+				'#type' => 'select', 
+				'#title'=>'Please select the content type to be created for new imported files',
+				'#default_value' => 'article',
+				'#options' => $options,
+	);
+
+	$form["ImportField"] = array(
+					'#type' => 'textfield', 
+					'#title'=>'What field should be populated with the document (use the machine name)',
+					'#default_value' => 'body'
+	);
+	
 	
 	$form["TNTPath"] = array(
-			'#type' => 'textfield', 
-			'#title'=>'Please enter the path of the file to import from TNTBase',
-			'#default_value' => '/slides/gencs/notes/notes.tex'
+			'#type' => 'textarea', 
+			'#title'=>'Please enter the path of the files to import from TNTBase',
+			'#default_value' => ''
 	);
+
+	$form["taxonomy_link"] = array(
+		'#type' => 'button',
+		'#value' => 'browse',
+	);
+	
 	$form["TNTImport"] = array(
 			'#type' => 'submit',
 			'#value' => 'import',
@@ -64,17 +92,30 @@ function tntbase_import_page($form, &$form_status) {
 }
 
 function tntbase_import_doImport($form, &$form_state) {
-	$path = $form_state["values"]["TNTPath"];
-	$nid = tntbase_node_getNodeFromPath($path);
-	if (isset($nid)) {
-		$nodes = array($nid); 
-		tntbase_sync_nodes($nodes);
-		return $nid;
-	} else {
-		$nid = tntbase_node_import($path);
-		return $nid;
-	}
+	$paths = $form_state["values"]["TNTPath"];
+	$importField = $form_state["values"]["ImportField"];
+	$importType = $form_state["values"]["ImportType"];
+	dd($importField, "field");
+	dd($importType, "type");
 	
-}
+	$status = "";
+	$url_node = url("<front>")."/node";
+	foreach (preg_split("/[\s,]+/", $paths) as $path) {
+		$path = trim($path);
+		$path = tntbase_normalize_path($path);
+		if (strlen($path)==0)
+			continue;
+		$nid = tntbase_node_getNodeFromPath($path);
+		if (isset($nid)) {
+			$nodes = array($nid); 
+			tntbase_sync_nodes($nodes);
+			$status.="Document ".$path." got syncronized with node id = <a href='$url_node/$nid'>".$nid."</a><br/>";
+		} else {
+			$nid = tntbase_node_import("/".$path, $importType, $importField);
+			$status.="Document ".$path." got imported and not has node id = <a href='$url_node/$nid'>".$nid."</a><br/>";
+		}
+	}
+	drupal_set_message($status, "notice");
+}	
 
 ?>

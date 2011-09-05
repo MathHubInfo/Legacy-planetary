@@ -58,7 +58,8 @@ function tntbase_sync_nodes($nids) {
 			$rev = tntbase_get_revisions($node->tnt_path);
 			if ($node->tnt_rev != $rev) {
 				$language = $node->language;
-				$content = tntbase_get_document($node->tnt_path);
+				tntbase_normalize_path($node->tnt_path);
+				$content = tntbase_get_document("/".$node->tnt_path);
 				$node->body[$language][0]["value"] = $content["Body"];
 				$node->tnt_rev = $content["Revision"];
 				node_save($node);				
@@ -76,24 +77,29 @@ function tntbase_node_load_or_import($tnt_path) {
 	}
 }
 
-function tntbase_node_import($tnt_path) {
-	$doc = tntbase_get_document($path);
+function tntbase_node_import($tnt_path, $content_type="article", $body_field="body") {
+	tntbase_normalize_path($tnt_path);
+	$doc = tntbase_get_document("/".$tnt_path);
 	$body_text = $doc["Body"];
+	$node = array();
+	$node["type"] = $content_type;
 	
-	$node = new stdClass();
-	$node->type = 'article';
+	$node["title"]    = $doc["TitleXHTML"];
+	$node["language"] = LANGUAGE_NONE;
+	$node["tnt_path"] = $doc["Path"];
+	$node["tnt_rev"] = $doc["Revision"];
+		
+	$node[$body_field]=array();
+	$node[$body_field][$node["language"]]=array();
+	$node[$body_field][$node["language"]][0]=array();
+	$node[$body_field][$node["language"]][0]['value']   = $body_text;
+	$node[$body_field][$node["language"]][0]['format']  = 'latex';
+
+	$node = (object) $node;
 	node_object_prepare($node);
 	
-	$node->title    = $doc["TitleXHTML"];
-	$node->language = LANGUAGE_NONE;
-	$node->tnt_path = $doc["Path"];
-	$node->tnt_rev = $doc["Revision"];
-	
-	$node->body[$node->language][0]['value']   = $body_text;
-	$node->body[$node->language][0]['format']  = 'latex';
-	
 	node_save($node);
-	return $node->id;	
+	return $node->nid;	
 }
 
 function tntbase_node_insert($node) {
@@ -118,7 +124,18 @@ function tntbase_node_delete($node) {
 	->execute();
 }
 
+
+/*
+ * makes sure there is no leading '/' in front
+ */ 
+function tntbase_normalize_path(&$tnt_path) {
+	if (strlen($tnt_path)>0 && $tnt_path[0]=='/')
+		$tnt_path = substr($tnt_path, 1);
+	return $tnt_path;
+}
+
 function tntbase_node_getNodeFromPath($tnt_path) {
+	tntbase_normalize_path($tnt_path);
 	$nid = db_select('tntbase_url', 'e')
 	->fields('e', array(
 			'nid',
