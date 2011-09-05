@@ -1,16 +1,13 @@
 <?php
 function advanced_books_field_schema($field) {
-  $columns = array(
+  $fields = array(
     'counter_name' => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE),
     'counter_parent' => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE),
     'counter_formatter' => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE),
   );
-  $indexes = array(
-    'counter_name' => array('counter_name'),
-  );
   return array(
-    'columns' => $columns,
-    'indexes' => $indexes,
+    'fields' => $fields,
+    'primary key' => "counter_name",
   );
 }
 
