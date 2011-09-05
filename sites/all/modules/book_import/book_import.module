@@ -1,0 +1,159 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function book_import_menu() {
+  $items = array();
+
+  $items[''] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => '',
+    'page arguments' => array()
+  );
+
+  return $items;
+}
+
+/**
+ * Method for creating a book recursively from a root article path
+ * @param string $FilePath the path from where to start creating the book
+ * @param string $Name the name of the book to be created
+ * @return true if book was built successfully, false otherwise
+ */
+function book_import_create_book($file_path, $name) {
+  //from applications/books/models/class.bookmodel.php
+  $article_map = array();
+  $path_map  = array();
+  $tree = array();
+  $bib_keys = array();
+  $tree_xhtml = "";
+  $index = array();
+
+  $tree = book_import_create_helper_book($file_path, false, "", $name); //line 62
+
+}
+
+/**
+ * Method for recursively creating a book from a filepath in the repository
+ *
+ * This takes advantage of a mapping from paths to IDs in between articles
+ *
+ * @param string    $FilePath the path in the repository
+ * @param string    $ParentPath the path towards the parent
+ * @param string    $Number the numbering used for the specific article at this $FilePath in this book
+ * @param string    $Name the name of the book being created
+ */
+function book_import_helper_create_book($file_path, $parent_path = false, $number = '', $name = false) {
+  //get the article if missing
+
+  $nid = tntbase_node_getNodeFromPath($file_path);
+  //check if the document exists in Drupal
+  if (!isset($nid)) {
+    //if the document does not exist
+    //get the document and insert it into Drupal.
+    $nid = tntbase_node_import($file_path);
+  }
+
+  //get its dependencies
+  $query = '
+    declare default element namespace "http://omdoc.org/ns";
+    let $doc := tnt:doc("'.$file_path.'")
+    let $refs := $doc//ref[@type="cite"][@class="expandable"]/@xref
+    let $bib := tokenize($doc//citation/@refs, ",")
+    let $indexes := $doc//idx
+    let $xmlchildren := for $ref in $refs return <child>{ string($ref) }</child>
+    let $xmlbibentries := for $entry in $bib return <bibentry> { string($entry) } </bibentry>
+    
+    return 
+    ( 
+    <children> { $xmlchildren } </children> ,
+    <bibentries> { $xmlbibentries } </bibentries> ,
+    <indexes> { $indexes } </indexes>
+    )';
+
+  //see what the documents depends on and bibliography and index
+  $results = tntbase_query($query);
+  $document = new DOMDocument();
+  $children = array();
+  $bib_keys = array();
+  $indexes = array();
+
+  foreach ($results as $result) {
+    $document->loadXML($result);
+    $root = $document->documentElement;
+    if ("children" == $root->nodeName) {
+      $child_nodes = $root->getElementsByTagName('child');
+      for ($i = 0; $i < $child_nodes->length; $i++) {
+        $child = $child_nodes->item($i);
+        $children[] = book_import_expand_path($child->nodeValue, $file_path);
+      }
+    } elseif ("bibentries" == $root->nodeName) {
+      $bib_nodes = $root->getElementsByTagName('bibentry');
+      for ($i = 0; $i < $bib_nodes->length; $i++) {
+        $bib = $bib_nodes->item($i);
+        $bib_keys[] = $bib->nodeValue;
+      }
+    } elseif ("indexes" == $root->nodeName) {
+      $index_nodes = $root->childNodes;
+      for ($i = 0; $i < $index_nodes->length; $i++) {
+        $index = $index_nodes->item($i);
+        $indexes[] = $document->saveXML($index);
+      }
+    }
+  }
+
+  //get indexes
+  foreach ($indexes as $index_text) {
+    book_import_parsing_for_index($index_text, $nid, $index);
+  }
+
+  //setup initially
+  if (false == $parent_path) {
+    $book_id = book_import_clean_book($nid, $name);
+    $parent_path = $file_path;
+  }
+
+
+  //setup the bibliography
+  //TODO: not needed right now
+  //    $this->BibKeys = array_merge($this->BibKeys, $this->EventArguments['BibKeys']);
+
+  //setup path map
+  $path_map[$file_path] = $nid;
+
+  //setup relations map
+  if ($file_path == $parent_path) {
+    
+  }
+}
+
+function book_import_expand_path() {
+}
+
+function book_import_parsing_for_index(){
+}
+
+function book_import_clean_book($nid, $name) {
+
+}
+
+
+function add_book_next($bid, $nid1, $nid2) {
+  $endpoints = array(
+    array('entity_type' => 'node', 'entity_id' => $nid1),
+    array('entity_type' => 'node', 'entity_id' => $nid2),
+    array('entity_type' => 'book', 'entity_id' => $bid),
+  );
+}
+
+//taken from advanced_books
+function addHasRoot($bid, $nid) {
+  $endpoints = array(
+  array('entity_type' => 'node', 'entity_id' => $bid),
+  array('entity_type' => 'node', 'entity_id' => $nid),
+  );
+  $relation = relation_create("hasRoot", $endpoints);
+  $rid = relation_save($relation);
+}
