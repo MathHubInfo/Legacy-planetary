@@ -1,0 +1,1 @@
+jQuery.sfbrowser.addLang([]);

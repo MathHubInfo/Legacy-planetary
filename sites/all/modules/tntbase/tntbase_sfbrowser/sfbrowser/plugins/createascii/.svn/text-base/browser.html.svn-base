@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="nl" xml:lang="nl">
+	<head>
+		<title>SFBrowser</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/screen.css" />
+	</head>
+	<body>
+		<ul><li><a class="textbutton newascii" title="Nieuw bestand"><span>Nieuw bestand</span></a></li></ul>
+		<div id="sfbcreateascii">
+			<div class="sfbheader"><h3>Create file</h3></div>
+			<div class="fbcontent">
+				<label for="filename">choose filetype</label><input name="filename" type="text" /><br/>
+				<label for="fileext">choose filetype</label><select name="fileext"></select><br/>
+				<label for="filecont">contents</label>
+				<textarea name="filecont" rows="3" cols="12">type contents</textarea><br/>
+				<div class="sfbbutton submit">Create file</div>
+				<div class="sfbbutton cancel">Cancel</div>
+			</div>
+		</div>
+	</body>
+</html>

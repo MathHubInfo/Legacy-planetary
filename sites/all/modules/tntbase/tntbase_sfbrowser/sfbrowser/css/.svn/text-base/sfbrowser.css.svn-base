@@ -1,0 +1,613 @@
+body, html {
+	margin: 0px;
+	height: 100%;
+}
+
+/* black layer */
+#sfbrowser * {
+	font-family: arial, sans, verdana;
+	font-size: 12px;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	vertical-align: baseline;
+	line-height: 1;
+}
+#sfbrowser {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 99;
+}
+	#sfbrowser a {
+		text-decoration: none;
+	}
+#sfbrowser div#fbbg {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: #000;
+	opacity: .5;
+	filter: alpha(opacity=50);
+	color: #fff;
+	display: none;
+}
+/* window */
+#sfbrowser div#fbwin {
+	position: absolute;
+	width: 600px;
+	border: 1px outset #AAA;
+	background: #D5D5D5 url(sfbg.jpg) 0px 0px repeat-x;
+	overflow: hidden;
+	display: none;
+	/* css3 */
+	background: -webkit-gradient(linear, 0 0, 0 100, from(#F1F1F1), to(rgba(213, 213, 213, .8))) repeat-x;
+	-webkit-border-radius:	4px;
+	-moz-border-radius:		4px;
+	border-radius:			4px;
+	-webkit-box-shadow:		inset rgba(255,255,255,.6) 0 0 8px, rgba(0,0,0,.3) 3px 6px 16px;
+	-moz-box-shadow:		inset rgba(255,255,255,.6) 0 0 8px, rgba(0,0,0,.3) 3px 6px 16px;
+	box-shadow:				inset rgba(255,255,255,.6) 0 0 8px, rgba(0,0,0,.3) 3px 6px 16px;
+}
+	/* header */
+	#sfbrowser .sfbheader {
+		position: relative;
+		padding: 3px 10px 3px 10px;
+		background: #ccc url(butbg.png) 0px 24px;
+		/* css3 */
+		background: -webkit-gradient(linear, 0 0, 0 20, from(#D4D4D4), color-stop(0.3,#D4D4D4), color-stop(0.8,#F1F1F1), to(#F1F1F1)) repeat-x;
+		-webkit-border-radius:	4px	4px	0 0;
+		-moz-border-radius:		4px	4px	0 0;
+		border-radius:			4px	4px	0 0;
+	}
+	#sfbrowser .sfbheader:hover {
+		background: -webkit-gradient(linear, 0 0, 0 20, from(#FFF), color-stop(0.3,#FFF), color-stop(0.8,#F1F1F1), to(#F1F1F1)) repeat-x;
+	}
+		#sfbrowser h3 {
+			margin: 0px;
+			line-height: 20px;
+			background: url(sheet.png) 0px 1px no-repeat;
+			padding-left: 19px;
+			cursor: move;
+		}
+			#sfbrowser h3 span {
+				color: #D00;
+				padding-left: 10px;
+			}
+		#sfbrowser #loadbar {
+			display: none;
+			position: absolute;
+			top: 4px;
+			left: 130px;
+			width: 300px;
+			height: 16px;
+			border: 1px inset #888;
+		}
+			#sfbrowser #loadbar div {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				width: 300px;
+				height: 16px;
+				background: transparent url(progress.png) 0px 0px;
+			}
+			#sfbrowser #loadbar span {
+				position: absolute;
+				width: 300px;
+				height: 16px;
+				line-height: 14px;
+				text-align: center;
+				font-weight: bold;
+			}
+
+		/* top menu */
+		#sfbrowser #sfbtopmenu {
+			position: absolute;
+			top: 3px;
+			right: 3px;
+			text-align: right;
+			list-style: none;
+			margin: 0px;
+			padding: 0px;
+			line-height: 26px;
+		}
+		#sfbrowser #fbwin #sfbtopmenu li {
+			position: relative;
+			display: inline;
+		}
+
+			/* form */
+			#sfbrowser form#fileio {
+				position: absolute;
+				top: 0px;
+				right: 0px;
+				margin-top: 2px;
+				opacity: 0;
+				filter: alpha(opacity=0);
+				cursor: hand;
+				cursor: pointer;
+				overflow: hidden;
+				z-index: 100;
+			}
+			#sfbrowser form#fileio input {
+				display: block;
+				font-size: 5px;
+				cursor: pointer;
+				cursor: hand;
+				color: "red";
+				background-color: "red";
+				border: 1px solid "red";
+			}
+
+			/* swf uploader */
+			#sfbrowser #swfUploader {
+				display: block;
+				position: absolute;
+				left: 0px;
+				top: 0px;
+			}
+		
+	/* anchor buttons */
+	#sfbrowser a.sfbbutton, #sfbrowser a.textbutton {
+		background: transparent url(sheet.png) no-repeat 0px 0px;
+		cursor: hand;
+		cursor: pointer;
+		padding: 0px 0px 0px 16px;
+		border: 0px;
+		float: none !important;
+	}
+	#sfbrowser a.sfbbutton:hover, #sfbrowser a.textbutton:hover {
+		background-position: 1px 1px;
+	}
+	#sfbrowser a.textbutton span {
+		margin: 0px 5px 1px 4px;
+		font-size: 11px;
+		line-height: 18px;
+		text-decoration: none;
+		color: #000;
+	}
+	#sfbrowser a.sfbbutton span {
+		display: none;
+	}
+
+	/* 1 logo */
+	/* 2 close */
+	/* 3 maximize */
+	/* 4 sortup */
+	/* 5 sortdown */
+	/* 6 resize */
+	/* 7 folder */
+	/* 8 folder open */
+	/* 9 new folder */
+	/* 10 upload */
+	/* 11 duplicate */
+	/* 12 choose */
+	/* 13 download */
+	/* 14 cancel upload */
+	/* 15 rename */
+	/* 16 show */
+	/* 17 delete */
+
+	#sfbrowser a.cancelfb {			background-position: 0px -64px; }
+	#sfbrowser a.cancelfb:hover {	background-position: 0px -96px; }
+
+	#sfbrowser a.maximizefb {			background-position: 0px -128px; }
+	#sfbrowser a.maximizefb:hover {	background-position: 0px -160px; }
+
+/*	#sfbrowser a.sortup {			background-position: 0px -192px; } see: #sfbrowser thead th span.sort
+	#sfbrowser a.sortup:hover {	background-position: 0px -224px; }
+
+	#sfbrowser a.sortdown {			background-position: 0px -256px; }
+	#sfbrowser a.sortdown:hover {	background-position: 0px -288px; }
+
+	#sfbrowser a.resize {			background-position: 0px -320px; }
+	#sfbrowser a.resize:hover {	background-position: 0px -352px; }*/
+
+/*	#sfbrowser a.folder {			background-position: 0px -384px; }
+	#sfbrowser a.folder:hover {	background-position: 0px -416px; }
+
+	#sfbrowser a.folderopen {			background-position: 0px -448px; }
+	#sfbrowser a.folderopen:hover {	background-position: 0px -480px; }*/
+
+	#sfbrowser a.newfolder {			background-position: 0px -512px; }
+	#sfbrowser a.newfolder:hover {	background-position: 0px -544px; }
+
+	#sfbrowser a.upload {			background-position: 0px -576px; }
+	#sfbrowser a.upload:hover {	background-position: 0px -608px; }
+
+	#sfbrowser a.duplicate {			background-position: 0px -640px; }
+	#sfbrowser a.duplicate:hover {	background-position: 0px -672px; }
+
+	#sfbrowser a.choose {			background-position: 0px -704px; }
+	#sfbrowser a.choose:hover {	background-position: 0px -736px; }
+
+	#sfbrowser a.preview {			background-position: 0px -768px; }
+	#sfbrowser a.preview:hover {	background-position: 0px -800px; }
+
+	#sfbrowser a.cancel {			background-position: 0px -832px; }
+	#sfbrowser a.cancel:hover {	background-position: 0px -864px; }
+
+	#sfbrowser a.rename {			background-position: 0px -896px; }
+	#sfbrowser a.rename:hover {	background-position: 0px -928px; }
+
+/*	#sfbrowser a.preview {			background-position: 0px -960px; }
+	#sfbrowser a.preview:hover {	background-position: 0px -992px; }*/
+
+	#sfbrowser a.filedelete {			background-position: 0px -1024px; }
+	#sfbrowser a.filedelete:hover {	background-position: 0px -1056px; }
+
+/*	#sfbrowser a.cancelfb {			background-position: 0px -1088px; }
+	#sfbrowser a.cancelfb:hover {	background-position: 0px -1120px; }*/
+
+	/* table anchor buttons */
+	#sfbrowser #fbwin table a.sfbbutton {
+		padding-bottom:2px;
+	}
+
+	/* big buttons */
+	#sfbrowser div.sfbbutton {
+		display: block;
+		float: right;
+		margin: 5px 5px 0px 0px;
+		/*position: absolute;*/
+		/*right: 10px;*/
+		width: 100px;
+		border-width: 1px;
+		border-style: outset;
+		padding: 4px 2px 6px 2px;
+		background: #eee url(butbg.png);
+		color: #444;
+		font-weight: bold;
+		text-align: center;
+		font-size: 12px;
+		line-height: 12px;
+		cursor: hand;
+		cursor: pointer;
+		/* css3 */
+		background: -webkit-gradient(linear, 0 0, 0 22, from(#F1F1F1), color-stop(0.49,#E1E1E1), color-stop(0.51,#D3D3D3), to(#D3D3D3)) repeat-x;
+		-webkit-border-radius:	5px;
+		-moz-border-radius:		5px;
+		border-radius:			5px;
+		-webkit-box-shadow:		inset rgba(255,255,255,.1) 2px 2px 2px, inset rgba(0,0,0,.1) -2px -2px 2px;
+		-moz-box-shadow:		inset rgba(255,255,255,.1) 2px 2px 2px, inset rgba(0,0,0,.1) -2px -2px 2px;
+		box-shadow:				inset rgba(255,255,255,.1) 2px 2px 2px, inset rgba(0,0,0,.1) -2px -2px 2px;
+		text-shadow: 0px -1px 1px rgba(255,255,255,.4);
+	}
+	#sfbrowser div.sfbbutton:hover {
+		border-style: inset;
+		padding: 5px 1px 5px 3px;
+		background-position: 0px -2px;
+		color: #000;
+		/* css3 */
+		background: -webkit-gradient(linear, 0 0, 0 22, from(#F8F8F8), color-stop(0.4,#E1E1E1), color-stop(0.6,#D3D3D3), to(#D3D3D3)) repeat-x;
+	}
+	#sfbrowser div.choose {
+		right: 10px;
+		bottom: 10px;
+	}
+	#sfbrowser div.cancelfb {
+		right: 120px;
+		bottom: 10px;
+	}
+
+	/* content */
+	#sfbrowser .fbcontent {
+		padding: 0px 10px 0px 10px;
+	}
+
+	/* sfbrowser table */
+	#sfbrowser div#fbtable {
+		height: 226px;
+		overflow: auto;
+		border: 2px solid #888;
+		border-color: #888 #fff #fff #888;
+		background-color: #fff;
+		/* css3 */
+		position: relative;
+		z-index: 100;
+		border: 1px inset #CCC;
+		-webkit-box-shadow:		rgba(255,255,255,.6) 2px 2px 2px, rgba(0,0,0,.1) -2px -2px 2px;
+		-moz-box-shadow:		rgba(255,255,255,.6) 2px 2px 2px, rgba(0,0,0,.1) -2px -2px 2px;
+		box-shadow:				rgba(255,255,255,.6) 2px 2px 2px, rgba(0,0,0,.1) -2px -2px 2px;
+
+	}
+	#sfbrowser table {
+		/*height: 226px;
+		height: 100%;*/
+		width: 100%;
+		border: 0px;
+		overflow: hidden;
+	}
+		/*#sfbrowser tbody, #sfbrowser thead {
+			width: 340px;
+		}
+		#sfbrowser thead {
+		}
+			#sfbrowser thead tr	{
+			}*/
+				#sfbrowser thead th {
+					height: 20px;
+					font-family: verdana;
+					text-align: left;
+					border-width: 1px;
+					border-style: solid;
+					border-color: #fff #888 #888 #fff;
+					background: #ddd url(butbg.png) 0px 4px;
+					color: #444;
+					font-size: 10px;
+					line-height: 10px;
+					font-weight: normal;
+					padding: 0px 0px 0px 2px;
+					cursor: hand;
+					cursor: pointer;
+				}
+				#sfbrowser thead th:hover {
+					border-color: #eee #666 #666 #eee;
+					background-position: 0px 2px;
+					color: #000;
+				}
+				#sfbrowser thead th span {
+					padding: 0px 10px 0px 10px;
+					background-image: url(sheet.png);
+					background-repeat: no-repeat;
+					background-position: 300px 0px;
+				}
+				#sfbrowser thead th span.sort {
+					background-position: 10px -192px;
+				}
+				#sfbrowser thead th:hover span.sort {
+					background-position: 10px -224px;
+				}
+				#sfbrowser thead th span.sort.asc {
+					background-position: 10px -256px;
+				}
+				#sfbrowser thead th:hover span.sort.asc {
+					background-position: 10px -288px;
+				}
+		#sfbrowser table>tbody {
+			height: 198px;
+			overflow: auto; 
+			overflow-x: hidden;			
+		}
+		#sfbrowser table>tbody * {
+			line-height: 26px;
+		}
+			#sfbrowser table tbody tr {
+				height: 26px !important;
+				cursor: hand;
+				cursor: pointer;
+				white-space: nowrap;
+			}
+			#sfbrowser table tbody tr.over {
+				background-color: #def;
+			}
+			#sfbrowser table tbody tr.selected {
+				background-color: #adf;
+			}
+				#sfbrowser table tbody tr td {
+					vertical-align: top;/*baseline;*/
+					border-right: 1px solid #def;
+				}
+				#sfbrowser td.loading {
+					height: 194px;
+					background: url(loadingb.gif) center center no-repeat;
+				}
+				#sfbrowser tr td:last-child {
+					padding-right: 20px;
+					text-align:right;
+				}
+				#sfbrowser td.icon {
+						/*position: relative;
+						top: 0px;
+						left: 0px;
+					padding-left: 20px;
+					background-repeat: no-repeat;
+					background-position: 1px 4px;*/
+				}
+					#sfbrowser td.icon span.icon {
+						/*position: absolute;
+						top: 0px;
+						left: 0px;*/
+						float: left;
+						display: block;
+						width: 16px;
+						height: 16px;
+						margin: 4px 3px 0px 1px;
+						background-image: url(fileSheet.png);
+						background-repeat: no-repeat;
+					}
+					#sfbrowser td.icon span.filename {
+						display: inline-block;
+						overflow: hidden;
+					}
+					#sfbrowser td input {
+						border: 1px solid #64A5D3;
+						margin: 4px -22px 0px 0px;
+						padding: 0px;
+						line-height: 14px;
+						2width: 80%;
+					}
+							
+			/* uploading */
+			#sfbrowser table tbody tr.uploading {
+				background-color: #D7FF99!important;
+				cursor: default;
+			}
+				#sfbrowser table tbody tr.uploading td {
+					border-bottom: 1px solid #9BE62B;
+				}
+					#sfbrowser table tbody div.progress {
+						position: relative;
+						width: 100%;
+						height: 13px;
+						margin-top: 7px;
+						background-color: #B8ED67;
+						padding: 0px;
+					}
+						#sfbrowser table tbody div.progress div {
+							position: absolute;
+							width: 1px;
+							height: 13px;
+							background-color: #35ADFD;
+						}
+						#sfbrowser table tbody div.progress span {
+							position: absolute;
+							padding-left: 3px;
+							z-index: 101;
+							font-size: 10px!important;
+							line-height: 12px!important;
+							font-weight: bold;
+							color: white;
+						}
+
+	/* table drag select */
+	#sfbrowser table#sfbDragSelect {
+		border: 2px solid #9BE62B;
+	}
+		#sfbrowser table#sfbDragSelect, #sfbrowser table#sfbDragSelect * {
+			background-color: #D7FF99;
+			margin: 0;
+			text-align: left;
+		}
+
+/* preview */
+#sfbrowser div#fbpreview {
+	position: relative;
+	width: 192px;
+	height: 144px;
+	overflow: hidden;
+	margin: 10px 0px 0px 0px;
+	padding: 0px;
+	border: 2px inset #888;
+	border-color: #888 #fff #fff #888;
+	background: #eee url(fbpreview.gif);
+	text-align: center;
+	/* css3 */
+	width: 190px;
+	height: 142px;
+	border: 1px inset #CCC;
+	-webkit-box-shadow:		rgba(255,255,255,.6) 2px 2px 2px, rgba(0,0,0,.1) -2px -2px 2px;
+	-moz-box-shadow:		rgba(255,255,255,.6) 2px 2px 2px, rgba(0,0,0,.1) -2px -2px 2px;
+	box-shadow:				rgba(255,255,255,.6) 2px 2px 2px, rgba(0,0,0,.1) -2px -2px 2px;
+}
+#sfbrowser div#fbpreview.auto {
+	overflow: auto;
+}
+	#sfbrowser div#fbpreview img {
+		width: 192px;
+		height: 144px;
+		margin: 0px;
+		padding: 0px;
+		cursor: hand;
+		cursor: pointer;
+	}
+	#sfbrowser div#fbpreview.auto img {
+		width: auto;
+		height: auto;
+	}
+	#sfbrowser div#fbpreview pre {
+		margin: 0px;
+		width: 100%;
+		height: 100%;
+		font-family: "Courier New", Courier, monospace, verdana, arial;
+		background-color: #fff;
+		text-align: left;
+		font-size: 11px;
+		line-height: 13px;
+		overflow: auto;
+	}
+	#sfbrowser div#fbpreview pre div {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		width: 100%;
+		text-align: center;
+		background-color: #ffa;
+		font-size: 11px;
+		line-height: 13px;
+	}
+
+/* footer */
+#sfbrowser div#sfbfooter {
+	position: absolute;
+	bottom: 1px;
+	left: 0px;
+	width: 100%;
+	text-align: center;
+	font-size: 7px !important; 
+	line-height: 7px !important; 
+	color: #aaa;
+}
+	#sfbrowser div#sfbfooter * {
+		font-size: 7px !important; 
+	}
+#sfbrowser div#sfbfooter a {
+	text-decoration: none;
+	font-size: 7px; 
+	color: #aaa;
+}
+
+#sfbrowser ul li {
+    text-align: left;
+}
+
+/* context menu */
+#sfbrowser ul#sfbcontext {
+	display: none;
+	list-style: none;
+	position: fixed;
+	top: 200px;
+	left: 200px;
+	margin: 0px;
+	padding: 0px;
+	z-index: 150;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #fff #888 #888 #fff;
+	background-color: #eee;
+	/* css3 
+	-webkit-box-shadow:	rgba(0,0,0,.3) 1px 3px 8px;
+	-moz-box-shadow:	rgba(0,0,0,.3) 1px 3px 8px;
+	box-shadow:			rgba(0,0,0,.3) 1px 3px 8px;*/
+}
+#sfbrowser ul#sfbcontext li {
+	margin: 0px;
+	padding: 0px 4px 0px 2px;
+	background: url(butbg.png);
+	height: 20px;
+}
+#sfbrowser ul#sfbcontext li:hover {
+	background-position: 0px 20px;
+	padding: 0px 3px 0px 3px;
+}
+#sfbrowser ul#sfbcontext li a {
+}
+#sfbrowser ul#sfbcontext li:hover a span {
+	padding: 1px 2px 0px 4px;
+}
+#sfbrowser ul#sfbcontext li a, ul#sfbcontext li a span {
+	display: block;
+	line-height: 20px;
+}
+#sfbrowser ul#sfbcontext li a span {
+	padding: 0px 3px 1px 3px;
+}
+
+/* resizer */
+div#resizer {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	width: 16px;
+	height: 16px;
+	background: transparent url(sheet.png) 0px -320px no-repeat;
+	cursor: move;
+	/* css3 */
+	-webkit-border-radius:	0 0 4px 0;
+	-moz-border-radius:		0 0 4px 0;
+	border-radius:			0 0 4px 0;
+}

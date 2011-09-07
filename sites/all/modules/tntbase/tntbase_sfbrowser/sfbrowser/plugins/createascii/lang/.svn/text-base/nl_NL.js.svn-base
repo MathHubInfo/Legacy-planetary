@@ -1,0 +1,1 @@
+jQuery.sfbrowser.addLang({"asciiFileNew":"Nieuw bestand","contents":"Inhoud","asciiFileSave":"Aanpassingen bewaren","create":"Aanmaken","editascii":"Bestand aanpassen","axciiFileNameInvalid":"Dit is geen geldige bestandsnaam"});

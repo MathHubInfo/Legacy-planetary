@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/repos/planetary/!svn/ver/1091/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php
+END
+log.txt
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/repos/planetary/!svn/ver/986/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/log.txt
+END
+sfbrowser.php.old
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/planetary/!svn/ver/986/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/sfbrowser.php.old
+END
+vanilla_init.php
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/planetary/!svn/ver/1091/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/vanilla_init.php
+END
+TestSFB.php
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/repos/planetary/!svn/ver/986/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/TestSFB.php
+END
+sfbrowser.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/repos/planetary/!svn/ver/986/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/sfbrowser.php
+END
+AbstractSFB.php
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/planetary/!svn/ver/986/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/AbstractSFB.php
+END
+init.php
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/repos/planetary/!svn/ver/986/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/init.php
+END
+class.pdf2text.php
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/repos/planetary/!svn/ver/986/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/class.pdf2text.php
+END
+config.php
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/repos/planetary/!svn/ver/993/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/config.php
+END
+AbstractSFB.php.new
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/planetary/!svn/ver/986/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/AbstractSFB.php.new
+END
+functions.php
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/repos/planetary/!svn/ver/986/trunk/plugins/TNTBaseBrowser/sfbrowser/connectors/php/functions.php
+END

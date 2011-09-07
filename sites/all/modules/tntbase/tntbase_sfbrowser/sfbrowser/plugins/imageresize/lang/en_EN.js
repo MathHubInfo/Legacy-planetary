@@ -1,0 +1,1 @@
+jQuery.sfbrowser.addLang({"cancel":"Cancel","resize":"Resize","dragMe":"Drag me","scale":"Scale","width":"Width","height":"Height","crop":"Crop","imgResize":"Resize image"});

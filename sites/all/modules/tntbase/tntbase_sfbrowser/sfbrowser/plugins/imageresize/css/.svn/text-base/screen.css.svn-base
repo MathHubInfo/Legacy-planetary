@@ -1,0 +1,74 @@
+/* buttons */
+#sfbrowser a.resize {		background-image: url("image_scale.gif");}
+
+
+/* resize */
+#sfbrowser div#sfbimgresize {
+	display: none;
+	/*position: fixed;*/
+	width: 100%;
+	height: 100%;
+	/*height: 435px;
+	border: 2px outset #888;*/
+/*	background: #d8d8d8 url(sfbg.jpg) 0px 0px;*/
+}
+	#sfbrowser div.resize {
+		bottom: 60px;
+	}
+	#sfbrowser div.cancelresize {
+		bottom: 30px;
+	}
+	#sfbrowser div#sfbimgresize div#sfbrsimg {
+		position: relative;
+		width: 577px;
+		height: 334px;
+	}
+		#sfbrowser div#sfbimgresize div#sfbrsimg * {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+		}
+		#sfbrowser div#sfbimgresize div#sfbrsimg div#org {
+			background-color: #777;
+		}
+		#sfbrowser div#sfbimgresize div#sfbrsimg img {
+			width: 10%;
+			height: 10%;
+			border: 1px dashed red;
+		}
+		#sfbrowser div#sfbimgresize div#sfbrsimg div#crop {
+			border: 1px dashed blue;
+		}
+		#sfbrowser div#sfbimgresize div#sfbrsimg div.handle {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			width: 10px;
+			height: 10px;
+			border: 1px solid red;
+			background-color: #fff;
+			cursor: move;
+		}
+		#sfbrowser div#sfbimgresize div#sfbrsimg div.crop {
+			border: 1px solid blue;
+		}
+	#sfbrowser div#sfbimgresize form#sfbsize {
+		display: block;
+		position: absolute;
+		top: 43px;
+		right: 10px;
+		text-align: right;
+	}
+		#sfbrowser div#sfbimgresize form#sfbsize fieldset {
+			border: 0px;
+			margin: 0px 0px 0px 20px;
+			padding: 0px;
+		}
+			#sfbrowser div#sfbimgresize form#sfbsize fieldset legend {
+				font-weight: bold;
+				margin: 0px;
+				padding: 0px;
+			}
+				#sfbrowser div#sfbimgresize form#sfbsize input {
+					width: 30px;
+				}

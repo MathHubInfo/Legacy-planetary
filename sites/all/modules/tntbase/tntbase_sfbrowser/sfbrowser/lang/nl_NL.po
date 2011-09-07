@@ -1,0 +1,196 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SFBrowser\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-06 10:53+0100\n"
+"PO-Revision-Date: 2010-12-07 19:02+0100\n"
+"Last-Translator: Ron Valstar <poedit@ronvalstar.nl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: gettext\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../connectors/php/sfbrowser.php:44
+msgid "fileListing"
+msgstr ""
+
+#: ../connectors/php/sfbrowser.php:177
+msgid "fileDeleted"
+msgstr "Bestand verwijderd"
+
+#: ../connectors/php/sfbrowser.php:178
+msgid "fileNotdeleted"
+msgstr "Bestand kon niet worden verwijderd"
+
+#: ../connectors/php/sfbrowser.php:180
+msgid "folderDeleted"
+msgstr "Map verwijderd"
+
+#: ../connectors/php/sfbrowser.php:181
+msgid "folderNotdeleted"
+msgstr "De map kon niet worden verwijderd, kijk of de map leeg is."
+
+#: ../connectors/php/sfbrowser.php:264
+msgid "filenameNoext"
+msgstr "Extensies kunnen niet worden aangepast"
+
+#: ../connectors/php/sfbrowser.php:266
+msgid "filenamInvalid"
+msgstr "Dit is geen geldige bestandsnaam"
+
+#: ../connectors/php/sfbrowser.php:269
+msgid "filenameNochange"
+msgstr "Er zijn geen veranderingen"
+
+#: ../connectors/php/sfbrowser.php:272
+msgid "filenameNothing"
+msgstr "Je kan niet iets naar niets hernoemen"
+
+#: ../connectors/php/sfbrowser.php:275
+msgid "filenameExists"
+msgstr "Deze bestandsnaam bestaat al"
+
+#: ../connectors/php/sfbrowser.php:277
+msgid "filenameSucces"
+msgstr "Hernoemen gelukt"
+
+#: ../connectors/php/sfbrowser.php:278
+msgid "filenameFailed"
+msgstr "Hernoemen mislukt"
+
+#: ../connectors/php/sfbrowser.php:293
+msgid "folderCreated"
+msgstr "Map is aangemaakt"
+
+#: ../connectors/php/sfbrowser.php:296
+#: ../connectors/php/sfbrowser.php:298
+msgid "folderFailed"
+msgstr "De map kon niet worden gemaakt"
+
+#: ../connectors/php/sfbrowser.php:320
+msgid "filemoveSucces"
+msgstr "Verplaatsen gelukt"
+
+#: ../connectors/php/sfbrowser.php:323
+msgid "filemoveFailed"
+msgstr "Verplaatsen mislukt"
+
+#: ../jquery.sfbrowser.js:211
+#: ../jquery.sfbrowser.js:1306
+msgid "fileExistsOverwrite"
+msgstr "De bestandsnaam bestaat al, overschrijven?"
+
+#: ../jquery.sfbrowser.js:216
+msgid "fileTooBig"
+msgstr "Het bestand '#1' overschrijd de maximum upload waarde van #2. Komprimeer het bestand of upload het via FTP."
+
+#: ../jquery.sfbrowser.js:328
+msgid "sfb"
+msgstr "SFBrowser"
+
+#: ../jquery.sfbrowser.js:329
+msgid "loading"
+msgstr "Laden"
+
+#: ../jquery.sfbrowser.js:332
+#: ../jquery.sfbrowser.js:1282
+msgid "newfolder"
+msgstr "Nieuwe map"
+
+#: ../jquery.sfbrowser.js:334
+msgid "upload"
+msgstr "Uploaden"
+
+#: ../jquery.sfbrowser.js:336
+#: ../jquery.sfbrowser.js:356
+msgid "cancel"
+msgstr "Annuleer"
+
+#: ../jquery.sfbrowser.js:338
+msgid "maximize"
+msgstr "Maximaliseren"
+
+#: ../jquery.sfbrowser.js:342
+msgid "name"
+msgstr "Naam"
+
+#: ../jquery.sfbrowser.js:343
+msgid "type"
+msgstr "Type"
+
+#: ../jquery.sfbrowser.js:344
+msgid "size"
+msgstr "Grootte"
+
+#: ../jquery.sfbrowser.js:345
+msgid "date"
+msgstr "Datum"
+
+#: ../jquery.sfbrowser.js:346
+msgid "dimensions"
+msgstr "Verhoudingen"
+
+#: ../jquery.sfbrowser.js:355
+#: ../jquery.sfbrowser.js:386
+msgid "choose"
+msgstr "Kies"
+
+#: ../jquery.sfbrowser.js:387
+msgid "rename"
+msgstr "Hernoem"
+
+#: ../jquery.sfbrowser.js:388
+msgid "duplicate"
+msgstr "Dupliceer"
+
+#: ../jquery.sfbrowser.js:389
+#: ../jquery.sfbrowser.js:751
+msgid "view"
+msgstr "Bekijk"
+
+#: ../jquery.sfbrowser.js:390
+#: ../jquery.sfbrowser.js:752
+msgid "del"
+msgstr "Verwijder"
+
+#: ../jquery.sfbrowser.js:399
+#: ../jquery.sfbrowser.js:400
+msgid "dragMe"
+msgstr "Sleep mij"
+
+#: ../jquery.sfbrowser.js:726
+msgid "folder"
+msgstr "Map"
+
+#: ../jquery.sfbrowser.js:743
+msgid "fileUploadCancel"
+msgstr "Uploaden annuleren"
+
+#: ../jquery.sfbrowser.js:1025
+msgid "fileNotselected"
+msgstr "Geen bestand geselecteerd"
+
+#: ../jquery.sfbrowser.js:1076
+msgid "previewText"
+msgstr "- inhoud wordt geladen -"
+
+#: ../jquery.sfbrowser.js:1085
+msgid "previewPart"
+msgstr "Toont de eerste #1 bytes"
+
+#: ../jquery.sfbrowser.js:1085
+msgid "previewContents"
+msgstr "Bestandsinhoud:"
+
+#: ../jquery.sfbrowser.js:1198
+msgid "confirmDeletef"
+msgstr "Verwijder deze map?"
+
+#: ../jquery.sfbrowser.js:1198
+msgid "confirmDelete"
+msgstr "Verwijder dit bestand?"
+

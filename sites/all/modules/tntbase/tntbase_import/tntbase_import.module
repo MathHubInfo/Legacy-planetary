@@ -95,8 +95,6 @@ function tntbase_import_doImport($form, &$form_state) {
 	$paths = $form_state["values"]["TNTPath"];
 	$importField = $form_state["values"]["ImportField"];
 	$importType = $form_state["values"]["ImportType"];
-	dd($importField, "field");
-	dd($importType, "type");
 	
 	$status = "";
 	$url_node = url("<front>")."/node";

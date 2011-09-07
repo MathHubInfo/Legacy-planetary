@@ -279,9 +279,12 @@ function tntbase_get_content_changes($revision) {
  * @param string $FilePath the path to look at
  * @return the contents of the path in a key=>value array, with keys as FileName and values as types ('file' or 'directory or 'vdoc'')
  */
-function tntbase_get_path_contents($file_path) {
-  $response = tntbase_get(variable_get('tntbase_folder_contents_url') . $file_path);
-
+function tntbase_get_path_contents($file_path, $nofilter=false) {
+  $url = variable_get('tntbase_folder_contents_url') . $file_path;
+  if ($url) {
+  	$url.="?allFiles=true";
+  }
+  $response = tntbase_get($url);
   $document = new DOMDocument();
   $document->loadXML($response);
 
@@ -293,6 +296,11 @@ function tntbase_get_path_contents($file_path) {
   $result = array();
   for ($i = 0; $i < $nodelist->length; $i++) {
     $name = $nodelist->item($i)->getAttribute('name');
+    $lastSlash = strrpos($name, "/");
+    if (!($lastSlash === false)) {
+    	dd($lastSlash);
+    	$name = substr($name, $lastSlash+1);
+    }
     if (!empty($name)) {
       $result[$name] = substr($nodelist->item($i)->tagName, 4);
     }
@@ -776,3 +784,34 @@ function tntbase_get_log($StartRev, $EndRev) {
   return $Modifications;
 }
 
+/**
+* Method used to get all the names of all files in TNTBase under a certain folder structure.
+* @param string $RootPath the path to the root of the folder structure
+* @return an array of all the paths starting from the repository root of all the files under the given folder, else <b>false</b> otherwise
+*/
+function tntbase_get_svn_ls($RootPath) {
+	$Response = tntbase_get(variable_get('tntbase_document_names_url').$RootPath.'?recursive=true');
+
+	if(empty($Response)) {
+		return false;
+	}
+
+	$Document = new DOMDocument();
+	$Document->loadXML($Response);
+
+	$Xpath = new DOMXPath($Document);
+	$Xpath->registerNamespace('tnt', "http://tntbase.mathweb.org/ns");
+	$Query = "//tnt:docname";
+	$Nodelist = $Xpath->query($Query);
+
+	$Result = array();
+	for($i = 0; $i < $Nodelist->length; $i++) {
+		$Result[] = $Nodelist->item($i)->nodeValue;
+	}
+
+	if(empty($Result)) {
+		return false;
+	}
+
+	return $Result;
+}

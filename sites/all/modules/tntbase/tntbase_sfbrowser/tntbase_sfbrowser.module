@@ -1,0 +1,40 @@
+<?php 
+
+function tntbase_sfbrowser_menu() {
+	$items = array();
+	$items['admin/config/content/tntbrowse'] = array(
+	    'title' => 'TNTBase Browser',
+	    'description' => 'Broser TNTBase repository',
+	    'page callback' => 'tntbase_sfbrowser_page',
+	    'access arguments' => array('access administration pages'),
+	    'type' => MENU_NORMAL_ITEM,
+	);
+	$items['connectors/php'] = array(
+	    'title' => 'TNTBase Browser',
+	    'description' => 'Broser TNTBase repository',
+	    'page callback' => 'tntbase_sfbrowser_connector',
+	    'access arguments' => array('access administration pages'),
+	    'type' => MENU_NORMAL_ITEM,
+	);
+	return $items;
+}
+
+function tntbase_sfbrowser_initialize() {
+	$mypath = drupal_get_path("module", "tntbase_sfbrowser");
+	include_once($mypath."/sfbrowser/connectors/php/drupal_init.php");
+}
+
+function tntbase_sfbrowser_page() {
+	$mypath = drupal_get_path("module", "tntbase_sfbrowser");
+	tntbase_sfbrowser_initialize();
+	return theme_render_template($mypath."/sfbrowser.tpl.php", array());
+}
+
+function tntbase_sfbrowser_connector() {
+	unset($_GET["q"]);
+	unset($_POST["q"]);
+	$mypath = drupal_get_path("module", "tntbase_sfbrowser");
+	include_once($mypath."/sfbrowser/connectors/php/sfbrowser.php");
+}
+
+?>

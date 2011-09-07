@@ -1,0 +1,73 @@
+2-1-2009 12:04		ip:		a:bar(../../../../../data/ImageFolder/blue/Lorenz_blue_copy0.jpg)		POST:[a:bar,folder:../data/ImageFolder/blue/,file:Lorenz_blue_copy0.jpg,w:605,h:454,cx:128,cy:51,cw:420,ch:315,]		POST:[]		POST:[]		error:		
+23-11-2009 16:19		ip:192.168.1.34		a:bar(../../../../../data/ImageFolder/Lorenz_groen.jpg)		error:
+		POST: [a:bar,folder:../data/ImageFolder/,file:Lorenz_groen.jpg,w:800,h:500,cx:329,cy:134,cw:318,ch:199,]
+		GET:  []
+		FILE: []
+28-1-2010 17:15		ip:127.0.0.1		a:bar(../../../../../data/ImageFolder/blue/frobfrob_rvrt.jpg)		error:
+		POST: [a:bar,folder:../data/ImageFolder/blue/,file:frobfrob_rvrt.jpg,w:470,h:353,cx:0,cy:0,cw:363,ch:272,]
+		GET:  []
+		FILE: []
+6-11-2010 00:47		ip:127.0.0.1		a:bar(../../../../../../uploads/img/IMAG0259 (1).jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:IMAG0259 (1).jpg,w:828,h:554,cx:0,cy:0,cw:828,ch:554,]
+		GET:  []
+		FILE: []
+6-11-2010 00:57		ip:127.0.0.1		a:bar(../../../../../../uploads/img/IMAG0259 (1).jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:IMAG0259 (1).jpg,w:821,h:549,cx:0,cy:0,cw:821,ch:549,]
+		GET:  []
+		FILE: []
+sMsg: imgResized
+sERR: 
+6-11-2010 00:57		ip:127.0.0.1		a:bar(../../../../../../uploads/img/IMAG0259 (1).jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:IMAG0259 (1).jpg,w:821,h:549,cx:0,cy:0,cw:821,ch:549,]
+		GET:  []
+		FILE: []
+sMsg: imgResized
+sERR: 
+6-11-2010 00:59		ip:127.0.0.1		a:bar(../../../../../../uploads/img/IMAG0259 (1).jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:IMAG0259 (1).jpg,w:800,h:535,cx:0,cy:0,cw:800,ch:535,]
+		GET:  []
+		FILE: []
+6-11-2010 00:59		ip:127.0.0.1		a:bar(../../../../../../uploads/img/IMAG0259 (1).jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:IMAG0259 (1).jpg,w:800,h:535,cx:0,cy:0,cw:800,ch:535,]
+		GET:  []
+		FILE: []
+6-11-2010 01:00		ip:127.0.0.1		a:bar(../../../../../../uploads/img/IMAG0259 (1).jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:IMAG0259 (1).jpg,w:794,h:531,cx:0,cy:0,cw:794,ch:531,]
+		GET:  []
+		FILE: []
+6-11-2010 01:00		ip:127.0.0.1		a:bar(../../../../../../uploads/img/IMAG0259 (1).jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:IMAG0259 (1).jpg,w:794,h:531,cx:125,cy:83,cw:556,ch:372,]
+		GET:  []
+		FILE: []
+6-11-2010 12:05		ip:127.0.0.1		a:bar(../../../../../../uploads/img/IMAG0259 (1).jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:IMAG0259 (1).jpg,w:556,h:372,cx:76,cy:51,cw:480,ch:321,]
+		GET:  []
+		FILE: []
+6-11-2010 12:06		ip:127.0.0.1		a:bar(../../../../../../uploads/img/IMAG0259 (1).jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:IMAG0259 (1).jpg,w:476,h:318,cx:77,cy:49,cw:208,ch:231,]
+		GET:  []
+		FILE: []
+6-11-2010 12:09		ip:127.0.0.1		a:bar(../../../../../../uploads/img/26741_1600x1200-wallpaper-cb1288815856.jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:26741_1600x1200-wallpaper-cb1288815856.jpg,w:1600,h:1200,cx:0,cy:0,cw:1600,ch:1086,]
+		GET:  []
+		FILE: []
+6-11-2010 12:09		ip:127.0.0.1		a:bar(../../../../../../uploads/img/26741_1600x1200-wallpaper-cb1288815856.jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:26741_1600x1200-wallpaper-cb1288815856.jpg,w:1024,h:695,cx:0,cy:0,cw:1024,ch:695,]
+		GET:  []
+		FILE: []
+6-11-2010 12:11		ip:127.0.0.1		a:bar(../../../../../../uploads/img/26741_1600x1200-wallpaper-cb1288815856.jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:26741_1600x1200-wallpaper-cb1288815856.jpg,w:554,h:376,cx:161,cy:104,cw:200,ch:159,]
+		GET:  []
+		FILE: []
+7-11-2010 12:13		ip:127.0.0.1		a:bar(../../../../../../uploads/img/1280animalwp-51.jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:1280animalwp-51.jpg,w:236,h:177,cx:0,cy:0,cw:236,ch:168,]
+		GET:  []
+		FILE: []
+8-11-2010 19:33		ip:127.0.0.1		a:bar(../../../../../../uploads/img/kata_s.jpg)		error:
+		POST: [a:bar,folder:../../uploads/img/,file:kata_s.jpg,w:466,h:301,cx:0,cy:0,cw:466,ch:301,]
+		GET:  []
+		FILE: []
+9-11-2010 23:12		ip:127.0.0.1		a:bar(../../../../../../uploads/image/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:bar,folder:../../uploads/image/,file:463226253TUKCrS_fs-2.jpg,w:595,h:403,cx:182,cy:37,cw:391,ch:265,]
+		GET:  []
+		FILE: []

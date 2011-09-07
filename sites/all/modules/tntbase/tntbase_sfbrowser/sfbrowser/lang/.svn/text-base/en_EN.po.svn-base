@@ -1,0 +1,196 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SFBrowser\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-06 10:53+0100\n"
+"PO-Revision-Date: 2010-12-06 14:53+0100\n"
+"Last-Translator: Ron Valstar <poedit@ronvalstar.nl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: gettext\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../connectors/php/sfbrowser.php:44
+msgid "fileListing"
+msgstr ""
+
+#: ../connectors/php/sfbrowser.php:177
+msgid "fileDeleted"
+msgstr "File deleted"
+
+#: ../connectors/php/sfbrowser.php:178
+msgid "fileNotdeleted"
+msgstr "File could not be deleted"
+
+#: ../connectors/php/sfbrowser.php:180
+msgid "folderDeleted"
+msgstr "Folder deleted"
+
+#: ../connectors/php/sfbrowser.php:181
+msgid "folderNotdeleted"
+msgstr "The folder could not be deleted, make sure that it is empty."
+
+#: ../connectors/php/sfbrowser.php:264
+msgid "filenameNoext"
+msgstr "You may not change extensions."
+
+#: ../connectors/php/sfbrowser.php:266
+msgid "filenamInvalid"
+msgstr "This is not a valid filename."
+
+#: ../connectors/php/sfbrowser.php:269
+msgid "filenameNochange"
+msgstr "No Changes made."
+
+#: ../connectors/php/sfbrowser.php:272
+msgid "filenameNothing"
+msgstr "You cannot rename something to nothing"
+
+#: ../connectors/php/sfbrowser.php:275
+msgid "filenameExists"
+msgstr "The filename already exists."
+
+#: ../connectors/php/sfbrowser.php:277
+msgid "filenameSucces"
+msgstr "Rename succesfull."
+
+#: ../connectors/php/sfbrowser.php:278
+msgid "filenameFailed"
+msgstr "Rename failed."
+
+#: ../connectors/php/sfbrowser.php:293
+msgid "folderCreated"
+msgstr "Folder created"
+
+#: ../connectors/php/sfbrowser.php:296
+#: ../connectors/php/sfbrowser.php:298
+msgid "folderFailed"
+msgstr "Unable to create folder"
+
+#: ../connectors/php/sfbrowser.php:320
+msgid "filemoveSucces"
+msgstr "Move succesfull."
+
+#: ../connectors/php/sfbrowser.php:323
+msgid "filemoveFailed"
+msgstr "Move failed."
+
+#: ../jquery.sfbrowser.js:211
+#: ../jquery.sfbrowser.js:1306
+msgid "fileExistsOverwrite"
+msgstr "The file already exists, overwrite?"
+
+#: ../jquery.sfbrowser.js:216
+msgid "fileTooBig"
+msgstr "The file '#1' exceeds the maximum upload size of #2. Either compress the file, or upload through FTP."
+
+#: ../jquery.sfbrowser.js:328
+msgid "sfb"
+msgstr "SFBrowser"
+
+#: ../jquery.sfbrowser.js:329
+msgid "loading"
+msgstr "Loading"
+
+#: ../jquery.sfbrowser.js:332
+#: ../jquery.sfbrowser.js:1282
+msgid "newfolder"
+msgstr "New folder"
+
+#: ../jquery.sfbrowser.js:334
+msgid "upload"
+msgstr "Upload"
+
+#: ../jquery.sfbrowser.js:336
+#: ../jquery.sfbrowser.js:356
+msgid "cancel"
+msgstr "Cancel"
+
+#: ../jquery.sfbrowser.js:338
+msgid "maximize"
+msgstr "Maximize"
+
+#: ../jquery.sfbrowser.js:342
+msgid "name"
+msgstr "Name"
+
+#: ../jquery.sfbrowser.js:343
+msgid "type"
+msgstr "Type"
+
+#: ../jquery.sfbrowser.js:344
+msgid "size"
+msgstr "Size"
+
+#: ../jquery.sfbrowser.js:345
+msgid "date"
+msgstr "Date"
+
+#: ../jquery.sfbrowser.js:346
+msgid "dimensions"
+msgstr "Dimensions"
+
+#: ../jquery.sfbrowser.js:355
+#: ../jquery.sfbrowser.js:386
+msgid "choose"
+msgstr "Choose"
+
+#: ../jquery.sfbrowser.js:387
+msgid "rename"
+msgstr "Rename"
+
+#: ../jquery.sfbrowser.js:388
+msgid "duplicate"
+msgstr "Duplicate"
+
+#: ../jquery.sfbrowser.js:389
+#: ../jquery.sfbrowser.js:751
+msgid "view"
+msgstr "View"
+
+#: ../jquery.sfbrowser.js:390
+#: ../jquery.sfbrowser.js:752
+msgid "del"
+msgstr "Delete"
+
+#: ../jquery.sfbrowser.js:399
+#: ../jquery.sfbrowser.js:400
+msgid "dragMe"
+msgstr "Drag me"
+
+#: ../jquery.sfbrowser.js:726
+msgid "folder"
+msgstr "Folder"
+
+#: ../jquery.sfbrowser.js:743
+msgid "fileUploadCancel"
+msgstr "Cancel upload"
+
+#: ../jquery.sfbrowser.js:1025
+msgid "fileNotselected"
+msgstr "No file selected"
+
+#: ../jquery.sfbrowser.js:1076
+msgid "previewText"
+msgstr "- loading text -"
+
+#: ../jquery.sfbrowser.js:1085
+msgid "previewPart"
+msgstr "Shows the first #1 bytes"
+
+#: ../jquery.sfbrowser.js:1085
+msgid "previewContents"
+msgstr "File contents:"
+
+#: ../jquery.sfbrowser.js:1198
+msgid "confirmDeletef"
+msgstr "Delete this folder?"
+
+#: ../jquery.sfbrowser.js:1198
+msgid "confirmDelete"
+msgstr "Delete this file?"
+

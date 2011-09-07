@@ -1,0 +1,7 @@
+
+
+#sfbrowser a.wpdb {			background-position: 0px -64px; background-image: url(wp_dbSheet.png); }
+#sfbrowser a.wpdb:hover {	background-position: 0px -96px; }
+#sfbrowser a.inwpdb {		background-position: 0px -128px; }
+#sfbrowser a.inwpdb:hover {	background-position: 0px -160px; }
+

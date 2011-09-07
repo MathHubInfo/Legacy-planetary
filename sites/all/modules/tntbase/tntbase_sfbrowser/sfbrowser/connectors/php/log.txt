@@ -1,0 +1,5164 @@
+10-11-2010 23:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+10-11-2010 23:12		ip:127.0.0.1		a:swfUpload()		error:
+		POST: [Filename:463226253TUKCrS_fs-2.jpg,Upload:Submit Query,]
+		GET:  [a:swfUpload,folder:../data/,allow:,deny:php|php3|phtml,resize:,]
+		FILE: [Filedata:Array,]
+10-11-2010 23:35		ip:127.0.0.1		a:swfUpload()		error:
+		POST: [Filename:463227376MAoqJj_fs-1.jpg,Upload:Submit Query,]
+		GET:  [a:swfUpload,folder:../data/,allow:,deny:php|php3|phtml,resize:,]
+		FILE: [Filedata:Array,]
+11-11-2010 11:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+11-11-2010 11:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+11-11-2010 11:59		ip:127.0.0.1		a:delete(../../../data/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:delete,folder:../data/,file:463226253TUKCrS_fs-2.jpg,]
+		GET:  []
+		FILE: []
+11-11-2010 11:59		ip:127.0.0.1		a:delete(../../../data/463227376MAoqJj_fs-1.jpg)		error:
+		POST: [a:delete,folder:../data/,file:463227376MAoqJj_fs-1.jpg,]
+		GET:  []
+		FILE: []
+11-11-2010 11:59		ip:127.0.0.1		a:swfUpload()		error:
+		POST: [Filename:463226253TUKCrS_fs-2.jpg,Upload:Submit Query,]
+		GET:  [a:swfUpload,folder:../data/,allow:,deny:php|php3|phtml,resize:,]
+		FILE: [Filedata:Array,]
+11-11-2010 11:59		ip:127.0.0.1		a:delete(../../../data/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:delete,folder:../data/,file:463226253TUKCrS_fs-2.jpg,]
+		GET:  []
+		FILE: []
+12-11-2010 15:35		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 15:36		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 15:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 15:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 15:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 15:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 15:48		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 15:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 16:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 16:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 21:53		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 21:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 22:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 23:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 23:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 23:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 23:58		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+12-11-2010 23:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+12-11-2010 23:59		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+12-11-2010 23:59		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+12-11-2010 23:59		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+13-11-2010 00:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:00		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+13-11-2010 00:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:01		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 00:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:01		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+13-11-2010 00:01		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+13-11-2010 00:01		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 00:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:01		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 00:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:02		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+13-11-2010 00:04		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 00:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:14		ip:127.0.0.1		a:read(../../../data/HelloWorld.cpp)		error:
+		POST: [a:read,folder:../data/,file:HelloWorld.cpp,]
+		GET:  []
+		FILE: []
+13-11-2010 00:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:16		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 00:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:18		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+13-11-2010 00:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 00:19		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+13-11-2010 11:57		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+13-11-2010 11:57		ip:127.0.0.1		a:read(../../../data/StupidEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:StupidEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 11:57		ip:127.0.0.1		a:read(../../../data/style.css)		error:
+		POST: [a:read,folder:../data/,file:style.css,]
+		GET:  []
+		FILE: []
+13-11-2010 11:57		ip:127.0.0.1		a:read(../../../data/Time.as)		error:
+		POST: [a:read,folder:../data/,file:Time.as,]
+		GET:  []
+		FILE: []
+13-11-2010 11:57		ip:127.0.0.1		a:read(../../../data/WebDocument.html)		error:
+		POST: [a:read,folder:../data/,file:WebDocument.html,]
+		GET:  []
+		FILE: []
+13-11-2010 12:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+13-11-2010 12:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 12:42		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+13-11-2010 12:42		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 12:42		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+13-11-2010 12:42		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+13-11-2010 12:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+13-11-2010 12:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 12:58		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+13-11-2010 13:09		ip:127.0.0.1		a:read(../../../data/WebDocument.html)		error:
+		POST: [a:read,folder:../data/,file:WebDocument.html,]
+		GET:  []
+		FILE: []
+13-11-2010 13:36		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 13:36		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+13-11-2010 13:36		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 13:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 13:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 13:42		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+13-11-2010 13:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 13:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 13:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 13:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 13:59		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 13:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:00		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 14:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:01		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+13-11-2010 14:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:09		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+13-11-2010 14:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:35		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:38		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:38		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 00:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:45		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:52		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 00:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:53		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:53		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:53		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 00:53		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 10:09		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 10:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 10:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 10:25		ip:127.0.0.1		a:read(../../../data/WebDocument.html)		error:
+		POST: [a:read,folder:../data/,file:WebDocument.html,]
+		GET:  []
+		FILE: []
+14-11-2010 10:25		ip:127.0.0.1		a:read(../../../data/StupidEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:StupidEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 10:25		ip:127.0.0.1		a:read(../../../data/Time.as)		error:
+		POST: [a:read,folder:../data/,file:Time.as,]
+		GET:  []
+		FILE: []
+14-11-2010 11:01		ip:127.0.0.1		a:read(../../../data/NotEmpty.zip)		error:
+		POST: [a:read,folder:../data/,file:NotEmpty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 11:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:05		ip:127.0.0.1		a:read(../../../data/style.css)		error:
+		POST: [a:read,folder:../data/,file:style.css,]
+		GET:  []
+		FILE: []
+14-11-2010 11:05		ip:127.0.0.1		a:read(../../../data/StupidEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:StupidEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:06		ip:127.0.0.1		a:read(../../../data/StupidEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:StupidEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:06		ip:127.0.0.1		a:read(../../../data/style.css)		error:
+		POST: [a:read,folder:../data/,file:style.css,]
+		GET:  []
+		FILE: []
+14-11-2010 11:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:08		ip:127.0.0.1		a:read(../../../data/StupidEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:StupidEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:09		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:13		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:13		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 11:13		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:14		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 11:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:17		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:19		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:21		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:21		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:21		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 11:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:22		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:24		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 11:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:24		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 11:26		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:26		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:26		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:27		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:29		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:29		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:30		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:31		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:31		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:32		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 11:32		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:32		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:32		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 11:33		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:33		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 11:38		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:39		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:39		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:41		ip:127.0.0.1		a:moveFiles(../../../data/DataSheet.xls)		error:action does not exist
+		POST: [a:moveFiles,folder:../data/,file:DataSheet.xls,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 11:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:55		ip:127.0.0.1		a:moveFiles(../../../data/contextmenu.png)		error:
+		POST: [a:moveFiles,folder:../data/,file:contextmenu.png,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 11:56		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:56		ip:127.0.0.1		a:moveFiles(../../../data/DumbEmail.eml)		error:
+		POST: [a:moveFiles,folder:../data/,file:DumbEmail.eml,nfolder:ImageFolder,]
+		GET:  []
+		FILE: []
+14-11-2010 11:56		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 11:56		ip:127.0.0.1		a:moveFiles(../../../data/asdf)		error:
+		POST: [a:moveFiles,folder:../data/,file:asdf,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 11:56		ip:127.0.0.1		a:moveFiles(../../../data/asdf)		error:
+		POST: [a:moveFiles,folder:../data/,file:asdf,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 11:56		ip:127.0.0.1		a:moveFiles(../../../data/asdf)		error:
+		POST: [a:moveFiles,folder:../data/,file:asdf,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 11:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+14-11-2010 11:58		ip:127.0.0.1		a:moveFiles(../../../data/asdf/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:00		ip:127.0.0.1		a:moveFiles(../../../data/asdf/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:02		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:03		ip:127.0.0.1		a:moveFiles(../../../data/DumbEmail.eml)		error:
+		POST: [a:moveFiles,folder:../data/,file:DumbEmail.eml,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 12:03		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:03		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:04		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:05		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:06		ip:127.0.0.1		a:moveFiles(../../../data/contextmenu.png)		error:
+		POST: [a:moveFiles,folder:../data/,file:contextmenu.png,nfolder:ImageFolder,]
+		GET:  []
+		FILE: []
+14-11-2010 12:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:06		ip:127.0.0.1		a:moveFiles(../../../data/ImageFolder/atomen.jpg)		error:
+		POST: [a:moveFiles,folder:../data/ImageFolder/,file:atomen.jpg,nfolder:blue,]
+		GET:  []
+		FILE: []
+14-11-2010 12:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:07		ip:127.0.0.1		a:moveFiles(../../../data/contextmenu.png)		error:
+		POST: [a:moveFiles,folder:../data/,file:contextmenu.png,nfolder:ImageFolder,]
+		GET:  []
+		FILE: []
+14-11-2010 12:07		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:07		ip:127.0.0.1		a:moveFiles(../../../data/DumbEmail.eml)		error:
+		POST: [a:moveFiles,folder:../data/,file:DumbEmail.eml,nfolder:ImageFolder,]
+		GET:  []
+		FILE: []
+14-11-2010 12:07		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:07		ip:127.0.0.1		a:moveFiles(../../../data/Config.xml)		error:
+		POST: [a:moveFiles,folder:../data/,file:Config.xml,nfolder:ImageFolder,]
+		GET:  []
+		FILE: []
+14-11-2010 12:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:08		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:14		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:15		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:16		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:17		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:18		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:18		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:20		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:21		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:21		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:22		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:24		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:24		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:24		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:24		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:25		ip:127.0.0.1		a:moveFiles(../../../data/asdf/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:34		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:34		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:34		ip:127.0.0.1		a:upload(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:upload,folder:../data/asdf/,allow:,deny:php|php3|phtml,resize:null,]
+		GET:  []
+		FILE: [fileToUpload:Array,]
+14-11-2010 12:34		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:35		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:35		ip:127.0.0.1		a:moveFiles()		error:
+		POST: [a:moveFiles,folder:../data/,file:,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 12:35		ip:127.0.0.1		a:moveFiles()		error:
+		POST: [a:moveFiles,folder:../data/,file:,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 12:35		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:35		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:36		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:36		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:36		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:36		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:39		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:40		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:40		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:41		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 12:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:41		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 12:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:44		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:45		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:46		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:46		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:48		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:52		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:52		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 12:53		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:53		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:53		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 12:54		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+14-11-2010 12:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:54		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:54		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:57		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:58		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:58		ip:127.0.0.1		a:moveFiles(../../../data/Config.xml,contextmenu.png)		error:
+		POST: [a:moveFiles,folder:../data/,file:Config.xml,contextmenu.png,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 12:58		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 12:58		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 12:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 12:59		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 13:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 13:00		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 13:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 13:00		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 13:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 13:00		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 13:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 13:01		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+14-11-2010 13:01		ip:127.0.0.1		a:moveFiles(../../../data/Config.xml,contextmenu.png)		error:
+		POST: [a:moveFiles,folder:../data/,file:Config.xml,contextmenu.png,nfolder:ImageFolder,]
+		GET:  []
+		FILE: []
+14-11-2010 13:01		ip:127.0.0.1		a:moveFiles(../../../data/Config.xml)		error:
+		POST: [a:moveFiles,folder:../data/,file:Config.xml,nfolder:ImageFolder,]
+		GET:  []
+		FILE: []
+14-11-2010 13:01		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 13:01		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+14-11-2010 15:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:10		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 15:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:11		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 15:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:13		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 15:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:24		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 15:26		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:26		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:26		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 15:28		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:28		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:28		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:28		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 15:29		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:29		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:29		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 15:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:30		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 15:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:32		ip:127.0.0.1		a:upload(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:upload,folder:../data/asdf/tmp/,allow:,deny:php|php3|phtml,resize:null,]
+		GET:  []
+		FILE: [fileToUpload:Array,]
+14-11-2010 15:32		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 15:32		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 15:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 15:33		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/blue/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:17		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:17		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:18		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:18		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:18		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/XXX_2447_Donato_Giancola_Godheads.jpg,partisff.jpg,463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:XXX_2447_Donato_Giancola_Godheads.jpg,partisff.jpg,463226253TUKCrS_fs-2.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:19		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:19		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:20		ip:127.0.0.1		a:moveFiles(../../../data/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/,file:463226253TUKCrS_fs-2.jpg,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 23:20		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+14-11-2010 23:20		ip:127.0.0.1		a:read(../../../data/WebDocument.html)		error:
+		POST: [a:read,folder:../data/,file:WebDocument.html,]
+		GET:  []
+		FILE: []
+14-11-2010 23:20		ip:127.0.0.1		a:moveFiles(../../../data/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:moveFiles(../../../data/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/,file:partisff.jpg,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:21		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:22		ip:127.0.0.1		a:moveFiles(../../../data/asdf/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:23		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:23		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:23		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:23		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:23		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:30		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:30		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:30		ip:127.0.0.1		a:moveFiles(../../../data/asdf/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:33		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:37		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:39		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:44		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:44		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:44		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:46		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:46		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:46		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:48		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:48		ip:127.0.0.1		a:moveFiles(../../../data/contextmenu.png)		error:
+		POST: [a:moveFiles,folder:../data/,file:contextmenu.png,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 23:48		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:48		ip:127.0.0.1		a:moveFiles(../../../data/asdf/contextmenu.png)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:contextmenu.png,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:48		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:49		ip:127.0.0.1		a:moveFiles(../../../data/asdf/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:50		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:50		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:moveFiles(../../../data/asdf/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:tmp,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:56		ip:127.0.0.1		a:moveFiles(../../../data/tmp)		error:
+		POST: [a:moveFiles,folder:../data/,file:tmp,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 23:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:57		ip:127.0.0.1		a:moveFiles(../../../data/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/,file:463226253TUKCrS_fs-2.jpg,nfolder:asdf,]
+		GET:  []
+		FILE: []
+14-11-2010 23:57		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+14-11-2010 23:58		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:58		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+14-11-2010 23:58		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+14-11-2010 23:58		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+15-11-2010 00:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:00		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 00:01		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+15-11-2010 00:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:01		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 00:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:06		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 00:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:06		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 00:06		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+15-11-2010 00:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:06		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 00:06		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+15-11-2010 00:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:06		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 00:07		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+15-11-2010 00:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:07		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+15-11-2010 00:07		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+15-11-2010 00:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:07		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+15-11-2010 00:07		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+15-11-2010 00:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:15		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+15-11-2010 00:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:15		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+15-11-2010 00:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:22		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 00:23		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+15-11-2010 00:27		ip:127.0.0.1		a:swfUpload()		error:input does not match action
+		POST: []
+		GET:  [a:swfUpload,folder:../data/asdf/,allow:,deny:php|php3|phtml,]
+		FILE: []
+15-11-2010 00:29		ip:127.0.0.1		a:rename(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:rename,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfile:Thisfilewillhavethelongestnameinthehistoryofthiscomputerorwillit2.jpg,]
+		GET:  []
+		FILE: []
+15-11-2010 01:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 01:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+15-11-2010 01:58		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+15-11-2010 01:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+15-11-2010 01:58		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+15-11-2010 01:58		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+15-11-2010 01:58		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+15-11-2010 01:59		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg,Thisfilewillhavethelongestnameinthehistoryofthiscomputerorwillit2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,Thisfilewillhavethelongestnameinthehistoryofthiscomputerorwillit2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+15-11-2010 01:59		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+15-11-2010 02:00		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 20:09		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 20:09		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 20:09		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+15-11-2010 21:13		ip:127.0.0.1		a:moveFiles(../../../data/Empty.zip)		error:
+		POST: [a:moveFiles,folder:../data/,file:Empty.zip,nfolder:asdf,]
+		GET:  []
+		FILE: []
+15-11-2010 21:54		ip:127.0.0.1		a:read(../../../data/FilterForge.ffcmd)		error:
+		POST: [a:read,folder:../data/,file:FilterForge.ffcmd,]
+		GET:  []
+		FILE: []
+15-11-2010 22:00		ip:127.0.0.1		a:read(../../../data/NotEmpty.zip)		error:
+		POST: [a:read,folder:../data/,file:NotEmpty.zip,]
+		GET:  []
+		FILE: []
+15-11-2010 22:00		ip:127.0.0.1		a:read(../../../data/PlainOldText.txt)		error:
+		POST: [a:read,folder:../data/,file:PlainOldText.txt,]
+		GET:  []
+		FILE: []
+15-11-2010 22:00		ip:127.0.0.1		a:read(../../../data/library0 Report.txt)		error:
+		POST: [a:read,folder:../data/,file:library0 Report.txt,]
+		GET:  []
+		FILE: []
+15-11-2010 22:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:14		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:16		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:24		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:25		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:25		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:46		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:46		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:48		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:48		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:49		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:56		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 22:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-11-2010 23:00		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 23:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+15-11-2010 23:00		ip:127.0.0.1		a:moveFiles(../../../data/asdf/Empty.zip)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:Empty.zip,nfolder:..,]
+		GET:  []
+		FILE: []
+15-11-2010 23:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+15-11-2010 23:00		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg,Thisfilewillhavethelongestnameinthehistoryofthiscomputerorwillit2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,Thisfilewillhavethelongestnameinthehistoryofthiscomputerorwillit2.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+15-11-2010 23:00		ip:127.0.0.1		a:moveFiles(../../../data/asdf/Thisfilewillhavethelongestnameinthehistoryofthiscomputerorwillit2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:Thisfilewillhavethelongestnameinthehistoryofthiscomputerorwillit2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+16-11-2010 12:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 12:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 12:42		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+16-11-2010 12:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+16-11-2010 12:42		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 13:46		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 13:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 13:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 13:52		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 13:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 13:52		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 13:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 13:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 13:55		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 13:55		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 14:10		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 14:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 14:21		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 14:21		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 14:21		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 14:21		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 14:21		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 14:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 14:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 14:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 14:27		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 14:27		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 14:27		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 14:27		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:00		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 15:00		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:06		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 15:06		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:06		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:08		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 15:08		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:10		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 15:10		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:10		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:11		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:11		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:12		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 15:13		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:13		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:13		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 15:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:14		ip:127.0.0.1		a:addFolder()		error:
+		POST: [a:addFolder,folder:../data/asdf/,foldername:Nieuwe map,]
+		GET:  []
+		FILE: []
+16-11-2010 15:14		ip:127.0.0.1		a:rename(../../../data/asdf/Nieuwe map)		error:
+		POST: [a:rename,folder:../data/asdf/,file:Nieuwe map,nfile:andereMap,]
+		GET:  []
+		FILE: []
+16-11-2010 15:14		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:andereMap,]
+		GET:  []
+		FILE: []
+16-11-2010 15:14		ip:127.0.0.1		a:moveFiles(../../../data/asdf/andereMap,463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:andereMap,463226253TUKCrS_fs-2.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:tmp,]
+		GET:  []
+		FILE: []
+16-11-2010 15:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:15		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/andereMap/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/andereMap/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 15:15		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/andereMap)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:andereMap,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 15:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:15		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 15:16		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,nfolder:andereMap,]
+		GET:  []
+		FILE: []
+16-11-2010 15:16		ip:127.0.0.1		a:moveFiles(../../../data/asdf/andereMap)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:andereMap,nfolder:tmp,]
+		GET:  []
+		FILE: []
+16-11-2010 15:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:16		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:463226253TUKCrS_fs-2.jpg,nfolder:andereMap,]
+		GET:  []
+		FILE: []
+16-11-2010 15:16		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/andereMap)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:andereMap,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 15:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:moveFiles(../../../data/asdf/andereMap/partisff.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/andereMap/,file:partisff.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:moveFiles(../../../data/asdf/andereMap/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/andereMap/,file:463226253TUKCrS_fs-2.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:moveFiles(../../../data/asdf/463226253TUKCrS_fs-2.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:463226253TUKCrS_fs-2.jpg,nfolder:andereMap,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:moveFiles(../../../data/asdf/andereMap)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:andereMap,nfolder:tmp,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:32		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/andereMap)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:andereMap,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 15:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:36		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:38		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:38		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:46		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:46		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:47		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 15:56		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 15:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 16:35		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 16:36		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 16:36		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 16:38		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 16:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 16:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 16:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 17:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 17:32		ip:127.0.0.1		a:moveFiles(../../../data/asdf/partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:andereMap,]
+		GET:  []
+		FILE: []
+16-11-2010 17:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 17:32		ip:127.0.0.1		a:moveFiles(../../../data/asdf/andereMap/partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg)		error:
+		POST: [a:moveFiles,folder:../data/asdf/andereMap/,file:partisff.jpg,XXX_2447_Donato_Giancola_Godheads.jpg,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 17:33		ip:127.0.0.1		a:moveFiles(../../../data/asdf/andereMap)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:andereMap,nfolder:tmp,]
+		GET:  []
+		FILE: []
+16-11-2010 17:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+16-11-2010 17:33		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/andereMap)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:andereMap,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 17:33		ip:127.0.0.1		a:moveFiles(../../../data/asdf/andereMap)		error:
+		POST: [a:moveFiles,folder:../data/asdf/,file:andereMap,nfolder:tmp,]
+		GET:  []
+		FILE: []
+16-11-2010 17:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/andereMap/,]
+		GET:  []
+		FILE: []
+16-11-2010 17:33		ip:127.0.0.1		a:moveFiles(../../../data/asdf/tmp/andereMap)		error:
+		POST: [a:moveFiles,folder:../data/asdf/tmp/,file:andereMap,nfolder:..,]
+		GET:  []
+		FILE: []
+16-11-2010 18:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 18:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 18:49		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 18:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 18:51		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+16-11-2010 18:51		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 20:54		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+16-11-2010 20:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 21:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 21:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 21:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 21:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 21:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 22:09		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 22:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 22:34		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 22:36		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 22:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 22:38		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 22:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 22:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 22:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:34		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:36		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:37		ip:127.0.0.1		a:read(../../../data/FilterForge.ffcmd)		error:
+		POST: [a:read,folder:../data/,file:FilterForge.ffcmd,]
+		GET:  []
+		FILE: []
+16-11-2010 23:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:38		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:40		ip:127.0.0.1		a:read(../../../data/HelloEarth.pl)		error:
+		POST: [a:read,folder:../data/,file:HelloEarth.pl,]
+		GET:  []
+		FILE: []
+16-11-2010 23:40		ip:127.0.0.1		a:read(../../../data/HelloWorld.cpp)		error:
+		POST: [a:read,folder:../data/,file:HelloWorld.cpp,]
+		GET:  []
+		FILE: []
+16-11-2010 23:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+16-11-2010 23:42		ip:127.0.0.1		a:read(../../../data/ImageFolder/Config.xml)		error:
+		POST: [a:read,folder:../data/ImageFolder/,file:Config.xml,]
+		GET:  []
+		FILE: []
+16-11-2010 23:48		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:09		ip:127.0.0.1		a:read(../../../data/HelloWorld.cpp)		error:
+		POST: [a:read,folder:../data/,file:HelloWorld.cpp,]
+		GET:  []
+		FILE: []
+17-11-2010 00:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:27		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:28		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:28		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/blue/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:34		ip:127.0.0.1		a:read(../../../data/ImageFolder/Config.xml)		error:
+		POST: [a:read,folder:../data/ImageFolder/,file:Config.xml,]
+		GET:  []
+		FILE: []
+17-11-2010 00:53		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 00:55		ip:127.0.0.1		a:read(../../../data/SomeOtherStuff.pdf)		error:
+		POST: [a:read,folder:../data/,file:SomeOtherStuff.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 01:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 01:00		ip:127.0.0.1		a:read(../../../data/SomeOtherStuff.pdf)		error:
+		POST: [a:read,folder:../data/,file:SomeOtherStuff.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 01:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 01:11		ip:127.0.0.1		a:read(../../../data/SomeOtherStuff.pdf)		error:
+		POST: [a:read,folder:../data/,file:SomeOtherStuff.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 01:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 01:12		ip:127.0.0.1		a:read(../../../data/SomeOtherStuff.pdf)		error:
+		POST: [a:read,folder:../data/,file:SomeOtherStuff.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 01:13		ip:127.0.0.1		a:read(../../../data/StupidEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:StupidEmail.eml,]
+		GET:  []
+		FILE: []
+17-11-2010 01:13		ip:127.0.0.1		a:read(../../../data/SomeOtherStuff.pdf)		error:
+		POST: [a:read,folder:../data/,file:SomeOtherStuff.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 10:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 10:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+17-11-2010 10:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/andereMap/,]
+		GET:  []
+		FILE: []
+17-11-2010 10:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 10:56		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 10:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 10:57		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 10:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 10:57		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 10:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 10:59		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:01		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:02		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:10		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:13		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:13		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:14		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:14		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 11:14		ip:127.0.0.1		a:read(../../../data/SomeOtherStuff.pdf)		error:
+		POST: [a:read,folder:../data/,file:SomeOtherStuff.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:14		ip:127.0.0.1		a:read(../../../data/SomeOtherStuff.pdf)		error:
+		POST: [a:read,folder:../data/,file:SomeOtherStuff.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:14		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:21		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 11:21		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 11:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:22		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 11:23		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:23		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 11:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:24		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 11:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:25		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 11:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:25		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 11:26		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:26		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 11:26		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 11:26		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 11:27		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 19:17		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 19:17		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+17-11-2010 21:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 21:20		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+17-11-2010 21:20		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 21:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 21:22		ip:127.0.0.1		a:read(../../../data/MSWord.doc)		error:
+		POST: [a:read,folder:../data/,file:MSWord.doc,]
+		GET:  []
+		FILE: []
+17-11-2010 21:27		ip:127.0.0.1		a:read(../../../data/Time.as)		error:
+		POST: [a:read,folder:../data/,file:Time.as,]
+		GET:  []
+		FILE: []
+17-11-2010 21:27		ip:127.0.0.1		a:read(../../../data/NotEmpty.zip)		error:
+		POST: [a:read,folder:../data/,file:NotEmpty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 21:27		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 21:27		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 21:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 21:30		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 21:30		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 21:30		ip:127.0.0.1		a:read(../../../data/NotEmpty.zip)		error:
+		POST: [a:read,folder:../data/,file:NotEmpty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 21:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 21:33		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 21:33		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 21:33		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 21:33		ip:127.0.0.1		a:read(../../../data/NotEmpty.zip)		error:
+		POST: [a:read,folder:../data/,file:NotEmpty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 21:33		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 21:33		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 21:34		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 21:34		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:01		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:02		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:02		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 22:02		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:02		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:03		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:03		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:03		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:03		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:04		ip:127.0.0.1		a:read(../../../data/NotEmpty.zip)		error:
+		POST: [a:read,folder:../data/,file:NotEmpty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 22:04		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:04		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:04		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:06		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:06		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:07		ip:127.0.0.1		a:read(../../../data/FilterForge.ffcmd)		error:
+		POST: [a:read,folder:../data/,file:FilterForge.ffcmd,]
+		GET:  []
+		FILE: []
+17-11-2010 22:07		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:07		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:08		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:08		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:08		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 22:08		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:08		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:10		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:11		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:11		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:13		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:13		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:15		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:15		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 22:15		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 22:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 22:16		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+17-11-2010 22:16		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 23:53		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+17-11-2010 23:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+17-11-2010 23:55		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 23:55		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+17-11-2010 23:55		ip:127.0.0.1		a:swfUpload()		error:input does not match action
+		POST: []
+		GET:  [a:swfUpload,folder:../data/asdf/,allow:,deny:php|php3|phtml,]
+		FILE: []
+17-11-2010 23:56		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../data/,file:data.rar,]
+		FILE: []
+17-11-2010 23:56		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../../data/,file:data.rar,]
+		FILE: []
+17-11-2010 23:56		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../../../data/,file:data.rar,]
+		FILE: []
+17-11-2010 23:57		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:data.rar,]
+		FILE: []
+17-11-2010 23:58		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:data.rar,]
+		FILE: []
+18-11-2010 00:00		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:data.rar,]
+		FILE: []
+18-11-2010 00:00		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:data.rar,]
+		FILE: []
+18-11-2010 00:00		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:data.rar,]
+		FILE: []
+18-11-2010 00:00		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:data.rar,]
+		FILE: []
+18-11-2010 00:00		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:data.rar,]
+		FILE: []
+18-11-2010 00:00		ip:127.0.0.1		a:read(data.rar)		error:input does not match actionnot a valid pathfile not within base: [data.rar] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:data.rar,]
+		FILE: []
+18-11-2010 00:01		ip:127.0.0.1		a:read(notempty.zip)		error:input does not match actionnot a valid pathfile not within base: [notempty.zip] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:notempty.zip,]
+		FILE: []
+18-11-2010 00:01		ip:127.0.0.1		a:read(NotEmpty.zip)		error:input does not match actionnot a valid pathfile not within base: [NotEmpty.zip] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:NotEmpty.zip,]
+		FILE: []
+18-11-2010 00:01		ip:127.0.0.1		a:read(NotEmpty.zip)		error:input does not match actionnot a valid pathfile not within base: [NotEmpty.zip] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:NotEmpty.zip,]
+		FILE: []
+18-11-2010 00:03		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 00:03		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 00:03		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+18-11-2010 00:03		ip:127.0.0.1		a:read(../../../data/NotEmpty.zip)		error:
+		POST: [a:read,folder:../data/,file:NotEmpty.zip,]
+		GET:  []
+		FILE: []
+18-11-2010 00:04		ip:127.0.0.1		a:read(NotEmpty.zip)		error:input does not match actionnot a valid pathfile not within base: [NotEmpty.zip] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../../data/,file:NotEmpty.zip,]
+		FILE: []
+18-11-2010 00:04		ip:127.0.0.1		a:read(NotEmpty.zip)		error:input does not match actionnot a valid pathfile not within base: [NotEmpty.zip] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../../../data/,file:NotEmpty.zip,]
+		FILE: []
+18-11-2010 00:05		ip:127.0.0.1		a:read(NotEmpty.zip)		error:input does not match actionnot a valid pathfile not within base: [NotEmpty.zip] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../../data/,file:NotEmpty.zip,]
+		FILE: []
+18-11-2010 00:05		ip:127.0.0.1		a:read(NotEmpty.zip)		error:input does not match actionnot a valid pathfile not within base: [NotEmpty.zip] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../data/,file:NotEmpty.zip,]
+		FILE: []
+18-11-2010 00:06		ip:127.0.0.1		a:read(NotEmpty.zip)		error:input does not match actionnot a valid pathfile not within base: [NotEmpty.zip] [../data/]
+		POST: []
+		GET:  [a:read,folder:../../data/,file:NotEmpty.zip,]
+		FILE: []
+18-11-2010 00:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 00:06		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 00:07		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 00:07		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+18-11-2010 00:07		ip:127.0.0.1		a:read(../../../data/NotEmpty.zip)		error:
+		POST: [a:read,folder:../data/,file:NotEmpty.zip,]
+		GET:  []
+		FILE: []
+18-11-2010 00:07		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 00:08		ip:127.0.0.1		a:read(../../../data/NothingInHere.rar)		error:
+		POST: [a:read,folder:../data/,file:NothingInHere.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 00:08		ip:127.0.0.1		a:read(../../../data/FnMd.rar)		error:
+		POST: [a:read,folder:../data/,file:FnMd.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 11:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:50		ip:127.0.0.1		a:rename(../../../data/asdf/Nsdd)		error:
+		POST: [a:rename,folder:../data/asdf/,file:Nsdd,nfile:Nsdda,]
+		GET:  []
+		FILE: []
+18-11-2010 11:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:53		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:53		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:54		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 11:54		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 11:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:55		ip:127.0.0.1		a:rename(../../../data/asdf/Nsdda)		error:
+		POST: [a:rename,folder:../data/asdf/,file:Nsdda,nfile:Nse,]
+		GET:  []
+		FILE: []
+18-11-2010 11:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 11:55		ip:127.0.0.1		a:rename(../../../data/asdf/Nse)		error:
+		POST: [a:rename,folder:../data/asdf/,file:Nse,nfile:Nsb,]
+		GET:  []
+		FILE: []
+18-11-2010 12:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:04		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+18-11-2010 12:04		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+18-11-2010 12:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/Nsb/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:07		ip:127.0.0.1		a:rename(../../../data/asdf/Nsb)		error:
+		POST: [a:rename,folder:../data/asdf/,file:Nsb,nfile:Nsbwe,]
+		GET:  []
+		FILE: []
+18-11-2010 12:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/Nsbwe/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:07		ip:127.0.0.1		a:delete(../../../data/asdf/Nsbwe)		error:
+		POST: [a:delete,folder:../data/asdf/,file:Nsbwe,]
+		GET:  []
+		FILE: []
+18-11-2010 12:09		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:10		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+18-11-2010 12:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:12		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:13		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:15		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+18-11-2010 12:15		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:15		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:15		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:15		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:16		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+18-11-2010 12:17		ip:127.0.0.1		a:read(../../../data/PlainOldText.txt)		error:
+		POST: [a:read,folder:../data/,file:PlainOldText.txt,]
+		GET:  []
+		FILE: []
+18-11-2010 12:17		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:17		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:17		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:27		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:27		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:35		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:41		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+18-11-2010 12:41		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:42		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+18-11-2010 12:42		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:43		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:43		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+18-11-2010 12:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:43		ip:127.0.0.1		a:rename(../../../data/asdf/andereMap)		error:
+		POST: [a:rename,folder:../data/asdf/,file:andereMap,nfile:andereMip,]
+		GET:  []
+		FILE: []
+18-11-2010 12:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:44		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+18-11-2010 12:44		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+18-11-2010 12:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/andereMip/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:51		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:55		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 12:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/andereMip/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+18-11-2010 13:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/tmp/,]
+		GET:  []
+		FILE: []
+18-11-2010 16:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 16:39		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+18-11-2010 16:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+18-11-2010 16:41		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+9-12-2010 00:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+9-12-2010 00:00		ip:127.0.0.1		a:read(../../../data/DumbEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+9-12-2010 00:00		ip:127.0.0.1		a:read(../../../data/library0 Report.txt)		error:
+		POST: [a:read,folder:../data/,file:library0 Report.txt,]
+		GET:  []
+		FILE: []
+9-12-2010 00:00		ip:127.0.0.1		a:read(../../../data/install.log)		error:
+		POST: [a:read,folder:../data/,file:install.log,]
+		GET:  []
+		FILE: []
+9-12-2010 00:00		ip:127.0.0.1		a:read(../../../data/SomeOtherStuff.pdf)		error:
+		POST: [a:read,folder:../data/,file:SomeOtherStuff.pdf,]
+		GET:  []
+		FILE: []
+9-12-2010 00:00		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+14-12-2010 16:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-12-2010 16:25		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+14-12-2010 16:49		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-12-2010 16:50		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-12-2010 16:50		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+14-12-2010 16:55		ip:127.0.0.1		a:()		error:
+		POST: []
+		GET:  []
+		FILE: []
+14-12-2010 17:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+14-12-2010 17:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-2-2011 15:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+15-2-2011 15:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+9-3-2011 16:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 11:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 11:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 11:18		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+7-4-2011 11:54		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:00		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 12:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:03		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 12:03		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+7-4-2011 12:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:11		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 12:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:14		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 12:14		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+7-4-2011 12:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:20		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:20		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+7-4-2011 12:21		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+7-4-2011 12:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/asdf/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:26		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 12:26		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+7-4-2011 15:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 15:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 15:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 15:29		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 15:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 15:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 15:59		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 16:07		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:08		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 16:09		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:09		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+7-4-2011 16:09		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:09		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+7-4-2011 16:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:10		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 16:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:10		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 16:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:13		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+7-4-2011 16:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:13		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 16:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:15		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 16:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:17		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 16:17		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:18		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+7-4-2011 16:18		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+7-4-2011 16:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 16:19		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+7-4-2011 16:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:11		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:11		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:15		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:15		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:18		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:18		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:24		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:24		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:26		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:26		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:29		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:29		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:40		ip:127.0.0.1		a:read(../../../data/FilterForge.ffcmd)		error:
+		POST: [a:read,folder:../data/,file:FilterForge.ffcmd,]
+		GET:  []
+		FILE: []
+7-4-2011 23:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:44		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:44		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:52		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:52		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:56		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:56		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:57		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:58		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:58		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:59		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+7-4-2011 23:59		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+7-4-2011 23:59		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:00		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:01		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:01		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:02		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:02		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:03		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:03		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:04		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:05		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:05		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:06		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:08		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:08		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:09		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:10		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:10		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:13		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:16		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:19		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:21		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:21		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:22		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 00:23		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 00:41		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:23		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:23		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:25		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:26		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:27		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:27		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:28		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:28		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:29		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:29		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:29		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:29		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:31		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:33		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:37		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:37		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:37		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:37		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+8-4-2011 10:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:39		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:39		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:39		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+8-4-2011 10:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:42		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:42		ip:127.0.0.1		a:read(../../../data/style.css)		error:
+		POST: [a:read,folder:../data/,file:style.css,]
+		GET:  []
+		FILE: []
+8-4-2011 10:42		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:42		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:43		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:47		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 10:47		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 10:47		ip:127.0.0.1		a:read(../../../data/style.css)		error:
+		POST: [a:read,folder:../data/,file:style.css,]
+		GET:  []
+		FILE: []
+8-4-2011 10:47		ip:127.0.0.1		a:read(../../../data/Time.as)		error:
+		POST: [a:read,folder:../data/,file:Time.as,]
+		GET:  []
+		FILE: []
+8-4-2011 14:29		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 14:30		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+8-4-2011 14:30		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 14:31		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 14:31		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:00		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:00		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:01		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:12		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:12		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:14		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:14		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:14		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:16		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:16		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:19		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:19		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+8-4-2011 23:20		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+8-4-2011 23:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:22		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:23		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:23		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+8-4-2011 23:28		ip:127.0.0.1		a:read(../../../data/StupidEmail.eml)		error:
+		POST: [a:read,folder:../data/,file:StupidEmail.eml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:28		ip:127.0.0.1		a:read(../../../data/style.css)		error:
+		POST: [a:read,folder:../data/,file:style.css,]
+		GET:  []
+		FILE: []
+8-4-2011 23:28		ip:127.0.0.1		a:read(../../../data/SomeOtherStuff.pdf)		error:
+		POST: [a:read,folder:../data/,file:SomeOtherStuff.pdf,]
+		GET:  []
+		FILE: []
+8-4-2011 23:28		ip:127.0.0.1		a:read(../../../data/Time.as)		error:
+		POST: [a:read,folder:../data/,file:Time.as,]
+		GET:  []
+		FILE: []
+8-4-2011 23:30		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:30		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:30		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+8-4-2011 23:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:32		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:32		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+8-4-2011 23:32		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+8-4-2011 23:33		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:34		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:34		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:35		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:35		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:36		ip:127.0.0.1		a:read(../../../data/data.rar)		error:
+		POST: [a:read,folder:../data/,file:data.rar,]
+		GET:  []
+		FILE: []
+8-4-2011 23:39		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:39		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:40		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:40		ip:127.0.0.1		a:read(../../../data/cv.pdf)		error:
+		POST: [a:read,folder:../data/,file:cv.pdf,]
+		GET:  []
+		FILE: []
+8-4-2011 23:40		ip:127.0.0.1		a:read(../../../data/Empty.zip)		error:
+		POST: [a:read,folder:../data/,file:Empty.zip,]
+		GET:  []
+		FILE: []
+8-4-2011 23:41		ip:127.0.0.1		a:read(../../../data/Config.xml)		error:
+		POST: [a:read,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+8-4-2011 23:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:41		ip:127.0.0.1		a:fileList()		error:
+		POST: [a:fileList,folder:../data/ImageFolder/blue/,]
+		GET:  []
+		FILE: []
+8-4-2011 23:41		ip:127.0.0.1		a:duplicate(../../../data/ImageFolder/Lorenz_groen_thumb.jpg)		error:
+		POST: [a:duplicate,folder:../data/ImageFolder/,file:Lorenz_groen_thumb.jpg,]
+		GET:  []
+		FILE: []
+8-4-2011 23:41		ip:127.0.0.1		a:moveFiles(../../../data/ImageFolder/Lorenz_groen_thumb_copy0.jpg)		error:
+		POST: [a:moveFiles,folder:../data/ImageFolder/,file:Lorenz_groen_thumb_copy0.jpg,nfolder:blue,]
+		GET:  []
+		FILE: []
+8-4-2011 23:41		ip:127.0.0.1		a:delete(../../../data/ImageFolder/blue/Lorenz_groen_thumb_copy0.jpg)		error:
+		POST: [a:delete,folder:../data/ImageFolder/blue/,file:Lorenz_groen_thumb_copy0.jpg,]
+		GET:  []
+		FILE: []

@@ -1,0 +1,360 @@
+1-2-2010 13:35		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 13:43		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 13:44		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 13:51		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 13:53		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 13:53		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 13:54		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 13:57		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 13:58		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 13:58		ip:192.168.1.16		a:edit()		error:input does not match action
+		POST: [a:edit,txt:<config>
+	<file></file>
+	<autostart>true</autostart>
+	<backcolor>0x000000</backcolor>
+	<frontcolor>0xCCCCCC</frontcolor>
+	<screencolor>0x666666</screencolor>
+</config>,]
+		GET:  []
+		FILE: []
+1-2-2010 14:10		ip:192.168.1.16		a:new(../../../../../data/Config.xml)		error:
+		POST: [a:new,folder:../data/,file:Config.xml,content:sdf,]
+		GET:  []
+		FILE: []
+1-2-2010 14:13		ip:192.168.1.16		a:new(../../../../../data/Config.txt)		error:
+		POST: [a:new,folder:../data/,file:Config.txt,content:sdfaaaaaaaaaadfdfd,]
+		GET:  []
+		FILE: []
+1-2-2010 14:13		ip:192.168.1.16		a:new(../../../../../data/Config.xml)		error:
+		POST: [a:new,folder:../data/,file:Config.xml,content:asdf,]
+		GET:  []
+		FILE: []
+1-2-2010 14:16		ip:192.168.1.16		a:new(../../../../../data/Config	.xml)		error:
+		POST: [a:new,folder:../data/,file:Config	.xml,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:19		ip:192.168.1.16		a:new(../../../../../data/Config.xml)		error:
+		POST: [a:new,folder:../data/,file:Config.xml,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:20		ip:192.168.1.16		a:new(../../../../../data/Config.xml)		error:
+		POST: [a:new,folder:../data/,file:Config.xml,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:21		ip:192.168.1.16		a:cont(../../../../../data/Config.xml)		error:
+		POST: [a:cont,folder:../data/,file:Config.xml,]
+		GET:  []
+		FILE: []
+1-2-2010 14:21		ip:192.168.1.16		a:new(../../../../../data/Config.xml)		error:
+		POST: [a:new,folder:../data/,file:Config.xml,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:22		ip:192.168.1.16		a:new(../../../../../data/Config.xml)		error:
+		POST: [a:new,folder:../data/,file:Config.xml,content:a,]
+		GET:  []
+		FILE: []
+1-2-2010 14:22		ip:192.168.1.16		a:new(../../../../../data/Config.xml)		error:
+		POST: [a:new,folder:../data/,file:Config.xml,content:a,]
+		GET:  []
+		FILE: []
+1-2-2010 14:25		ip:192.168.1.16		a:new(../../../../../data/Config.xml)		error:
+		POST: [a:new,folder:../data/,file:Config.xml,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:27		ip:192.168.1.16		a:new(../../../../../data/b.txt)		error:
+		POST: [a:new,folder:../data/,file:b.txt,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:28		ip:192.168.1.16		a:new(../../../../../data/b.txt)		error:
+		POST: [a:new,folder:../data/,file:b.txt,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:29		ip:192.168.1.16		a:new(../../../../../data/b.txt)		error:
+		POST: [a:new,folder:../data/,file:b.txt,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:34		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:35		ip:192.168.1.16		a:new(../../../../../data/b.txt)		error:
+		POST: [a:new,folder:../data/,file:b.txt,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:35		ip:192.168.1.16		a:new(../../../../../data/b.txt)		error:
+		POST: [a:new,folder:../data/,file:b.txt,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:36		ip:192.168.1.16		a:new(../../../../../data/b.txt)		error:
+		POST: [a:new,folder:../data/,file:b.txt,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 14:37		ip:192.168.1.16		a:new(../../../../../data/b.txt)		error:
+		POST: [a:new,folder:../data/,file:b.txt,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 15:43		ip:192.168.1.16		a:new(../../../../../data/s.txt)		error:
+		POST: [a:new,folder:../data/,file:s.txt,content:,]
+		GET:  []
+		FILE: []
+1-2-2010 16:39		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,content:asdfasdfqwer,]
+		GET:  []
+		FILE: []
+1-2-2010 16:40		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:41		ip:192.168.1.16		a:cont(../../../../../data/b.txt)		error:
+		POST: [a:cont,folder:../data/,file:b.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:43		ip:192.168.1.16		a:cont(../../../../../data/b.txt)		error:
+		POST: [a:cont,folder:../data/,file:b.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:44		ip:192.168.1.16		a:cont(../../../../../data/b.txt)		error:
+		POST: [a:cont,folder:../data/,file:b.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:45		ip:192.168.1.16		a:cont(../../../../../data/b.txt)		error:
+		POST: [a:cont,folder:../data/,file:b.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:48		ip:192.168.1.16		a:cont(../../../../../data/b.txt)		error:
+		POST: [a:cont,folder:../data/,file:b.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:48		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:48		ip:192.168.1.16		a:cont(../../../../../data/b.txt)		error:
+		POST: [a:cont,folder:../data/,file:b.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:49		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,contents:aasdf,]
+		GET:  []
+		FILE: []
+1-2-2010 16:50		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,contents:asdfqwer,]
+		GET:  []
+		FILE: []
+1-2-2010 16:50		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:54		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:54		ip:192.168.1.16		a:edit(../../../../../data/a.txt)		error:
+		POST: [a:edit,folder:../data/,file:a.txt,contents:Dit bestand heet a... dus dat mogen we aanpassen.,]
+		GET:  []
+		FILE: []
+1-2-2010 16:54		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:55		ip:192.168.1.16		a:cont(../../../../../data/b.txt)		error:
+		POST: [a:cont,folder:../data/,file:b.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:55		ip:192.168.1.16		a:cont(../../../../../data/b.txt)		error:
+		POST: [a:cont,folder:../data/,file:b.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:55		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 16:55		ip:192.168.1.16		a:cont(../../../../../data/b.txt)		error:
+		POST: [a:cont,folder:../data/,file:b.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 17:10		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,contents:asdfqwer,]
+		GET:  []
+		FILE: []
+1-2-2010 17:12		ip:192.168.1.16		a:new(../../../data/a.txt)		error:action does not exist
+		POST: [a:new,folder:../data/,file:a.txt,contents:ghfdghf,]
+		GET:  []
+		FILE: []
+1-2-2010 17:15		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,contents:asdfawe,]
+		GET:  []
+		FILE: []
+1-2-2010 17:21		ip:192.168.1.16		a:new(../../../../../data/afghfghf.txt)		error:
+		POST: [a:new,folder:../data/,file:afghfghf.txt,contents:gjhgfdhg,]
+		GET:  []
+		FILE: []
+1-2-2010 17:26		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,contents:aasdf,]
+		GET:  []
+		FILE: []
+1-2-2010 17:28		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,contents:asdfasdfawefawef,]
+		GET:  []
+		FILE: []
+1-2-2010 17:28		ip:192.168.1.16		a:new(../../../../../data/awf.txt)		error:
+		POST: [a:new,folder:../data/,file:awf.txt,contents:dfawf,]
+		GET:  []
+		FILE: []
+1-2-2010 17:29		ip:192.168.1.16		a:new(../../../../../data/babbab.txt)		error:
+		POST: [a:new,folder:../data/,file:babbab.txt,contents:abbababa,]
+		GET:  []
+		FILE: []
+1-2-2010 17:36		ip:192.168.1.16		a:new(../../../../../data/bbb.txt)		error:
+		POST: [a:new,folder:../data/,file:bbb.txt,contents:bbbrrbsaerb,]
+		GET:  []
+		FILE: []
+1-2-2010 17:37		ip:192.168.1.16		a:new(../../../../../data/awbebtaerbaerb.txt)		error:
+		POST: [a:new,folder:../data/,file:awbebtaerbaerb.txt,contents:abaasdfasdfasdf,]
+		GET:  []
+		FILE: []
+1-2-2010 17:47		ip:192.168.1.16		a:new(../../../../../data/dfgdfg.txt)		error:
+		POST: [a:new,folder:../data/,file:dfgdfg.txt,contents:dfgdfg,]
+		GET:  []
+		FILE: []
+1-2-2010 17:48		ip:192.168.1.16		a:new(../../../../../data/aaa.txt)		error:
+		POST: [a:new,folder:../data/,file:aaa.txt,contents:aaa,]
+		GET:  []
+		FILE: []
+1-2-2010 17:51		ip:192.168.1.16		a:cont(../../../../../data/WebDocument.html)		error:
+		POST: [a:cont,folder:../data/,file:WebDocument.html,]
+		GET:  []
+		FILE: []
+1-2-2010 17:51		ip:192.168.1.16		a:edit(../../../../../data/WebDocument.html)		error:
+		POST: [a:edit,folder:../data/,file:WebDocument.html,contents:<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
+	<head>
+		<title> new document </title>
+		<meta name=\"generator\" content=\"editplus\" />
+		<meta name=\"author\" content=\"\" />
+		<meta name=\"keywords\" content=\"\" />
+		<meta name=\"description\" content=\"\" />
+	</head>
+	<body>
+		All your XHTML are belong to us.
+	</body>
+</html>
+,]
+		GET:  []
+		FILE: []
+1-2-2010 17:54		ip:192.168.1.16		a:cont(../../../../../data/WebDocument.html)		error:
+		POST: [a:cont,folder:../data/,file:WebDocument.html,]
+		GET:  []
+		FILE: []
+1-2-2010 17:54		ip:192.168.1.16		a:edit(../../../../../data/WebDocument.html)		error:
+		POST: [a:edit,folder:../data/,file:WebDocument.html,contents:<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\">
+	<head>
+		<title> new document </title>
+		<meta name=\"generator\" content=\"editplus\" />
+		<meta name=\"author\" content=\"\" />
+		<meta name=\"keywords\" content=\"\" />
+		<meta name=\"description\" content=\"\" />
+	</head>
+	<body>
+		All your XHTML are belong to us.
+	</body>
+</html>
+,]
+		GET:  []
+		FILE: []
+1-2-2010 17:55		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,contents:a,]
+		GET:  []
+		FILE: []
+1-2-2010 17:55		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 17:55		ip:192.168.1.16		a:edit(../../../../../data/a.txt)		error:
+		POST: [a:edit,folder:../data/,file:a.txt,contents:asdf,]
+		GET:  []
+		FILE: []
+1-2-2010 17:55		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 17:55		ip:192.168.1.16		a:edit(../../../../../data/a.txt)		error:
+		POST: [a:edit,folder:../data/,file:a.txt,contents:\"asdf\",]
+		GET:  []
+		FILE: []
+1-2-2010 17:55		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 17:55		ip:192.168.1.16		a:edit(../../../../../data/a.txt)		error:
+		POST: [a:edit,folder:../data/,file:a.txt,contents:<>\"asdf\"XXX,]
+		GET:  []
+		FILE: []
+1-2-2010 17:55		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 17:56		ip:192.168.1.16		a:cont(../../../../../data/WebDocument.html)		error:
+		POST: [a:cont,folder:../data/,file:WebDocument.html,]
+		GET:  []
+		FILE: []
+1-2-2010 17:59		ip:192.168.1.16		a:new(../../../../../data/a.txt)		error:
+		POST: [a:new,folder:../data/,file:a.txt,contents:,]
+		GET:  []
+		FILE: []
+1-2-2010 17:59		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 17:59		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+1-2-2010 17:59		ip:192.168.1.16		a:edit(../../../../../data/a.txt)		error:
+		POST: [a:edit,folder:../data/,file:a.txt,contents:dfsdf,]
+		GET:  []
+		FILE: []
+1-2-2010 17:59		ip:192.168.1.16		a:cont(../../../../../data/a.txt)		error:
+		POST: [a:cont,folder:../data/,file:a.txt,]
+		GET:  []
+		FILE: []
+15-11-2010 22:01		ip:127.0.0.1		a:cont(../../../../../data/DumbEmail.eml)		error:
+		POST: [a:cont,folder:../data/,file:DumbEmail.eml,]
+		GET:  []
+		FILE: []
+15-11-2010 22:02		ip:127.0.0.1		a:cont(../../../../../data/library0 Report.txt)		error:
+		POST: [a:cont,folder:../data/,file:library0 Report.txt,]
+		GET:  []
+		FILE: []
+15-11-2010 22:02		ip:127.0.0.1		a:cont(../../../../../data/JQueryRocks.js)		error:
+		POST: [a:cont,folder:../data/,file:JQueryRocks.js,]
+		GET:  []
+		FILE: []
