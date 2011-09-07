@@ -298,7 +298,6 @@ function tntbase_get_path_contents($file_path, $nofilter=false) {
     $name = $nodelist->item($i)->getAttribute('name');
     $lastSlash = strrpos($name, "/");
     if (!($lastSlash === false)) {
-    	dd($lastSlash);
     	$name = substr($name, $lastSlash+1);
     }
     if (!empty($name)) {
