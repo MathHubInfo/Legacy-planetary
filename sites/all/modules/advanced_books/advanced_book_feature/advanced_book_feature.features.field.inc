@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * advanced_books.features.field.inc
+ * advanced_book_feature.features.field.inc
  */
 
 /**
  * Implementation of hook_field_default_fields().
  */
-function advanced_books_field_default_fields() {
+function advanced_book_feature_field_default_fields() {
   $fields = array();
 
   // Exported field: 'node-advanced_book-field_counters'
@@ -24,7 +24,7 @@ function advanced_books_field_default_fields() {
           0 => 'counter_name',
         ),
       ),
-      'module' => 'advbooks',
+      'module' => 'advanced_books',
       'settings' => array(),
       'translatable' => '0',
       'type' => 'field_counter',
@@ -35,7 +35,7 @@ function advanced_books_field_default_fields() {
         0 => array(
           'counter_formatter' => '0',
           'counter_name' => array(
-            'counter_name' => 'coocoo',
+            'counter_name' => 'Chapter',
           ),
           'counter_parent' => '0',
         ),
@@ -45,9 +45,9 @@ function advanced_books_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'advbooks',
+          'module' => NULL,
           'settings' => array(),
-          'type' => 'field_counter_formatter',
+          'type' => NULL,
           'weight' => 1,
         ),
         'teaser' => array(
@@ -66,9 +66,9 @@ function advanced_books_field_default_fields() {
       ),
       'widget' => array(
         'active' => 0,
-        'module' => 'advbooks',
+        'module' => "advanced_books",
         'settings' => array(),
-        'type' => 'field_counter_widget',
+        'type' => "field_counter_widget",
         'weight' => '-3',
       ),
     ),

@@ -6,8 +6,8 @@ function advanced_books_field_schema($field) {
     'counter_formatter' => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE),
   );
   return array(
-    'fields' => $fields,
-    'primary key' => "counter_name",
+    'columns' => $fields,
+    'primary key' => array("counter_name"),
   );
 }
 

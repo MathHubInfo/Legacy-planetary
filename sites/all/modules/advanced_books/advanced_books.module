@@ -1,5 +1,4 @@
 <?php
-  include_once('advanced_books.features.inc');
   include_once("counter_field.inc");
   
   function advanced_books_menu() {
@@ -32,8 +31,6 @@
   		
   		foreach ($counterObjects as $cnt) {
   			$form[$cnt][$lang]["#validate"] = array("ignore_basically");
-  			$form[$cnt][$lang]["#options"][] = "fff"; 
-  			$form[$cnt][$lang]["#options"][] = "ffg"; 
   		}
   }
   

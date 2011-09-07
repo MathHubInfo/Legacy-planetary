@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * advanced_books.features.inc
+ * advanced_book_feature.features.inc
  */
 
 /**
  * Implementation of hook_node_info().
  */
-function advanced_books_node_info() {
+function advanced_book_feature_node_info() {
   $items = array(
     'advanced_book' => array(
       'name' => t('Advanced book'),

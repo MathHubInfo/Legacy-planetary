@@ -1,21 +1,10 @@
 core = "7.x"
-dependencies[] = "features"
-dependencies[] = "list"
-dependencies[] = "number"
 dependencies[] = "relation"
 dependencies[] = "tntbase"
 
 files[] = counter_field.inc
 
 description = "Advanced Books"
-features[field][] = "node-advanced_book-field_counters"
-features[field][] = "node-advanced_book-field_imagecounter"
-features[field][] = "node-advanced_book-field_root"
-features[field][] = "node-advanced_book-field_seccounter"
-features[field][] = "node-advanced_book-field_statementcounter"
-features[field][] = "node-advanced_book-field_tablecounter"
-features[node][] = "advanced_book"
 name = "Advanced books"
-package = "Features"
 project = "advanced_books"
 version = "7.x-1.0"
