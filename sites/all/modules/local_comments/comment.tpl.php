@@ -61,7 +61,7 @@
 <?php
 
    $targetClass = $content['comment_body']['#object']->eid ? 'inlineComment discussion-for-'.$content['comment_body']['#object']->eid : '';
-   $imgroot = url("<front>").drupal_get_path("module", "local_comments")."/images";
+   $imgroot = url("<front>", array("absolute"=>true)).drupal_get_path("module", "local_comments")."/images";
 ?>
 
 <div class=" <?php echo $targetClass; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>

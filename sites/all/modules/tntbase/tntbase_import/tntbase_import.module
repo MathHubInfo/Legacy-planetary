@@ -97,7 +97,7 @@ function tntbase_import_doImport($form, &$form_state) {
 	$importType = $form_state["values"]["ImportType"];
 	
 	$status = "";
-	$url_node = url("<front>")."/node";
+	$url_node = url("<front>", array("absolute"=>true))."/node";
 	foreach (preg_split("/[\s,]+/", $paths) as $path) {
 		$path = trim($path);
 		$path = tntbase_normalize_path($path);

@@ -27,6 +27,6 @@ return $block;
 */
 function powered_planetary_block_contents() {
 	$mod_path = drupal_get_path('module', "powered_planetary_block");
-  return theme_render_template($mod_path."/theme/powered.tpl.php", array("path" => url("<front>").$mod_path));
+  return theme_render_template($mod_path."/theme/powered.tpl.php", array("path" => url("<front>", array("absolute"=>true)).$mod_path));
 }
 ?>
