@@ -45,6 +45,10 @@ function drutexml_info() {
   return $blocks;
 }
 
+function drutexml_init() {
+	drupal_add_css(drupal_get_path("module", "drutexml")."/core.css");	
+}
+
 /**
  * Implements hook_menu().
  */
@@ -67,6 +71,7 @@ function drutexml_filter_info() {
     'process callback' => '_drutexml_filter_latex_process',
     'default settings' => array(
       'latexml_url' => 'http://latexml.mathweb.org/convert',
+      'latexml_preamable' => '',
     ),
     'cache' => TRUE,
     'settings callback' => '_drutexml_filter_latex_settings',
@@ -109,6 +114,12 @@ function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $
     '#default_value' => isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : $defaults['latexml_url'],
     '#description' => t('The URL of the LaTeXMl daemon.'),
   );
+  $settings['latexml_preamble'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Preamble to be used'),
+    '#default_value' => isset($filter->settings['latexml_preamble']) ? $filter->settings['latexml_preamble'] : $defaults['latexml_preamble'],
+    '#description' => t('The preamble to be used for the daemon.'),
+  );
   $settings['latexml_reset'] = array(
     '#type' => 'submit',
     '#title' => t('Reset LaTeXML cache'),
@@ -148,13 +159,14 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   if ($m > 0) {
 	$preamble = $matches[1];
 	$text = $matches[2];	
-  }
+  } else
+  	$preamble = $filter->settings['latexml_preamble'];
+  
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
   
+  
   $data = 'profile=fragment&tex=' . urlencode($text);
-  if (isset($preamble)) {
-  	$data .= "&preamble=" . urlencode($preamble);
-  }
+  $data .= "&preamble=" . urlencode($preamble);
   
    $content = do_post($host,$data);
   $res = json_decode($content);
