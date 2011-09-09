@@ -1,1 +1,20 @@
 <?php
+function drutexml_schema() {
+	$schema['drutexml_cache'] = array(
+    'description' => t('DruTeXML Cache'),
+    'fields' => array(
+     'cachemd5' => array(
+       'type' => 'varchar',
+       'length' => 32,
+       'not null' => true,
+	),
+      'xhtml' => array(
+        'type' => 'text',
+        'not null' => false,
+	),
+	),
+    'primary key' => array('cachemd5'),
+	);
+
+	return $schema;
+}

@@ -610,6 +610,9 @@ function tntbase_query($Query) {
  * @param string $Response the response to be stripped
  */
 function tntbase_strip_tntbase_results($Response, $StripEach = true) {
+  if ($Response == "") {
+  	return array();
+  }
   $Results = array();
   $Document = new DOMDocument();
   $Document->loadXML($Response);

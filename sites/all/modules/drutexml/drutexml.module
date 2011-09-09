@@ -122,19 +122,34 @@ function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $
   );
   $settings['latexml_reset'] = array(
     '#type' => 'submit',
-    '#title' => t('Reset LaTeXML cache'),
-    '#default_value' => false,
-    '#description' => t('Reset cache.'),
-    '#submit' => '_drutexml_filter_reset_cache',
+    '#value' => t('Reset LaTeXML cache'),
+    '#submit' => array('_drutexml_filter_reset_cache'),
   );
   return $settings;
 }
 
+function _drutexml_cache_read($md5) {
+	$cache = db_select("drutexml_cache", "a")->fields('a', array("xhtml"))->condition("a.cachemd5", $md5)->execute()->fetchAll();
+	if (count($cache)==0) {
+		return;
+	}
+	return $cache[0]->xhtml;
+}
+
+function _drutexml_cache_set($md5, $xhtml) {
+	db_insert("drutexml_cache")->fields(array(
+		"cachemd5" => $md5,
+		"xhtml" => $xhtml	
+	))->execute();
+}
+
+function _drutexml_cache_clear() {
+	db_delete("drutexml_cache")->execute();
+}
+
+
 function _drutexml_filter_reset_cache($form, &$form_state) {
-	ctools_include("cache");
-	cache_clear_all("drutexml_cache");
-	
-	$cached = ctools_cache_("drutexml_cache");
+	_drutexml_cache_clear();
 }
 
 /**
@@ -147,12 +162,11 @@ function _drutexml_filter_reset_cache($form, &$form_state) {
  */
 function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   $key = md5($text);
-  ctools_include("object-cache");
-  $cached = ctools_object_cache_get("drutexml_cache", $key);
-  if (isset($cached)) {
-  	return $cached;
+  $cache = _drutexml_cache_read($key);
+  if (isset($cache)) {
+  	return $cache;
   }
-
+  
   $hasPreamble = '/^([\s\S]*)\\\\begin{document}([\s\S]*)\\\\end{document}([\s\S]*)$/';
   $m = preg_match($hasPreamble, $text, $matches);
   
@@ -165,15 +179,15 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
   
   
-  $data = 'profile=fragment&tex=' . urlencode($text);
+  $data = 'profile=fragment-html&tex=' . urlencode($text);
   $data .= "&preamble=" . urlencode($preamble);
   
-   $content = do_post($host,$data);
+  $content = do_post($host,$data);
   $res = json_decode($content);
   $res = trim($res->{'result'});
   $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly. otherwise, uncomment next line.
   $res = str_replace('xml:','',$res); //also remove xml:id
-  ctools_object_cache_set("drutexml_cache", $key, $res);
+  _drutexml_cache_set($key, $res);
   return $res;
 }
 
