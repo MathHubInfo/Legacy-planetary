@@ -9,7 +9,7 @@ function drutexml_schema() {
        'not null' => true,
 	),
       'xhtml' => array(
-        'type' => 'text',
+        'type' => 'longtext',
         'not null' => false,
 	),
 	),
