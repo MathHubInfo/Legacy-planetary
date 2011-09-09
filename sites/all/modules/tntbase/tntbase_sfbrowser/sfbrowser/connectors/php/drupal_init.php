@@ -20,7 +20,7 @@ $sSfbHtml = $oSFBrowser->getBody(SFB_PATH."browser.html");
 $aPlugins = array();
 // retreive plugins
 if (SFB_PLUGINS!="")    $aPlugins = preg_split("/,/",SFB_PLUGINS);
-$WebRoot = url("<front>");
+$WebRoot = url("<front>", array("absolute"=>true));
 
 // add javascript to header
 $header.=$N.$T.$T."<!-- SFBrowser init ".(SFB_DEBUG?'-debug mode- ':'')."-->".$N;
