@@ -9,14 +9,33 @@ Drupal.wysiwyg.editor.attach.ymacs = function(context, params, settings) {
   window.YMACS_SRC_PATH = settings["jspath"]+"/src/js/";
   var desktop = new DlDesktop({});
   desktop.fullScreen();
-  var dlg = new DlDialog({ title: "Ymacs", resizable: true });
+  
+  var dlg = new DlDialog({ title: "Ymacs", resizable: false, fixed: true, noShadows: true });
   var javascript = new Ymacs_Buffer({ name: "test.js" });
   javascript.setCode("lalala");
   javascript.cmd("javascript_dl_mode");
   javascript.setq("indent_level", 4);
+  
+  var layout = new DlLayout({ parent: dlg });
+
   var ymacs = window.ymacs = new Ymacs({ buffers: [ javascript ] });
   ymacs.setColorTheme([ "dark", "y" ]);
-  alert(ymacs);
+  
+  try {
+   	ymacs.getActiveBuffer().cmd("eval_file", ".ymacs");
+  } catch(ex) {}
+
+  layout.packWidget(ymacs, { pos: "bottom", fill: "*" });
+
+  dlg._focusedWidget = ymacs;
+  dlg.setSize({ x: 800, y: 600 });
+
+// show two frames initially                                                                                                                      
+// ymacs.getActiveFrame().hsplit();                                                                                                               
+
+  dlg.show(true);
+  //dlg.maximize(true);
+
 };
 
 /**
