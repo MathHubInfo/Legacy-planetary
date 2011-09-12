@@ -7,13 +7,13 @@ Drupal.wysiwyg.editor.attach.ymacs = function(context, params, settings) {
   // Attach editor.
   window.Dynarch_Base_Url = settings["jspath"]+"/test/dl";
   window.YMACS_SRC_PATH = settings["jspath"]+"/src/js/";
-  var desktop = new DlDesktop({});
-  desktop.fullScreen();
+  var editorID = "#"+params.field;
   
   var dlg = new DlDialog({ title: "Ymacs", resizable: false, fixed: true, noShadows: true });
-  var javascript = new Ymacs_Buffer({ name: "test.js" });
-  javascript.setCode("lalala");
-  javascript.cmd("javascript_dl_mode");
+  dlg.addClass("dropPadding");
+  var javascript = new Ymacs_Buffer({ name: "file.tex" });
+  javascript.setCode($(editorID).text());
+  javascript.cmd("stex_mode");
   javascript.setq("indent_level", 4);
   
   var layout = new DlLayout({ parent: dlg });
@@ -28,13 +28,13 @@ Drupal.wysiwyg.editor.attach.ymacs = function(context, params, settings) {
   layout.packWidget(ymacs, { pos: "bottom", fill: "*" });
 
   dlg._focusedWidget = ymacs;
-  dlg.setSize({ x: 800, y: 600 });
 
-// show two frames initially                                                                                                                      
-// ymacs.getActiveFrame().hsplit();                                                                                                               
-
+  pos = $(editorID).offset();
+    
+  $(editorID).css("visibility","hidden");
   dlg.show(true);
-  //dlg.maximize(true);
+  dlg.setSize({x:$(editorID).width(), y:$(editorID).height()});
+  dlg.setPos(pos.left, pos.top);
 
 };
 

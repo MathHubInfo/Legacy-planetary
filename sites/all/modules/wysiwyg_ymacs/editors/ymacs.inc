@@ -73,7 +73,8 @@ function wysiwyg_ymacs_ymacs_themes($editor, $profile) {
 	/**
 	 * TODO: just a STUB 
 	 */
-      if (isset($profile->settings["buttons"]) && isset($profile->settings["buttons"]["default"])) {
+	drupal_add_css(drupal_get_path("module", "wysiwyg_ymacs")."/css/wysiwyg_ymacs.css");
+	if (isset($profile->settings["buttons"]) && isset($profile->settings["buttons"]["default"])) {
 	  $plugins = $profile->settings["buttons"]["default"];
 	  foreach ($plugins as $plugin=>$p) {
 	    drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
@@ -102,7 +103,7 @@ function wysiwyg_ymacs_ymacs_load($editor, $library) {
 		"ymacs-buffer.js", "ymacs-marker.js", "ymacs-commands.js", "ymacs-commands-utils.js",
 		"ymacs-keymap.js", "ymacs-keymap-emacs.js", "ymacs-keymap-isearch.js",
 		"ymacs-minibuffer.js", "ymacs-tokenizer.js", "ymacs-mode-paren-match.js",
-		"ymacs-mode-lisp.js", "ymacs-mode-js.js", "ymacs-mode-xml.js", "ymacs-mode-css.js",
+		"ymacs-mode-lisp.js", "ymacs-mode-stex.js", "ymacs-mode-js.js", "ymacs-mode-xml.js", "ymacs-mode-css.js",
 		"ymacs-mode-markdown.js"
 	); 	
 	
