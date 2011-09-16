@@ -77,12 +77,22 @@ function tntbase_node_load_or_import($tnt_path) {
 	}
 }
 
-function tntbase_node_import($tnt_path, $content_type="article", $body_field="body") {
+function tntbase_node_import($tnt_path, $content_type="article", $body_field="body", $type="latex") {
 	tntbase_normalize_path($tnt_path);
 	$doc = tntbase_get_document("/".$tnt_path);
 	$body_text = $doc["Body"];
 	$node = array();
 	$node["type"] = $content_type;
+	
+	try {
+		$p = simplexml_load_string($doc["TitleXHTML"]);
+		$doc["TitleXHTML"] = $p->{0};
+	} catch (Exception $e) {
+	}
+	
+	if ($doc["TitleXHTML"]>=255) {
+		$doc["TitleXHTML"] = substr($doc["TitleXHTML"], 0, 254);
+	}
 	
 	$node["title"]    = $doc["TitleXHTML"];
 	$node["language"] = LANGUAGE_NONE;
@@ -92,9 +102,13 @@ function tntbase_node_import($tnt_path, $content_type="article", $body_field="bo
 	$node[$body_field]=array();
 	$node[$body_field][$node["language"]]=array();
 	$node[$body_field][$node["language"]][0]=array();
-	$node[$body_field][$node["language"]][0]['value']   = $body_text;
-	$node[$body_field][$node["language"]][0]['format']  = 'latex';
-
+	if ($type=="latex") {
+		$node[$body_field][$node["language"]][0]['value']   = $body_text;
+		$node[$body_field][$node["language"]][0]['format']  = 'latex';
+	} else {
+		$node[$body_field][$node["language"]][0]['value']   = $doc["BodyXHTML"];
+		$node[$body_field][$node["language"]][0]['format']  = 'full_html';
+	}	
 	$node = (object) $node;
 	node_object_prepare($node);
 	
