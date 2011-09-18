@@ -45,10 +45,6 @@ function drutexml_info() {
   return $blocks;
 }
 
-function drutexml_init() {
-	drupal_add_css(drupal_get_path("module", "drutexml")."/core.css");	
-}
-
 /**
  * Implements hook_menu().
  */
