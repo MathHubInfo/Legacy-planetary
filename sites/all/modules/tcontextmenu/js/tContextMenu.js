@@ -9,7 +9,7 @@ console = console || {
 };
 
 (function($){
-
+  $(function(){
    /** @namespace */
    tContextMenu = {
       /** @lends tContextMenu */
@@ -909,5 +909,5 @@ console = console || {
       }
       
    };
-
+  });
 })(jQuery);
