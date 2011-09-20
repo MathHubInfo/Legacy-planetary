@@ -1,12 +1,13 @@
 .tContextMenu, .tContextMenu ul {
-   display           : none;
-   position          : absolute;
-   top               : 0;
-   left              : 0;
-   margin            : 0;
-   padding           : 0!important;
-   list-style-type   : none;
-   color             : black;
+   display          : none;
+   position         : absolute;
+   z-index          : 69000;
+   top              : 0;
+   left             : 0;
+   margin           : 0;
+   padding          : 0!important;
+   list-style-type  : none;
+   color            : black;
 }
 .tContextMenu li {
    position : relative;
