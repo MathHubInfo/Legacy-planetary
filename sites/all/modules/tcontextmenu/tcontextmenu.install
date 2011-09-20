@@ -1,0 +1,41 @@
+<?php
+
+require_once('constants.php');
+
+/*
+$schema = array(
+  'fields' => array(
+    'id'       => array('type' => 'int', 'length' => 11, 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0, 'auto increment' => TRUE),
+    'context'  => array('type' => 'varchar', 'length' => 256, 'not null' => TRUE, 'default' => ''),
+    'wordID'   => array('type' => 'text', 'not null' => TRUE),
+    'user'     => array('type' => 'varchar', 'length' => 60, 'not null' => TRUE, 'default' => ''),
+    'text'     => array('type' => 'text', 'not null' => TRUE)
+  ),
+  'primary key' => array('id')
+);
+*/
+
+db_drop_table( TABLE_TINFOBAR );
+
+db_query(
+   "CREATE TABLE IF NOT EXISTS `".TABLE_TINFOBAR."` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `type` varchar(256) NOT NULL,
+	  `context` varchar(256) NOT NULL,
+	  `wordID` text NOT NULL,
+	  `user` varchar(60) NOT NULL,
+	  `text` text NOT NULL,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;"
+);
+
+db_insert( TABLE_TINFOBAR )
+   ->fields(
+      array(
+         'type'      => 'text-type',
+         'context'   => 'test-context',
+         'user'      => 'text-user',
+         'wordID'    => 'text-wordID',
+         'text'      => 'test-text'
+      )
+   )->execute();

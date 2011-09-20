@@ -1,0 +1,17 @@
+.tContextMenu, .tContextMenu ul {
+   display           : none;
+   position          : absolute;
+   top               : 0;
+   left              : 0;
+   margin            : 0;
+   padding           : 0;
+   list-style-type   : none;
+   color             : black;
+}
+.tContextMenu li {
+   position : relative;
+   margin   : 0;
+   padding  : 0;
+   color    : black;
+   cursor   : default;
+}
