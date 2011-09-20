@@ -12,7 +12,7 @@ Drupal.wysiwyg.editor.attach.ymacs = function(context, params, settings) {
   var dlg = new DlDialog({ title: "Ymacs", resizable: false, fixed: true, noShadows: true });
   dlg.addClass("dropPadding");
   var javascript = new Ymacs_Buffer({ name: "file.tex" });
-  javascript.setCode($(editorID).text());
+  javascript.setCode($(editorID).val());
   javascript.cmd("stex_mode");
   javascript.setq("indent_level", 4);
   
@@ -27,14 +27,16 @@ Drupal.wysiwyg.editor.attach.ymacs = function(context, params, settings) {
 
   layout.packWidget(ymacs, { pos: "bottom", fill: "*" });
 
-  //dlg._focusedWidget = ymacs;
-
   dlg.show(true);
+  $(dlg.getElement()).attr("style","position:relative; width: 500px");
   dlg.setSize({x:500, y:300});
-  $(dlg.getElement()).attr("style","");
-  $(dlg.getElement()).after($(editorID));
+  $(editorID).after($(dlg.getElement()));
   $(editorID).hide();
-
+  $(editorID).each(function (c, obj) {
+	  jQuery.data(obj, "editor", ymacs);
+	  jQuery.data(obj, "dialog", dlg);
+	  jQuery.data(obj, "buffer", javascript);
+  });
 };
 
 /**
@@ -46,14 +48,20 @@ Drupal.wysiwyg.editor.detach.ymacs = function(context, params) {
   if (typeof params != 'undefined') {
     var editorID = "#"+params.field;
     $(editorID).each(function (c, obj) {
-    	var editor = jQuery.data(obj, 'editor');
-    	if (editor != null) {
-        	editor.save();
-        	editor.toTextArea();
-        	jQuery.data($(editorID), 'editor', null);
-        }
+    	var ymacs = jQuery.data(obj, "editor");
+        var dialog = jQuery.data(obj, "dialog");
+        var buffer = jQuery.data(obj, "buffer");
+        if (typeof(ymacs) != "undefined" && typeof(dialog) != "undefined" && typeof(buffer) != "undefined") {
+        	dialog.destroy();
+        	ymacs.destroy();
+        	$(editorID).val(buffer.getCode());
+        	$(editorID).show();
+        	jQuery.data(obj, "editor", null);
+        	jQuery.data(obj, "dialog", null);
+        	jQuery.data(obj, "buffer", null);	
+        }    	
     });
-    
+    	
   }
 };
 
