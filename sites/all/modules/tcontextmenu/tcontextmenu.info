@@ -1,0 +1,8 @@
+name           = tContextMenu
+description    = Adds a modular context menu functionality to the active documents
+version        = 0.6
+package        = Planetary Modules
+dependencies[] = "local_comments"
+dependencies[] = "planetaryinfo"
+core           = 7.x
+

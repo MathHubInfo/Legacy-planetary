@@ -1,0 +1,182 @@
+<?php
+
+//require_once( 'constants.php' );
+
+/**
+* Implements hook_help.
+*
+* Displays help and module information.
+*
+* @param path
+*  Which path of the site we're using to display help
+* @param arg
+*  Array that holds the current path as returned from arg() function
+*/
+function tcontextmenu_help($path, $arg) {
+  switch ($path) {
+   case "admin/help#tcontextmenu":
+    return '<p>'.  t("Adds contextmenu functionality") .'</p>';
+    break;
+  }
+}
+
+/**
+* Implements hook_preprocess_node
+*
+* @param &$variables
+*/
+function tcontextmenu_preprocess_node(&$variables = '') {
+  $node = $variables['node'];
+  $acceptedTypes = array( 'course_related_page', 'lecture' );
+  
+//  dpm( $node );
+  
+  if ( !empty($node) && in_array($node->type, $acceptedTypes) ) {
+
+    drupal_add_js( drupal_get_path( 'module', 'tcontextmenu' ) . '/js/jquery.jsonp.js', array('weight'=>10)  );
+    drupal_add_js( drupal_get_path( 'module', 'tcontextmenu' ) . '/js/tContextMenu.js', array('weight'=>11)  );
+    drupal_add_js( <<<JS
+      $(function(){
+        
+        tContextMenu.init({
+           target   : $('.region-content'),
+           views    : [
+              'js/views/contextMenu.view.js',
+              ['js/views/iconMenu.view.js', {
+                 label    : true,
+                 angle    : 90,
+                 growth   : 7,
+                 distance : 30
+              }]
+           ],
+           modules  : [
+              'js/modules/moduleManager.js',
+              'js/modules/tooltip.js',
+              'js/modules/viewSwitcher.js',
+              'js/modules/jobad.js',
+              [ 'js/modules/tInfoBar.js', false, {
+                 main : $('.region-content')
+              }]
+           ]
+        });
+        
+     });
+
+JS
+    , array( 'type' => 'inline', 'weight' => 12 ) );
+  }
+}
+
+/**
+* Implements hook_menu
+*/
+function tcontextmenu_menu() {
+
+  $items = array();
+  $items['tcontextmenu/getTokens'] = array(
+    'title' => 'Return the tokens for the infobar for a specified context',
+    'page callback' => '_tcontextmenu_getTokens',
+    'access callback' => TRUE
+  );
+  $items['tcontextmenu/add'] = array(
+    'title' => 'Insert an item into the table',
+    'page callback' => '_tcontextmenu_addItem',
+    'access callback' => TRUE
+  );
+  $items['tcontextmenu/get'] = array(
+    'title' => 'Retrieve all items for a specified element',
+    'page callback' => '_tcontextmenu_getItems',
+    'access callback' => TRUE
+  );
+  
+  return $items;
+}
+
+/**
+* Retrieve all tokens for a specified context and of specific type
+*
+* @param $context
+*    The context of the element
+* @param $type = null
+*    The type of the element
+*/
+function _tcontextmenu_getTokens( $context, $type = null ){
+  $query = db_select( TABLE_tcontextmenu, 't' );
+  $query->fields( 't' );
+  
+  $query->condition('t.context', $context);
+  if( $type ) $query->condition('t.type', $type);
+  
+  $result = $query->execute();
+  
+  $a = array();
+  foreach( $result as $r ) 
+    if( !isset( $a[$r->wordid] ) )
+      $a[$r->wordid] = array( $r->type => true );
+    else
+      $a[$r->wordid][$r->type] = true;
+  
+  $output = array();
+  foreach( $a as $w => $v ){
+    foreach( $v as $t => $p )
+      $output[] = array( 'type' => $t, 'wordID' => $w );
+  }
+  
+  return drupal_json_output( $output );
+  exit;
+}
+
+/**
+* Add an item to the database
+*
+* @param $type
+*    The type of the item
+* @param $id
+*    The ID of the element
+* @param $context
+*    The context of the element
+* @param $username
+* @param $text
+*    The Body of the comment
+*/
+function _tcontextmenu_addItem( $type, $id, $context, $username, $text ){
+  db_insert( TABLE_tcontextmenu )
+    ->fields(
+      array(
+        'type'    => $type,
+        'wordID'   => $id,
+        'context'  => $context,
+        'user'    => $username,
+        'text'    => $text
+      )
+    )->execute();
+
+  return drupal_json_output( array( 'result' => 'true' ) );
+}
+
+/**
+* Retrieve all items from the database for a specified element of a specified type in a specified context
+*
+* @param $type
+*    The type of the item
+* @param $id
+*    The ID of the element
+* @param $context = null
+*    The context of the element
+*/
+function _tcontextmenu_getItems( $type, $id, $context = null ){
+  $query = db_select( TABLE_tcontextmenu, 't' );
+  $query->fields( 't' );
+  
+  if( $context ) 
+    $query->condition('t.context', $context);
+  $query->condition('t.type', $type);
+  $query->condition('t.wordID', $id);
+  
+  $result = $query->execute();
+  $a = array();
+  foreach( $result as $r ) $a[] = $r;
+  
+  return drupal_json_output( $a );
+  exit;
+}

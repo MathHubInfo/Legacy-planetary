@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xhtml PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:svg="http://www.w3.org/2000/svg" xml:lang="en-ca">
+  <head>
+      <link rel="stylesheet" href="css/tContextMenu.css" />
+      <style>
+        math {
+          background  : lightyellow;
+          color : green;
+        }
+      </style>
+      <script src="js/jquery.js" type="text/javascript" ></script>
+      <script src="js/jquery.jsonp.js"></script>
+      <script src="js/tContextMenu.js"></script>
+      <script>
+         
+         $(function(){
+            
+            tContextMenu.init({
+               target   : $('body'),
+               views    : [
+                  'js/views/contextMenu.view.js',
+                  ['js/views/iconMenu.view.js', {
+                     label    : true,
+                     angle    : 90,
+                     growth   : 7,
+                     distance : 30
+                  }]
+               ],
+               modules  : [
+/*                  'js/modules/module1.js', */
+/*                  [ 'js/modules/dummyGenerator.js', false, { number:1, random:7, randomOrder:true } ], */
+                  'js/modules/moduleManager.js',
+                  'js/modules/tooltip.js',
+                  'js/modules/viewSwitcher.js',
+                  'js/modules/jobad.js',
+                  [ 'js/modules/tInfoBar.js', false, {
+                     
+                  }]
+               ]
+            });
+            
+         });
+         
+         /** StyleSheet refresher */
+         var timeout;
+         var TIME = 10000;
+         
+//         timeout = setTimeout( refreshCSS, TIME );
+         
+         function refreshCSS(){
+            var view = tContextMenu._com.currentView;
+            
+            view._stylesheets.remove();
+            view._stylesheets.remove();
+            view._stylesheets = $();
+            for( var j in view.stylesheets ){
+               view._stylesheets = view._stylesheets.add(
+                  $(document.createElement('link'))
+                     .attr({
+                        'rel'    : 'stylesheet',
+                        'type'   : 'text/css',
+                        'href'   : view.stylesheets[j] + '?random='+Math.floor(Math.random()*696969),
+                        'id'     : view.info.identifier+'_css_'+j
+                     })
+               );
+            }
+            tContextMenu._com.componentContainer.append( view._stylesheets );
+            
+            console.log( 'CSS Refresh(): '+TIME );
+            timeout = setTimeout( refreshCSS, TIME );
+         }
+         
+      </script>
+   </head>
+
+   <body>
+
+      <div style="background:orange">This is a DIV</div>
+      <p style="background:lightgreen"> This is a P</p>
+      <a style="background:yellow" href="javascript:void(0)">I am a LINK</a>
+      <pre style="background:pink">This is a PRE</pre>
+      
+      <div>
+         <h3>tInfoBar Test</h3>
+         <p>
+            <b>Lorem</b> ipsum <span style="color:red">dolor</span> sit amet, consectetur adipiscing elit. Pellentesque gravida imperdiet nulla a congue. Aenean elementum cursus nulla. Mauris <b>lorem</b> nisi, commodo <i style="color:green">sed</i> vestibulum eget, cursus id mi. Nunc <u>quis</u> bibendum diam. Morbi consectetur viverra justo sit amet congue. Aenean velit diam, commodo eget placerat et, sagittis vitae sem. Nam pharetra diam et est iaculis <u>quis</u> eleifend nulla tristique. Donec pellentesque iaculis quam, nec laoreet odio sollicitudin id. Aenean arcu nibh, tempor eget malesuada venenatis, sollicitudin et urna. Mauris neque diam, laoreet non interdum a, scelerisque ut nunc. Morbi elementum dui vitae ligula sagittis egestas sollicitudin sapien dignissim. In eget porttitor sem. Ut mattis augue <u>quis</u> turpis pulvinar sagittis. Phasellus varius ornare laoreet. Nulla pharetra urna <i style="color:green">sed</i> nibh consectetur at sodales eros ultrices.
+         </p>
+         
+         <p>
+            Integer ac augue consequat tortor vehicula pharetra. Suspendisse eu faucibus massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec tincidunt viverra tortor <i style="color:green">sed</i> consectetur. <i style="color:green">sed</i> adipiscing iaculis nunc id scelerisque. Proin eu diam at orci rhoncus laoreet. Praesent fringilla ultricies porttitor. Ut libero ante, fermentum ac blandit et, tincidunt iaculis quam. Praesent et magna non nulla ultricies viverra ut nec orci. Cras faucibus augue et dui consequat rutrum. Morbi a cursus ligula. Mauris mattis quam pharetra urna pharetra condimentum. Donec non ante sit amet felis accumsan pulvinar. Aliquam in pellentesque nunc. Nulla <b>lorem</b> <b>lorem</b>, venenatis id sagittis eu, dignissim eget nisl. Nunc turpis <span style="color:red">dolor</span>, interdum ac molestie a, luctus in nisl. Etiam nisl mi, facilisis <u>quis</u> lobortis ac, facilisis nec lectus. <i style="color:green">sed</i> eleifend tempus nisl <u>quis</u> lobortis. Suspendisse convallis est vulputate elit vulputate ac semper diam vulputate.
+         </p>
+         
+         <p>
+            Duis <i style="color:green">sed</i> quam nisl, <i style="color:green">sed</i> lacinia sem. Etiam elementum posuere tortor. Praesent orci mi, tempus et tempus <u>quis</u>, vehicula <i style="color:green">sed</i> quam. Fusce tempor quam a erat adipiscing mattis. <b>lorem</b> ipsum <span style="color:red">dolor</span> sit amet, consectetur adipiscing elit. Nulla ut tellus urna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis sem purus, egestas non sodales at, hendrerit mattis dui. <i style="color:green">sed</i> ac sapien <span style="color:red">dolor</span>. Suspendisse sit amet commodo elit. Nulla vitae dui congue diam tincidunt lobortis eu nec mauris. Donec lacinia, eros vel venenatis ornare, mauris nunc volutpat neque, ac aliquet risus mi in nunc. Vivamus aliquam consectetur vestibulum.
+         </p>
+      </div>
+      
+      <div class="omdoc-slide">
+        <div class="omdoc-slidetitle">
+          <span class="dc-title">KV-maps Example: <m:math xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns="http://omdoc.org/ns" xmlns:omdoc="http://omdoc.org/ns" xmlns:assig="http://omdoc.org/ontology/assignments#" xmlns:prob="http://omdoc.org/ontology/problems#" xmlns:stex="http://kwarc.info/ns/sTeX" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns" xmlns:om="http://www.openmath.org/OpenMath" id="KVmapsexample__by___PlanetBox_1">
+              <m:semantics>
+                <m:mrow xref="#a01d92390-e009-11e0-a114-00163e5e3ff4">
+                  <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="0" o:egroup="fence">
+                    <m:mspace/>
+                    <m:mo o:egroup="fence" fence="true" o:elevel="0">(</m:mo>
+                  </m:maction>
+                  <m:mi xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg1" _moz-math-font-style="italic">E</m:mi>
+                  <m:mo xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-fun">⁢</m:mo>
+                  <m:mrow xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                    <m:mo xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-fun2">vector</m:mo>
+                    <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="0" o:egroup="fence">
+                      <m:mspace/>
+                      <m:mo fence="true" o:egroup="fence" o:elevel="0">(</m:mo>
+                    </m:maction>
+                    <m:mn xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg1">6</m:mn>
+                    <m:mo separator="true">,</m:mo>
+                    <m:mn xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg2">8</m:mn>
+                    <m:mo separator="true">,</m:mo>
+                    <m:mn xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg3">9</m:mn>
+                    <m:mo separator="true">,</m:mo>
+                    <m:mn xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg4">10</m:mn>
+                    <m:mo separator="true">,</m:mo>
+                    <m:mn xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg5">11</m:mn>
+                    <m:mo separator="true">,</m:mo>
+                    <m:mn xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg6">12</m:mn>
+                    <m:mo separator="true">,</m:mo>
+                    <m:mn xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg7">13</m:mn>
+                    <m:mo separator="true">,</m:mo>
+                    <m:mn xref="#a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg8">14</m:mn>
+                    <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="0" o:egroup="fence">
+                      <m:mspace/>
+                      <m:mo fence="true" o:egroup="fence" o:elevel="0">)</m:mo>
+                    </m:maction>
+                  </m:mrow>
+                  <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="0" o:egroup="fence">
+                    <m:mspace/>
+                    <m:mo o:egroup="fence" fence="true" o:elevel="0">)</m:mo>
+                  </m:maction>
+                </m:mrow>
+                <m:annotation-xml>
+                  <om:OMA id="a01d92390-e009-11e0-a114-00163e5e3ff4">
+                    <om:OMS cd="arith1" name="times" cdbase="tntbase:/slides/extcds/omstd/arith1" id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-fun"></om:OMS>
+                    <om:OMV name="E" id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg1"></om:OMV>
+                    <om:OMA id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                      <om:OMS cd="latexml" name="vector" id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-fun2"></om:OMS>
+                      <om:OMI id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg1">6</om:OMI>
+                      <om:OMI id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg2">8</om:OMI>
+                      <om:OMI id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg3">9</om:OMI>
+                      <om:OMI id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg4">10</om:OMI>
+                      <om:OMI id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg5">11</om:OMI>
+                      <om:OMI id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg6">12</om:OMI>
+                      <om:OMI id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg7">13</om:OMI>
+                      <om:OMI id="a01d92390-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg8">14</om:OMI>
+                    </om:OMA>
+                  </om:OMA>
+                </m:annotation-xml>
+              </m:semantics>
+            </m:math>
+          </span>
+        </div>
+        <div class="omdoc-slidecontent">
+          <div id="KVmap-complex-ex" class="omdoc-example">
+            <span class="omdoc-statement-header">
+              <span class="omdoc-example-number">1.1</span>
+              <span class="omdoc-reference-for" href="#KVmap.def">#KVmap.def</span>
+            </span>
+            <span class="omdoc-statement-content">
+<!--xhtml copied--><p xmlns:omdoc="http://omdoc.org/ns" xmlns:assig="http://omdoc.org/ontology/assignments#" xmlns:prob="http://omdoc.org/ontology/problems#" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:stex="http://kwarc.info/ns/sTeX" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns" xmlns:om="http://www.openmath.org/OpenMath" style="" class="p">
+                <m:math id="KVmapsexample__by___PlanetBox_2">
+                  <m:semantics>
+                    <om:OMERROR>ltx:XMArray is presentational and has no direct OpenMath translation
+Please consider improving your binding, e.g. with a DefEnvironment constructor
+</om:OMERROR>
+                    <m:annotation-xml>
+                      <om:OMERROR>ltx:XMArray is presentational and has no direct OpenMath translation
+Please consider improving your binding, e.g. with a DefEnvironment constructor
+</om:OMERROR>
+                    </m:annotation-xml>
+                  </m:semantics>
+                </m:math>
+              </p>
+              <!--xhtml copied--><ul xmlns:omdoc="http://omdoc.org/ns" xmlns:assig="http://omdoc.org/ontology/assignments#" xmlns:prob="http://omdoc.org/ontology/problems#" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:stex="http://kwarc.info/ns/sTeX" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns" xmlns:om="http://www.openmath.org/OpenMath" class="itemize"><!--xhtml copied--><li class="item"><!--xhtml copied--><div class="para"><!--xhtml copied--><p style="" class="p">The corresponding KV-map:
+
+
+
+
+<m:math id="KVmapsexample__by___PlanetBox_3">
+                        <m:semantics>
+                          <om:OMERROR>ltx:XMArray is presentational and has no direct OpenMath translation
+Please consider improving your binding, e.g. with a DefEnvironment constructor
+</om:OMERROR>
+                          <m:annotation-xml>
+                            <om:OMERROR>ltx:XMArray is presentational and has no direct OpenMath translation
+Please consider improving your binding, e.g. with a DefEnvironment constructor
+</om:OMERROR>
+                          </m:annotation-xml>
+                        </m:semantics>
+                      </m:math>
+                    </p>
+                  </div>
+                </li>
+                <!--xhtml copied--><li class="item"><!--xhtml copied--><div class="para"><!--xhtml copied--><p style="" class="p">in the <!--xhtml copied--><span style="color:red; " class="text small">red</span>/<!--xhtml copied--><span style="color:brown; " class="text small">brown</span> group</p>
+                    <!--xhtml copied--><ul class="itemize"><!--xhtml copied--><li class="item"><!--xhtml copied--><div class="para"><!--xhtml copied--><p style="" class="p">
+                            <m:math id="KVmapsexample__by___PlanetBox_4">
+                              <m:semantics>
+                                <m:mi xref="#a01d9e6e1-e009-11e0-a114-00163e5e3ff4" _moz-math-font-style="italic">A</m:mi>
+                                <m:annotation-xml>
+                                  <om:OMV name="A" id="a01d9e6e1-e009-11e0-a114-00163e5e3ff4"></om:OMV>
+                                </m:annotation-xml>
+                              </m:semantics>
+                            </m:math> does not change, so include <m:math id="KVmapsexample__by___PlanetBox_5">
+                              <m:semantics>
+                                <m:mi xref="#a01da0df0-e009-11e0-a114-00163e5e3ff4" _moz-math-font-style="italic">A</m:mi>
+                                <m:annotation-xml>
+                                  <om:OMV name="A" id="a01da0df0-e009-11e0-a114-00163e5e3ff4"></om:OMV>
+                                </m:annotation-xml>
+                              </m:semantics>
+                            </m:math>
+                          </p>
+                        </div>
+                      </li>
+                      <!--xhtml copied--><li class="item"><!--xhtml copied--><div class="para"><!--xhtml copied--><p style="" class="p">
+                            <m:math id="KVmapsexample__by___PlanetBox_6">
+                              <m:semantics>
+                                <m:mi xref="#a01da0df1-e009-11e0-a114-00163e5e3ff4" _moz-math-font-style="italic">B</m:mi>
+                                <m:annotation-xml>
+                                  <om:OMV name="B" id="a01da0df1-e009-11e0-a114-00163e5e3ff4"></om:OMV>
+                                </m:annotation-xml>
+                              </m:semantics>
+                            </m:math> changes, so do not include it</p>
+                        </div>
+                      </li>
+                      <!--xhtml copied--><li class="item"><!--xhtml copied--><div class="para"><!--xhtml copied--><p style="" class="p">
+                            <m:math id="KVmapsexample__by___PlanetBox_7">
+                              <m:semantics>
+                                <m:mi xref="#a01da0df2-e009-11e0-a114-00163e5e3ff4" _moz-math-font-style="italic">C</m:mi>
+                                <m:annotation-xml>
+                                  <om:OMV name="C" id="a01da0df2-e009-11e0-a114-00163e5e3ff4"></om:OMV>
+                                </m:annotation-xml>
+                              </m:semantics>
+                            </m:math> does not change, so include <m:math id="KVmapsexample__by___PlanetBox_8">
+                              <m:semantics>
+                                <m:mrow xref="#a01da0df3-e009-11e0-a114-00163e5e3ff4">
+                                  <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="1000000" egroup="fence">
+                                    <m:mspace/>
+                                    <m:mo egroup="fence" fence="true" o:elevel="1000000">(</m:mo>
+                                  </m:maction>
+                                  <m:mover accent="true">
+                                    <m:mi xref="#a01da0df3-e009-11e0-a114-00163e5e3ff4-arg1" _moz-math-font-style="italic">C</m:mi>
+                                    <m:mo>¯</m:mo>
+                                  </m:mover>
+                                  <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="1000000" egroup="fence">
+                                    <m:mspace/>
+                                    <m:mo egroup="fence" fence="true" o:elevel="1000000">)</m:mo>
+                                  </m:maction>
+                                </m:mrow>
+                                <m:annotation-xml>
+                                  <om:OMA id="a01da0df3-e009-11e0-a114-00163e5e3ff4">
+                                    <om:OMS cd="boolexp-struct" name="bnot" cdbase="tntbase:/slides/boolexp/en/boolexp-struct"></om:OMS>
+                                    <om:OMV name="C" id="a01da0df3-e009-11e0-a114-00163e5e3ff4-arg1"></om:OMV>
+                                  </om:OMA>
+                                </m:annotation-xml>
+                              </m:semantics>
+                            </m:math>
+                          </p>
+                        </div>
+                      </li>
+                      <!--xhtml copied--><li class="item"><!--xhtml copied--><div class="para"><!--xhtml copied--><p style="" class="p">
+                            <m:math id="KVmapsexample__by___PlanetBox_9">
+                              <m:semantics>
+                                <m:mi xref="#a01da3500-e009-11e0-a114-00163e5e3ff4" _moz-math-font-style="italic">D</m:mi>
+                                <m:annotation-xml>
+                                  <om:OMV name="D" id="a01da3500-e009-11e0-a114-00163e5e3ff4"></om:OMV>
+                                </m:annotation-xml>
+                              </m:semantics>
+                            </m:math> changes, so do not include it</p>
+                        </div>
+                      </li>
+                    </ul>
+                    <!--xhtml copied--><p style="" class="p">So the monomial is <m:math id="KVmapsexample__by___PlanetBox_10">
+                        <m:semantics>
+                          <m:mrow xref="#a01da3501-e009-11e0-a114-00163e5e3ff4">
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="600" egroup="fence">
+                              <m:mspace/>
+                              <m:mo egroup="fence" fence="true" o:elevel="600">(</m:mo>
+                            </m:maction>
+                            <m:mi xref="#a01da3501-e009-11e0-a114-00163e5e3ff4-args-arg1" _moz-math-font-style="italic">A</m:mi>
+                            <m:mrow/>
+                            <m:mrow xref="#a01da3501-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="999400">(</m:mo>
+                              </m:maction>
+                              <m:mover accent="true">
+                                <m:mi xref="#a01da3501-e009-11e0-a114-00163e5e3ff4-args-arg2-arg12" _moz-math-font-style="italic">C</m:mi>
+                                <m:mo>¯</m:mo>
+                              </m:mover>
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="999400">)</m:mo>
+                              </m:maction>
+                            </m:mrow>
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="600" egroup="fence">
+                              <m:mspace/>
+                              <m:mo egroup="fence" fence="true" o:elevel="600">)</m:mo>
+                            </m:maction>
+                          </m:mrow>
+                          <m:annotation-xml>
+                            <om:OMA id="a01da3501-e009-11e0-a114-00163e5e3ff4">
+                              <om:OMS cd="boolean-polynomials" name="monomial" cdbase="tntbase:/slides/boolexp/en/boolean-polynomials"></om:OMS>
+                              <om:OMV name="A" id="a01da3501-e009-11e0-a114-00163e5e3ff4-args-arg1"></om:OMV>
+                              <om:OMA id="a01da3501-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                                <om:OMS cd="boolexp-struct" name="bnot" cdbase="tntbase:/slides/boolexp/en/boolexp-struct"></om:OMS>
+                                <om:OMV name="C" id="a01da3501-e009-11e0-a114-00163e5e3ff4-args-arg2-arg12"></om:OMV>
+                              </om:OMA>
+                            </om:OMA>
+                          </m:annotation-xml>
+                        </m:semantics>
+                      </m:math>
+                    </p>
+                  </div>
+                </li>
+                <!--xhtml copied--><li class="item"><!--xhtml copied--><div class="para"><!--xhtml copied--><p style="" class="p">in the <!--xhtml copied--><span style="color:green; " class="text small">green</span>/<!--xhtml copied--><span style="color:brown; " class="text small">brown</span> group  we have <m:math id="KVmapsexample__by___PlanetBox_11">
+                        <m:semantics>
+                          <m:mrow xref="#a01ddb770-e009-11e0-a114-00163e5e3ff4">
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="600" egroup="fence">
+                              <m:mspace/>
+                              <m:mo egroup="fence" fence="true" o:elevel="600">(</m:mo>
+                            </m:maction>
+                            <m:mi xref="#a01ddb770-e009-11e0-a114-00163e5e3ff4-args-arg1" _moz-math-font-style="italic">A</m:mi>
+                            <m:mrow/>
+                            <m:mrow xref="#a01ddb770-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="999400">(</m:mo>
+                              </m:maction>
+                              <m:mover accent="true">
+                                <m:mi xref="#a01ddb770-e009-11e0-a114-00163e5e3ff4-args-arg2-arg12" _moz-math-font-style="italic">B</m:mi>
+                                <m:mo>¯</m:mo>
+                              </m:mover>
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="999400">)</m:mo>
+                              </m:maction>
+                            </m:mrow>
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="600" egroup="fence">
+                              <m:mspace/>
+                              <m:mo egroup="fence" fence="true" o:elevel="600">)</m:mo>
+                            </m:maction>
+                          </m:mrow>
+                          <m:annotation-xml>
+                            <om:OMA id="a01ddb770-e009-11e0-a114-00163e5e3ff4">
+                              <om:OMS cd="boolean-polynomials" name="monomial" cdbase="tntbase:/slides/boolexp/en/boolean-polynomials"></om:OMS>
+                              <om:OMV name="A" id="a01ddb770-e009-11e0-a114-00163e5e3ff4-args-arg1"></om:OMV>
+                              <om:OMA id="a01ddb770-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                                <om:OMS cd="boolexp-struct" name="bnot" cdbase="tntbase:/slides/boolexp/en/boolexp-struct"></om:OMS>
+                                <om:OMV name="B" id="a01ddb770-e009-11e0-a114-00163e5e3ff4-args-arg2-arg12"></om:OMV>
+                              </om:OMA>
+                            </om:OMA>
+                          </m:annotation-xml>
+                        </m:semantics>
+                      </m:math>
+                    </p>
+                  </div>
+                </li>
+                <!--xhtml copied--><li class="item"><!--xhtml copied--><div class="para"><!--xhtml copied--><p style="" class="p">in the <!--xhtml copied--><span style="color:blue; " class="text small">blue</span> group  we have <m:math id="KVmapsexample__by___PlanetBox_12">
+                        <m:semantics>
+                          <m:mrow xref="#a01ddde80-e009-11e0-a114-00163e5e3ff4">
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="600" egroup="fence">
+                              <m:mspace/>
+                              <m:mo egroup="fence" fence="true" o:elevel="600">(</m:mo>
+                            </m:maction>
+                            <m:mi xref="#a01ddde80-e009-11e0-a114-00163e5e3ff4-args-arg1" _moz-math-font-style="italic">B</m:mi>
+                            <m:mrow/>
+                            <m:mi xref="#a01ddde80-e009-11e0-a114-00163e5e3ff4-args-arg2" _moz-math-font-style="italic">C</m:mi>
+                            <m:mrow/>
+                            <m:mrow xref="#a01ddde80-e009-11e0-a114-00163e5e3ff4-args-arg3">
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="999400">(</m:mo>
+                              </m:maction>
+                              <m:mover accent="true">
+                                <m:mi xref="#a01ddde80-e009-11e0-a114-00163e5e3ff4-args-arg3-arg13" _moz-math-font-style="italic">D</m:mi>
+                                <m:mo>¯</m:mo>
+                              </m:mover>
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="999400">)</m:mo>
+                              </m:maction>
+                            </m:mrow>
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="600" egroup="fence">
+                              <m:mspace/>
+                              <m:mo egroup="fence" fence="true" o:elevel="600">)</m:mo>
+                            </m:maction>
+                          </m:mrow>
+                          <m:annotation-xml>
+                            <om:OMA id="a01ddde80-e009-11e0-a114-00163e5e3ff4">
+                              <om:OMS cd="boolean-polynomials" name="monomial" cdbase="tntbase:/slides/boolexp/en/boolean-polynomials"></om:OMS>
+                              <om:OMV name="B" id="a01ddde80-e009-11e0-a114-00163e5e3ff4-args-arg1"></om:OMV>
+                              <om:OMV name="C" id="a01ddde80-e009-11e0-a114-00163e5e3ff4-args-arg2"></om:OMV>
+                              <om:OMA id="a01ddde80-e009-11e0-a114-00163e5e3ff4-args-arg3">
+                                <om:OMS cd="boolexp-struct" name="bnot" cdbase="tntbase:/slides/boolexp/en/boolexp-struct"></om:OMS>
+                                <om:OMV name="D" id="a01ddde80-e009-11e0-a114-00163e5e3ff4-args-arg3-arg13"></om:OMV>
+                              </om:OMA>
+                            </om:OMA>
+                          </m:annotation-xml>
+                        </m:semantics>
+                      </m:math>
+                    </p>
+                  </div>
+                </li>
+              </ul>
+              <!--xhtml copied--><ul xmlns:omdoc="http://omdoc.org/ns" xmlns:assig="http://omdoc.org/ontology/assignments#" xmlns:prob="http://omdoc.org/ontology/problems#" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:stex="http://kwarc.info/ns/sTeX" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns" xmlns:om="http://www.openmath.org/OpenMath" class="itemize"><!--xhtml copied--><li class="item"><!--xhtml copied--><div class="para"><!--xhtml copied--><p style="" class="p">The minimal polynomial for <m:math id="KVmapsexample__by___PlanetBox_13">
+                        <m:semantics>
+                          <m:mrow xref="#a01de0590-e009-11e0-a114-00163e5e3ff4">
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="0" o:egroup="fence">
+                              <m:mspace/>
+                              <m:mo o:egroup="fence" fence="true" o:elevel="0">(</m:mo>
+                            </m:maction>
+                            <m:mi xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg1" _moz-math-font-style="italic">E</m:mi>
+                            <m:mo xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-fun">⁢</m:mo>
+                            <m:mrow xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                              <m:mo xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-fun2">vector</m:mo>
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="0" o:egroup="fence">
+                                <m:mspace/>
+                                <m:mo fence="true" o:egroup="fence" o:elevel="0">(</m:mo>
+                              </m:maction>
+                              <m:mn xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg1">6</m:mn>
+                              <m:mo separator="true">,</m:mo>
+                              <m:mn xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg2">8</m:mn>
+                              <m:mo separator="true">,</m:mo>
+                              <m:mn xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg3">9</m:mn>
+                              <m:mo separator="true">,</m:mo>
+                              <m:mn xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg4">10</m:mn>
+                              <m:mo separator="true">,</m:mo>
+                              <m:mn xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg5">11</m:mn>
+                              <m:mo separator="true">,</m:mo>
+                              <m:mn xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg6">12</m:mn>
+                              <m:mo separator="true">,</m:mo>
+                              <m:mn xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg7">13</m:mn>
+                              <m:mo separator="true">,</m:mo>
+                              <m:mn xref="#a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg8">14</m:mn>
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="0" o:egroup="fence">
+                                <m:mspace/>
+                                <m:mo fence="true" o:egroup="fence" o:elevel="0">)</m:mo>
+                              </m:maction>
+                            </m:mrow>
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="0" o:egroup="fence">
+                              <m:mspace/>
+                              <m:mo o:egroup="fence" fence="true" o:elevel="0">)</m:mo>
+                            </m:maction>
+                          </m:mrow>
+                          <m:annotation-xml>
+                            <om:OMA id="a01de0590-e009-11e0-a114-00163e5e3ff4">
+                              <om:OMS cd="arith1" name="times" cdbase="tntbase:/slides/extcds/omstd/arith1" id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-fun"></om:OMS>
+                              <om:OMV name="E" id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg1"></om:OMV>
+                              <om:OMA id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                                <om:OMS cd="latexml" name="vector" id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-fun2"></om:OMS>
+                                <om:OMI id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg1">6</om:OMI>
+                                <om:OMI id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg2">8</om:OMI>
+                                <om:OMI id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg3">9</om:OMI>
+                                <om:OMI id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg4">10</om:OMI>
+                                <om:OMI id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg5">11</om:OMI>
+                                <om:OMI id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg6">12</om:OMI>
+                                <om:OMI id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg7">13</om:OMI>
+                                <om:OMI id="a01de0590-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg8">14</om:OMI>
+                              </om:OMA>
+                            </om:OMA>
+                          </m:annotation-xml>
+                        </m:semantics>
+                      </m:math> is
+<m:math id="KVmapsexample__by___PlanetBox_14">
+                        <m:semantics>
+                          <m:mrow xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4">
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="500" egroup="fence">
+                              <m:mspace/>
+                              <m:mo egroup="fence" fence="true" o:elevel="500">(</m:mo>
+                            </m:maction>
+                            <m:mrow xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg1">
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="100" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="100">(</m:mo>
+                              </m:maction>
+                              <m:mi xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg1-args1-arg1" _moz-math-font-style="italic">A</m:mi>
+                              <m:mrow/>
+                              <m:mrow xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg1-args1-arg2">
+                                <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                  <m:mspace/>
+                                  <m:mo egroup="fence" fence="true" o:elevel="999400">(</m:mo>
+                                </m:maction>
+                                <m:mover accent="true">
+                                  <m:mi xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg1-args1-arg2-arg12" _moz-math-font-style="italic">B</m:mi>
+                                  <m:mo>¯</m:mo>
+                                </m:mover>
+                                <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                  <m:mspace/>
+                                  <m:mo egroup="fence" fence="true" o:elevel="999400">)</m:mo>
+                                </m:maction>
+                              </m:mrow>
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="100" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="100">)</m:mo>
+                              </m:maction>
+                            </m:mrow>
+                            <m:mo xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-fun">+</m:mo>
+                            <m:mrow xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="100" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="100">(</m:mo>
+                              </m:maction>
+                              <m:mi xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg1" _moz-math-font-style="italic">A</m:mi>
+                              <m:mrow/>
+                              <m:mrow xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg2">
+                                <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                  <m:mspace/>
+                                  <m:mo egroup="fence" fence="true" o:elevel="999400">(</m:mo>
+                                </m:maction>
+                                <m:mover accent="true">
+                                  <m:mi xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg2-arg12" _moz-math-font-style="italic">C</m:mi>
+                                  <m:mo>¯</m:mo>
+                                </m:mover>
+                                <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                  <m:mspace/>
+                                  <m:mo egroup="fence" fence="true" o:elevel="999400">)</m:mo>
+                                </m:maction>
+                              </m:mrow>
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="100" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="100">)</m:mo>
+                              </m:maction>
+                            </m:mrow>
+                            <m:mo xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-fun">+</m:mo>
+                            <m:mrow xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3">
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="100" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="100">(</m:mo>
+                              </m:maction>
+                              <m:mi xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3-args3-arg1" _moz-math-font-style="italic">B</m:mi>
+                              <m:mrow/>
+                              <m:mi xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3-args3-arg2" _moz-math-font-style="italic">C</m:mi>
+                              <m:mrow/>
+                              <m:mrow xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3-args3-arg3">
+                                <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                  <m:mspace/>
+                                  <m:mo egroup="fence" fence="true" o:elevel="999400">(</m:mo>
+                                </m:maction>
+                                <m:mover accent="true">
+                                  <m:mi xref="#a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3-args3-arg3-arg13" _moz-math-font-style="italic">D</m:mi>
+                                  <m:mo>¯</m:mo>
+                                </m:mover>
+                                <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="999400" egroup="fence">
+                                  <m:mspace/>
+                                  <m:mo egroup="fence" fence="true" o:elevel="999400">)</m:mo>
+                                </m:maction>
+                              </m:mrow>
+                              <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="100" egroup="fence">
+                                <m:mspace/>
+                                <m:mo egroup="fence" fence="true" o:elevel="100">)</m:mo>
+                              </m:maction>
+                            </m:mrow>
+                            <m:maction xmlns:o="http://omdoc.org/ns" type="elision" o:elevel="500" egroup="fence">
+                              <m:mspace/>
+                              <m:mo egroup="fence" fence="true" o:elevel="500">)</m:mo>
+                            </m:maction>
+                          </m:mrow>
+                          <m:annotation-xml>
+                            <om:OMA id="a01de7ac0-e009-11e0-a114-00163e5e3ff4">
+                              <om:OMS cd="boolean-polynomials" name="polynomial" cdbase="tntbase:/slides/boolexp/en/boolean-polynomials" id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-fun"></om:OMS>
+                              <om:OMA id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg1">
+                                <om:OMS cd="boolean-polynomials" name="monomial" cdbase="tntbase:/slides/boolexp/en/boolean-polynomials"></om:OMS>
+                                <om:OMV name="A" id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg1-args1-arg1"></om:OMV>
+                                <om:OMA id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg1-args1-arg2">
+                                  <om:OMS cd="boolexp-struct" name="bnot" cdbase="tntbase:/slides/boolexp/en/boolexp-struct"></om:OMS>
+                                  <om:OMV name="B" id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg1-args1-arg2-arg12"></om:OMV>
+                                </om:OMA>
+                              </om:OMA>
+                              <om:OMA id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg2">
+                                <om:OMS cd="boolean-polynomials" name="monomial" cdbase="tntbase:/slides/boolexp/en/boolean-polynomials"></om:OMS>
+                                <om:OMV name="A" id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg1"></om:OMV>
+                                <om:OMA id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg2">
+                                  <om:OMS cd="boolexp-struct" name="bnot" cdbase="tntbase:/slides/boolexp/en/boolexp-struct"></om:OMS>
+                                  <om:OMV name="C" id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg2-args2-arg2-arg12"></om:OMV>
+                                </om:OMA>
+                              </om:OMA>
+                              <om:OMA id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3">
+                                <om:OMS cd="boolean-polynomials" name="monomial" cdbase="tntbase:/slides/boolexp/en/boolean-polynomials"></om:OMS>
+                                <om:OMV name="B" id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3-args3-arg1"></om:OMV>
+                                <om:OMV name="C" id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3-args3-arg2"></om:OMV>
+                                <om:OMA id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3-args3-arg3">
+                                  <om:OMS cd="boolexp-struct" name="bnot" cdbase="tntbase:/slides/boolexp/en/boolexp-struct"></om:OMS>
+                                  <om:OMV name="D" id="a01de7ac0-e009-11e0-a114-00163e5e3ff4-args-arg3-args3-arg3-arg13"></om:OMV>
+                                </om:OMA>
+                              </om:OMA>
+                            </om:OMA>
+                          </m:annotation-xml>
+                        </m:semantics>
+                      </m:math>
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+   </body>
+</html>
