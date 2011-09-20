@@ -34,7 +34,8 @@ function tcontextmenu_preprocess_node(&$variables = '') {
   if ( !empty($node) && in_array($node->type, $acceptedTypes) && in_array($viewMode, $acceptedViewModes) ) {
 
     $path = drupal_get_path( 'module', 'tcontextmenu' );
-
+    
+    drupal_add_css( $path . '/css/tContextMenu.css' );
     drupal_add_js( $path . '/js/jquery.jsonp.js', array('weight'=>10)  );
     drupal_add_js( $path . '/js/tContextMenu.js', array('weight'=>11)  );
     drupal_add_js( <<<JS
