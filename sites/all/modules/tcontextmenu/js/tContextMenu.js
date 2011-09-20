@@ -1,15 +1,15 @@
 
-var tContextMenu = null;
+var tContextMenu = {};
 
 console = console || {
    log   : function(){},
    warn  : function(){},
    info  : function(){},
    error : function(){}
-}
+};
 
-$(function(){
-   
+(function($){
+
    /** @namespace */
    tContextMenu = {
       /** @lends tContextMenu */
@@ -19,6 +19,8 @@ $(function(){
        * The default options for the tContextMenu
        */
       options  : {
+         /** the base url for the plugin itself - used for referencing components **/
+         baseURL : './',
          /** the container in which the contextMenu will be triggered */
          target   : $(document),
          /** the default parent in which the contextMenu will be inserted */
@@ -127,7 +129,7 @@ $(function(){
             .attr('id', 'tContextMenu_componentContainer')
             .hide();
             
-         opt.parent.prepend( com.menu, com.componentContainer );
+         opt.target.prepend( com.menu, com.componentContainer );
 
          $(opt.target)
             .bind('contextmenu.tContextMenu', function(e){
@@ -224,11 +226,14 @@ $(function(){
        * @param {Function} callback  A callback function to be called after the load & initialization of the view
                               but right before the 'afterModuleLoad' trigger. The callback and trigger only occur
                               on success. For errors check the global jsonp error function and its triggers in 'init()'
+       * @param {Boolean} absolute  By default this method prepends options.baseURL to every link. 
+                                    Disable that by setting this to true
        * @param {Object} jsonpOptions  options for the JSONP load
        */
-      load  : function( path, callback, jsonpOptions ){
+      load  : function( path, callback, jsonpOptions, absolute ){
          callback     = callback || function(){};
          jsonpOptions = jsonpOptions || {};
+         var newPath  = absolute ? path : this._opt.baseURL + path + '?_='+Math.floor(Math.random() * 69000);
 
          var com  = this._com;
          var self = this;
@@ -238,7 +243,7 @@ $(function(){
          
          $(self).trigger('onLoadComponent', [ path, callback ]);
          $.jsonp({
-            url      : path,
+            url      : newPath,
             callback : jsonpOptions.callback || '_newComponent',
             error    : jsonpOptions.error    || function( data, textStatus ){
                $(com.self).trigger( 'componentLoadError', [ data, textStatus ] );
@@ -343,19 +348,23 @@ $(function(){
        * Loads a css/javascript script by creating an apropriate tag in the DOM
        * @param {String} path  The path to the script
        * @param {String} identifier  An identifier for the script
+       * @param {Boolean} absolute  By default this method prepends options.baseURL to every link. 
+                                    Disable that by setting this to true
        * @returns {Boolean}  whether an apropriate tag was created or not
        */
-      loadScript : function( path, identifier ){
+      loadScript : function( path, identifier, absolute ){
          identifier = identifier || 'script_'+Math.floor( Math.random()*696969 );
          var script;
-         var extension = path.slice( path.lastIndexOf('.')+1 );
+         var newPath    = absolute ? path : this._opt.baseURL + path;
+         var extension  = newPath.slice( newPath.lastIndexOf('.')+1 );
+         newPath        += '?_=' + Math.floor(Math.random() * 69000);
          if( extension == 'css' ) {
             script = $(document.createElement('link'))
             script
                .attr({
                   'rel'    : 'alternate stylesheet',
                   'type'   : 'text/css',
-                  'href'   : path + '?_='+Math.floor(Math.random() * 69000),
+                  'href'   : newPath,
                   'target' : identifier,
                   // Some browser require titles for style switching to work
                   'title'  : identifier+'_'+Math.floor( Math.random()*696969 )
@@ -366,7 +375,7 @@ $(function(){
             script
                .attr({
                   'type'   : 'text/javascript',
-                  'src'    : path,
+                  'src'    : newPath,
                   'target' : identifier
                });
          } else {
@@ -752,7 +761,7 @@ $(function(){
                   this.setupElement( itemList[i] );
                   struct = struct.add( itemList[i].element );
                   if( itemList[i].smallIcon ){
-                     itemList[i].element.prepend('<img src="'+itemList[i].smallIcon+'" class="'+this.menu._cls.smallIcon+'"/>');
+                     itemList[i].element.prepend('<img src="'+tContextMenu._opt.baseURL + itemList[i].smallIcon+'" class="'+this.menu._cls.smallIcon+'"/>');
                   }
 
                   if( itemList[i].children && itemList[i].children.length > 0 ){
@@ -901,4 +910,4 @@ $(function(){
       
    };
 
-});
+})(jQuery);

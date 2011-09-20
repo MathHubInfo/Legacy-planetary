@@ -26,41 +26,46 @@ function tcontextmenu_help($path, $arg) {
 * @param &$variables
 */
 function tcontextmenu_preprocess_node(&$variables = '') {
-  $node = $variables['node'];
-  $acceptedTypes = array( 'course_related_page', 'lecture' );
-  
-//  dpm( $node );
-  
-  if ( !empty($node) && in_array($node->type, $acceptedTypes) ) {
+  $node              = $variables['node'];
+  $acceptedTypes     = array( 'course_related_page', 'lecture' );
+  $viewMode          = $variables['view_mode'];
+  $acceptedViewModes = array( 'full' );
 
-    drupal_add_js( drupal_get_path( 'module', 'tcontextmenu' ) . '/js/jquery.jsonp.js', array('weight'=>10)  );
-    drupal_add_js( drupal_get_path( 'module', 'tcontextmenu' ) . '/js/tContextMenu.js', array('weight'=>11)  );
+  if ( !empty($node) && in_array($node->type, $acceptedTypes) && in_array($viewMode, $acceptedViewModes) ) {
+
+    $path = drupal_get_path( 'module', 'tcontextmenu' );
+
+    drupal_add_js( $path . '/js/jquery.jsonp.js', array('weight'=>10)  );
+    drupal_add_js( $path . '/js/tContextMenu.js', array('weight'=>11)  );
     drupal_add_js( <<<JS
-      $(function(){
-        
-        tContextMenu.init({
-           target   : $('.region-content'),
-           views    : [
-              'js/views/contextMenu.view.js',
-              ['js/views/iconMenu.view.js', {
-                 label    : true,
-                 angle    : 90,
-                 growth   : 7,
-                 distance : 30
-              }]
-           ],
-           modules  : [
-              'js/modules/moduleManager.js',
-              'js/modules/tooltip.js',
-              'js/modules/viewSwitcher.js',
-              'js/modules/jobad.js',
-              [ 'js/modules/tInfoBar.js', false, {
-                 main : $('.region-content')
-              }]
-           ]
+      (function($){
+      
+        $(function(){
+          tContextMenu.init({
+             baseURL  : Drupal.extraInfo.baseURL + '$path/',
+             target   : $('.region-content'),
+             views    : [
+                'js/views/contextMenu.view.js',
+                ['js/views/iconMenu.view.js', {
+                   label    : true,
+                   angle    : 90,
+                   growth   : 7,
+                   distance : 30
+                }]
+             ],
+             modules  : [
+                'js/modules/moduleManager.js',
+                'js/modules/tooltip.js',
+                'js/modules/viewSwitcher.js',
+                'js/modules/jobad.js',
+                [ 'js/modules/tInfoBar.js', false, {
+                   main : $('.region-content')
+                }]
+             ]
+          });
         });
         
-     });
+     })(jQuery);
 
 JS
     , array( 'type' => 'inline', 'weight' => 12 ) );

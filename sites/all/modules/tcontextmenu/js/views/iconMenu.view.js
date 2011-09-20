@@ -57,7 +57,7 @@ _newView({
          element
             .prepend(
                $(document.createElement('img')).attr({
-                  'src'   : obj.icon,
+                  'src'   : tContextMenu._opt.baseURL + obj.icon,
                   'alt'   : obj.text
                }),
                $(document.createElement('div')).attr({
