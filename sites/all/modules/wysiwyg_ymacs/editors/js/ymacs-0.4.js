@@ -27,14 +27,13 @@ Drupal.wysiwyg.editor.attach.ymacs = function(context, params, settings) {
 
   layout.packWidget(ymacs, { pos: "bottom", fill: "*" });
 
-  dlg._focusedWidget = ymacs;
+  //dlg._focusedWidget = ymacs;
 
-  pos = $(editorID).offset();
-    
-  $(editorID).css("visibility","hidden");
   dlg.show(true);
-  dlg.setSize({x:$(editorID).width(), y:$(editorID).height()});
-  dlg.setPos(pos.left, pos.top);
+  dlg.setSize({x:500, y:300});
+  $(dlg.getElement()).attr("style","");
+  $(dlg.getElement()).after($(editorID));
+  $(editorID).hide();
 
 };
 

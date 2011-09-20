@@ -324,6 +324,16 @@ Ymacs_Buffer.newMode("stex_mode", function(useDL) {
 
 });
 
+function wrap_text(ybuff, start, finish) {
+	
+/*    if (this.__preventUndo == 0)
+        this._recordChange(1, pos, text.length); */
+	for (i=start; i<=finish; ++i) {
+		ybuff._replaceLine(i, i+" "+ybuff.code[i]);
+	}
+	ybuff.redrawDirtyLines();
+}
+
 Ymacs_Buffer.newCommands({
 
         stex_dl_mode: Ymacs_Interactive(function() {
@@ -344,6 +354,20 @@ Ymacs_Buffer.newCommands({
                         this.cmd("indent_line");
                         return ret;
                 }
-        })
+        }),
+        
+        stex_wrap_buffer: Ymacs_Interactive(function() {
+        	wrap_text(this, 0, this.code.length-1);
+        }),
+
+        stex_replace_tex: Ymacs_Interactive(function() {
+        	
+        }),
+
+        
+        stex_wrap_paragraph: Ymacs_Interactive(function() {
+        	
+        })   
+        
 
 });
