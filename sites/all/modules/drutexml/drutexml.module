@@ -45,10 +45,6 @@ function drutexml_info() {
   return $blocks;
 }
 
-function drutexml_init() {
-	drupal_add_css(drupal_get_path("module", "drutexml")."/core.css");	
-}
-
 /**
  * Implements hook_menu().
  */
@@ -81,6 +77,12 @@ function drutexml_filter_info() {
     'title' => t('Image Sanetizer'),
     'description' => t('Replaces images with src="some local path" to images pointing to src="sites/default/files/nodeid"'),
     'process callback' => '_drutexml_image_sanetizer',
+    'cache' => false,
+  );
+  $filters['xhtml2html5'] = array(
+    'title' => t('XHTML to HTML5 filter'),
+    'description' => t('Removes namespaces'),
+    'process callback' => '_drutexml_xhtml2html5',
     'cache' => false,
   );
   return $filters;
@@ -214,6 +216,14 @@ function _drutexml_image_sanetizer($text, $filter, $format, $langcode, $cache, $
 	return $result;
 }
 
+
+function _drutexml_xhtml2html5($text, $filter, $format, $langcode, $cache, $cache_id) {
+
+  $text = str_replace('m:','',$text); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly. otherwise, uncomment next line.
+  $text = str_replace('xml:','',$text); //also remove xml:id
+  return $text;
+}
+
 /**
  * Filter tips
  *
@@ -228,3 +238,4 @@ function _drutexml_filter_latex_tips($filter, $format, $long = FALSE) {
     return t('You can write LaTeX and you will get back rendered XHTML');
   }
 }
+

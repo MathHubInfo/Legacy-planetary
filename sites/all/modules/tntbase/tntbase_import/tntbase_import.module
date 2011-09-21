@@ -65,6 +65,13 @@ function tntbase_import_page($form, &$form_status) {
 				'#options' => $options,
 	);
 
+	$form["ImportFormat"] = array(
+					'#type' => 'select', 
+					'#title'=>'Please select the format to be imported',
+					'#default_value' => 'latex',
+					'#options' => array("latex", "xhtml"),
+	);
+	
 	$form["ImportField"] = array(
 					'#type' => 'textfield', 
 					'#title'=>'What field should be populated with the document (use the machine name)',
@@ -95,6 +102,7 @@ function tntbase_import_doImport($form, &$form_state) {
 	$paths = $form_state["values"]["TNTPath"];
 	$importField = $form_state["values"]["ImportField"];
 	$importType = $form_state["values"]["ImportType"];
+	$importFormat = $form_state["values"]["ImportFormat"];
 	
 	$status = "";
 	$url_node = url("<front>", array("absolute"=>true))."/node";
@@ -109,7 +117,7 @@ function tntbase_import_doImport($form, &$form_state) {
 			tntbase_sync_nodes($nodes);
 			$status.="Document ".$path." got syncronized with node id = <a href='$url_node/$nid'>".$nid."</a><br/>";
 		} else {
-			$nid = tntbase_node_import("/".$path, $importType, $importField);
+			$nid = tntbase_node_import("/".$path, $importType, $importField, $importFormat);
 			$status.="Document ".$path." got imported and not has node id = <a href='$url_node/$nid'>".$nid."</a><br/>";
 		}
 	}
