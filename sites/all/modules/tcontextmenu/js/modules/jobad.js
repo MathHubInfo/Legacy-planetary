@@ -4,7 +4,7 @@ _newModule({
     'identifier'   : 'jobad',
     'title'        : 'JOBAD',
     'author'       : 'Stefan Mirea',
-    'description'  : '',
+    'description'  : 'Enables some JOBAD features as part of the context menu',
     'dependencies' : ['tooltip']
   },
   
@@ -46,7 +46,7 @@ _newModule({
         });
         
         obj.element.bind('click.definitionLookup', function(e){
-          self.definitionLookup( target );
+          self.definitionLookup( target, container );
         });
         
         return obj;
@@ -57,29 +57,28 @@ _newModule({
     
   })(),
   
-  definitionLookup  : function( target ){
+  definitionLookup  : function( target, container ){
     var tooltip = tContextMenu.m('tooltip');
     if( $(target).attr('xref') ){
       var OMV = $(target).parentsUntil(':math').parent().find( '[id="'+$(target).attr('xref').slice(1)+'"]' );
       if( OMV ){
-        var OMS = OMV.siblings(':OMS').eq(0);
+        var OMS = OMV.is('ooms') ? OMV : OMV.parentsUntil('ooms').parent();
         var opt = {
           cd    : OMS.attr('cd'),
           name  : OMS.attr('name')
         };
         if( opt.cd && opt.name ){
+          var url = Drupal.extraInfo.baseURL + 'tcontextmenu/definitionLookup/'+opt.cd+'/'+opt.name;
+          
           tooltip
             .set( $(document.createElement('img')).attr({'src':tContextMenu._opt.baseURL + 'images/ajax.gif','width':16}) )
-            .target( target );
+            .target( container );
             
-          $.get( tContextMenu._opt.baseURL + 'js/modules/jobad/definitionLook-up.php', {
-              cd    : opt.cd,
-              name  : opt.name
-            }, 
+          $.get( url, 
             function(r){
               tooltip
                 .set( r.result )
-                .target( target );
+                .target( container );
           });
         }
       }
