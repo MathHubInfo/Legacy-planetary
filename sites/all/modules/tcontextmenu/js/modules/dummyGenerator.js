@@ -45,8 +45,8 @@ _newModule({
             text        : 'Generator',
             description : 'Settings for the generator',
             weight      : 1,
-            icon        : 'js/modules/icons/dummyGenerator.png',
-            smallIcon   : 'js/modules/icons/dummyGenerator_small.png',
+            icon        : tContextMenu._opt.baseURL + 'js/modules/icons/dummyGenerator.png',
+            smallIcon   : tContextMenu._opt.baseURL + 'js/modules/icons/dummyGenerator_small.png',
             children    : settingsGenerator.call( this, this.options, [['number', 'Min'], ['random', 'Max']])
          });
          

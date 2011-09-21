@@ -37,8 +37,8 @@ _newModule({
                element     : el,
                text        : v[i].info.title,
                description : 'Toggle this view',
-               icon        : 'js/modules/icons/viewSwitcher_view.png',
-               smallIcon   : 'js/modules/icons/viewSwitcher_view_small.png'
+               icon        : tContextMenu._opt.baseURL + 'js/modules/icons/viewSwitcher_view.png',
+               smallIcon   : tContextMenu._opt.baseURL + 'js/modules/icons/viewSwitcher_view_small.png'
             });
          }
          
@@ -49,8 +49,8 @@ _newModule({
             description : 'Swap between views',
             weight      : 92,
             children    : children,
-            icon        : 'js/modules/icons/viewSwitcher.png',
-            smallIcon   : 'js/modules/icons/viewSwitcher_small.png'
+            icon        : tContextMenu._opt.baseURL + 'js/modules/icons/viewSwitcher.png',
+            smallIcon   : tContextMenu._opt.baseURL + 'js/modules/icons/viewSwitcher_small.png'
          });
 
          return obj;

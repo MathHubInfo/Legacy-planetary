@@ -40,8 +40,8 @@ _newModule({
           element      : container,
           text         : 'Definition Lookup',
           description  : 'Module description',
-          icon         : 'js/modules/icons/jobad.png',
-          smallIcon    : 'js/modules/icons/jobad_small.png',
+          icon         : tContextMenu._opt.baseURL + 'js/modules/icons/jobad.png',
+          smallIcon    : tContextMenu._opt.baseURL + 'js/modules/icons/jobad_small.png',
           weight       : 0
         });
         
@@ -69,10 +69,10 @@ _newModule({
         };
         if( opt.cd && opt.name ){
           tooltip
-            .set( $(document.createElement('img')).attr({'src':'images/ajax.gif','width':16}) )
+            .set( $(document.createElement('img')).attr({'src':tContextMenu._opt.baseURL + 'images/ajax.gif','width':16}) )
             .target( target );
             
-          $.get( 'js/modules/jobad/definitionLook-up.php', {
+          $.get( tContextMenu._opt.baseURL + 'js/modules/jobad/definitionLook-up.php', {
               cd    : opt.cd,
               name  : opt.name
             }, 

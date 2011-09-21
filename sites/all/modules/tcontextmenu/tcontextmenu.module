@@ -33,21 +33,28 @@ function tcontextmenu_preprocess_node(&$variables = '') {
 
   if ( !empty($node) && in_array($node->type, $acceptedTypes) && in_array($viewMode, $acceptedViewModes) ) {
 
-    $path = drupal_get_path( 'module', 'tcontextmenu' );
+    $path = drupal_get_path( 'module', 'tcontextmenu' ) . '/';
     
-    drupal_add_css( $path . '/css/tContextMenu.css' );
-    drupal_add_js( $path . '/js/jquery.jsonp.js', array('weight'=>10)  );
-    drupal_add_js( $path . '/js/tContextMenu.js', array('weight'=>11)  );
+    drupal_add_css( $path . 'css/tContextMenu.css' );
+    drupal_add_js( $path . 'js/jquery.jsonp.js', array('weight'=>10)  );
+    drupal_add_js( $path . 'js/tContextMenu.js', array('weight'=>11)  );
     drupal_add_js( <<<JS
       (function($){
       
         $(function(){
+          var target  = $('#block-system-main');
+          var baseURL = Drupal.extraInfo.baseURL + '$path';
+          
           tContextMenu.init({
-             baseURL  : Drupal.extraInfo.baseURL + '$path/',
-             target   : $('.region-content'),
+             baseURL  : baseURL,
+             target   : target,
+             defaultIcons : {
+                small   : Drupal.extraInfo.baseURL + '$path' + tContextMenu.options.defaultIcons.small,
+                normal  : Drupal.extraInfo.baseURL + '$path' + tContextMenu.options.defaultIcons.normal
+             },
              views    : [
-                'js/views/contextMenu.view.js',
-                ['js/views/iconMenu.view.js', {
+                url( 'js/views/contextMenu.view.js' ),
+                [ url( 'js/views/iconMenu.view.js' ), {
                    label    : true,
                    angle    : 90,
                    growth   : 7,
@@ -55,15 +62,21 @@ function tcontextmenu_preprocess_node(&$variables = '') {
                 }]
              ],
              modules  : [
-                'js/modules/moduleManager.js',
-                'js/modules/tooltip.js',
-                'js/modules/viewSwitcher.js',
-                'js/modules/jobad.js',
-                [ 'js/modules/tInfoBar.js', false, {
-                   main : $('.region-content')
-                }]
+                url( 'js/modules/moduleManager.js' ),
+                url( 'js/modules/viewSwitcher.js' ),
+                url( 'js/modules/tooltip.js' ),
+                url( 'js/modules/jobad.js'),
+                [ url( 'js/modules/tInfoBar.js'), false, {
+                   main : target
+                }],
+                Drupal.extraInfo.baseURL + 'sites/all/modules/local_comments/js/tContextMenu.local_comments.js'
              ]
           });
+          
+          function url( path ){
+            return baseURL + path;
+          }
+          
         });
         
      })(jQuery);

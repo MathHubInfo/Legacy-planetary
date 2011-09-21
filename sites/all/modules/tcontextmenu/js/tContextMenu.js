@@ -27,6 +27,11 @@ console = console || {
          parent   : $(document.body),
          /** the offset of the menu from the cursor */
          offset   : { x: 5, y: 5 },
+         /** path to default icons */
+         defaultIcons : {
+            small   : 'images/icons/noIcon_small.png',
+            normal  : 'images/icons/noIcon.png'
+         },
          /** list of views to be loaded. The first one will be set as currentView */
          views    : 'js/views/contextMenu.view.js',
          /**
@@ -226,14 +231,11 @@ console = console || {
        * @param {Function} callback  A callback function to be called after the load & initialization of the view
                               but right before the 'afterModuleLoad' trigger. The callback and trigger only occur
                               on success. For errors check the global jsonp error function and its triggers in 'init()'
-       * @param {Boolean} absolute  By default this method prepends options.baseURL to every link. 
-                                    Disable that by setting this to true
        * @param {Object} jsonpOptions  options for the JSONP load
        */
-      load  : function( path, callback, jsonpOptions, absolute ){
+      load  : function( path, callback, jsonpOptions ){
          callback     = callback || function(){};
          jsonpOptions = jsonpOptions || {};
-         var newPath  = absolute ? path : this._opt.baseURL + path + '?_='+Math.floor(Math.random() * 69000);
 
          var com  = this._com;
          var self = this;
@@ -243,7 +245,7 @@ console = console || {
          
          $(self).trigger('onLoadComponent', [ path, callback ]);
          $.jsonp({
-            url      : newPath,
+            url      : path,
             callback : jsonpOptions.callback || '_newComponent',
             error    : jsonpOptions.error    || function( data, textStatus ){
                $(com.self).trigger( 'componentLoadError', [ data, textStatus ] );
@@ -282,17 +284,33 @@ console = console || {
                missing  : []
             }
          };
-
+         //TODO: FIX THIS PART!!!! BADLY FIX IT!!!
+/*
          var d = module.info.dependencies;
          for( var i in d ){
-            if( this._com.modules.enabled[d[i]] )
-               result.modules.enabled.push( d[i] );
-            else if( this._com.modules.disabled[d[i]] )
+            if( this._com.modules.disabled[d[i]] )
                result.modules.disabled.push( d[i] );
-            else
-               result.modules.missing.push( d[i] );
+            else {
+              if( this._com.modules.enabled[d[i]] )
+                result.modules.enabled.push( d[i] );
+              else {
+                var m   = tContextMenu._opt.modules;
+                var ok  = false;
+                for( var j in m ){
+                  console.log( d[i], m[j] );
+                  if( (typeof m[j] == 'string' && d[i] == m[j]) || (m[j] instanceof Array && m[j][0] == d[i] && !m[j][1]) )
+                    ok = true;
+                  break;
+                }
+                if( ok )
+                  result.modules.enabled.push( d[i] );
+                else
+                  result.modules.missing.push( d[i] );
+              }
+            }
          }
-
+*/
+        //TODO: FIX THIS PART: CHECK TYPE OF SCRIPT AND CHECK FOR BOTH CSS/SCRIPT!!!
          for( var i in module.scripts ){
             var script = this._com.componentContainer.find('script[src="'+module.scripts[i]+'"]');
             if( script.length )
@@ -321,8 +339,7 @@ console = console || {
 
          var d = this.getModuleDependencies( module );
          if( d.modules.missing.length ){
-            console.warn( d.modules.missing );
-            console.warn( 'tContextMenu.resolveModuleDependencies(): Missing modules: '+d.modules.missing.implode(', ') );
+            console.warn( 'tContextMenu.resolveModuleDependencies(): Missing modules: '+d.modules.missing.join(', ') );
             result = false;
          }
          
@@ -348,23 +365,20 @@ console = console || {
        * Loads a css/javascript script by creating an apropriate tag in the DOM
        * @param {String} path  The path to the script
        * @param {String} identifier  An identifier for the script
-       * @param {Boolean} absolute  By default this method prepends options.baseURL to every link. 
-                                    Disable that by setting this to true
        * @returns {Boolean}  whether an apropriate tag was created or not
        */
-      loadScript : function( path, identifier, absolute ){
+      loadScript : function( path, identifier ){
          identifier = identifier || 'script_'+Math.floor( Math.random()*696969 );
          var script;
-         var newPath    = absolute ? path : this._opt.baseURL + path;
-         var extension  = newPath.slice( newPath.lastIndexOf('.')+1 );
-         newPath        += '?_=' + Math.floor(Math.random() * 69000);
+         var extension  = path.slice( path.lastIndexOf('.')+1 );
+         path           += '?_=' + Math.floor(Math.random() * 69000);
          if( extension == 'css' ) {
             script = $(document.createElement('link'))
             script
                .attr({
                   'rel'    : 'alternate stylesheet',
                   'type'   : 'text/css',
-                  'href'   : newPath,
+                  'href'   : path,
                   'target' : identifier,
                   // Some browser require titles for style switching to work
                   'title'  : identifier+'_'+Math.floor( Math.random()*696969 )
@@ -375,7 +389,7 @@ console = console || {
             script
                .attr({
                   'type'   : 'text/javascript',
-                  'src'    : newPath,
+                  'src'    : path,
                   'target' : identifier
                });
          } else {
@@ -390,10 +404,11 @@ console = console || {
        * Dynamically and asynchronously load a module
        *
        * @param {String} path  The path to the file
-       * @param {Boolean} disabled  A boolean telling whether to have the module loaded but disabled or not
        * @param {Function} callback  A callback function to be called after the load & initialization of the function
                            but right before the 'afterModuleLoad' trigger. The callback and trigger only occur
                            on success. For errors check the global jsonp error function and its triggers in 'init()'
+       * @param {Boolean} disabled  A boolean telling whether to have the module loaded but disabled or not
+       * @param {Object} options  The options for the module
        */
       loadModule  : function( path, callback, disabled, options ){
          callback = callback || function(){};
@@ -760,9 +775,8 @@ console = console || {
                for( var i in itemList ){
                   this.setupElement( itemList[i] );
                   struct = struct.add( itemList[i].element );
-                  if( itemList[i].smallIcon ){
-                     itemList[i].element.prepend('<img src="'+tContextMenu._opt.baseURL + itemList[i].smallIcon+'" class="'+this.menu._cls.smallIcon+'"/>');
-                  }
+                  itemList[i].smallIcon = itemList[i].smallIcon || tContextMenu._opt.defaultIcons.small;
+                  itemList[i].element.prepend('<img src="'+itemList[i].smallIcon+'" class="'+this.menu._cls.smallIcon+'"/>');
 
                   if( itemList[i].children && itemList[i].children.length > 0 ){
                      itemList[i].element
@@ -842,9 +856,9 @@ console = console || {
             /** description of the field. By default, it is used as a title attribute, but possibilities are endless */
             description : false,
             /** a general 32x32 multipurpose icon */
-            icon        : 'images/icons/noIcon.png',
+            icon        : false,
             /** a general 16x16 multipurpose icon */
-            smallIcon   : 'images/icons/noIcon_small.png',
+            smallIcon   : false,
             /** the weight determines the position in the menu. 0 means first. 
             Weights should be between 10 - 90. Bellow/Above that value should be used for "fixed" items (i.e: moduleManager, viewSwitcher) */
             weight      : 10,

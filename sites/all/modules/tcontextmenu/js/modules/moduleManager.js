@@ -66,8 +66,8 @@ _newModule({
             description : 'Configure modules',
             weight      : 91,
             children    : children,
-            icon        : 'js/modules/icons/moduleManager.png',
-            smallIcon   : 'js/modules/icons/moduleManager_small.png'
+            icon        : tContextMenu._opt.baseURL + 'js/modules/icons/moduleManager.png',
+            smallIcon   : tContextMenu._opt.baseURL + 'js/modules/icons/moduleManager_small.png'
          });
 
          return obj;
