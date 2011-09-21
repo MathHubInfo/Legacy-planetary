@@ -376,14 +376,16 @@ console = console || {
             script = $(document.createElement('link'))
             script
                .attr({
-                  'rel'    : 'alternate stylesheet',
+                  //TODO: Add ALTERNATE STYLESHEETS
+                  'rel'    : 'stylesheet',
                   'type'   : 'text/css',
                   'href'   : path,
                   'target' : identifier,
                   // Some browser require titles for style switching to work
                   'title'  : identifier+'_'+Math.floor( Math.random()*696969 )
                });
-            script[0].disabled = true;
+               //TODO: Fix this as well
+//            script[0].disabled = true;
          } else if( extension == 'js' ){
             script = $(document.createElement('script'));
             script
@@ -482,8 +484,8 @@ console = console || {
                ++this._com.modules.enabled.__length;
                --this._com.modules.disabled.__length;
                
-               this._com.componentContainer.find('link[target="'+name+'"]').each( function(){ this.disabled = false; } );
-               //.attr('disabled', true).attr('disabled', false);
+               this._com.componentContainer.find('link[target="'+name+'"]').each( function(){ this.disabled = false; $(this).attr('disabled', false);} );
+//               .attr('disabled', true).attr('disabled', false);
                this._com.modules.enabled[name].init( options );
                
                return true;
@@ -607,9 +609,7 @@ console = console || {
                      console.warn('['+view.info.identifier+'] Unable to load stylesheet: '+view.stylesheets[i]);
                }
                this._com.componentContainer.append( view._stylesheets );
-               //for some reason you need to disable it first in order to enable it properly :)
                view._stylesheets.each( function(){ this.disabled = false; } );
-               //.attr('disabled', true).attr('disabled', false);
             }
          }
          
