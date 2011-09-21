@@ -25,7 +25,7 @@ _newView({
          liveBind				: false
     },
     
-    stylesheets : [ 'js/views/css/iconMenu.css' ],
+    stylesheets : [ tContextMenu._opt.baseURL + 'js/views/css/iconMenu.css' ],
     
     classes : {
         item    : 'iconMenu-item'
@@ -53,6 +53,8 @@ _newView({
     setupElement : function( obj ){
          var tmp = obj.element.find('.'+this.menu._cls.contentWrapper).eq(0);
          var element = tmp.length ? tmp : obj.element;
+         
+         obj.icon = obj.icon || tContextMenu._opt.defaultIcons.normal;
          
          element
             .prepend(

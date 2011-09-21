@@ -9,27 +9,27 @@ _newModule({
    },
    
    scripts  : [
-      'js/modules/tooltip/tooltip.css',
+      tContextMenu._opt.baseURL + 'js/modules/tooltip/tooltip.css'
    ],
    
    options  : {
 		// Pointer position: top, right, left, bottom
-		'position'					: 'bottom',
+		'position'              : 'bottom',
 		// Color scheme
-		'color'						: 'blue',
+		'color'                 : 'blue',
 		// The content to be inserted into the tooltip
-		'html'						: '',
+		'html'                  : '',
 		// Position the tooltip upon creation
-		'target'						: null,
+		'target'                : null,
 		// The name of the CSS class
-		'className'					: 'tooltip',
+		'className'             : 'tooltip',
 		// override all other scheme options and use this custom scheme
-		// NOTE: for positioning purposes, you should specify a valid position option compliant to the schem
-		'scheme'						: null,
+		// NOTE                 : for positioning purposes, you should specify a valid position option compliant to the schem
+		'scheme'                : null,
 		// If you don't modify the position/size of the arrow-pointer in the CSS file, let this enabled
-		'useDefaultPositioning'	: true,
+		'useDefaultPositioning' : true,
 		// Custom functions for relative positioning from the origin
-		'offset'						: {
+		'offset'                : {
 			left	: function(object, origin){ return 0; },
 			top	: function(object, origin){ return -object.outerHeight() - 10; }
 		}
@@ -143,12 +143,12 @@ _newModule({
             element     : container,
             text        : 'Tooltip',
             description : 'Tooltip options',
-            icon        : 'js/modules/icons/tooltip.png',
-            smallIcon   : 'js/modules/icons/tooltip_small.png',
+            icon        : tContextMenu._opt.baseURL + 'js/modules/icons/tooltip.png',
+            smallIcon   : tContextMenu._opt.baseURL + 'js/modules/icons/tooltip_small.png',
             weight      : 90
          });
          
-         return obj;
+         return null;
       }
       
    })()

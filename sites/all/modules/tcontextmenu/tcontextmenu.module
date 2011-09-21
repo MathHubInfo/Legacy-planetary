@@ -26,41 +26,72 @@ function tcontextmenu_help($path, $arg) {
 * @param &$variables
 */
 function tcontextmenu_preprocess_node(&$variables = '') {
-  $node = $variables['node'];
-  $acceptedTypes = array( 'course_related_page', 'lecture' );
-  
-//  dpm( $node );
-  
-  if ( !empty($node) && in_array($node->type, $acceptedTypes) ) {
+  $node              = $variables['node'];
+  $acceptedTypes     = array( 'course_related_page', 'lecture' );
+  $viewMode          = $variables['view_mode'];
+  $acceptedViewModes = array( 'full' );
 
-    drupal_add_js( drupal_get_path( 'module', 'tcontextmenu' ) . '/js/jquery.jsonp.js', array('weight'=>10)  );
-    drupal_add_js( drupal_get_path( 'module', 'tcontextmenu' ) . '/js/tContextMenu.js', array('weight'=>11)  );
+  if ( !empty($node) && in_array($node->type, $acceptedTypes) && in_array($viewMode, $acceptedViewModes) ) {
+
+    $path = drupal_get_path( 'module', 'tcontextmenu' ) . '/';
+    
+    drupal_add_css( $path . 'css/tContextMenu.css' );
+    drupal_add_js( $path . 'js/jquery.jsonp.js', array('weight'=>10)  );
+    drupal_add_js( $path . 'js/tContextMenu.js', array('weight'=>11)  );
     drupal_add_js( <<<JS
-      $(function(){
-        
-        tContextMenu.init({
-           target   : $('.region-content'),
-           views    : [
-              'js/views/contextMenu.view.js',
-              ['js/views/iconMenu.view.js', {
-                 label    : true,
-                 angle    : 90,
-                 growth   : 7,
-                 distance : 30
-              }]
-           ],
-           modules  : [
-              'js/modules/moduleManager.js',
-              'js/modules/tooltip.js',
-              'js/modules/viewSwitcher.js',
-              'js/modules/jobad.js',
-              [ 'js/modules/tInfoBar.js', false, {
-                 main : $('.region-content')
-              }]
-           ]
+      (function($){
+      
+        $(function(){
+          var target  = $('#block-system-main');
+          var baseURL = Drupal.extraInfo.baseURL + '$path';
+          
+          tContextMenu.init({
+             baseURL  : baseURL,
+             target   : target,
+             defaultIcons : {
+                small   : Drupal.extraInfo.baseURL + '$path' + tContextMenu.options.defaultIcons.small,
+                normal  : Drupal.extraInfo.baseURL + '$path' + tContextMenu.options.defaultIcons.normal
+             },
+             views    : [
+                url( 'js/views/contextMenu.view.js' ),
+                [ url( 'js/views/iconMenu.view.js' ), {
+                   label    : true,
+                   angle    : 90,
+                   growth   : 7,
+                   distance : 30
+                }]
+             ],
+             modules  : [
+                url( 'js/modules/moduleManager.js' ),
+                url( 'js/modules/viewSwitcher.js' ),
+                url( 'js/modules/tooltip.js' ),
+                url( 'js/modules/jobad.js'),
+                [ url( 'js/modules/tInfoBar.js'), false, {
+                   main : target
+                }],
+                [ Drupal.extraInfo.baseURL + 'sites/all/modules/local_comments/js/tContextMenu.local_comments.js', false, {
+                  validation : function( info ){
+                    var mathParent = $(info.oldTarget).parents(':math');
+                    if( info.oldTarget.id || mathParent.length > 0 ){
+                      if( mathParent.attr('id') ){
+                        info.newTarget = mathParent[0];
+                        return true;
+                      }
+                    }
+                      
+                    return false;
+                  }
+                }]
+             ]
+          });
+          
+          function url( path ){
+            return baseURL + path;
+          }
+          
         });
         
-     });
+     })(jQuery);
 
 JS
     , array( 'type' => 'inline', 'weight' => 12 ) );
@@ -88,9 +119,90 @@ function tcontextmenu_menu() {
     'page callback' => '_tcontextmenu_getItems',
     'access callback' => TRUE
   );
+  $items['tcontextmenu/definitionLookup'] = array(
+    'title' => 'Look up a definition for a math element',
+    'page callback' => '_tcontextmenu_definitionLookup',
+    'access callback' => TRUE
+  );
   
   return $items;
 }
+
+/**************************************/
+/********* JOBAD FUNCTIONS ************/
+/**************************************/
+define( "TNTBASE_USERNAME", 'planetarybroker' );
+define( "TNTBASE_PASSWORD", 'n3pt4n3' );
+
+function _tcontextmenu_definitionLookup( $cd, $name ){
+  if( !isset($cd) || !isset($name) ){
+    jsonOutput( array( '_error' => 'Not enough parameters' ) );
+  } else {
+    $url = "https://tnt.kwarc.info/tntbase/stc/restful/jobad/basic?action=expandDefinition&cd=$cd&symbol=$name";
+    jsonOutput( array( 'result' => getResult( $url, '', 'get', '' ) ) );
+  }  
+}
+
+function getResult( $Url, $Data, $Method, $Header) {
+    if ($Method == 'post') {
+        $res = tContextMenu_do_post($Url, $Data, $Header);
+        return "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">" . trim($res) . "</span>";
+    } else if ($Method == 'get') {
+        $res = tContextMenu_do_get($Url, $Header);
+        return "<span xmlns:m=\"http://www.w3.org/1998/Math/MathML\">" . trim($res) . "</span>";
+    }
+}
+
+/**
+ * A function to do a POST request to a certain $host with the $data
+ * @param string $host the URL of the backend
+ * @param string $data the POST data formatted as a string
+ */
+function tContextMenu_do_post($host, $data) {
+    $session = curl_init($host);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_USERPWD, TNTBASE_USERNAME . ":" . TNTBASE_PASSWORD);
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+
+    curl_setopt($session, CURLOPT_POST, true);
+    curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($session, CURLOPT_HEADER, false);
+    curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($session);
+    curl_close($session);
+    return $response;
+}
+
+function tContextMenu_do_get($host, $header = '') {
+    $ch = curl_init();
+    if( $header )
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: ' . $header));
+    curl_setopt($ch, CURLOPT_URL, $host);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERPWD, TNTBASE_USERNAME . ":" . TNTBASE_PASSWORD);
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    $output = curl_exec($ch);
+    curl_close($ch);
+    $output = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $output);
+    return $output;
+}
+
+function jsonOutput( $data ) {
+	if( !headers_sent() ) {
+		header('Cache-Control: no-cache, must-revalidate');
+		header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+		header('Content-type: application/json');
+	}
+
+	exit( json_encode( $data ) );
+}
+
+/*************************************************************************/
+/*************************************************************************/
+/*************************************************************************/
+
 
 /**
 * Retrieve all tokens for a specified context and of specific type

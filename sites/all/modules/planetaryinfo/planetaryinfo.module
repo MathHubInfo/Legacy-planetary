@@ -25,9 +25,10 @@ function planetaryinfo_preprocess_node(&$variables = '') {
    $dataObject = @json_encode( $data );
 
    drupal_add_js( <<<JS
-      jQuery(function(){
+      (function($){
          $.extend( Drupal, { extraInfo : $dataObject } );
-      });
+         console.info( "Updated Drupal Global JS Object" );
+      })(jQuery);
 JS
       , 
       array( 'type' => 'inline', 'weight' => 0 ) 

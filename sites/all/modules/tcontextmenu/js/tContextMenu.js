@@ -1,15 +1,15 @@
 
-var tContextMenu = null;
+var tContextMenu = {};
 
 console = console || {
    log   : function(){},
    warn  : function(){},
    info  : function(){},
    error : function(){}
-}
+};
 
-$(function(){
-   
+(function($){
+  $(function(){
    /** @namespace */
    tContextMenu = {
       /** @lends tContextMenu */
@@ -19,12 +19,19 @@ $(function(){
        * The default options for the tContextMenu
        */
       options  : {
+         /** the base url for the plugin itself - used for referencing components **/
+         baseURL : './',
          /** the container in which the contextMenu will be triggered */
          target   : $(document),
          /** the default parent in which the contextMenu will be inserted */
          parent   : $(document.body),
          /** the offset of the menu from the cursor */
          offset   : { x: 5, y: 5 },
+         /** path to default icons */
+         defaultIcons : {
+            small   : 'images/icons/noIcon_small.png',
+            normal  : 'images/icons/noIcon.png'
+         },
          /** list of views to be loaded. The first one will be set as currentView */
          views    : 'js/views/contextMenu.view.js',
          /**
@@ -127,7 +134,7 @@ $(function(){
             .attr('id', 'tContextMenu_componentContainer')
             .hide();
             
-         opt.parent.prepend( com.menu, com.componentContainer );
+         opt.target.prepend( com.menu, com.componentContainer );
 
          $(opt.target)
             .bind('contextmenu.tContextMenu', function(e){
@@ -277,17 +284,33 @@ $(function(){
                missing  : []
             }
          };
-
+         //TODO: FIX THIS PART!!!! BADLY FIX IT!!!
+/*
          var d = module.info.dependencies;
          for( var i in d ){
-            if( this._com.modules.enabled[d[i]] )
-               result.modules.enabled.push( d[i] );
-            else if( this._com.modules.disabled[d[i]] )
+            if( this._com.modules.disabled[d[i]] )
                result.modules.disabled.push( d[i] );
-            else
-               result.modules.missing.push( d[i] );
+            else {
+              if( this._com.modules.enabled[d[i]] )
+                result.modules.enabled.push( d[i] );
+              else {
+                var m   = tContextMenu._opt.modules;
+                var ok  = false;
+                for( var j in m ){
+                  console.log( d[i], m[j] );
+                  if( (typeof m[j] == 'string' && d[i] == m[j]) || (m[j] instanceof Array && m[j][0] == d[i] && !m[j][1]) )
+                    ok = true;
+                  break;
+                }
+                if( ok )
+                  result.modules.enabled.push( d[i] );
+                else
+                  result.modules.missing.push( d[i] );
+              }
+            }
          }
-
+*/
+        //TODO: FIX THIS PART: CHECK TYPE OF SCRIPT AND CHECK FOR BOTH CSS/SCRIPT!!!
          for( var i in module.scripts ){
             var script = this._com.componentContainer.find('script[src="'+module.scripts[i]+'"]');
             if( script.length )
@@ -316,8 +339,7 @@ $(function(){
 
          var d = this.getModuleDependencies( module );
          if( d.modules.missing.length ){
-            console.warn( d.modules.missing );
-            console.warn( 'tContextMenu.resolveModuleDependencies(): Missing modules: '+d.modules.missing.implode(', ') );
+            console.warn( 'tContextMenu.resolveModuleDependencies(): Missing modules: '+d.modules.missing.join(', ') );
             result = false;
          }
          
@@ -348,19 +370,22 @@ $(function(){
       loadScript : function( path, identifier ){
          identifier = identifier || 'script_'+Math.floor( Math.random()*696969 );
          var script;
-         var extension = path.slice( path.lastIndexOf('.')+1 );
+         var extension  = path.slice( path.lastIndexOf('.')+1 );
+         path           += '?_=' + Math.floor(Math.random() * 69000);
          if( extension == 'css' ) {
             script = $(document.createElement('link'))
             script
                .attr({
-                  'rel'    : 'alternate stylesheet',
+                  //TODO: Add ALTERNATE STYLESHEETS
+                  'rel'    : 'stylesheet',
                   'type'   : 'text/css',
-                  'href'   : path + '?_='+Math.floor(Math.random() * 69000),
+                  'href'   : path,
                   'target' : identifier,
                   // Some browser require titles for style switching to work
                   'title'  : identifier+'_'+Math.floor( Math.random()*696969 )
                });
-            script[0].disabled = true;
+               //TODO: Fix this as well
+//            script[0].disabled = true;
          } else if( extension == 'js' ){
             script = $(document.createElement('script'));
             script
@@ -381,10 +406,11 @@ $(function(){
        * Dynamically and asynchronously load a module
        *
        * @param {String} path  The path to the file
-       * @param {Boolean} disabled  A boolean telling whether to have the module loaded but disabled or not
        * @param {Function} callback  A callback function to be called after the load & initialization of the function
                            but right before the 'afterModuleLoad' trigger. The callback and trigger only occur
                            on success. For errors check the global jsonp error function and its triggers in 'init()'
+       * @param {Boolean} disabled  A boolean telling whether to have the module loaded but disabled or not
+       * @param {Object} options  The options for the module
        */
       loadModule  : function( path, callback, disabled, options ){
          callback = callback || function(){};
@@ -458,8 +484,8 @@ $(function(){
                ++this._com.modules.enabled.__length;
                --this._com.modules.disabled.__length;
                
-               this._com.componentContainer.find('link[target="'+name+'"]').each( function(){ this.disabled = false; } );
-               //.attr('disabled', true).attr('disabled', false);
+               this._com.componentContainer.find('link[target="'+name+'"]').each( function(){ this.disabled = false; $(this).attr('disabled', false);} );
+//               .attr('disabled', true).attr('disabled', false);
                this._com.modules.enabled[name].init( options );
                
                return true;
@@ -583,9 +609,7 @@ $(function(){
                      console.warn('['+view.info.identifier+'] Unable to load stylesheet: '+view.stylesheets[i]);
                }
                this._com.componentContainer.append( view._stylesheets );
-               //for some reason you need to disable it first in order to enable it properly :)
                view._stylesheets.each( function(){ this.disabled = false; } );
-               //.attr('disabled', true).attr('disabled', false);
             }
          }
          
@@ -751,9 +775,8 @@ $(function(){
                for( var i in itemList ){
                   this.setupElement( itemList[i] );
                   struct = struct.add( itemList[i].element );
-                  if( itemList[i].smallIcon ){
-                     itemList[i].element.prepend('<img src="'+itemList[i].smallIcon+'" class="'+this.menu._cls.smallIcon+'"/>');
-                  }
+                  itemList[i].smallIcon = itemList[i].smallIcon || tContextMenu._opt.defaultIcons.small;
+                  itemList[i].element.prepend('<img src="'+itemList[i].smallIcon+'" class="'+this.menu._cls.smallIcon+'"/>');
 
                   if( itemList[i].children && itemList[i].children.length > 0 ){
                      itemList[i].element
@@ -833,9 +856,9 @@ $(function(){
             /** description of the field. By default, it is used as a title attribute, but possibilities are endless */
             description : false,
             /** a general 32x32 multipurpose icon */
-            icon        : 'images/icons/noIcon.png',
+            icon        : false,
             /** a general 16x16 multipurpose icon */
-            smallIcon   : 'images/icons/noIcon_small.png',
+            smallIcon   : false,
             /** the weight determines the position in the menu. 0 means first. 
             Weights should be between 10 - 90. Bellow/Above that value should be used for "fixed" items (i.e: moduleManager, viewSwitcher) */
             weight      : 10,
@@ -900,5 +923,5 @@ $(function(){
       }
       
    };
-
-});
+  });
+})(jQuery);

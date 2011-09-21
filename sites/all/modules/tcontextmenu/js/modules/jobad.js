@@ -4,7 +4,7 @@ _newModule({
     'identifier'   : 'jobad',
     'title'        : 'JOBAD',
     'author'       : 'Stefan Mirea',
-    'description'  : '',
+    'description'  : 'Enables some JOBAD features as part of the context menu',
     'dependencies' : ['tooltip']
   },
   
@@ -40,13 +40,14 @@ _newModule({
           element      : container,
           text         : 'Definition Lookup',
           description  : 'Module description',
-          icon         : 'js/modules/icons/jobad.png',
-          smallIcon    : 'js/modules/icons/jobad_small.png',
+          icon         : tContextMenu._opt.baseURL + 'js/modules/icons/jobad.png',
+          smallIcon    : tContextMenu._opt.baseURL + 'js/modules/icons/jobad_small.png',
           weight       : 0
         });
         
-        obj.element.bind('click.definitionLookup', function(e){
-          self.definitionLookup( target );
+        container.bind('click.definitionLookup', function(e){
+          console.log( 'definitionLookup: '+Math.floor(Math.random()*690) );
+          self.definitionLookup( target, container );
         });
         
         return obj;
@@ -57,32 +58,36 @@ _newModule({
     
   })(),
   
-  definitionLookup  : function( target ){
+  definitionLookup  : function( target, container ){
     var tooltip = tContextMenu.m('tooltip');
+    console.log('in', target, container );
     if( $(target).attr('xref') ){
       var OMV = $(target).parentsUntil(':math').parent().find( '[id="'+$(target).attr('xref').slice(1)+'"]' );
       if( OMV ){
-        var OMS = OMV.siblings(':OMS').eq(0);
+        var OMS = OMV.is('ooms') ? OMV : OMV.parents('ooms').eq(0);
         var opt = {
           cd    : OMS.attr('cd'),
           name  : OMS.attr('name')
         };
+        console.log(5, opt);
         if( opt.cd && opt.name ){
+          console.log(6);
+          var url = Drupal.extraInfo.baseURL + 'tcontextmenu/definitionLookup/'+opt.cd+'/'+opt.name;
+          
           tooltip
-            .set( $(document.createElement('img')).attr({'src':'images/ajax.gif','width':16}) )
-            .target( target );
+            .set( $(document.createElement('img')).attr({'src':tContextMenu._opt.baseURL + 'images/ajax.gif','width':16}) )
+            .target( container );
             
-          $.get( 'js/modules/jobad/definitionLook-up.php', {
-              cd    : opt.cd,
-              name  : opt.name
-            }, 
+          $.get( url, 
             function(r){
               tooltip
                 .set( r.result )
-                .target( target );
+                .target( container );
           });
         }
       }
+    } else {
+      console.warn( 'definitionLookup(): No xref', target );
     }
   }
   

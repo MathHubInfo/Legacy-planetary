@@ -1,7 +1,9 @@
 
 var $ = jQuery;
 
-$(function() {
+(function($) {
+
+      return; // TEMPORARY DISABLED!!!
       
       var imgDir = Drupal.extraInfo.baseURL + 'sites/all/modules/local_comments/images/';
       
@@ -145,4 +147,4 @@ $(function() {
       return Drupal.extraInfo.baseURL + 'local_comments/showthread/' + Drupal.extraInfo.node.nid + '/' + id;
    }   
    
-});
+})(jQuery);

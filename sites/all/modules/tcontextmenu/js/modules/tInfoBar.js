@@ -5,11 +5,11 @@ _newModule({
       'title'        : 'Info Bar',
       'author'       : 'Stefan Mirea',
       'description'  : 'Adds Info Bar functionality to the container',
-      'dependencies' : []
+      'dependencies' : ['tooltip']
    },
    
    scripts : [
-      'js/modules/tInfoBar/tInfoBar.css'
+      tContextMenu._opt.baseURL + 'js/modules/tInfoBar/tInfoBar.css'
    ],
    
    options  : {
@@ -20,7 +20,7 @@ _newModule({
       // specify the token types. By default, only the 'info' token type is defined
       tokenTypes        : {
          standard  : {
-            img   : 'js/modules/tInfoBar/images/standard.png',
+            img   : tContextMenu._opt.baseURL + 'js/modules/tInfoBar/images/standard.png',
             msg   : 'Click to expand'
          }
       }
@@ -45,7 +45,7 @@ _newModule({
             // remember a selector to self
             self           : this,
             // remember the initial selected object
-            main           : tContextMenu.options.parent,
+            main           : opt.main,
             // the actual infoBar object
             infoBar        : $(document.createElement('div')),
             // the content wrapper
@@ -108,6 +108,9 @@ _newModule({
                   }
                });
          }
+         
+         //TODO: This is a UBER_HACK. Please remove and fix stupid loading for FF
+         $('link').attr('disabled', false);
          
          this._opt = opt;
          this._cls = cls;
@@ -261,8 +264,8 @@ _newModule({
             element     : container,
             text        : 'tInfoBar',
             description : 'tInfoBar settings',
-            icon        : 'js/modules/icons/tInfoBar.png',
-            smallIcon   : 'js/modules/icons/tInfoBar_small.png',
+            icon        : tContextMenu._opt.baseURL + 'js/modules/icons/tInfoBar.png',
+            smallIcon   : tContextMenu._opt.baseURL + 'js/modules/icons/tInfoBar_small.png',
             weight      : 0
          });
          

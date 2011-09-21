@@ -21,8 +21,8 @@ _newModule({
             element     : container,
             text        : 'Module_1',
             description : 'Module description',
-            icon        : 'js/modules/icons/module1.png',
-            smallIcon   : 'js/modules/icons/module1_small.png',
+            icon        : tContextMenu._opt.baseURL + 'js/modules/icons/module1.png',
+            smallIcon   : tContextMenu._opt.baseURL + 'js/modules/icons/module1_small.png',
             weight      : 50
          });
 
