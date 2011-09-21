@@ -1,6 +1,8 @@
 <?php
 
-//require_once( 'constants.php' );
+define( 'TABLE_TINFOBAR', 'tInfoBar' );
+define( "TNTBASE_USERNAME", 'planetarybroker' );
+define( "TNTBASE_PASSWORD", 'n3pt4n3' );
 
 /**
 * Implements hook_help.
@@ -67,7 +69,8 @@ function tcontextmenu_preprocess_node(&$variables = '') {
                 url( 'js/modules/tooltip.js' ),
                 url( 'js/modules/jobad.js'),
                 [ url( 'js/modules/tInfoBar.js'), false, {
-                   main : target
+                   main     : target,
+                   setupURL : Drupal.extraInfo.baseURL + 'tcontextmenu/getTokens/' + Drupal.extraInfo.node.nid
                 }],
                 [ Drupal.extraInfo.baseURL + 'sites/all/modules/local_comments/js/tContextMenu.local_comments.js', false, {
                   validation : function( info ){
@@ -131,8 +134,6 @@ function tcontextmenu_menu() {
 /**************************************/
 /********* JOBAD FUNCTIONS ************/
 /**************************************/
-define( "TNTBASE_USERNAME", 'planetarybroker' );
-define( "TNTBASE_PASSWORD", 'n3pt4n3' );
 
 function _tcontextmenu_definitionLookup( $cd, $name ){
   if( !isset($cd) || !isset($name) ){
@@ -213,7 +214,7 @@ function jsonOutput( $data ) {
 *    The type of the element
 */
 function _tcontextmenu_getTokens( $context, $type = null ){
-  $query = db_select( TABLE_tcontextmenu, 't' );
+  $query = db_select( TABLE_TINFOBAR, 't' );
   $query->fields( 't' );
   
   $query->condition('t.context', $context);
@@ -252,7 +253,7 @@ function _tcontextmenu_getTokens( $context, $type = null ){
 *    The Body of the comment
 */
 function _tcontextmenu_addItem( $type, $id, $context, $username, $text ){
-  db_insert( TABLE_tcontextmenu )
+  db_insert( TABLE_TINFOBAR )
     ->fields(
       array(
         'type'    => $type,
@@ -277,7 +278,7 @@ function _tcontextmenu_addItem( $type, $id, $context, $username, $text ){
 *    The context of the element
 */
 function _tcontextmenu_getItems( $type, $id, $context = null ){
-  $query = db_select( TABLE_tcontextmenu, 't' );
+  $query = db_select( TABLE_TINFOBAR, 't' );
   $query->fields( 't' );
   
   if( $context ) 

@@ -23,6 +23,11 @@ _newModule({
             img   : tContextMenu._opt.baseURL + 'js/modules/tInfoBar/images/standard.png',
             msg   : 'Click to expand'
          }
+      },
+      /** URL to a PHP that returns an array of tokens with which the infobar will be initialized **/
+      setupURL    : null,
+      hoverAttr   : {
+        mathbackground  : 'lightblue'
       }
    },
    
@@ -109,6 +114,14 @@ _newModule({
                });
          }
          
+         if( opt.setupURL ){
+            $.get( opt.setupURL, function(r){
+              for( var i in r ){
+                com.self.addToken( r[i].wordID, r[i].type );
+              }
+            });
+         }
+         
          //TODO: This is a UBER_HACK. Please remove and fix stupid loading for FF
          $('link').attr('disabled', false);
          
@@ -124,7 +137,8 @@ _newModule({
     * Adds a token to the infoBar 
     * @param obj the object to whom the token will attach itself to. 
                 If it is a string, it will get the id of the element with that id from the specified content
-   **/
+    * @param {String} type  The type of token
+    */
    addToken : (function(){
       return function(obj, type){
          
@@ -139,7 +153,6 @@ _newModule({
          
          type = type && opt.tokenTypes[ type ] ? type : 'standard'; 
          var token = opt.tokenTypes[ type ];
-         console.log( this.options.tokenTypes );
          var t = $(document.createElement('a'));
          t.data('target', obj)
             .data('type', type)
@@ -230,13 +243,13 @@ _newModule({
    })(),
    
    setTokenType   : function( type, value ){
-      opt.tokenTypes[ type ] = value;
+      this._opt.tokenTypes[ type ] = value;
       return this; 
    },
    
    positionToken  : function( token ){
       token.offset({
-         left  : com.infoBar.offset().left + (com.infoBar.outerWidth() - token.width()) / 2 + 1
+         left  : this._com.infoBar.offset().left + (com.infoBar.outerWidth() - token.width()) / 2 + 1
       });
    },
    
@@ -271,6 +284,7 @@ _newModule({
          
 //         this.addToken( target );
          
+         return null;
          return obj;
       }
       

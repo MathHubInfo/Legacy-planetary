@@ -15,6 +15,16 @@ _newModule({
   
   basePath : Drupal.extraInfo.baseURL + 'sites/all/modules/local_comments/',
   
+  init : function(){
+    if( tContextMenu.m('tInfoBar') ){
+      tContextMenu.m('tInfoBar').setTokenType(
+        'localComment', {
+          img   : this.basePath+'images/local_comments_small.png',
+          msg   : 'View items with local comments attached'
+      });
+    }
+  },
+  
   validate : (function(){
     
     return function( event, container ){
@@ -69,6 +79,11 @@ _newModule({
                 var type  = 'localComment';
                 var arg1  = escape( $('#localComments_subject').val() );
                 var arg2  = escape( $('#localComments_text').val() );
+                
+                var infoBar = tContextMenu.m('tInfoBar');
+                if( infoBar ){
+                  infoBar.addToken( target, 'localComment' );
+                }
                 
                 tooltip.set( ajaxImage ).target( container );
                 $.get( Drupal.extraInfo.baseURL + 'local_comments/add/' +

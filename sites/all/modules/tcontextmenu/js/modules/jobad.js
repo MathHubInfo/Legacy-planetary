@@ -60,7 +60,6 @@ _newModule({
   
   definitionLookup  : function( target, container ){
     var tooltip = tContextMenu.m('tooltip');
-    console.log('in', target, container );
     if( $(target).attr('xref') ){
       var OMV = $(target).parentsUntil(':math').parent().find( '[id="'+$(target).attr('xref').slice(1)+'"]' );
       if( OMV ){
@@ -69,9 +68,7 @@ _newModule({
           cd    : OMS.attr('cd'),
           name  : OMS.attr('name')
         };
-        console.log(5, opt);
         if( opt.cd && opt.name ){
-          console.log(6);
           var url = Drupal.extraInfo.baseURL + 'tcontextmenu/definitionLookup/'+opt.cd+'/'+opt.name;
           
           tooltip
@@ -84,10 +81,20 @@ _newModule({
                 .set( r.result )
                 .target( container );
           });
+        } else {
+          tooltip
+            .set( 'No definition found for this element' )
+            .target( container );
         }
+      } else {
+        tooltip
+          .set( 'No definition found for this element' )
+          .target( container );
       }
     } else {
-      console.warn( 'definitionLookup(): No xref', target );
+      tooltip
+        .set( 'No definition found for this element' )
+        .target( container );
     }
   }
   
