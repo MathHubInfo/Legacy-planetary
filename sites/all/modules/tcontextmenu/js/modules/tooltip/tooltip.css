@@ -1,52 +1,52 @@
 .tooltip {
-	position						: absolute;
-	z-index						: 10000;
+	position              : absolute;
+	z-index               : 10000;
 	
-	border						: 1px solid #3b79df;
-	-moz-border-radius		: 10px;
-	-webkit-border-radius	: 10px;
-	border-radius				: 10px;
+	border                : 1px solid #3b79df;
+	-moz-border-radius    : 10px;
+	-webkit-border-radius : 10px;
+	border-radius         : 10px;
 	
-	background	: #4986e8;
-	background	: -moz-linear-gradient(top, #c1d7ff, #76b8fc 2%, #4986e8);
-	background	: -webkit-gradient(linear, left top, left bottom, color-stop(0, #aadaf0), color-stop(.01, #76b8fc), to(#4986e8));
+	background            : #4986e8;
+	background            : -moz-linear-gradient(top, #c1d7ff, #76b8fc 2%, #4986e8);
+	background            : -webkit-gradient(linear, left top, left bottom, color-stop(0, #aadaf0), color-stop(.01, #76b8fc), to(#4986e8));
 	
-	width			: 160px;
-	padding		: 8px 13px 8px 8px;
-	font-family	: Arial, Helvetica, sans-serif;
-	font-size	: 12px;
-	font-weight	: bold;
-/*	line-height	: 18px; */
-	text-shadow	: 0 1px 1px #0d3474;
-	color			: #fff;
+	width                 : 200px;
+	padding               : 8px 13px 8px 8px;
+	font-family           : Arial, Helvetica, sans-serif;
+	font-size             : 12px;
+	font-weight           : bold;
+/*	line-height         : 18px; */
+	text-shadow           : 0 1px 1px #0d3474;
+	color                 : #fff;
 }
 
 .tooltip:before {
-	content					: "\00a0";
-	display					: block;
-	position					: absolute;
-	left						: 100%;
-	top						: 19px;
-	border					: 14px solid transparent;
-	border-left-color		: #0f3980;
-	width						: 0;
-	height					: 0;
-	line-height				: 0px;
+	content           : "\00a0";
+	display           : block;
+	position          : absolute;
+	left              : 100%;
+	top               : 19px;
+	border            : 14px solid transparent;
+	border-left-color : #0f3980;
+	width             : 0;
+	height            : 0;
+	line-height       : 0px;
 	
 }
 
 .tooltip:after {
-	content					: "\00a0";
-	display					: block;
-	position					: absolute;
-	bottom					: -26px;
-	left						: 100%;
-	top						: 20px;
-	border					: 13px solid transparent;
-	border-left-color		: #66A6F4;
-	width						: 0;
-	height					: 0;
-	line-height				: 0px;
+	content           : "\00a0";
+	display           : block;
+	position          : absolute;
+	bottom            : -26px;
+	left              : 100%;
+	top               : 20px;
+	border            : 13px solid transparent;
+	border-left-color : #66A6F4;
+	width             : 0;
+	height            : 0;
+	line-height       : 0px;
 }
 
 .scheme-orange {
@@ -141,93 +141,93 @@
 	background		: -webkit-gradient(linear, left top, left bottom, color-stop(0, #aadaf0), color-stop(.01, #76b8fc), to(#4986e8));
 }
 .scheme-blue-left:before { 
-	border-color			: transparent;
-	border-right-color	: #0f3980;
-	left						: -28px;
+	border-color       : transparent;
+	border-right-color : #0f3980;
+	left               : -28px;
 }
 .scheme-blue-left:after { 
-	border-color			: transparent;
-	border-right-color	: #6EAFF8; 
-	left						: -26px;
+	border-color       : transparent;
+	border-right-color : #6EAFF8;
+	left               : -26px;
 }
 
 /** RIGHT POSSITIONED SIMPLE tooltip **/
 .scheme-simple-right{
-	border						: 0;
-	background					: rgba(0, 0, 0, 0.8);
-	border-radius				: 0;
-	-moz-border-radius		: 0;
-	-webkit-border-radius	: 0;
-	width                   : auto;
-	padding						: 3px;
-	font-family					: verdana, arial;
-	font-size					: 8pt;
-	font-weight					: normal;
-	text-shadow					: 0;
+	border                : 0;
+	background            : rgba(0, 0, 0, 0.8);
+	border-radius         : 0;
+	-moz-border-radius    : 0;
+	-webkit-border-radius : 0;
+	width                 : auto;
+	padding               : 3px;
+	font-family           : verdana, arial;
+	font-size             : 8pt;
+	font-weight           : normal;
+	text-shadow           : 0;
 }
 .scheme-simple-right:before{ 
-	border-color		: transparent;
-	border-top-color	: rgba(0, 0, 0, 0.0);
-	left					: 100%;
-	top					: 0;
+	border-color     : transparent;
+	border-top-color : rgba(0, 0, 0, 0.0);
+	left             : 100%;
+	top              : 0;
 }
 .scheme-simple-right:after { 
-	border-color		: transparent;
+	border-color      : transparent;
 	border-width      : 10px;
-	border-left-color : rgba(0, 0, 0, 0.8); 
-	left					: 100%;
-	top					: 0;
+	border-left-color : rgba(0, 0, 0, 0.8);
+	left              : 100%;
+	top               : 0;
 }
 
 /** BOTTOM POSSITIONED SIMPLE tooltip **/
 
 .scheme-simple-bottom{
-	border						: 0;
-	background					: rgba(0, 0, 0, 0.8);
-	border-radius				: 5px;
-	-moz-border-radius		: 5px;
-	-webkit-border-radius	: 5px;
-	padding						: 5px;
-	font-family					: verdana, arial;
-	font-size					: 8pt;
-	font-weight					: normal;
-	text-shadow					: 0;
+	border                : 0;
+	background            : rgba(0, 0, 0, 0.8);
+	border-radius         : 5px;
+	-moz-border-radius    : 5px;
+	-webkit-border-radius : 5px;
+	padding               : 5px;
+	font-family           : verdana, arial;
+	font-size             : 8pt;
+	font-weight           : normal;
+	text-shadow           : 0;
 }
 .scheme-simple-bottom:before{ 
-	border-color		: transparent;
-	border-top-color	: rgba(0, 0, 0, 0.0);
-	left					: 40px;
-	top					: 100%;
+	border-color     : transparent;
+	border-top-color : rgba(0, 0, 0, 0.0);
+	left             : 40px;
+	top              : 100%;
 }
 .scheme-simple-bottom:after { 
-	border-color		: transparent;
-	border-top-color	: rgba(0, 0, 0, 0.8); 
-	left					: 41px;
-	top					: 100%;
+	border-color     : transparent;
+	border-top-color : rgba(0, 0, 0, 0.8);
+	left             : 41px;
+	top              : 100%;
 }
 
 /** LEFT POSSITIONED SIMPLE tooltip **/
 .scheme-simple-left{
-	border						: 0;
-	background					: rgba(0, 0, 0, 0.8);
-	border-radius				: 5px;
-	-moz-border-radius		: 5px;
-	-webkit-border-radius	: 5px;
-	padding						: 5px;
-	font-family					: verdana, arial;
-	font-size					: 8pt;
-	font-weight					: normal;
-	text-shadow					: 0;
+	border                : 0;
+	background            : rgba(0, 0, 0, 0.8);
+	border-radius         : 5px;
+	-moz-border-radius    : 5px;
+	-webkit-border-radius : 5px;
+	padding               : 5px;
+	font-family           : verdana, arial;
+	font-size             : 8pt;
+	font-weight           : normal;
+	text-shadow           : 0;
 }
 .scheme-simple-left:before{ 
-	border-color		: transparent;
-	border-top-color	: rgba(0, 0, 0, 0.0);
-	left					: 0%;
-	top					: 19px;
+	border-color     : transparent;
+	border-top-color : rgba(0, 0, 0, 0.0);
+	left             : 0%;
+	top              : 19px;
 }
 .scheme-simple-left:after { 
-	border-color		: transparent;
-	border-right-color: rgba(0, 0, 0, 0.8); 
-	left					: -26px;
-	top					: 19px;
+	border-color       : transparent;
+	border-right-color : rgba(0, 0, 0, 0.8);
+	left               : -26px;
+	top                : 19px;
 }

@@ -69,7 +69,19 @@ function tcontextmenu_preprocess_node(&$variables = '') {
                 [ url( 'js/modules/tInfoBar.js'), false, {
                    main : target
                 }],
-                Drupal.extraInfo.baseURL + 'sites/all/modules/local_comments/js/tContextMenu.local_comments.js'
+                [ Drupal.extraInfo.baseURL + 'sites/all/modules/local_comments/js/tContextMenu.local_comments.js', false, {
+                  validation : function( info ){
+                    var mathParent = $(info.oldTarget).parents(':math');
+                    if( info.oldTarget.id || mathParent.length > 0 ){
+                      if( mathParent.attr('id') ){
+                        info.newTarget = mathParent[0];
+                        return true;
+                      }
+                    }
+                      
+                    return false;
+                  }
+                }]
              ]
           });
           

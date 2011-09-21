@@ -18,12 +18,14 @@ _newModule({
   validate : (function(){
     
     return function( event, container ){
-      var target = event.target;
-      
-      if( this.options.validation( target ) ){
-        
-        var id      = $(target).attr('id');
-        var tooltip = tContextMenu.m('tooltip');
+      var info = {
+        oldTarget : event.target,
+        newTarget : null
+      };
+      if( this.options.validation( info ) ){
+        var target      = info.newTarget || info.oldTarget;
+        var id          = $(target).attr('id');
+        var tooltip     = tContextMenu.m('tooltip');
         
         var ajaxImage =  $(document.createElement('img')).attr({'src': tContextMenu._opt.baseURL+'images/ajax.gif', 'height':16, title:"Loading..."});
         

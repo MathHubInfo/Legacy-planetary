@@ -109,6 +109,9 @@ _newModule({
                });
          }
          
+         //TODO: This is a UBER_HACK. Please remove and fix stupid loading for FF
+         $('link').attr('disabled', false);
+         
          this._opt = opt;
          this._cls = cls;
          this._com = com;
