@@ -74,6 +74,12 @@ _newModule({
 	          tooltip.set( h ).target( container );
 	          
 	          tooltip.com.tooltip
+	            .find('.closeMe')
+	            .bind('click.close', function(){
+	              tooltip.hide();
+	            });
+	          
+	          tooltip.com.tooltip
 	            .find('#submitLocalComment')
 	            .bind('click.submit', function(){
                 var type  = 'localComment';
