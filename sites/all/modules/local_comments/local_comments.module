@@ -23,8 +23,10 @@ function tryPrintExcerpt($content, $eid) {
     $new->appendChild($new->importNode($nodelist->item(0)->previousSibling, true));
   }
 
-  $new->appendChild($new->importNode($nodelist->item(0), true));
-
+  if ($nodelist->item(0)) {
+  	$new->appendChild($new->importNode($nodelist->item(0), true));
+  }
+  
   if ($nodelist->item(0)->nextSibling) {
     $new->appendChild($new->importNode($nodelist->item(0)->nextSibling, true));
   }
