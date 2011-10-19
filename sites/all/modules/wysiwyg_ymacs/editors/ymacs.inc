@@ -96,19 +96,40 @@ function wysiwyg_ymacs_ymacs_load($editor, $library) {
 	drupal_add_css($editor['library path'] . '/test/dl/new-theme/default.css');
 	drupal_add_css($editor['library path'] . '/src/css/ymacs.css');
 	drupal_add_js($editor['library path']. '/test/dl/js/thelib.js');
+	drupal_add_js(drupal_get_path("module", "wysiwyg_ymacs"). '/js/jquery.timeout.interval.idle.js');
 	
+	$result = db_select("mathkeywords", "m")->
+					fields("m", array("id", "class", "syn", "title", "defines", "url"))->
+					execute();
+
+	$send = array();
+	foreach ($result as $row) {
+		$row = (array)$row;
+		$send["syn"][]=$row["syn"];		
+		$send["id"][]=$row["id"];		
+		$send["title"][]=$row["title"];		
+		$send["defines"][]=$row["defines"];		
+		$send["url"][]=$row["defines"];
+	}
+	dd(json_encode($send));
+		
 	$ymacsJS = array(
 		"ymacs.js", "ymacs-keyboard.js", "ymacs-regexp.js", "ymacs-frame.js",
 		"ymacs-textprop.js", "ymacs-exception.js", "ymacs-interactive.js",
 		"ymacs-buffer.js", "ymacs-marker.js", "ymacs-commands.js", "ymacs-commands-utils.js",
 		"ymacs-keymap.js", "ymacs-keymap-emacs.js", "ymacs-keymap-isearch.js",
 		"ymacs-minibuffer.js", "ymacs-tokenizer.js", "ymacs-mode-paren-match.js",
-		"ymacs-mode-lisp.js", "ymacs-mode-stex.js", "ymacs-mode-js.js", "ymacs-mode-xml.js", "ymacs-mode-css.js",
-		"ymacs-mode-markdown.js"
+		"ymacs-mode-lisp.js", "ymacs-mode-js.js", "ymacs-mode-xml.js", "ymacs-mode-css.js",
+		"ymacs-mode-markdown.js",
 	); 	
 	
 	foreach ($ymacsJS as $file) {
 		drupal_add_js($editor['library path']. '/src/js/'.$file);
+	}
+	
+	$js_root = drupal_get_path("module", "wysiwyg_ymacs")."/js/";
+	foreach (array("trie.js", "aho.js", "porter.js", "ymacs-autolinker.js", "ymacs-mode-stex.js", "ymacs-math-preview.js") as $jsfile) {
+		drupal_add_js($js_root.$jsfile);
 	}
 }
 

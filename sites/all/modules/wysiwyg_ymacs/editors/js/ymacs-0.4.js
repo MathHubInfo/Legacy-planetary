@@ -15,7 +15,7 @@ Drupal.wysiwyg.editor.attach.ymacs = function(context, params, settings) {
   javascript.setCode($(editorID).val());
   javascript.cmd("stex_mode");
   javascript.setq("indent_level", 4);
-  
+    
   var layout = new DlLayout({ parent: dlg });
 
   var ymacs = window.ymacs = new Ymacs({ buffers: [ javascript ] });
@@ -29,7 +29,7 @@ Drupal.wysiwyg.editor.attach.ymacs = function(context, params, settings) {
 
   dlg.show(true);
   $(dlg.getElement()).attr("style","position:relative; width: 500px");
-  dlg.setSize({x:500, y:300});
+  dlg.setSize({x:600, y:300});
   $(editorID).after($(dlg.getElement()));
   $(editorID).hide();
   $(editorID).each(function (c, obj) {
@@ -37,6 +37,8 @@ Drupal.wysiwyg.editor.attach.ymacs = function(context, params, settings) {
 	  jQuery.data(obj, "dialog", dlg);
 	  jQuery.data(obj, "buffer", javascript);
   });
+  javascript.cmd("stex_preview");
+  javascript.cmd("stex_autolinker");
 };
 
 /**
