@@ -43,7 +43,7 @@ DEFINE_CLASS("Ymacs_Frame", DlContainer, function(D, P, DOM) {
 
         var BLINK_TIMEOUT = 225;
 
-        D.DEFAULT_EVENTS = [ "onPointChange" ];
+        D.DEFAULT_EVENTS = [ "onPointChange", "onMouseDownText" ];
 
         D.DEFAULT_ARGS = {
                 highlightCurrentLine : [ "highlightCurrentLine" , true ],
@@ -106,6 +106,7 @@ DEFINE_CLASS("Ymacs_Frame", DlContainer, function(D, P, DOM) {
                 this.buffer = null;
                 if (buffer)
                         this.setBuffer(buffer);
+                buffer.signalNewFrame(this);
                 if (!this.isMinibuffer && this.ymacs.cf_lineNumbers)
                         this.toggleLineNumbers();
         };
@@ -620,7 +621,7 @@ DEFINE_CLASS("Ymacs_Frame", DlContainer, function(D, P, DOM) {
                 var pos = ev.computePos(this.getContentElement()),
                     rc = this.coordinatesToRowCol(pos.x, pos.y),
                     buf = this.buffer;
-
+                this.callHooks("onMouseDownText", rc.row, rc.col);
                 buf.clearTransientMark();
                 buf.cmd("goto_char", buf._rowColToPosition(rc.row, rc.col));
                 buf.callInteractively("keyboard_quit");
@@ -642,7 +643,6 @@ DEFINE_CLASS("Ymacs_Frame", DlContainer, function(D, P, DOM) {
                         buf.cmd("beginning_of_line");
                         buf.cmd("forward_paragraph_mark");
                 }
-
                 EX();
         };
 

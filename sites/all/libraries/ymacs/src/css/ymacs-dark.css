@@ -58,3 +58,19 @@
   background-color: #000;
   color: #f51;
 }
+
+.math-end {
+	color: aqua;
+}
+
+.math-begin {
+	color: aqua;
+}
+
+.math {
+	color: aqua;
+}
+
+.suggestion {
+	border-bottom:1px solid yellow;
+}

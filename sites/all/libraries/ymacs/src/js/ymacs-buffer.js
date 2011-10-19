@@ -52,7 +52,8 @@ DEFINE_CLASS("Ymacs_Buffer", DlEventProxy, function(D, P){
                 "finishedEvent",
                 "onProgressChange",
                 "onTextInsert",
-                "onTextDelete"
+                "onTextDelete",
+                "onNewFrame",
         ];
 
         D.DEFAULT_ARGS = {
@@ -323,6 +324,10 @@ DEFINE_CLASS("Ymacs_Buffer", DlEventProxy, function(D, P){
                 return Ymacs_Keymap_Emacs();
         };
 
+        P.signalNewFrame = function(frame) {
+            	this.callHooks("onNewFrame", frame);
+        }
+        
         P.signalError = function(text, html, timeout) {
                 this.callHooks("onMessage", "error", text, html, timeout);
         };
@@ -1064,6 +1069,7 @@ DEFINE_CLASS("Ymacs_Buffer", DlEventProxy, function(D, P){
                 if (this.__preventUpdates == 0) {
                         this.callHooks("onLineChange", row);
                 } else {
+//                		console.log(row);
                         this.__dirtyLines[row] = true;
                 }
         };

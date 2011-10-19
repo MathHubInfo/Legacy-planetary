@@ -80,6 +80,20 @@ DEFINE_CLASS("Ymacs_Text_Properties", DlEventProxy, function(D, P){
                 return changed;
         };
 
+        P.appendLineProps = function(row, i, j, prop, val) {
+            var p = this.props, o, changed = false;
+            if (i < j) {
+                    p = p[row] || (p[row] = []);
+                    while (i < j) {
+                            o = p[i] || (p[i] = {});
+                            o[prop] = (o[prop]?o[prop]+",":"")+val;
+                            ++i;
+                    }
+                    this.callHooks("onChange", row);
+            }
+            return changed;
+    };
+        
         P.removeLineProps = function(row, i, j, prop) {
                 var p = this.props[row], o, changed = false;
                 if (p && i < j) {
@@ -129,8 +143,9 @@ DEFINE_CLASS("Ymacs_Text_Properties", DlEventProxy, function(D, P){
                         }
                 }
                 var i = 0, n = text.length, last = null, o, ret = "", ch;
+                var lastWord = null;
                 while (i < n) {
-                        o = p[i];
+                		o = p[i];
                         o = o && o.css;
                         if (i === caret) {
                                 o = o ? o + " Ymacs-caret" : "Ymacs-caret";
@@ -144,6 +159,7 @@ DEFINE_CLASS("Ymacs_Text_Properties", DlEventProxy, function(D, P){
                                 ret += "</span>";
                         }
                         last = o;
+                        
                         // XXX: Should have used a hash rather than a
                         // switch statement?  I'm not sure but I have
                         // a feeling that switch is faster.
