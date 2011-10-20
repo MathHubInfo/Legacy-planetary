@@ -1,0 +1,216 @@
+<?php
+/**
+ * Implements hook_field_info().
+ *
+ * Provides the description of the field.
+ */
+function etherpad_lite_field_info() {
+	return array(
+    'field_etherpad_pad' => array(
+      'label' => t('etherpad pad'),
+      'description' => t('Field pointing to a etherpad pad.'),
+      'default_widget' => 'etherpad_widget',
+      'default_formatter' => 'etherpad_formatter',
+	),
+	);
+}
+
+/**
+ * Implements hook_field_menu
+ */
+function etherpad_lite_menu() {
+	$item["admin/config/content/etherpad-lite"] = array (
+		'title' => 'Etherpad-Lite configurations',
+    	'description' => 'Default configuration to be used by all etherpad fields',
+	    'page callback' => 'drupal_get_form',
+	    'page arguments' => array('etherpad_config_form'),
+    	'access arguments' => array('access administration pages'),
+    	'type' => MENU_NORMAL_ITEM,
+	);
+	return $item;
+}
+
+function etherpad_config_form($form, &$form_state) {
+	$form["wel"] = array("#markup" => "<h2>Please adapt the Etherpad-lite configurations</h2>");
+	$form["etherpad_base_url"] = array(
+		"#type" => "textfield",
+		"#title" => "Etherpad API URL",
+    	'#default_value' =>   variable_get('etherpad_base_url' , 'http://localhost:9001/api'),
+	);
+	$form["etherpad_api_key"] = array(
+			"#type" => "textfield",
+			"#title" => "Etherpad API Key",
+	    	'#default_value' =>   variable_get('etherpad_api_key' , 'kwarc_planetary'),
+	);
+	$form["test"] = array(
+			"#type" => "button",
+		    '#default_value' => "Test",
+			'#ajax' => array(
+	      		'callback' => 'etherpad_lite_test_connection',
+	      		'wrapper' => 'result_div',
+			),
+	);
+	$form['test_result'] = array(
+	    '#prefix' => '<div id="result_div">',
+	    '#suffix' => '</div>',
+	);
+
+	return system_settings_form($form);
+}
+
+function etherpad_lite_test_connection($form, $form_state) {
+	etherpad_init();
+	$values = $form_state["values"];
+	$client = new EtherpadLiteClient($values["etherpad_api_key"], $values["etherpad_base_url"]."/api");
+	$group = $client->createGroup();
+	if ($group->groupID) {
+		$form["test_result"]["#markup"] = "<h1 style='color:green'>Success!</h1>";
+		$client->deleteGroup($group->groupID);
+	}
+	return $form["test_result"];
+}
+
+function etherpad_init() {
+	require_once("etherpad-lite-client/etherpad-lite-client.php");
+}
+
+function etherpad_get_client() {
+	return new EtherpadLiteClient(variable_get('etherpad_api_key'), variable_get('etherpad_base_url')."/api");
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function etherpad_lite_field_is_empty($item, $field) {
+	return false;
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function etherpad_lite_field_formatter_info() {
+	return array(
+	// This formatter just displays the hex value in the color indicated.
+    'etherpad_formatter' => array(
+      'label' => t('Simple etherpad formatter.'),
+      'field types' => array('field_etherpad_pad'),
+	),
+	);
+}
+
+
+/**
+ * Implements hook_field_formatter_view().
+ *
+ */
+function etherpad_lite_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+
+	switch ($display['type']) {
+		// This formatter simply outputs the field as text and with a color.
+		case 'etherpad_formatter':
+			foreach ($items as $delta => $item) {
+				//$element[$delta]['#markup'] = '<p style="color: ' . $item['rgb'] . '">' . t('The color code in this field is @code', array('@code' => $item['rgb'])) . '</p>';
+			}
+			break;
+	}
+
+	return $element;
+}
+
+/**************************************************************************
+ * Field Type API: Widget
+*
+* The widget is the form element used to receive input from the user
+* when the field is being populated.
+**************************************************************************/
+
+/**
+ * Implements hook_field_widget_info().
+ *
+ */
+function etherpad_lite_field_widget_info() {
+	return array(
+    'etherpad_widget' => array(
+      'label' => t('Etherpad widget'),
+      'field types' => array('field_etherpad_pad'),
+	),
+	);
+}
+
+/**
+ * Implements hook_field_widget_form().
+ *
+ */
+function etherpad_lite_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+	$ether_mod = drupal_get_path("module", "etherpad_lite");
+	drupal_add_css($ether_mod."/etherpad_lite.css", array("absolute"=>true));
+	etherpad_init();
+	$js = $ether_mod."/etherpad-lite-jquery-plugin/js/etherpad.js";
+	drupal_add_js($js);
+	$client = etherpad_get_client();
+	$pad_rev = isset($items[$delta]['pad_rev']) ? $items[$delta]['pad_rev'] : 0;
+	$text = isset($items[$delta]['text']) ? $items[$delta]['text'] : 0;
+	$format = isset($items[$delta]['format']) ? $items[$delta]['format'] : 0;
+
+	if ($items[$delta]['pad_group']) {
+		$pad_group = $items[$delta]['pad_group'];
+	} else {
+		$group = $client->createGroup();
+		$pad_group = $group->groupID;
+	}
+	
+	$element += array(
+		'#delta' => $delta,
+	);
+
+	$padname = $field["field_name"].$delta;
+	$padids = (array)$client->listPads($pad_group)->padIDs;
+	if (!isset($padids[$pad_group."$".$padname])) {
+		$padid = $client->createGroupPad($pad_group, $padname, $text)->padID;
+	} 
+	$padid = $pad_group."$".$padname;
+
+	global $user;
+	$author = $client->createAuthor($user->name)->authorID;
+	$validUntil = mktime(0, 0, 0, date("m"), date("d")+1, date("y")); // One day in the future
+	$sessionID = $client->createSession($pad_group, $author, $validUntil)->sessionID;
+	setcookie("sessionID", $sessionID, $validUntil, "/"); // Set a cookie 
+	
+	$format_list = array();
+	foreach (filter_formats() as $key=>$format) {
+		$format_list[$key] = $format->name;
+	}
+	
+	switch ($instance['widget']['type']) {
+		case 'etherpad_widget':
+			$element["text"] = array(
+				"#type" => "textfield",
+				"#default_value" => "mytext"
+			);
+			$element["pad"] = array(
+				"#markup" => theme_render_template($ether_mod."/etherpad_lite_pad.tpl.php", array(
+					"base" => variable_get('etherpad_base_url'),
+					"api" => variable_get('etherpad_api_key'),
+					"padid" => $padid,
+					"padname" =>  $padname,
+				))
+			);
+			$element["format"] = array(
+				"#type" => "select",
+				"#options" => $format_list,
+			);
+			$element["pad_rev"] = array(
+				"#type" => "hidden",
+				"#default_value" => $pad_rev,
+			);
+			$element["pad_group"] = array(
+				"#type" => "hidden",
+				"#default_value" => $pad_group,
+			);
+		break;
+	}
+	return $element;
+}
+
+?>
