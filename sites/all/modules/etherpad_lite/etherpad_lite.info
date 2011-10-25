@@ -1,4 +1,0 @@
-name = Etherpad-based field
-description = Provides a field type for etherpad pads.
-core = 7.x
-package     = Planetary Modules
