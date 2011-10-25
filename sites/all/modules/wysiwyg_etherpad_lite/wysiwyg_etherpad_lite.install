@@ -1,0 +1,39 @@
+<?php 
+
+/**
+ * 
+ * Each node receives a unique etherpad group and only this group
+ * can edit/view that document e.g. lets say we have node 103 which
+ * we assign a etherpad group "etherpad001". In order to view/edit
+ * the node 103 using etherpad, one would first have to first know the
+ * etherpad001 ID before he can edit anythign. The whole user-based
+ * authentication takes place on drupal level and only authenticated
+ * users can get as far as getting the ID of the group id and hence
+ * get read or readwrite access to it. 	 
+ */
+
+function wysiwyg_etherpad_lite_schema() {
+	$schema['etherpad_groups'] = array(
+    'description' => 'Maps nodes to etherpad groups.', 
+    'fields' => array(
+      'nid' => array(
+      	'type' => 'int',
+        'description' => 'The primary identifier for a node.', 
+        'unsigned' => TRUE, 
+	   ),
+	   'egid' => array(
+	    'description' => 'Etherpad Group ID',
+	    'type' => "varchar",
+	    'length' => 255,
+	   ),
+	   
+	),
+	'primary key' => array('nid'),
+	'indexes' => array(
+		'etherpadid' => array('egid')
+	),
+	);
+	return $schema;
+}
+
+?>

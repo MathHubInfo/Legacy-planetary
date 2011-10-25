@@ -1,3 +1,7 @@
+.dropPadding td {
+	padding: 0px;
+}
+
 
 .pad {
 	width: 700px;
