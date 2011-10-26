@@ -28,30 +28,32 @@ function etherpad_get_client() {
 	return new EtherpadLiteClient(variable_get('etherpad_api_key'), variable_get('etherpad_base_url')."/api");
 }
 
+function wysiwyg_etherpad_lite_enrich_form(&$form) {
+	if (isset($form["#node"]) && property_exists($form["#node"], "nid")) {
+		$nid = $form["#node"]->nid;
+		$egid = wysiwyg_etherpad_lite_get_egid($nid);
+	}
+	etherpad_init();
+	$client = etherpad_get_client();
+	if (!isset($egid) || strlen($egid)==0) {
+		$egid = $client->createGroup()->groupID;
+	}
+	global $user;
+	$author = $client->createAuthor($user->name)->authorID;
+	$validUntil = mktime(0, 0, 0, date("m"), date("d")+1, date("y")); // One day in the future
+	$sessionID = $client->createSession($egid, $author, $validUntil)->sessionID;
+	setcookie("sessionID", $sessionID, $validUntil, "/"); // Set a cookie
+	
+	$form["etherpad_gid"] = array(
+				"#type" => "hidden",
+				'#attributes' => array('id' => array('etherpad_gid')),
+				"#default_value" => $egid,
+	);
+}
+
 function wysiwyg_etherpad_lite_form_alter(&$form, &$form_state, $form_id) {
 	if (isset($form["#entity_type"]) && $form["#entity_type"] == "node") {
-		if (isset($form["#node"]) && property_exists($form["#node"], "nid")) {
-			$nid = $form["#node"]->nid;
-			$egid = wysiwyg_etherpad_lite_get_egid($nid);
-		}
-
-		etherpad_init();
-		$client = etherpad_get_client();
-		if (!isset($egid) || strlen($egid)==0) {
-			$egid = $client->createGroup()->groupID;
-		}
-		global $user;
-		$author = $client->createAuthor($user->name)->authorID;
-		$validUntil = mktime(0, 0, 0, date("m"), date("d")+1, date("y")); // One day in the future
-		$sessionID = $client->createSession($egid, $author, $validUntil)->sessionID;
-		
-		setcookie("sessionID", $sessionID, $validUntil, "/"); // Set a cookie
-		
-		$form["etherpad_gid"] = array(
-			"#type" => "hidden",
-			'#attributes' => array('id' => array('etherpad_gid')),
-			"#default_value" => $egid,
-		);
+		wysiwyg_etherpad_lite_enrich_form($form);
 	}
 }
 
@@ -61,7 +63,6 @@ function wysiwyg_etherpad_lite_get_egid($nid) {
 }
 
 function wysiwyg_etherpad_lite_node_presave($node) {
-	dpm($node);
 	if (property_exists($node, "etherpad_gid")) {
 		$oldegid = wysiwyg_etherpad_lite_get_egid($node->nid);
 		if (!isset($oldegid) || strlen($oldegid)==0) {
@@ -76,9 +77,25 @@ function wysiwyg_etherpad_lite_node_presave($node) {
 }
 
 
+function wysiwyg_etherpad_lite_check_access() {
+}
+
+function wysiwyg_etherpad_lite_setContent($padid) {
+	if (!isset($_GET["content"])) {
+		echo json_encode(array("status"=>"fail", "msg" => "No content set"));
+		return;
+	}
+	echo json_encode(array("status"=>"ok"));
+}
+
+
 function wysiwyg_etherpad_lite_menu() {
+	$items['localedit/set'] = array(
+		    'page callback' => 'wysiwyg_etherpad_lite_setContent',
+		    'access arguments' => array('access administration pages'),
+		    'type' => MENU_NORMAL_ITEM,
+	);
 	$items['localedit'] = array(
-	    'title' => 'Localized Edit',
 	    'page callback' => 'drupal_get_form',
 	    'page arguments' => array('local_edit_form'),
 	    'access arguments' => array('access administration pages'),
@@ -93,17 +110,25 @@ function local_edit_form($form, &$form_state, $field, $nid) {
 	$form1 = array();
 	field_attach_form("node", $node, $form1, $form_state);
 	$form[$field] = $form1[$field];
+	$form["#node"] = $node;
+	$form["#field"] = $field;
 	
 	$form["submit"] = array(
 		"#type"=>"submit", 
 		"#value" => "Save",
 		"#callback"=>array("local_edit_form_submit")
 	);
+	wysiwyg_etherpad_lite_enrich_form($form);
 	return $form;
 }
 
 function local_edit_form_submit($form, &$form_state) {
-	dpm("submitted");
+	$field = $form["#field"];
+	$lang = $form["#node"]->language;
+	$node = &$form["#node"];
+	$fld = &$node->$field;
+	$fld[$lang]["0"]["value"]=$form_state["values"][$field][$lang]["0"]["value"];
+	node_save($node);
 }
 
 function wysiwyg_etherpad_lite_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
