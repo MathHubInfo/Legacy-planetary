@@ -110,6 +110,9 @@ function wysiwyg_etherpad_lite_etherpad_lite_settings($editor, $config, $theme) 
 	$settings["jspath"]=url("<front>").$editor['library path'];
 	
 	$settings["host"]=variable_get('etherpad_base_url');
+	global $user;
+	$settings["user"]=$user->name;
+	
 	return $settings;
 }
 

@@ -13,15 +13,22 @@ Drupal.wysiwyg.editor.attach.etherpad_lite = function(context, params, settings)
   $(editorid).after($("<div>").attr("id", params.field+"-editor").attr("class","pad"));
   obj = $(editorid).next();
   egid = $("#etherpad_gid").val();
+  console.log(Drupal);
   if (typeof(egid) != "undefined") {
 	  settings.egid = egid;
 	  $(obj).pad({
 			'padId': settings.egid+"$"+params.field,
 			'host':settings.host, 
 			'showChat':'true', 
-			'showControls':'true'
+			'showControls':'true',
+		    'showLineNumbers'  : true,
+		    'userName'	 : settings.user,
 			});
-	  $(editorid).hide();  
+	  $(obj).pad({'host':settings.host, 
+		  		  'setContents':$(editorid).val(),
+				  'padId': settings.egid+"$"+params.field,
+		  		  });
+	  $(editorid).hide(); 
   }
 };
 
@@ -35,11 +42,11 @@ Drupal.wysiwyg.editor.detach.etherpad_lite = function(context, params) {
   newID = editorid+"-editor";
   
   $(newID).each(function(id, obj) {
-	  $(obj).after($("<div>").attr("id", params.field+"-editor-val").attr("style","display:none"));
+	  //$(obj).after($("<div>").attr("id", params.field+"-editor-val").attr("style","display:none"));
    	  $(obj).pad({'getContents': {
    		  "format": "txt",
    		  "callback": function(txt) {
-   		   $(editorid).val(txt);
+   			  $(editorid).val(txt);
    	      }
    	  }});
    	  $(editorid).show();
