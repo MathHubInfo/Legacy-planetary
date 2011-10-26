@@ -1,0 +1,14 @@
+.dropPadding td {
+	padding: 0px;
+}
+
+
+.pad {
+	width: 700px;
+	height: 500px;
+}
+
+.pad iframe {
+	width: 100%;
+	height: 100%;
+}

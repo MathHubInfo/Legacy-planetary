@@ -1,0 +1,149 @@
+<?php
+// $Id: wysiwyg_codemirror.module,v 1.1 2010/03/17 16:48:12 drifter Exp $
+/**
+ * @file
+ * wysiwyg_codemirror is an plugin for adding syntax highlighting to the tinyMCE editor
+ * Zoltan Varady/FARM 2010
+ */
+
+function wysiwyg_etherpad_lite_wysiwyg_include_directory($type) {
+	switch ($type) {
+		case 'editors':
+		return $type;
+	}
+}
+
+function wysiwyg_etherpad_lite_field_formatter_info() {
+	return array('localedit' => array(
+		'label'=>t('Local Editable'),
+		'field types' => array('text', 'text_long', 'text_with_summary'),
+	));
+}
+
+function etherpad_init() {
+	require_once("etherpad-lite-client/etherpad-lite-client.php");
+}
+
+function etherpad_get_client() {
+	return new EtherpadLiteClient(variable_get('etherpad_api_key'), variable_get('etherpad_base_url')."/api");
+}
+
+function wysiwyg_etherpad_lite_enrich_form(&$form) {
+	if (isset($form["#node"]) && property_exists($form["#node"], "nid")) {
+		$nid = $form["#node"]->nid;
+		$egid = wysiwyg_etherpad_lite_get_egid($nid);
+	}
+	etherpad_init();
+	$client = etherpad_get_client();
+	if (!isset($egid) || strlen($egid)==0) {
+		$egid = $client->createGroup()->groupID;
+	}
+	global $user;
+	$author = $client->createAuthor($user->name)->authorID;
+	$validUntil = mktime(0, 0, 0, date("m"), date("d")+1, date("y")); // One day in the future
+	$sessionID = $client->createSession($egid, $author, $validUntil)->sessionID;
+	setcookie("sessionID", $sessionID, $validUntil, "/"); // Set a cookie
+	
+	$form["etherpad_gid"] = array(
+				"#type" => "hidden",
+				'#attributes' => array('id' => array('etherpad_gid')),
+				"#default_value" => $egid,
+	);
+}
+
+function wysiwyg_etherpad_lite_form_alter(&$form, &$form_state, $form_id) {
+	if (isset($form["#entity_type"]) && $form["#entity_type"] == "node") {
+		wysiwyg_etherpad_lite_enrich_form($form);
+	}
+}
+
+function wysiwyg_etherpad_lite_get_egid($nid) {
+	$egid = db_select("etherpad_groups")->fields("etherpad_groups", array("egid"))->condition("nid", $nid)->execute()->fetchfield();
+	return $egid;
+}
+
+function wysiwyg_etherpad_lite_node_presave($node) {
+	if (property_exists($node, "etherpad_gid")) {
+		$oldegid = wysiwyg_etherpad_lite_get_egid($node->nid);
+		if (!isset($oldegid) || strlen($oldegid)==0) {
+			dpm("inserting");
+			db_insert("etherpad_groups")->fields(array('nid'=> $node->nid, 'egid' => $node->etherpad_gid))->execute();
+		} else
+		if ($oldegid != $node->etherpad_gid) {
+			dpm("updating");
+			db_update("etherpad_groups")->fields(array('egid' => $node->etherpad_gid))->condition("nid",$node->nid)->execute();
+		}
+	}
+}
+
+
+function wysiwyg_etherpad_lite_check_access() {
+}
+
+function wysiwyg_etherpad_lite_setContent($padid) {
+	if (!isset($_GET["content"])) {
+		echo json_encode(array("status"=>"fail", "msg" => "No content set"));
+		return;
+	}
+	echo json_encode(array("status"=>"ok"));
+}
+
+
+function wysiwyg_etherpad_lite_menu() {
+	$items['localedit/set'] = array(
+		    'page callback' => 'wysiwyg_etherpad_lite_setContent',
+		    'access arguments' => array('access administration pages'),
+		    'type' => MENU_NORMAL_ITEM,
+	);
+	$items['localedit'] = array(
+	    'page callback' => 'drupal_get_form',
+	    'page arguments' => array('local_edit_form'),
+	    'access arguments' => array('access administration pages'),
+	    'type' => MENU_NORMAL_ITEM,
+	);
+	return $items;
+}
+
+function local_edit_form($form, &$form_state, $field, $nid) {
+	$node = entity_load("node", array($nid));
+	$node = $node[$nid];
+	$form1 = array();
+	field_attach_form("node", $node, $form1, $form_state);
+	$form[$field] = $form1[$field];
+	$form["#node"] = $node;
+	$form["#field"] = $field;
+	
+	$form["submit"] = array(
+		"#type"=>"submit", 
+		"#value" => "Save",
+		"#callback"=>array("local_edit_form_submit")
+	);
+	wysiwyg_etherpad_lite_enrich_form($form);
+	return $form;
+}
+
+function local_edit_form_submit($form, &$form_state) {
+	$field = $form["#field"];
+	$lang = $form["#node"]->language;
+	$node = &$form["#node"];
+	$fld = &$node->$field;
+	$fld[$lang]["0"]["value"]=$form_state["values"][$field][$lang]["0"]["value"];
+	node_save($node);
+}
+
+function wysiwyg_etherpad_lite_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+	
+	switch ($display['type']) {
+		// This formatter simply outputs the field as text and with a color.
+		case 'localedit':
+			$display['type']="text_default";
+			$elem = text_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display);
+			foreach ($items as $delta => $item) {
+				$element[$delta]['#markup'] = '<div class="contextual-links-region"><a href="'.url('<front>',array("absolute"=>true)).'localedit/'.$field["field_name"].'/'.$entity->nid.'">Edit</a>'.$elem[$delta]["#markup"]."</div>";
+			}
+			break;
+	}
+	
+	return $element;
+}
