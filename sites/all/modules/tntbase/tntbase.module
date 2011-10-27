@@ -544,7 +544,6 @@ function tntbase_commit_files($Files) {
  */
 function tntbase_commit_xml($Content, $FilePath) {
   $Response = tntbase_put($Content, variable_get('tntbase_commit_url').$FilePath);
-  dpm($Response);
   $Message = tntbase_strip_tntbase_results($Response, false);
 
   // check message

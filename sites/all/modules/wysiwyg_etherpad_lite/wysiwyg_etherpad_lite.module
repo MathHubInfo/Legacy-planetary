@@ -77,9 +77,7 @@ function wysiwyg_etherpad_lite_node_presave($node) {
 }
 
 
-function wysiwyg_etherpad_lite_check_access() {
-}
-
+/*
 function wysiwyg_etherpad_lite_setContent($padid) {
 	if (!isset($_GET["content"])) {
 		echo json_encode(array("status"=>"fail", "msg" => "No content set"));
@@ -87,14 +85,15 @@ function wysiwyg_etherpad_lite_setContent($padid) {
 	}
 	echo json_encode(array("status"=>"ok"));
 }
+*/
 
 
 function wysiwyg_etherpad_lite_menu() {
-	$items['localedit/set'] = array(
+/*	$items['localedit/set'] = array(
 		    'page callback' => 'wysiwyg_etherpad_lite_setContent',
 		    'access arguments' => array('access administration pages'),
 		    'type' => MENU_NORMAL_ITEM,
-	);
+	); */
 	$items['localedit'] = array(
 	    'page callback' => 'drupal_get_form',
 	    'page arguments' => array('local_edit_form'),
@@ -131,6 +130,15 @@ function local_edit_form_submit($form, &$form_state) {
 	node_save($node);
 }
 
+function wysiwyg_etherpad_lite_theme($existing, $type, $theme, $path) {
+	return array(
+		"wysiwyg_etherpad_local" => array(
+ 			'render element' => 'element', 
+      		'template' => 'wysiwyg_etherpad_local',		
+      	)
+	);
+}
+
 function wysiwyg_etherpad_lite_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
 	$element = array();
 	
@@ -140,7 +148,10 @@ function wysiwyg_etherpad_lite_field_formatter_view($entity_type, $entity, $fiel
 			$display['type']="text_default";
 			$elem = text_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display);
 			foreach ($items as $delta => $item) {
-				$element[$delta]['#markup'] = '<div class="contextual-links-region"><a href="'.url('<front>',array("absolute"=>true)).'localedit/'.$field["field_name"].'/'.$entity->nid.'">Edit</a>'.$elem[$delta]["#markup"]."</div>";
+				$element[$delta]['#markup'] = theme("wysiwyg_etherpad_local", 
+					array(
+						"content" => $elem[$delta]["#markup"], 
+						"link" => url('<front>')."localedit/".$field["field_name"]."/".$entity->nid));
 			}
 			break;
 	}
