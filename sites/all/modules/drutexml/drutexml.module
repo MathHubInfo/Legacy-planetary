@@ -172,17 +172,20 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   $hasPreamble = '/^([\s\S]*)\\\\begin{document}([\s\S]*)\\\\end{document}([\s\S]*)$/';
   $m = preg_match($hasPreamble, $text, $matches);
   
+  global $latex_preamble;
   if ($m > 0) {
 	$preamble = $matches[1];
 	$text = $matches[2];	
   } else
-  	$preamble = $filter->settings['latexml_preamble'];
+  if (isset($latex_preamble) && strlen($latex_preamble) > 0) {
+  		$preamble = $latex_preamble;
+  } else
+     	$preamble = $filter->settings['latexml_preamble'];
   
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
   
-  
-  $data = 'profile=fragment-html&tex=' . urlencode($text);
-  $data .= "&preamble=" . urlencode($preamble);
+  $data = 'profile=fragment&tex=' . urlencode($text);
+  if ($preamble) { $data .= "&preamble=" . urlencode($preamble); }
   
   $content = do_post($host,$data);
   $res = json_decode($content);
@@ -239,3 +242,39 @@ function _drutexml_filter_latex_tips($filter, $format, $long = FALSE) {
   }
 }
 
+function drutexml_node_view_alter(&$build) {
+  $node = $build['#node'];
+  if ($node) {
+    $node->textitle = $node->title;
+    $node->title = check_markup($node->title,'filtered_html',TRUE);
+    drupal_set_title($node->title,PASS_THROUGH);
+  }
+}
+
+function drutexml_process_node(&$vars) {
+  $node = $vars['node'];
+  if ($node) {
+    if ((!$vars['title']) && (!isset($node->textitle)) && isset($node->title)) {
+      $vars['title'] = check_markup($node->title,'filtered_html',TRUE);
+    } else {
+      $vars['title'] = $node->title;
+    }
+    drupal_set_title($node->textitle);
+  }
+}
+
+function drutexml_entity_presave($entity, $type) {
+	$ent = (array) $entity;
+	if (isset($ent["field_preamble"]) && isset($ent["body"])) {
+		$entity->body["und"][0]["preamble"] = $ent["field_preamble"]["und"][0]["value"];
+	}
+}
+
+function drutexml_entity_load($entities, $type) {
+	foreach ($entities as $entity) {
+		$ent = (array) $entity;
+		if (isset($ent["field_preamble"]) && isset($ent["body"])) {
+			$entity->body["und"][0]["preamble"] = $ent["field_preamble"]["und"][0]["value"];
+		}
+	}
+}

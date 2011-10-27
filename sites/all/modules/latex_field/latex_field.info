@@ -1,0 +1,4 @@
+name = LaTeX Field
+description = An LaTeX field allowing for LaTeX code + preamble
+package = Planetary
+core = 7.x
