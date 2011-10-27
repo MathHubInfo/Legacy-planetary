@@ -184,7 +184,7 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
   
-  $data = 'profile=fragment&tex=' . urlencode($text);
+  $data = 'profile=fragment-html&tex=' . urlencode($text);
   if ($preamble) { $data .= "&preamble=" . urlencode($preamble); }
   
   $content = do_post($host,$data);
