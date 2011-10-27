@@ -1,0 +1,137 @@
+<?php
+
+
+function latex_field_field_info() {
+	return array(
+	    'field_latex' => array(
+			'label' => 'LaTeX field',
+			'description' => 'LaTeX Field.',
+			'default_widget' => 'latex_widget',
+			'default_formatter' => 'latex_formatter',
+			'settings' => array("filter" => "latex")
+		),
+	);
+}
+
+/**
+* Implements hook_field_is_empty().
+*/
+function latex_field_field_is_empty($item, $field) {
+	return empty($item['document']) && empty($item['preamble']);
+}
+
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function latex_field_field_formatter_info() {
+	return array(
+	// This formatter just displays the hex value in the color indicated.
+    'latex_formatter' => array(
+      'label' => t('Simple LaTeX formatter'),
+      'field types' => array('field_latex'),
+	),
+	);
+}
+
+/**
+* Implements hook_field_formatter_view().
+*
+* Two formatters are implemented.
+* - field_example_simple_text just outputs markup indicating the color that
+*   was entered and uses an inline style to set the text color to that value.
+* - field_example_color_background does the same but also changes the
+*   background color of div.region-content.
+*/
+function latex_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+
+	switch ($display['type']) {
+		// This formatter simply outputs the field as text and with a color.
+		case 'latex_formatter':
+			foreach ($items as $delta => $item) {
+				$settings = $field["settings"];
+				$filter = $settings["filter"];
+				global $latex_preamble;
+				$latex_preamble = $item['preamble']; 
+				$fobj = check_markup($item['document'], $filter, $entity->language, true);
+				
+				$element[$delta]['#markup'] = $fobj;
+			}
+			break;
+	}
+
+	return $element;
+}
+
+
+/**
+* Implements hook_field_widget_info().
+*
+* Three widgets are provided.
+* - A simple text-only widget where the user enters the '#ffffff'.
+* - A 3-textfield widget that gathers the red, green, and blue values
+*   separately.
+* - A farbtastic colorpicker widget that chooses the value graphically.
+*/
+function latex_field_field_widget_info() {
+	return array(
+    'latex_widget' => array(
+      'label' => t('LaTeX widget'),
+      'field types' => array('field_latex'),
+	),
+	);
+}
+
+
+/**
+* Implements hook_field_widget_form().
+*
+*/
+function latex_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+	$code = isset($items[$delta]['document']) ? $items[$delta]['document'] : '';
+	$preamble = isset($items[$delta]['preamble']) ? $items[$delta]['preamble'] : '';
+	$element += array(
+    '#delta' => $delta,
+	);
+	$element['preamble'] = array();
+	$element['document'] = array();
+	
+	switch ($instance['widget']['type']) {
+
+		case 'latex_widget':
+			$element['preamble'] += array(
+				"#title" => "Preamble",
+				"#type" => "textarea",
+				"#default_value" => $preamble,
+			);
+			$element['document'] += array(
+				"#title" => "LaTeX",
+				"#type" => "textarea",
+				"#default_value" => $code,
+			);
+		break;
+
+	}
+	return $element;
+}
+
+function latex_field_field_widget_settings_form($field, $instance) {
+	$formats = array();
+	foreach (filter_formats() as $id=>$obj) {
+		$formats[$id] = $obj->name;
+	}
+	
+	$settings = $field['settings'];
+	$form['filter'] = array(
+    '#type' => 'select', 
+    '#title' => t('Filter to be used'), 
+    '#default_value' => $settings['filter'],
+    '#options' => $formats, 
+    '#required' => FALSE, 
+    '#description' => t('Please choose the filter to be used for the content.'),
+	);
+	return $form;
+}
+
+?>
