@@ -1,0 +1,165 @@
+<?php
+/**
+ * @file ImageMigrate module
+ * @author v.merticariu@jacobs-university.de
+ * @version 1.0
+ */
+
+/**
+ * Helpers
+ */
+
+/**
+ * Checks if a file has already been copied to avoid duplicates
+ * @param $fname: the name of the file
+ */
+function checkDuplicate($fname){
+    $query = db_query("SELECT cannonical FROM imageMigrate WHERE name=:name", array('name' => $fname));
+    foreach($query as $row){
+        if($row->cannonical){
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Builds the shell command for copying the files and adds
+ * every entry to the imgMigrate table
+ */
+function im_buildShell(){
+    $dirs = explode('/', shell_exec('cd ../pm-fileboxes; ls -F'));
+    foreach($dirs as $key => $val){
+        if($key!=0){
+            $dirs[$key] = substr($dirs[$key], 1);
+        }
+    }
+    $query = db_query("SELECT userid, name FROM planetmath_objects");
+    foreach($query as $row){
+        //if there is a directory named name
+        if(in_array($row->name, $dirs)){
+            //take all the png names and save them together with the uid and canonical name
+            $files = shell_exec('cd ../pm-fileboxes/'.$row->name.'; ls -l');
+            $fnames = explode(' ', $files);
+            foreach($fnames as $name){
+                if(strstr($name,'.png')){
+                    $rName = explode('.png', $name);
+                    $name = $rName[0] . '.png';
+                    if(checkDuplicate($name)){
+                        db_insert('imageMigrate')->fields(array(
+                                'uid' => $row->userid,
+                                'name' => $name,
+                                'cannonical' => $row->name)
+                        )->execute();
+                        //  add the shell command to copy the file
+                        $shell = 'cp ../pm-fileboxes/'.$row->name.'/*.png sites/default/files/pictures';
+                        shell_exec($shell);
+                    }
+                }
+            }
+        }
+    }
+    return 'files copied';
+}
+
+/**
+ * Creates a node corresponding to the given image
+ * @param type $imgName
+ * @param type $uid
+ * @param type $canName 
+ */
+function createNode($imgName, $uid, $canName){
+    $cName = explode('.png', $imgName);
+    $name = $cName[0];
+    $node = new stdClass();
+    $node->type = 'image';
+    node_object_prepare($node);
+    $node->title = $name;
+    $node->uid = $uid;
+    $node->field_obj_cname = array(
+         'und' => array
+                        (
+                            0 => array
+                                (
+                                    'value' => $canName,
+                                    'format' => '',
+                                    'safe_value' => $canName
+                                )
+
+                        )
+    );
+    node_save($node);
+    $path = array(
+                'source' => 'node/'.$node->nid,
+                'alias' => 'image/'.$name
+            );
+    path_save($path);
+    //creating and binding the image fields
+    db_insert('file_managed')->fields(array(
+        'uid' => $uid,
+        'filename' => $imgName,
+        'uri' => 'public://pictures/'.$imgName,
+        'filemime' => 'image/png',
+        'filesize' => filesize('sites/default/files/pictures/'.$imgName),
+        'status' => 1,
+        'timestamp' => REQUEST_TIME
+    ))->execute();
+    $fidQuery = db_query("SELECT fid FROM file_managed ORDER BY fid DESC LIMIT 0,1");
+    foreach($fidQuery as $row){
+        $fid = $row->fid;
+    }
+    db_insert('file_usage')->fields(array(
+        'fid' => $fid,
+        'module' => 'file',
+        'type' => 'node',
+        'id' => $node->nid,
+        'count' => 1
+    ))->execute();
+    db_insert('field_data_field_gallery_image')->fields(array(
+        'entity_type' => 'node',
+        'bundle' => 'image',
+        'deleted' => 0,
+        'entity_id' => $node->nid,
+        'language' => 'und',
+        'delta' => 0,
+        'field_gallery_image_fid' => $fid,
+    ))->execute();
+    return 1;
+}
+
+/**
+ * Creates nodes for every image and empties imageMigrate table.
+ */
+function createAllNodes(){
+    $query = db_query("SELECT * FROM imageMigrate");
+    foreach($query as $row){
+        createNode($row->name, $row->uid, $row->cannonical);
+    }
+    db_query("TRUNCATE TABLE imageMigrate");
+    return 'Nodes created!';
+}
+
+/**
+ * Drupal hooks
+ */
+
+/**
+ * Implementation of hook_menu()
+ */
+function ImageMigrate_menu(){
+    $items ['migrate/img'] = array(
+          'title' => 'Copy Images',
+          'description' => 'Copies the files from pm-boxes/*/*.png to sites/default/files/pictures',
+          'page callback' => 'im_buildShell',
+          'type' => MENU_CALLBACK,
+          'access arguments' => array('administer features')
+    );
+    $items['migrate/nodes'] = array(
+      'title' => 'Create nodes',
+      'description' => 'Creates a node for each imported image',
+      'page callback' => 'createAllNodes',
+      'type' => MENU_CALLBACK,
+      'access arguments' => array('administer features')
+    );
+    return $items;
+}

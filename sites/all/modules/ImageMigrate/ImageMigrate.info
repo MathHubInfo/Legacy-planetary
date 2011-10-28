@@ -1,0 +1,6 @@
+name = Image Migrate
+description = Moves all the PNG images from the old pm-fileboxes dir to sites/default/files in drupal directory
+core = 7.x
+package = Migrate
+files[] = ImageMigrate.module
+files[] = ImageMigrate.install
