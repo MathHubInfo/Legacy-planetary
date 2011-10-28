@@ -1,0 +1,116 @@
+<?php
+
+/**
+ * Provides functionality for the correction content type
+ * @author Alex Dumitru alex@flanche.net
+ * @package Other
+ * @version 7.x-1.0-alpha
+ * @todo Themeing functionality
+ */
+
+
+/**
+ * Implementation of hook_menu
+ * Two new paths for accept correction and reject correction. correction/:nid/accept|reject
+ * @return array
+ */
+function correction_menu() {
+  $items = array();
+
+  $items['correction/%/accept'] = array(
+      'title' => 'Accept Correction',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'correction_accept_correction',
+      'page arguments' => array(1),
+      'access arguments' => array('create correction content')
+  );
+
+  $items['correction/%/reject'] = array(
+      'title' => 'Reject Correction',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'correction_reject_correction',
+      'page arguments' => array(1),
+      'access arguments' => array('create correction content')
+  );
+
+  return $items;
+}
+
+/**
+ * Accepts a correction for a given article. Does the necesarry checks, no other action required
+ * @param $nid The correction's id 
+ */
+function correction_accept_correction($nid) {
+  global $user;
+  $correction = node_load($nid);
+  $article = node_load($correction->field_correction_article['und'][0]['nid']);
+  if ($article->uid === $user->uid) {
+    $correction->field_correction_accepted['und'][0]['value'] = 1;
+    $correction->field_correction_closed['und'][0]['value'] = 1;
+    node_save($correction);
+    drupal_set_message("The correction was accepted");
+  } else {
+    drupal_set_message("You can't accept the correction!");
+  }
+  drupal_goto();
+}
+
+/**
+ * Rejects a correction for a given article. Does the necesarry checks, no other action required
+ * @param $nid The correction's id 
+ */
+function correction_reject_correction($nid) {
+  global $user;
+  $correction = node_load($nid);
+  $article = node_load($correction->field_correction_article['und'][0]['nid']);
+  if ($article->uid === $user->uid) {
+    $correction->field_correction_accepted['und'][0]['value'] = 0;
+    $correction->field_correction_closed['und'][0]['value'] = 1;
+    node_save($correction);
+    drupal_set_message("The correction was rejected");
+  } else {
+    drupal_set_message("You can't reject the correction!");
+  }
+  drupal_goto();
+}
+
+/**
+ * Implementation of hook_form_FORM_ID_alter()
+ * Disables the fields that are only used for internal usage.
+ * @param array $form
+ * @param array $form_state
+ * @param array $form_id 
+ */
+function correction_form_correction_node_form_alter(&$form, &$form_state, $form_id) {
+  global $user;
+  unset($form['field_correction_accepted']);
+  unset($form['field_correction_closed']);
+  $form['field_correction_article']['und']['#value'] = arg(3);
+}
+
+/**
+ * Implementation of hook_node_view()
+ * Adds two markup fields to the correction fields. Accept/Reject links | Status of the correction
+ * @param stdClass $node
+ * @param string $view_mode 
+ */
+function correction_node_view($node, $view_mode) {
+  if ($node->type == 'correction') {
+    global $user;
+    $article = node_load($node->field_correction_article['und'][0]['nid']);
+    if ($article->uid == $user->uid && !$node->field_correction_closed['und']['0']['value']) {
+      $node->content['correction_links'] = array(
+          '#markup' => '<h4 style="font-weight:bold">Manage Correction:</h4>' . l('Accept Correction', 'correction/' . $node->nid . '/accept', array('query' => drupal_get_destination())) . ' | ' . l('Reject Correction', 'correction/' . $node->nid . '/reject', array('query' => drupal_get_destination())),
+          '#weight' => '-3'
+      );
+    }
+    $status = 'Waiting for response';
+    if ($node->field_correction_closed['und']['0']['value']) {
+      $status = $correction->field_correction_accepted['und'][0]['value'] ? "Accepted" : "Rejected";
+    }
+    $node->content['correction_links'] = array(
+        '#markup' => '<b>Status: </b>' . $status,
+        '#weight' => '1'
+    );
+  }
+}

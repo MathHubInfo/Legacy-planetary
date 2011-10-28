@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Provides functionality for correction content type
+ * @author Alex Dumitru alex@flanche.net
+ * @package Other
+ * @version 7.x-1.0-alpha
+ */
+function correction_schema() {
+  $schema['migrate_map_pmcorrections'] = array(
+      'description' => 'Table base for mapping corrections to drupal corrections',
+      'fields' => array(
+          'sourceid1' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true
+          ),
+          'destid1' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true
+          ),
+          'needs_update' => array(
+              'type' => 'int',
+              'size' => 'tiny',
+              'unsigned' => true,
+              'not null' => true              
+          ),
+          'last_imported' => array(
+              'type' => 'int',
+              'size' => 'big',
+              'unsigned' => true,
+              'not null' => true                            
+          )
+      ),
+      'primary key' => array(
+          'sourceid1',
+          'destid1'
+      )
+  );
+  return $schema;
+}
