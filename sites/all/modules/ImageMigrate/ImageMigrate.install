@@ -1,0 +1,25 @@
+<?php
+
+function ImageMigrate_schema(){
+    return array(
+      'imageMigrate' => array(
+          'fields' => array(
+              'name' => array(
+                  'type' => 'varchar',
+                  'not null' => TRUE,
+                  'length' => 256
+              ),
+              'uid' => array(
+                  'type' => 'int',
+                  'not null' => TRUE,
+                  'default' => 0
+              ),
+              'cannonical' => array(
+                  'type' => 'varchar',
+                  'length' => 255,
+              )
+          ),
+          'primary_key' => array('name', 'cannonical')
+      )  
+    );
+}
