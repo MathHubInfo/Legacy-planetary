@@ -9,8 +9,8 @@ dependencies[] = migrate
 dependencies[] = list
 dependencies[] = number
 
-files[] = planetmath.module
-files[] = planetmath.inc
+files[] = planetmath_migration.module
+files[] = planetmath_migration.inc
 
 ; Information added by drupal.org packaging script on 2011-05-26
 version = "7.x-2.1"
