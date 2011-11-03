@@ -1,0 +1,75 @@
+<?php
+
+/* The purpose of this module is to provide all of the
+ * workflow rules for PlanetMath.  These include the
+ * following:
+ *   - Check/update the canonical name upon node save
+ *   - Add points for user actions to the user's score
+ *   - Put articles in the orphanage after a grace period
+ *   - Maintain a correspondence between requests and encyclopedia
+ *   - Implement notifications for the watch system
+ *   - ...
+ And so on and so forth. */
+
+// Check and update the canonical name upon node save
+
+function canonicalize_name($node, $str, $count = 1) {
+  $words = explode(" ", $str);
+  $name = "";
+  foreach ($words as $word){
+    $word = ucfirst(str_replace ("$", "", $word));
+    $name = $name . $word;
+  }
+  $match = FALSE;
+
+  // needs to be adjusted for the updating case!
+  $othernames = db_query("SELECT field_canonicalname_value AS name FROM {field_data_field_canonicalname} WHERE entity_id <> :nid", array('nid' => $node->nid));
+  foreach ($othernames as $othername){
+    if(strcmp($othername->name, $name) == 0){
+      $match = TRUE;
+    }
+  }
+  if($match) {
+    canonicalize_name($name . $count, $count + 1);
+  } else {
+    // finally, replace non-alphabetic stuff
+    // (is this the best way?)
+    return preg_replace("/[^a-zA-Z0-9\s]/", "", $name);;
+  }
+}
+
+// update the canonicalname field.
+function planetmath_rules_node_presave($node){
+  if ( $node->field_canonicalname['und'][0]['value'] ) {
+    $node->field_canonicalname['und'][0]['value'] = canonicalize_name($node,$node->field_canonicalname['und'][0]['value']);
+  } else {
+    $node->field_canonicalname['und'][0]['value'] = canonicalize_name($node,$node->title);
+  }
+}
+
+/* Here's the way scoring is supposed to work:
+ *
+ * add a paper                    + 50    (ignore for now)
+ * add an exposition              + 75    (ignore for now)
+ * add a book                     + 100   (ignore for now)
+ * vote (in a poll)               + 1     (ignore for now)
+ * minor edit (for admins)        + 5     (ignore for now)
+ *
+ * add to encyclopedia            + 100
+ * post a message                 + 1
+ * revise an object               + 5
+ * accepted correction (erratum)  + 30
+ * accepted correction (addendum) + 20
+ * accepted correction (meta)     + 10
+ * adopt an object                + (1/2)(score)
+ * orphan/transfer an object      - (1/2)(score)
+ * delete an object               - (score)  */
+
+// Add points for user actions to the user's score.
+function update_score() {}
+
+// Put articles in the orphanage after a grace period
+function expire_correction() {}
+
+// Implement notifications for the watch system
+function send_notification() {}
