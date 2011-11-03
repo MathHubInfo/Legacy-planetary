@@ -2,17 +2,17 @@
 
 /**
  * Contanins several function to migrate the content from the old planet math to the alpha
- * Use migration_migrateUserFields() to migrate the profiles from the old system to the drupal one
- * Use migration_corrections() to migrate the corrections and all their relevant data(comments)
+ * Use planetmath_migration_extras_migrateUserFields() to migrate the profiles from the old system to the drupal one
+ * Use planetmath_migration_extras_corrections() to migrate the corrections and all their relevant data(comments)
  * @author Alex Dumitru alex@flanche.net
- * @package Migration
+ * @package Planetmath Migration Extras
  * @version 1.0.0 - alpha
  */
 
 /**
  * Migrates user profiles from the old system to the other.
  */
-function migration_migrateUserFields() {
+function planetmath_migration_extras_migrateUserFields() {
   set_time_limit(0);
   $fieldList = array(
       'forename',
@@ -69,7 +69,7 @@ function migration_migrateUserFields() {
  *  - field_correction_closed
  *  - field_correction_type
  */
-function migration_corrections() {
+function planetmath_migration_extras_corrections() {
   set_time_limit(0);
   global $language;
   $count = db_query("SELECT COUNT(uid) AS corr_count FROM planetmath_corrections")->fetchObject();

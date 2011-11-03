@@ -1,5 +1,0 @@
-name = "Migration Users"
-package = "Migration"
-description = "Migrates user fields"
-version = "7.x - 1.0"
-core = "7.x"
