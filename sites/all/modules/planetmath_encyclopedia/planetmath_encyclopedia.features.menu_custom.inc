@@ -5,7 +5,7 @@
  */
 
 /**
- * Implementation of hook_menu_default_menu_custom().
+ * Implements hook_menu_default_menu_custom().
  */
 function planetmath_encyclopedia_menu_default_menu_custom() {
   $menus = array();

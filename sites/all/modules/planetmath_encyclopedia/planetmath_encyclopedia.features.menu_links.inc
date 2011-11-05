@@ -5,7 +5,7 @@
  */
 
 /**
- * Implementation of hook_menu_default_menu_links().
+ * Implements hook_menu_default_menu_links().
  */
 function planetmath_encyclopedia_menu_default_menu_links() {
   $menu_links = array();
@@ -36,7 +36,25 @@ function planetmath_encyclopedia_menu_default_menu_links() {
     'link_title' => 'Articles',
     'options' => array(
       'attributes' => array(
-        'title' => 'Articles',
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
+  // Exported menu link: main-menu:corrections
+  $menu_links['main-menu:corrections'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'corrections',
+    'router_path' => 'corrections',
+    'link_title' => 'Corrections',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Corrections to articles',
       ),
     ),
     'module' => 'menu',
@@ -64,6 +82,42 @@ function planetmath_encyclopedia_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '0',
   );
+  // Exported menu link: main-menu:gallery
+  $menu_links['main-menu:gallery'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'gallery',
+    'router_path' => 'gallery',
+    'link_title' => 'Gallery',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Images',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
+  // Exported menu link: main-menu:groups
+  $menu_links['main-menu:groups'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'groups',
+    'router_path' => 'groups',
+    'link_title' => 'Groups',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Coauthor groups',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
   // Exported menu link: main-menu:people
   $menu_links['main-menu:people'] = array(
     'menu_name' => 'main-menu',
@@ -82,15 +136,33 @@ function planetmath_encyclopedia_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '0',
   );
-  // Exported menu link: main-menu:problem
-  $menu_links['main-menu:problem'] = array(
+  // Exported menu link: main-menu:problems
+  $menu_links['main-menu:problems'] = array(
     'menu_name' => 'main-menu',
-    'link_path' => 'problem',
-    'router_path' => 'problem',
+    'link_path' => 'problems',
+    'router_path' => 'problems',
     'link_title' => 'Problems',
     'options' => array(
       'attributes' => array(
-        'title' => 'Manage problems',
+        'title' => 'Solve \'em here.',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
+  // Exported menu link: main-menu:solutions
+  $menu_links['main-menu:solutions'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'solutions',
+    'router_path' => 'solutions',
+    'link_title' => 'Solutions',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
       ),
     ),
     'module' => 'menu',
@@ -103,10 +175,14 @@ function planetmath_encyclopedia_menu_default_menu_links() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Articles');
+  t('Corrections');
   t('Forums');
+  t('Gallery');
+  t('Groups');
   t('Home');
   t('People');
   t('Problems');
+  t('Solutions');
 
 
   return $menu_links;

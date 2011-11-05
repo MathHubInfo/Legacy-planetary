@@ -5,7 +5,7 @@
  */
 
 /**
- * Implementation of hook_filter_default_formats().
+ * Implements hook_filter_default_formats().
  */
 function planetmath_encyclopedia_filter_default_formats() {
   $formats = array();
@@ -22,7 +22,9 @@ function planetmath_encyclopedia_filter_default_formats() {
         'weight' => '0',
         'status' => '1',
         'settings' => array(
-          'latexml_url' => 'http://tex2xml.kwarc.info/test/ajax/convert_fragment.php',
+          'latexml_url' => 'http://127.0.0.1:3000/convert',
+          'latexml_preamable' => '',
+          'latexml_preamble' => '%%% nothing for now',
         ),
       ),
       'filter_url' => array(
