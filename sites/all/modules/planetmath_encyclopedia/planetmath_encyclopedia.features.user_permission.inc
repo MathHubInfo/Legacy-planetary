@@ -1102,15 +1102,6 @@ function planetmath_encyclopedia_user_default_permissions() {
     'roles' => array(),
   );
 
-  // Exported permission: use text format php_evaluator
-  $permissions['use text format php_evaluator'] = array(
-    'name' => 'use text format php_evaluator',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'filter',
-  );
-
   // Exported permission: use text format tex_editor
   $permissions['use text format tex_editor'] = array(
     'name' => 'use text format tex_editor',
