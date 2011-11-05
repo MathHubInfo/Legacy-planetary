@@ -234,6 +234,12 @@ function planetmath_encyclopedia_user_default_permissions() {
     'module' => 'locale',
   );
 
+  // Exported permission: administer mathjax
+  $permissions['administer mathjax'] = array(
+    'name' => 'administer mathjax',
+    'roles' => array(),
+  );
+
   // Exported permission: administer menu
   $permissions['administer menu'] = array(
     'name' => 'administer menu',
@@ -1056,15 +1062,6 @@ function planetmath_encyclopedia_user_default_permissions() {
       0 => 'administrator',
     ),
     'module' => 'locale',
-  );
-
-  // Exported permission: use PHP for settings
-  $permissions['use PHP for settings'] = array(
-    'name' => 'use PHP for settings',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'php',
   );
 
   // Exported permission: use advanced search
