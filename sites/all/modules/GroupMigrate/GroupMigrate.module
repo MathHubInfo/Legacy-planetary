@@ -25,9 +25,8 @@
 
 // We need to be able to add groups, and we need to be able to add nodes as a subroutine.
 function node_add_programmatic($type, $title, $uid, $body_text) {
-  global $language; 
 
-  $node = (object) array("type"=>$type, "title"=>$title, "language"=>$language['language']);
+  $node = (object) array("type"=>$type, "title"=>$title, "language"=>LANGUAGE_NONE);
 
   node_object_prepare($node);
 
@@ -54,13 +53,15 @@ function group_add_programmatic($name,$userid,$description) {
 function port_world_writable() {
   // Creates world writable group #1 (or change the code to use the correct number)!
   group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
+  $ww = db_query("SELECT gid FROM {og} where label = 'World Writable'")->fetchField();
+
   $users = db_query("SELECT uid FROM {users} where uid>1");
   foreach ($users as $uid) {
-      og_membership_save(og_membership_create(1, 'user', $uid));
+      og_membership_save(og_membership_create($ww, 'user', $uid));
     }
   $articles = db_query("SELECT objectid FROM {planetmath_acl} WHERE default_or_normal = 'd' and _write = 1");
   foreach ($articles as $nid) {
-      og_membership_save(og_membership_create(1, 'node', $nid));
+      og_membership_save(og_membership_create($ww, 'node', $nid));
     }
   }
 // Test (well, just do the damn thing): 
