@@ -40,10 +40,12 @@ function canonicalize_name($node, $str, $count = 1) {
 
 // update the canonicalname field.
 function planetmath_rules_node_presave($node){
-  if ( $node->field_canonicalname['und'][0]['value'] ) {
-    $node->field_canonicalname['und'][0]['value'] = canonicalize_name($node,$node->field_canonicalname['und'][0]['value']);
-  } else {
-    $node->field_canonicalname['und'][0]['value'] = canonicalize_name($node,$node->title);
+  if ( $node->type == 'article' ) {
+    if ( $node->field_canonicalname['und'][0]['value'] ) {
+      $node->field_canonicalname['und'][0]['value'] = canonicalize_name($node,$node->field_canonicalname['und'][0]['value']);
+    } else {
+      $node->field_canonicalname['und'][0]['value'] = canonicalize_name($node,$node->title);
+    }
   }
 }
 
