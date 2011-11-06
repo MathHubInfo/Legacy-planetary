@@ -57,11 +57,11 @@ function port_world_writable() {
 
   $users = db_query("SELECT uid FROM {users} where uid>1");
   foreach ($users as $uid) {
-      og_membership_save(og_membership_create($ww, 'user', $uid));
+      og_membership_save(og_membership_create($ww, 'user', $uid->uid));
     }
   $articles = db_query("SELECT objectid FROM {planetmath_acl} WHERE default_or_normal = 'd' and _write = 1");
   foreach ($articles as $nid) {
-      og_membership_save(og_membership_create($ww, 'node', $nid));
+      og_membership_save(og_membership_create($ww, 'node', $nid->objectid));
     }
   }
 // Test (well, just do the damn thing): 
