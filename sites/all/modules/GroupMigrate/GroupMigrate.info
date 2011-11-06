@@ -1,0 +1,5 @@
+name = Group Migrate
+description = Rewrites old permissions as organic groups
+core = 7.x
+package = Planetary Modules
+files[] = GroupMigrate.module
