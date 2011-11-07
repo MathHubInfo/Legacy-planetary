@@ -58,7 +58,7 @@ function latex_field_field_formatter_view($entity_type, $entity, $field, $instan
 				$element[$delta]['#markup'] = theme("wysiwyg_etherpad_local",
 				array(
 										"content" => $fobj, 
-										"link" => url('<front>')."localedit/".$field["field_name"]."/".$entity->nid));
+										"link" => url('<front>')."localedit/".$entity->nid."/".$field["field_name"]));
 				
 			}
 			break;
