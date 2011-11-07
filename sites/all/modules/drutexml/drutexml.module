@@ -262,19 +262,3 @@ function drutexml_process_node(&$vars) {
     drupal_set_title($node->textitle);
   }
 }
-
-function drutexml_entity_presave($entity, $type) {
-	$ent = (array) $entity;
-	if (isset($ent["field_preamble"]) && isset($ent["body"])) {
-		$entity->body["und"][0]["preamble"] = $ent["field_preamble"]["und"][0]["value"];
-	}
-}
-
-function drutexml_entity_load($entities, $type) {
-	foreach ($entities as $entity) {
-		$ent = (array) $entity;
-		if (isset($ent["field_preamble"]) && isset($ent["body"])) {
-			$entity->body["und"][0]["preamble"] = $ent["field_preamble"]["und"][0]["value"];
-		}
-	}
-}
