@@ -9,11 +9,12 @@ Drupal.wysiwyg.editor.init.etherpad_lite = function(settings) {
  */
 Drupal.wysiwyg.editor.attach.etherpad_lite = function(context, params, settings) {
   editorid = "#"+params.field;
+  console.log(params);
   newID = params.field+"-editor";
   $(editorid).after($("<div>").attr("id", params.field+"-editor").attr("class","pad"));
   obj = $(editorid).next();
   egid = $("#etherpad_gid").val();
-  console.log(Drupal);
+  nid = $("#etherpad_nid").val();
   if (typeof(egid) != "undefined") {
 	  settings.egid = egid;
 	  $(obj).pad({
@@ -24,10 +25,21 @@ Drupal.wysiwyg.editor.attach.etherpad_lite = function(context, params, settings)
 		    'showLineNumbers'  : true,
 		    'userName'	 : settings.user,
 			});
-	  $(obj).pad({'host':settings.host, 
-		  		  'setContents':$(editorid).val(),
-				  'padId': settings.egid+"$"+params.field,
-		  		  });
+	  if (nid.length>0) {
+		  $(obj).pad({'getContents': {
+			  "format": "txt",
+			  "callback": function(txt) {
+				  if (txt.length==1) {
+					  $(obj).pad({'host':settings.host, 
+   			  		  	'setContents':$(editorid).val(),
+   			  		  	"nid" : nid,
+   			  		  	'padId': settings.egid+"$"+params.field,
+   			  		  	});   				  
+				  }
+			  }
+		  }});
+	  }
+
 	  $(editorid).hide(); 
   }
 };
@@ -42,7 +54,6 @@ Drupal.wysiwyg.editor.detach.etherpad_lite = function(context, params) {
   newID = editorid+"-editor";
   
   $(newID).each(function(id, obj) {
-	  //$(obj).after($("<div>").attr("id", params.field+"-editor-val").attr("style","display:none"));
    	  $(obj).pad({'getContents': {
    		  "format": "txt",
    		  "callback": function(txt) {
