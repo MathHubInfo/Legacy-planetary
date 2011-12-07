@@ -332,7 +332,7 @@ class SearchAdvancedSearchForm extends DrupalWebTestCase {
 
     // Assert that the dummy title doesn't equal the real title.
     $dummy_title = 'Lorem ipsum';
-    $this->assertNotEqual($dummy_title, $this->node->title, t("Dummy title doens't equal node title"));
+    $this->assertNotEqual($dummy_title, $this->node->title, t("Dummy title doesn't equal node title"));
 
     // Search for the dummy title with a GET query.
     $this->drupalGet('search/node/' . $dummy_title);
@@ -584,11 +584,11 @@ class SearchBlockTestCase extends DrupalWebTestCase {
   }
 
   function testSearchFormBlock() {
-    // Set block title to confirm that the interface is availble.
+    // Set block title to confirm that the interface is available.
     $this->drupalPost('admin/structure/block/manage/search/form/configure', array('title' => $this->randomName(8)), t('Save block'));
     $this->assertText(t('The block configuration has been saved.'), t('Block configuration set.'));
 
-    // Set the block to a region to confirm block is availble.
+    // Set the block to a region to confirm block is available.
     $edit = array();
     $edit['blocks[search_form][region]'] = 'footer';
     $this->drupalPost('admin/structure/block', $edit, t('Save blocks'));
@@ -1945,5 +1945,48 @@ class SearchLanguageTestCase extends DrupalWebTestCase {
     // Check that there are again no languages displayed.
     $this->drupalGet('search/node');
     $this->assertNoText(t('Languages'), t('No languages to choose from.'));
+  }
+}
+
+/**
+ * Tests node search with node access control.
+ */
+class SearchNodeAccessTest extends DrupalWebTestCase {
+  public $test_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Search and node access',
+      'description' => 'Tests search functionality with node access control.',
+      'group' => 'Search',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('search', 'node_access_test');
+    node_access_rebuild();
+
+    // Create a test user and log in.
+    $this->test_user = $this->drupalCreateUser(array('access content', 'search content', 'use advanced search'));
+    $this->drupalLogin($this->test_user);
+  }
+
+  /**
+   * Tests that search returns results with punctuation in the search phrase.
+   */
+  function testPhraseSearchPunctuation() {
+    $node = $this->drupalCreateNode(array('body' => array(LANGUAGE_NONE => array(array('value' => "The bunny's ears were fuzzy.")))));
+
+    // Update the search index.
+    module_invoke_all('update_index');
+    search_update_totals();
+
+    // Refresh variables after the treatment.
+    $this->refreshVariables();
+
+    // Submit a phrase wrapped in double quotes to include the punctuation.
+    $edit = array('keys' => '"bunny\'s"');
+    $this->drupalPost('search/node', $edit, t('Search'));
+    $this->assertText($node->title);
   }
 }

@@ -45,7 +45,6 @@ function file_menu() {
   );
   $items['file/progress'] = array(
     'page callback' => 'file_ajax_progress',
-    'delivery callback' => 'ajax_deliver',
     'access arguments' => array('access content'),
     'theme callback' => 'ajax_base_page_theme',
     'type' => MENU_CALLBACK,
@@ -142,10 +141,13 @@ function file_file_download($uri, $field_type = 'file') {
   // Find out which (if any) fields of this type contain the file.
   $references = file_get_file_references($file, NULL, FIELD_LOAD_CURRENT, $field_type);
 
-  // If there are no references, stop processing, to avoid returning headers
-  // for files controlled by other modules.
-  if (empty($references)) {
-    return;
+  // Stop processing if there are no references in order to avoid returning
+  // headers for files controlled by other modules. Make an exception for
+  // temporary files where the host entity has not yet been saved (for example,
+  // an image preview on a node/add form) in which case, allow download by the
+  // file's owner.
+  if (empty($references) && ($file->status == FILE_STATUS_PERMANENT || $file->uid != $user->uid)) {
+      return;
   }
 
   // Default to allow access.
@@ -381,7 +383,9 @@ function file_managed_file_process($element, &$form_state, $form) {
     '#weight' => -5,
   );
 
-  $ajax_settings['progress']['type'] ? $ajax_settings['progress']['type'] == 'bar' : 'throbber';
+  // Force the progress indicator for the remove button to be either 'none' or
+  // 'throbber', even if the upload button is using something else.
+  $ajax_settings['progress']['type'] = ($element['#progress_indicator'] == 'none') ? 'none' : 'throbber';
   $ajax_settings['progress']['message'] = NULL;
   $ajax_settings['effect'] = 'none';
   $element['remove_button'] = array(
@@ -409,6 +413,9 @@ function file_managed_file_process($element, &$form_state, $form) {
         '#type' => 'hidden',
         '#value' => $upload_progress_key,
         '#attributes' => array('class' => array('file-progress')),
+        // Uploadprogress extension requires this field to be at the top of the
+        // form.
+        '#weight' => -20,
       );
     }
     elseif ($implementation == 'apc') {
@@ -416,6 +423,9 @@ function file_managed_file_process($element, &$form_state, $form) {
         '#type' => 'hidden',
         '#value' => $upload_progress_key,
         '#attributes' => array('class' => array('file-progress')),
+        // Uploadprogress extension requires this field to be at the top of the
+        // form.
+        '#weight' => -20,
       );
     }
 
@@ -643,9 +653,18 @@ function file_managed_file_save_upload($element) {
 function theme_file_managed_file($variables) {
   $element = $variables['element'];
 
+  $attributes = array();
+  if (isset($element['#id'])) {
+    $attributes['id'] = $element['#id'];
+  }
+  if (!empty($element['#attributes']['class'])) {
+    $attributes['class'] = (array) $element['#attributes']['class'];
+  }
+  $attributes['class'][] = 'form-managed-file';
+
   // This wrapper is required to apply JS behaviors and CSS styling.
   $output = '';
-  $output .= '<div class="form-managed-file">';
+  $output .= '<div' . drupal_attributes($attributes) . '>';
   $output .= drupal_render_children($element);
   $output .= '</div>';
   return $output;
