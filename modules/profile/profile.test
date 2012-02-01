@@ -399,7 +399,7 @@ class ProfileBlockTestCase extends ProfileTestCase {
   }
 
   function testAuthorInformationBlock() {
-    // Set the block to a region to confirm the block is availble.
+    // Set the block to a region to confirm the block is available.
     $edit = array();
     $edit['blocks[profile_author-information][region]'] = 'footer';
     $this->drupalPost('admin/structure/block', $edit, t('Save blocks'));
@@ -478,6 +478,46 @@ class ProfileTestBrowsing extends ProfileTestCase {
     // Check that user is found on the profile browse page.
     $this->drupalGet("profile/{$field['form_name']}/$value");
     $this->assertText($this->normal_user->name);
+  }
+}
+
+/**
+ * Test profile integration with user CRUD operations.
+ */
+class ProfileCrudTestCase extends ProfileTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Profile CRUD tests',
+      'description' => 'Test profile integration with user create, read, update, delete.',
+      'group' => 'Profile',
+    );
+  }
+
+  /**
+   * Test profile integration with user CRUD operations.
+   */
+  public function testUserCRUD() {
+    // @todo Add profile fields in addition to base user properties.
+    $edit = array(
+      'name' => 'Test user',
+      'mail' => 'test@example.com',
+    );
+
+    // Create.
+    // @todo Add assertions.
+    $account = user_save(NULL, $edit);
+
+    // Read.
+    // @todo Add assertions.
+    $account = user_load($account->uid);
+
+    // Update.
+    // @todo Add assertions.
+    $account = user_save($account, $edit);
+
+    // Delete.
+    // @todo Add assertions.
+    user_delete($account->uid);
   }
 }
 
