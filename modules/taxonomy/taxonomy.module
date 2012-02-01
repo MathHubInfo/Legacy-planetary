@@ -380,7 +380,26 @@ function taxonomy_admin_vocabulary_title_callback($vocabulary) {
 }
 
 /**
- * Save a vocabulary given a vocabulary object.
+ * Saves a vocabulary.
+ *
+ * @param $vocabulary
+ *   A vocabulary object with the following properties:
+ *   - vid: The ID of the vocabulary.
+ *   - name: The human-readable name of the vocabulary.
+ *   - machine_name: The machine name of the vocabulary.
+ *   - description: (optional) The vocabulary's description.
+ *   - hierarchy: The hierarchy level of the vocabulary.
+ *   - module: (optional) The module altering the vocabulary.
+ *   - weight: (optional) The weight of this vocabulary in relation to other
+ *     vocabularies.
+ *   - original: (optional) The original vocabulary object before any changes
+ *     are applied.
+ *   - old_machine_name: (optional) The original machine name of the
+ *     vocabulary.
+ *
+ * @return
+ *   Status constant indicating whether the vocabulary was inserted (SAVED_NEW)
+ *   or updated(SAVED_UPDATED).
  */
 function taxonomy_vocabulary_save($vocabulary) {
   // Prevent leading and trailing spaces in vocabulary names.
@@ -422,7 +441,7 @@ function taxonomy_vocabulary_save($vocabulary) {
 
   unset($vocabulary->original);
   cache_clear_all();
-  entity_get_controller('taxonomy_vocabulary')->resetCache(array($vocabulary->vid));
+  taxonomy_vocabulary_static_reset(array($vocabulary->vid));
 
   return $status;
 }
@@ -454,7 +473,7 @@ function taxonomy_vocabulary_delete($vid) {
     module_invoke_all('entity_delete', $vocabulary, 'taxonomy_vocabulary');
 
     cache_clear_all();
-    entity_get_controller('taxonomy_vocabulary')->resetCache();
+    taxonomy_vocabulary_static_reset();
 
     return SAVED_DELETED;
   }
@@ -491,19 +510,22 @@ function taxonomy_taxonomy_vocabulary_update($vocabulary) {
 }
 
 /**
- * Dynamically check and update the hierarchy flag of a vocabulary.
+ * Checks and updates the hierarchy flag of a vocabulary.
  *
  * Checks the current parents of all terms in a vocabulary and updates the
- * vocabularies hierarchy setting to the lowest possible level. A hierarchy with
- * no parents in any of its terms will be given a hierarchy of 0. If terms
- * contain at most a single parent, the vocabulary will be given a hierarchy of
- * 1. If any term contain multiple parents, the vocabulary will be given a
- * hierarchy of 2.
+ * vocabulary's hierarchy setting to the lowest possible level. If no term
+ * has parent terms then the vocabulary will be given a hierarchy of 0.
+ * If any term has a single parent then the vocabulary will be given a
+ * hierarchy of 1. If any term has multiple parents then the vocabulary
+ * will be given a hierarchy of 2.
  *
  * @param $vocabulary
  *   A vocabulary object.
  * @param $changed_term
  *   An array of the term structure that was updated.
+ *
+ * @return
+ *   An integer that represents the level of the vocabulary's hierarchy.
  */
 function taxonomy_check_vocabulary_hierarchy($vocabulary, $changed_term) {
   $tree = taxonomy_get_tree($vocabulary->vid);
@@ -784,7 +806,7 @@ function taxonomy_term_is_page($term) {
 }
 
 /**
- * Clear all static cache variables for terms..
+ * Clear all static cache variables for terms.
  */
 function taxonomy_terms_static_reset() {
   drupal_static_reset('taxonomy_term_count_nodes');
@@ -795,6 +817,17 @@ function taxonomy_terms_static_reset() {
   drupal_static_reset('taxonomy_get_parents_all');
   drupal_static_reset('taxonomy_get_children');
   entity_get_controller('taxonomy_term')->resetCache();
+}
+
+/**
+ * Clear all static cache variables for vocabularies.
+ *
+ * @param $ids
+ * An array of ids to reset in entity controller cache.
+ */
+function taxonomy_vocabulary_static_reset($ids = NULL) {
+  drupal_static_reset('taxonomy_vocabulary_get_names');
+  entity_get_controller('taxonomy_vocabulary')->resetCache($ids);
 }
 
 /**
@@ -814,7 +847,12 @@ function taxonomy_get_vocabularies() {
  *   An array of vocabulary ids, names, machine names, keyed by machine name.
  */
 function taxonomy_vocabulary_get_names() {
-  $names = db_query('SELECT name, machine_name, vid FROM {taxonomy_vocabulary}')->fetchAllAssoc('machine_name');
+  $names = &drupal_static(__FUNCTION__);
+
+  if (!isset($names)) {
+    $names = db_query('SELECT name, machine_name, vid FROM {taxonomy_vocabulary}')->fetchAllAssoc('machine_name');
+  }
+
   return $names;
 }
 
@@ -825,7 +863,8 @@ function taxonomy_vocabulary_get_names() {
  *   A taxonomy term ID.
  *
  * @return
- *   An array of term objects which are the parents of the term $tid.
+ *   An array of term objects which are the parents of the term $tid, or an
+ *   empty array if parents are not found.
  */
 function taxonomy_get_parents($tid) {
   $parents = &drupal_static(__FUNCTION__, array());
@@ -879,7 +918,8 @@ function taxonomy_get_parents_all($tid) {
  *   An optional vocabulary ID to restrict the child search.
  *
  * @return
- *   An array of term objects which are the children of the term $tid.
+ *   An array of term objects that are the children of the term $tid, or an
+ *   empty array when no children exist.
  */
 function taxonomy_get_children($tid, $vid = 0) {
   $children = &drupal_static(__FUNCTION__, array());
@@ -1026,7 +1066,7 @@ function taxonomy_get_tree($vid, $parent = 0, $max_depth = NULL, $load_entities 
  * Provides a case-insensitive and trimmed mapping, to maximize the
  * likelihood of a successful match.
  *
- * @param name
+ * @param $name
  *   Name of the term to search for.
  *
  * @return
@@ -1213,10 +1253,11 @@ function taxonomy_implode_tags($tags, $vid = NULL) {
       if (isset($tag->name)) {
         // Commas and quotes in tag names are special cases, so encode 'em.
         if (strpos($tag->name, ',') !== FALSE || strpos($tag->name, '"') !== FALSE) {
-          $tag->name = '"' . str_replace('"', '""', $tag->name) . '"';
+          $typed_tags[] = '"' . str_replace('"', '""', $tag->name) . '"';
         }
-
-        $typed_tags[] = $tag->name;
+        else {
+          $typed_tags[] = $tag->name;
+        }
       }
     }
   }

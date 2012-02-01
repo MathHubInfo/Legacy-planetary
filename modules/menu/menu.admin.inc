@@ -286,6 +286,7 @@ function menu_edit_item($form, &$form_state, $type, $item, $menu) {
     $form['link_path'] = array(
       '#type' => 'textfield',
       '#title' => t('Path'),
+      '#maxlength' => 255,
       '#default_value' => $path,
       '#description' => t('The path for this menu link. This can be an internal Drupal path such as %add-node or an external URL such as %drupal. Enter %front to link to the front page.', array('%front' => '<front>', '%add-node' => 'node/add', '%drupal' => 'http://drupal.org')),
       '#required' => TRUE,
@@ -678,7 +679,7 @@ function menu_configure() {
     '#empty_option' => t('No Secondary links'),
     '#options' => $menu_options,
     '#tree' => FALSE,
-    '#description' => t('Select the source for the Secondary links. An advanced option allows you to use the same source for both Main links (currently %main) and Secondary links: if your source menu has two levels of hierarchy, the top level menu links will appear in the Main links, and the children of the active link will appear in the Secondary links.', array('%main' => $main ? $menu_options[$main] : 'none')),
+    '#description' => t('Select the source for the Secondary links. An advanced option allows you to use the same source for both Main links (currently %main) and Secondary links: if your source menu has two levels of hierarchy, the top level menu links will appear in the Main links, and the children of the active link will appear in the Secondary links.', array('%main' => $main ? $menu_options[$main] : t('none'))),
   );
 
   return system_settings_form($form);
