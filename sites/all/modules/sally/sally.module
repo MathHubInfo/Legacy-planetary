@@ -2,36 +2,44 @@
 
 function sally_menu() {
 	$item["sally/search"] = array(
-		"page callback" => "drupal_get_form",
-		"page arguments" => array("sally_search_form"),
-		"access callback" => true,
+			"page callback" => "drupal_get_form",
+			"page arguments" => array("sally_search_form"),
+			"access callback" => true,
 	);
 	$item["sally/showdef"] = array(
-		"page callback" => "sally_show_definition",
-		"access callback" => true,
+			"page callback" => "sally_show_definition",
+			"access callback" => true,
 	);
 	return $item;
 }
 
+function sally_theme($existing, $type, $theme, $path) {
+	return array(
+			'sally_show_definition' => array(
+					'variables' => array('content' => NULL),
+					'template' => "sally_show_definition"
+			));
+}
 
 function sally_show_definition($cd, $name) {
 	$url = "https://tnt.kwarc.info/tntbase/stc/restful/jobad/basic?action=expandDefinition&cd=$cd&symbol=$name";
-	echo getResult( $url, '', 'get', '' );
+	$result = getResult( $url, '', 'get', '' );
+	echo theme("sally_show_definition", array("content"=>$result));
 }
 
 
 function sally_search_form($form, &$form_state) {
 	$form["search"] = array(
-		"#type" => "textfield",
-		"#title" => "Search"
+			"#type" => "textfield",
+			"#title" => "Search"
 	);
-	
+
 	$form["filter"] = array(
 			"#type" => "checkboxes",
 			"#title" => "Filter options",
 			"#options" => array("title", "title+body"),
 	);
-	
+
 	$form["results"] = array(
 			"#type" => "container",
 	);
@@ -39,8 +47,8 @@ function sally_search_form($form, &$form_state) {
 	$form["results"][0] = array(
 			"#type" => "container",
 	);
-	
-	
+
+
 	return $form;
 }
 
