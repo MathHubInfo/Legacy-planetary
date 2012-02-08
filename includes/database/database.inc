@@ -152,7 +152,7 @@
  *   }
  *
  *   // $txn goes out of scope here.  Unless the transaction was rolled back, it
- *   // gets automatically commited here.
+ *   // gets automatically committed here.
  * }
  *
  * function my_other_function($id) {
@@ -1016,13 +1016,15 @@ abstract class DatabaseConnection extends PDO {
       throw new DatabaseTransactionNoActiveException();
     }
     // A previous rollback to an earlier savepoint may mean that the savepoint
-    // in question has already been rolled back.
-    if (!in_array($savepoint_name, $this->transactionLayers)) {
-      return;
+    // in question has already been accidentally committed.
+    if (!isset($this->transactionLayers[$savepoint_name])) {
+      throw new DatabaseTransactionNoActiveException();
     }
 
     // We need to find the point we're rolling back to, all other savepoints
-    // before are no longer needed.
+    // before are no longer needed. If we rolled back other active savepoints,
+    // we need to throw an exception.
+    $rolled_back_other_active_savepoints = FALSE;
     while ($savepoint = array_pop($this->transactionLayers)) {
       if ($savepoint == $savepoint_name) {
         // If it is the last the transaction in the stack, then it is not a
@@ -1032,10 +1034,20 @@ abstract class DatabaseConnection extends PDO {
           break;
         }
         $this->query('ROLLBACK TO SAVEPOINT ' . $savepoint);
+        $this->popCommittableTransactions();
+        if ($rolled_back_other_active_savepoints) {
+          throw new DatabaseTransactionOutOfOrderException();
+        }
         return;
+      }
+      else {
+        $rolled_back_other_active_savepoints = TRUE;
       }
     }
     parent::rollBack();
+    if ($rolled_back_other_active_savepoints) {
+      throw new DatabaseTransactionOutOfOrderException();
+    }
   }
 
   /**
@@ -1084,15 +1096,32 @@ abstract class DatabaseConnection extends PDO {
     if (!$this->supportsTransactions()) {
       return;
     }
-    if (!$this->inTransaction()) {
-      throw new DatabaseTransactionNoActiveException();
+    // The transaction has already been committed earlier. There is nothing we
+    // need to do. If this transaction was part of an earlier out-of-order
+    // rollback, an exception would already have been thrown by
+    // Database::rollback().
+    if (!isset($this->transactionLayers[$name])) {
+      return;
     }
 
-    // Commit everything since SAVEPOINT $name.
-    while($savepoint = array_pop($this->transactionLayers)) {
-      if ($savepoint != $name) continue;
+    // Mark this layer as committable.
+    $this->transactionLayers[$name] = FALSE;
+    $this->popCommittableTransactions();
+  }
+
+  /**
+   * Internal function: commit all the transaction layers that can commit.
+   */
+  protected function popCommittableTransactions() {
+    // Commit all the committable layers.
+    foreach (array_reverse($this->transactionLayers) as $name => $active) {
+      // Stop once we found an active transaction.
+      if ($active) {
+        break;
+      }
 
       // If there are no more layers left then we should commit.
+      unset($this->transactionLayers[$name]);
       if (empty($this->transactionLayers)) {
         if (!parent::commit()) {
           throw new DatabaseTransactionCommitFailedException();
@@ -1100,7 +1129,6 @@ abstract class DatabaseConnection extends PDO {
       }
       else {
         $this->query('RELEASE SAVEPOINT ' . $name);
-        break;
       }
     }
   }
@@ -1745,6 +1773,11 @@ class DatabaseTransactionCommitFailedException extends Exception { }
 class DatabaseTransactionExplicitCommitNotAllowedException extends Exception { }
 
 /**
+ * Exception thrown when a rollback() resulted in other active transactions being rolled-back.
+ */
+class DatabaseTransactionOutOfOrderException extends Exception { }
+
+/**
  * Exception thrown for merge queries that do not make semantic sense.
  *
  * There are many ways that a merge query could be malformed.  They should all
@@ -1839,7 +1872,7 @@ class DatabaseTransaction {
 
   public function __destruct() {
     // If we rolled back then the transaction would have already been popped.
-    if ($this->connection->inTransaction() && !$this->rolledBack) {
+    if (!$this->rolledBack) {
       $this->connection->popTransaction($this->name);
     }
   }
@@ -1870,21 +1903,19 @@ class DatabaseTransaction {
 }
 
 /**
- * A prepared statement.
+ * Represents a prepared statement.
  *
- * Some methods in that class are purposely commented out. Due to a change in
+ * Some methods in that class are purposefully commented out. Due to a change in
  * how PHP defines PDOStatement, we can't define a signature for those methods
  * that will work the same way between versions older than 5.2.6 and later
- * versions.
- *
- * Please refer to http://bugs.php.net/bug.php?id=42452 for more details.
+ * versions.  See http://bugs.php.net/bug.php?id=42452 for more details.
  *
  * Child implementations should either extend PDOStatement:
  * @code
  * class DatabaseStatement_oracle extends PDOStatement implements DatabaseStatementInterface {}
  * @endcode
- * or implement their own class, but in that case they will also have to
- * implement the Iterator or IteratorArray interfaces before
+ * or define their own class. If defining their own class, they will also have
+ * to implement either the Iterator or IteratorAggregate interface before
  * DatabaseStatementInterface:
  * @code
  * class DatabaseStatement_oracle implements Iterator, DatabaseStatementInterface {}
@@ -1968,7 +1999,7 @@ interface DatabaseStatementInterface extends Traversable {
    *   The numeric index of the field to return. Defaults to the first field.
    *
    * @return
-   *   A single field from the next record.
+   *   A single field from the next record, or FALSE if there is no next record.
    */
   public function fetchField($index = 0);
 
@@ -1988,7 +2019,7 @@ interface DatabaseStatementInterface extends Traversable {
    * helper method, so one is added.
    *
    * @return
-   *   An associative array.
+   *   An associative array, or FALSE if there is no next row.
    */
   public function fetchAssoc();
 
@@ -2016,7 +2047,7 @@ interface DatabaseStatementInterface extends Traversable {
    *   The index of the column number to fetch.
    *
    * @return
-   *   An indexed array.
+   *   An indexed array, or an empty array if there is no result set.
    */
   public function fetchCol($index = 0);
 
@@ -2036,7 +2067,7 @@ interface DatabaseStatementInterface extends Traversable {
    *   The numeric index of the field to use as the array value.
    *
    * @return
-   *   An associative array.
+   *   An associative array, or an empty array if there is no result set.
    */
   public function fetchAllKeyed($key_index = 0, $value_index = 1);
 
@@ -2055,7 +2086,7 @@ interface DatabaseStatementInterface extends Traversable {
    *   set for the query will be used.
    *
    * @return
-   *   An associative array.
+   *   An associative array, or an empty array if there is no result set.
    */
   public function fetchAllAssoc($key, $fetch = NULL);
 }
