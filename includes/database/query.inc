@@ -22,6 +22,9 @@ interface QueryConditionInterface {
    * parameters, they are taken as $field and $value with $operator having a
    * value of IN if $value is an array and = otherwise.
    *
+   * Do not use this method to test for NULL values. Instead, use
+   * QueryConditionInterface::isNull() or QueryConditionInterface::isNotNull().
+   *
    * @param $field
    *   The name of the field to check. If you would like to add a more complex
    *   condition involving operators or functions, use where().
@@ -36,6 +39,9 @@ interface QueryConditionInterface {
    *
    * @return QueryConditionInterface
    *   The called object.
+   *
+   * @see QueryConditionInterface::isNull()
+   * @see QueryConditionInterface::isNotNull()
    */
   public function condition($field, $value = NULL, $operator = NULL);
 
@@ -142,7 +148,15 @@ interface QueryConditionInterface {
    *   The query this condition belongs to. If not given, the current query is
    *   used.
    */
-  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder = NULL);
+  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder);
+
+  /**
+   * Check whether a condition has been previously compiled.
+   *
+   * @return
+   *   TRUE if the condition has been previously compiled.
+   */
+  public function compiled();
 }
 
 
@@ -239,12 +253,17 @@ interface QueryAlterableInterface {
 interface QueryPlaceholderInterface {
 
   /**
+   * Returns a unique identifier for this object.
+   */
+  public function uniqueIdentifier();
+
+  /**
    * Returns the next placeholder ID for the query.
    *
    * @return
    *   The next available placeholder ID as an integer.
    */
-  function nextPlaceholder();
+  public function nextPlaceholder();
 }
 
 /**
@@ -284,6 +303,11 @@ abstract class Query implements QueryPlaceholderInterface {
   protected $queryOptions;
 
   /**
+   * A unique identifier for this query object.
+   */
+  protected $uniqueIdentifier;
+
+  /**
    * The placeholder counter.
    */
   protected $nextPlaceholder = 0;
@@ -304,6 +328,8 @@ abstract class Query implements QueryPlaceholderInterface {
    *   Array of query options.
    */
   public function __construct(DatabaseConnection $connection, $options) {
+    $this->uniqueIdentifier = uniqid('', TRUE);
+
     $this->connection = $connection;
     $this->connectionKey = $this->connection->getKey();
     $this->connectionTarget = $this->connection->getTarget();
@@ -321,10 +347,17 @@ abstract class Query implements QueryPlaceholderInterface {
   }
 
   /**
-  * Implements the magic __wakeup function to reconnect to the database.
+   * Implements the magic __wakeup function to reconnect to the database.
    */
   public function __wakeup() {
     $this->connection = Database::getConnection($this->connectionTarget, $this->connectionKey);
+  }
+
+  /**
+   * Implements the magic __clone function.
+   */
+  public function __clone() {
+    $this->uniqueIdentifier = uniqid('', TRUE);
   }
 
   /**
@@ -342,6 +375,13 @@ abstract class Query implements QueryPlaceholderInterface {
    *   A prepared statement query string for this object.
    */
   abstract public function __toString();
+
+  /**
+   * Returns a unique identifier for this object.
+   */
+  public function uniqueIdentifier() {
+    return $this->uniqueIdentifier;
+  }
 
   /**
    * Gets the next placeholder value for this query object.
@@ -790,15 +830,22 @@ class DeleteQuery extends Query implements QueryConditionInterface {
   /**
    * Implements QueryConditionInterface::compile().
    */
-  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder = NULL) {
-    return $this->condition->compile($connection, isset($queryPlaceholder) ? $queryPlaceholder : $this);
+  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder) {
+    return $this->condition->compile($connection, $queryPlaceholder);
+  }
+
+  /**
+   * Implements QueryConditionInterface::compiled().
+   */
+  public function compiled() {
+    return $this->condition->compiled();
   }
 
   /**
    * Executes the DELETE query.
    *
    * @return
-   *   The return value is dependant on the database connection.
+   *   The return value is dependent on the database connection.
    */
   public function execute() {
     $values = array();
@@ -864,8 +911,15 @@ class TruncateQuery extends Query {
   /**
    * Implements QueryConditionInterface::compile().
    */
-  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder = NULL) {
-    return $this->condition->compile($connection, isset($queryPlaceholder) ? $queryPlaceholder : $this);
+  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder) {
+    return $this->condition->compile($connection, $queryPlaceholder);
+  }
+
+  /**
+   * Implements QueryConditionInterface::compiled().
+   */
+  public function compiled() {
+    return $this->condition->compiled();
   }
 
   /**
@@ -1025,8 +1079,15 @@ class UpdateQuery extends Query implements QueryConditionInterface {
   /**
    * Implements QueryConditionInterface::compile().
    */
-  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder = NULL) {
-    return $this->condition->compile($connection, isset($queryPlaceholder) ? $queryPlaceholder : $this);
+  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder) {
+    return $this->condition->compile($connection, $queryPlaceholder);
+  }
+
+  /**
+   * Implements QueryConditionInterface::compiled().
+   */
+  public function compiled() {
+    return $this->condition->compiled();
   }
 
   /**
@@ -1510,8 +1571,15 @@ class MergeQuery extends Query implements QueryConditionInterface {
   /**
    * Implements QueryConditionInterface::compile().
    */
-  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder = NULL) {
-    return $this->condition->compile($connection, isset($queryPlaceholder) ? $queryPlaceholder : $this);
+  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder) {
+    return $this->condition->compile($connection, $queryPlaceholder);
+  }
+
+  /**
+   * Implements QueryConditionInterface::compiled().
+   */
+  public function compiled() {
+    return $this->condition->compiled();
   }
 
   /**
@@ -1607,6 +1675,11 @@ class DatabaseCondition implements QueryConditionInterface, Countable {
    * @var bool
    */
   protected $changed = TRUE;
+
+  /**
+   * The identifier of the query placeholder this condition has been compiled against.
+   */
+  protected $queryPlaceholderIdentifier;
 
   /**
    * Constructs a DataBaseCondition object.
@@ -1718,8 +1791,12 @@ class DatabaseCondition implements QueryConditionInterface, Countable {
   /**
    * Implements QueryConditionInterface::compile().
    */
-  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder = NULL) {
-    if ($this->changed) {
+  public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder) {
+    // Re-compile if this condition changed or if we are compiled against a
+    // different query placeholder object.
+    if ($this->changed || isset($this->queryPlaceholderIdentifier) && ($this->queryPlaceholderIdentifier != $queryPlaceholder->uniqueIdentifier())) {
+      $this->queryPlaceholderIdentifier = $queryPlaceholder->uniqueIdentifier();
+
       $condition_fragments = array();
       $arguments = array();
 
@@ -1789,6 +1866,13 @@ class DatabaseCondition implements QueryConditionInterface, Countable {
       $this->stringVersion = implode($conjunction, $condition_fragments);
       $this->arguments = $arguments;
     }
+  }
+
+  /**
+   * Implements QueryConditionInterface::compiled().
+   */
+  public function compiled() {
+    return !$this->changed;
   }
 
   /**
