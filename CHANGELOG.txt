@@ -1,4 +1,121 @@
 
+Drupal 7.13 xxxx-xx-xx (development version)
+----------------------
+
+Drupal 7.12, 2012-02-01
+----------------------
+- Fixed bug preventing custom menus from receiving an active trail.
+- Fixed hook_field_delete() no longer invoked during field_purge_data().
+- Fixed bug causing entity info cache to not be cleared with the rest of caches.
+- Fixed file_unmanaged_copy() fails with Drupal 7.7+ and safe_mode() or
+  open_basedir().
+- Fixed Nested transactions throw exceptions when they got out of scope.
+- Fixed bugs with the Return-Path when sending mail on both Windows and
+  non-Windows systems.
+- Fixed bug with DrupalCacheArray property visibility preventing others from
+  extending it (API change: http://drupal.org/node/1422264).
+- Fixed bug with handling of non-ASCII characters in file names (API change:
+  http://drupal.org/node/1424840).
+- Reconciled field maximum length with database column size in image and
+  aggregator modules.
+- Fixes to various core JavaScript files to allow for minification and
+  aggregation.
+- Fixed Prevent tests from deleting main installation's tables when
+  parent::setUp() is not called.
+- Fixed several Poll module bugs.
+- Fixed several Shortcut module bugs.
+- Added new hook_system_theme_info() to provide ability for contributed modules
+  to test theme functionality.
+- Added ability to cancel mail sending from hook_mail_alter().
+- Added support for configurable PDO connection options, enabling master-master
+  database replication.
+- Numerous improvements to tests and test runner to pave the way for faster test
+  runs.
+- Expanded test coverage.
+- Numerous API documentation improvements.
+- Numerous performance improvements, including token replacement and render
+  cache.
+
+Drupal 7.11, 2012-02-01
+----------------------
+- Fixed security issues (Multiple vulnerabilities), see SA-CORE-2012-001.
+
+Drupal 7.10, 2011-12-05
+----------------------
+- Fixed Content-Language HTTP header to not cause issues with Drush 5.x.
+- Reduce memory usage of theme registry (performance).
+- Fixed PECL upload progress bar for FileField
+- Fixed running update.php doesn't always clear the cache.
+- Fixed PDO exceptions on long titles.
+- Fixed Overlay redirect does not include query string.
+- Fixed D6 modules satisfy D7 module dependencies.
+- Fixed the ordering of module hooks when using module_implements_alter().
+- Fixed "floating" submit buttons during AJAX requests.
+- Fixed timezone selected on install not propogating to admin account.
+- Added msgctx context to JS translation functions, for feature parity with t().
+- Profiles' .install files now available during hook_install_tasks().
+- Added test coverage of 7.0 -> 7.x upgrade path.
+- Numerous notice fixes.
+- Numerous documentation improvements.
+- Additional automated test coverage.
+
+Drupal 7.9, 2011-10-26
+----------------------
+- Critical fixes to OpenID to spec violations that could allow for
+  impersonation in certain scenarios. Existing OpenID users should see
+  http://drupal.org/node/1120290#comment-5092796 for more information on
+  transitioning.
+- Fixed files getting lost when adding multiple files to multiple file fields
+  at the same time.
+- Improved usability of the clean URL test screens.
+- Restored height/width attributes on images run through the theme system.
+- Fixed usability bug with first password field being pre-filled by certain
+  browser plugins.
+- Fixed file_usage_list() so that it can return more than one result.
+- Fixed bug preventing preview of private images on node form.
+- Fixed PDO error when inserting an aggregator title longer than 255 characters.
+- Spelled out what TRADITIONAL means in MySQL sql_mode.
+- Deprecated "!=" operator for DBTNG; should be "<>".
+- Added two new API functions (menu_tree_set_path()/menu_tree_get_path()) were
+  added in order to enable setting the active menu trail for dynamically
+  generated menu paths.
+- Added new "fast 404" capability in settings.php to bypass Drupal bootstrap
+  when serving 404 pages for certain file types.
+- Added format_string() function which can perform string munging ala the t()
+  function without the overhead of the translation system.
+- Numerous #states system fixes.
+- Numerous EntityFieldQuery, DBTNG, and SQLite fixes.
+- Numerous Shortcut module fixes.
+- Numerous language system fixes.
+- Numerous token fixes.
+- Numerous CSS fixes.
+- Numerous upgrade path fixes.
+- Numerous minor string fixes.
+- Numerous notice fixes.
+
+Drupal 7.8, 2011-08-31
+----------------------
+- Fixed critical upgrade path issue with multilingual sites, leading to lost
+  content.
+- Numerous fixes to upgrade path, preventing fatal errors due to incorrect
+  dependencies.
+- Fixed issue with saving files on hosts with open_basedir restrictions.
+- Fixed Update manger error when used with Overlay.
+- Fixed RTL support in Seven administration theme and Overlay.
+- Fixes to nested transaction support.
+- Introduced performance pattern to reduce Drupal core's RAM usage.
+- Added support for HTML 5 tags to filter_xss_admin().
+- Added exception handling to cron.
+- Added new hook hook_field_widget_form_alter() for contribtued modules.
+- element_validate_*() functions now available to contrib.
+- Added new maintainers for several subsystems.
+- Numerous testing system improvements.
+- Numerous markup and CSS fixes.
+- Numerous poll module fixes.
+- Numerous notice/warning fixes.
+- Numerous documentation fixes.
+- Numerous token fixes.
+
 Drupal 7.7, 2011-07-27
 ----------------------
 - Fixed VERSION string.
@@ -1036,7 +1153,7 @@ Drupal 4.5.0, 2004-10-18
 - Filter system:
     * Added support for using multiple input formats on the site
     * Expanded the embedded PHP-code feature so it can be used everywhere
-    * Added support for role-dependant filtering, through input formats
+    * Added support for role-dependent filtering, through input formats
 - UI translation:
     * Managing translations is now completely done through the administration interface
     * Added support for importing/exporting gettext .po files

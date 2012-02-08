@@ -1,22 +1,25 @@
 
-Drupal core is maintained by the community.  To participate, go to
-
-  http://drupal.org/contribute
-
-The people listed here have agreed to do more quality assurance work for
-particular areas of Drupal.  All of them are subject to change.
-
+Drupal core is built and maintained by the Drupal project community. Everyone is
+encouraged to submit issues and changes (patches) to improve Drupal, and to
+contribute in other ways -- see http://drupal.org/contribute to find out how.
 
 Branch maintainers
 ------------------
 
-Drupal 7
+The Drupal Core branch maintainers oversee the development of Drupal as a whole.
+The branch maintainers for Drupal 7 are:
+
 - Dries Buytaert 'dries' <http://drupal.org/user/1>
 - Angela Byron 'webchick' <http://drupal.org/user/24967>
 
 
 Component maintainers
 ---------------------
+
+The Drupal Core component maintainers oversee the development of Drupal
+subsystems. See http://drupal.org/contribute/core-maintainers for more
+information on their responsibilities, and to find out how to become a component
+maintainer. Current component maintainers for Drupal 7:
 
 Ajax system
 - Alex Bronstein 'effulgentsia' <http://drupal.org/user/78040>
@@ -33,6 +36,7 @@ Batch system
 
 Cache system
 - Damien Tournoud 'DamZ' <http://drupal.org/user/22211>
+- Nathaniel Catchpole 'catch' <http://drupal.org/user/35733>
 
 Cron system
 - Károly Négyesi 'chx' <http://drupal.org/user/9446>
@@ -54,7 +58,7 @@ Database system
     - Károly Négyesi 'chx' <http://drupal.org/user/9446>
 
 Database update system
-- ?
+- Károly Négyesi 'chx' <http://drupal.org/user/9446>
 
 Entity system
 - Nathaniel Catchpole 'catch' <http://drupal.org/user/35733>
@@ -129,7 +133,6 @@ Accessibility
 - Brandon Bowersox 'brandonojc' <http://drupal.org/user/186415> 
 
 Documentation
-- Ariane Khachatourians 'arianek' <http://drupal.org/user/158886>
 - Jennifer Hodgdon 'jhodgdon' <http://drupal.org/user/155601>
 
 Security
@@ -190,7 +193,7 @@ Filter module
 - Daniel F. Kudwien 'sun' <http://drupal.org/user/54136>
 
 Forum module
-- ?
+- Lee Rowlands 'larowlan' <http://drupal.org/user/395439>
 
 Help module
 - ?
@@ -237,6 +240,7 @@ Search module
 
 Shortcut module
 - David Rothstein 'David_Rothstein' <http://drupal.org/user/124982>
+- Kristof De Jaeger 'swentel' <http://drupal.org/user/107403>
 
 Simpletest module
 - Jimmy Berry 'boombatower' <http://drupal.org/user/214218>
@@ -252,6 +256,7 @@ System module
 - ?
 
 Taxonomy module
+- Jess Myrbo 'xjm' <http://drupal.org/user/65776>
 - Nathaniel Catchpole 'catch' <http://drupal.org/user/35733>
 - Benjamin Doherty 'bangpound' <http://drupal.org/user/100456>
 

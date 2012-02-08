@@ -373,6 +373,7 @@ function file_default_mimetype_mapping() {
       333 => 'video/vnd.mpegurl',
       347 => 'video/x-flv',
       334 => 'video/x-la-asf',
+      348 => 'video/x-m4v',
       335 => 'video/x-mng',
       336 => 'video/x-ms-asf',
       337 => 'video/x-ms-wm',
@@ -407,7 +408,6 @@ function file_default_mimetype_mapping() {
       'doc' => 14,
       'bin' => 15,
       'oda' => 16,
-      'ogg' => 17,
       'ogx' => 17,
       'pdf' => 18,
       'key' => 19,
@@ -629,6 +629,7 @@ function file_default_mimetype_mapping() {
       'm4a' => 188,
       'mp3' => 188,
       'mp2' => 188,
+      'ogg' => 189,
       'oga' => 189,
       'spx' => 189,
       'sid' => 190,
@@ -852,6 +853,7 @@ function file_default_mimetype_mapping() {
       'f4a' => 346,
       'f4b' => 346,
       'flv' => 347,
+      'm4v' => 348,
     ),
   );
 }
