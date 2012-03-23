@@ -11,43 +11,8 @@
  *   - ...
  And so on and so forth. */
 
-// Check and update the canonical name upon node save
-
-function canonicalize_name($node, $str, $count = 1) {
-  $words = explode(" ", $str);
-  $name = "";
-  foreach ($words as $word){
-    $word = ucfirst(str_replace ("$", "", $word));
-    $name = $name . $word;
-  }
-  $match = FALSE;
-
-  // needs to be adjusted for the updating case!
-  $othernames = db_query("SELECT field_canonicalname_value AS name FROM {field_data_field_canonicalname} WHERE entity_id <> :nid", array('nid' => $node->nid));
-  foreach ($othernames as $othername){
-    if(strcmp($othername->name, $name) == 0){
-      $match = TRUE;
-    }
-  }
-  if($match) {
-    canonicalize_name($name . $count, $count + 1);
-  } else {
-    // finally, replace non-alphabetic stuff
-    // (is this the best way?)
-    return preg_replace("/[^a-zA-Z0-9\s]/", "", $name);;
-  }
-}
-
-// update the canonicalname field.
-function planetmath_rules_node_presave($node){
-  if ( $node->type == 'article' ) {
-    if ( $node->field_canonicalname['und'][0]['value'] ) {
-      $node->field_canonicalname['und'][0]['value'] = canonicalize_name($node,$node->field_canonicalname['und'][0]['value']);
-    } else {
-      $node->field_canonicalname['und'][0]['value'] = canonicalize_name($node,$node->title);
-    }
-  }
-}
+// Check and update the canonical name upon node save - actually doing this in
+// planetmath_edit_article module.
 
 /* Here's the way scoring is supposed to work:
  *

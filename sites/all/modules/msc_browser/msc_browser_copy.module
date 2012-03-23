@@ -1,0 +1,116 @@
+<?php
+
+/*
+ * @file
+ *
+ * This module provides a minimal working example showing how to use
+ * the SPARQL API in practice.
+ *
+ * We will build a web form that lets the user enter an arbitrary
+ * SPARQL endpoint and query, and then see the result. 
+ *
+ */
+
+function msc_browser_menu() {
+
+    $items['msc_browser'] = array(
+        'title' => 'MSC browser 2',
+        'page callback' => 'msc_browser_handler',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,);
+
+    return $items;
+}
+
+function msc_browser_handler($cat='') {
+
+    $endpoint = sparql_registry_load_by_uri("http://li311-58.members.linode.com:8890/sparql");
+//        $endpoint = sparql_registry_load_by_uri("http://sci-class.math.auth.gr:8890/sparql");
+
+    $query = "";
+$result ="";
+
+$articles_flag = 0;
+    if ($cat === '') {
+        $query = " PREFIX msc: <http://msc2010.org/resources/MSC/2010/> " .
+		"PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ".
+		"select distinct ?child ".
+		"where { ?child skos:topConceptOf  <http://msc2010.org/resources/MSC/2010/MSC2010>}";
+
+ $result = sparql_request($query, $endpoint);
+
+
+         /*
+get top categories request = PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+select distinct ?a 
+where { ?a skos:topConceptOf  <http://msc2010.org/resources/MSC/2010/MSC2010>}
+*/
+
+
+
+    } else {
+
+//determine whether it is a terminal category or it has subcategories
+	$det_query = " PREFIX msc:<http://msc2010.org/resources/MSC/2010/> ".
+		"PREFIX skos:<http://www.w3.org/2004/02/skos/core#> ".
+		"select (count(?a) as ?acount) where { ".
+		"msc:".$cat." skos:narrower ?a}";
+
+$determine_result = sparql_request($det_query,$endpoint);
+dpm($determine_result);
+$count = $determine_result['result']['rows'][0]['acount'];
+
+	//if the count is zero is a terminal
+	if ($count==0){
+		$articles_query = "PREFIX dc:<http://purl.org/dc/terms/>".
+				"select ?child where { ".
+				"?child dc:subject <msc:".$cat."> }";
+		$result = sparql_request($articles_query,$endpoint);
+
+$articles_flag=1;
+	}
+	//else it has subcategories
+	else {
+		$subcats_query ="PREFIX msc:<http://msc2010.org/resources/MSC/2010/> " .
+                "PREFIX skos:<http://www.w3.org/2004/02/skos/core#> " .
+                "select distinct ?child where { " .
+                "msc:" . $cat . " skos:narrower ?child }";
+
+		$result = sparql_request($subcats_query,$endpoint);
+	}
+
+
+    }
+
+
+    $toReturn = "<ul>";
+
+    for ($i = 0; $i < sizeof($result['result']['rows']); $i++) {
+        $sub_cat_codes = explode("/", $result['result']['rows'][$i]['child']);
+	//drupal_set_message($result['result']['rows'][$i]['child']);
+        $sub_cat_code = $sub_cat_codes[sizeof($sub_cat_codes)-1];
+
+	$count_query = " PREFIX msc: <http://msc2010.org/resources/MSC/2010/> ".
+			"SELECT (COUNT (?a) as ?count) WHERE {?a <http://purl.org/dc/terms/subject> <msc:".$sub_cat_code.">}";
+
+	$count_result = sparql_request($count_query,$endpoint);
+
+	//dpm($count_result);
+
+	$count = $count_result['result']['rows'][0]['count'];
+if ($articles_flag==0){
+        $toReturn .= "<li><a href='/msc_browser/" . $sub_cat_code . "'>" . $result['result']['rows'][$i]['child'] . "</a> (".$count.")</li>";
+}else {
+$toReturn .= "<li>article!!!!:::::<a href='/msc_browser/" . $sub_cat_code . "'>" . $result['result']['rows'][$i]['child'] . "</a> (".$count.")</li>";
+}
+    }
+
+
+    dpm($cat);
+
+    dpm($result);
+    return $toReturn;
+}
+
+?>
