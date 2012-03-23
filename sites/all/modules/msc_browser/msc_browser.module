@@ -1,0 +1,156 @@
+<?php
+
+/*
+ * @file
+ *
+ * This module provides a minimal working example showing how to use
+ * the SPARQL API in practice.
+ *
+ * We will build a web form that lets the user enter an arbitrary
+ * SPARQL endpoint and query, and then see the result.
+ *
+ */
+
+function msc_browser_menu() {
+
+    $items['msc_browser'] = array(
+        'title' => 'MSC browser',
+        'page callback' => 'msc_browser_handler',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,);
+
+    return $items;
+}
+
+function msc_browser_handler($cat='') {
+  $endpoint = sparql_registry_load_by_uri("http://li311-58.members.linode.com:8890/sparql");
+  $graph="http://localhost:8890/DAV/home/dba/rdf_sink/";
+  $query = "";
+  $result ="";
+  $articles_flag = 0;
+  $level =-1;
+
+  if ($cat === '') {
+    // then we are at the top, so get the top concepts
+    $query =  "PREFIX msc:<http://msc2010.org/resources/MSC/2010/> ".
+      "PREFIX skos:<http://www.w3.org/2004/02/skos/core#> ".
+      "select distinct ?child ?label where { ".
+      "GRAPH <".$graph."> {".
+      "?child skos:topConceptOf <http://msc2010.org/resources/MSC/2010/MSC2010> . ".
+      "?child skos:prefLabel ?label . ".
+      "FILTER langMatches( lang(?label), \"en\" )  }}".
+      "order by ?child";
+
+    $result = sparql_request($query, $endpoint);
+    $level=3;
+  } else {
+    // if this is is a terminal category
+    // then we will query for articles
+
+    if (preg_match("/...[0-9][0-9]/",$cat)){
+      $articles_query = "PREFIX dc:<http://purl.org/dc/terms/> ".
+                        "PREFIX msc:<http://msc2010.org/resources/MSC/2010/> ".
+ 	                "select ?child ?canonicalname where { ".
+	                "GRAPH <".$graph."> {".
+	                "?child dc:subject msc:".$cat." . ".
+	                "?child dc:identifier ?canonicalname}}";
+
+      $result = sparql_request($articles_query,$endpoint);
+      $articles_flag=1;
+    }
+    // else it has subcategories, so find them
+    else {
+
+      $subcats_query = "PREFIX msc:<http://msc2010.org/resources/MSC/2010/> ".
+	"PREFIX skos:<http://www.w3.org/2004/02/skos/core#> ".
+	"select distinct ?child ?label where { ".
+	"GRAPH <".$graph."> {".
+	"msc:".$cat." skos:narrower ?child . ".
+	"?child skos:prefLabel ?label . ".
+	"FILTER langMatches( lang(?label), \"en\" )  }}";
+      $result = sparql_request($subcats_query,$endpoint);
+    }
+  }
+
+  $toReturn = "";
+
+  if (sizeof($result['result']['rows'])==0){
+    $toReturn .="<p>No articles found.</p>";
+  } else {
+    $toReturn .= "<ul>";
+    for ($i = 0; $i < sizeof($result['result']['rows']); $i++) {
+      $sub_cat_codes = explode("/", $result['result']['rows'][$i]['child']);
+      $sub_cat_code = $sub_cat_codes[sizeof($sub_cat_codes)-1];
+
+      if ($articles_flag==0){
+	// we will display the count the number of articles in each subcategory
+
+        // this little conditional will determine the level of the given subcategory
+	if (preg_match("/...XX/",$sub_cat_code)) {
+	  $level=2;
+	} else if (preg_match("/..[A-Z]xx/",$sub_cat_code)) {
+	  $level=1;
+	} else if (preg_match("/...[0-9][0-9]/",$sub_cat_code)) {
+	  $level=0;
+	} else
+	  { drupal_set_message("Doh!"); }
+
+	if($level==2||$level==1){
+	  // main entry - this works, others will be based on it...
+          $count_query ="PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+SELECT ?article ?notation ?subconcept WHERE {".
+	    "GRAPH <".$graph."> {".
+	    "{
+ {
+    msc:".$sub_cat_code." skos:narrower ?intermediate .
+    ?intermediate skos:narrower ?subconcept .
+    ?article dct:subject ?subconcept .
+ }
+ UNION
+
+ {
+    msc:".$sub_cat_code." skos:narrower ?subconcept .
+    ?article dct:subject ?subconcept .
+ }
+}
+?subconcept skos:notation ?notation .
+OPTIONAL {
+ ?subconcept skos:narrower ?child .
+}
+FILTER (!bound(?child))
+}}
+ ";
+	} else if ($level==0) {
+	  // xx level
+          $count_query ="PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+SELECT ?article WHERE {".
+	    "GRAPH <".$graph."> {".
+	    " ?article dct:subject msc:".$sub_cat_code.
+	    "}}";
+	}
+
+	$result_of_count_query = sparql_request($count_query,$endpoint);
+
+	$count = 0 ; //default
+
+	if (count($result_of_count_query['result']['rows'])>0)
+	  {
+	    $count = count($result_of_count_query['result']['rows']);
+	  }
+
+	$toReturn .= "<li>".$sub_cat_code." <a href='/msc_browser/" . $sub_cat_code . "'>" . $result['result']['rows'][$i]['label'] . "</a> (".$count.")</li>";
+      } else {
+	// printing articles
+	$toReturn .= "<li><a href='/".$result['result']['rows'][$i]['canonicalname']."'>" . $result['result']['rows'][$i]['canonicalname'] . "</a></li>";
+      }
+    }
+
+  }
+  return $toReturn;
+}
+
+?>

@@ -1,0 +1,7 @@
+name = Article classification browser
+description = A minimal module to browse MSE classification of articles using queries to the back end triplestore
+package = RDF
+dependencies[] = sparql
+dependencies[] = sparql_registry
+core = 7.x
+files[] = msc_browser.module

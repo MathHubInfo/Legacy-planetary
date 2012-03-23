@@ -1,0 +1,189 @@
+<?php
+/*
+ * @file
+ *
+ * Provide a form-based UI to editors, and update contents of the
+ * preamble accordingly.
+ *
+ * We add fields for form-based editing of PlanetMath articles, and
+ * sync the results of editing these forms into the preamble.  (This
+ * means that there should be two different editing modes, one
+ * form-based, like the old PlanetMath, and one text-based, and that
+ * they should update between the two.)
+ *
+ */
+
+/* \pmtitle{15 Puzzle} % CAN CHANGE
+ * \pmowner{PrimeFan}{13766} % CAN CHANGE
+ * \pmtype{Example} % CAN CHANGE
+ * \pmcomment{Added MSC 00A08 per correction #12140 ('add 00A08').} % CAN CHANGE
+ * \pmclassification{msc}{91A24} % CAN CHANGE (AND CAN BE MULTIPLE)!
+ * \pmsynonym{Fifteen Puzzle}{15 Puzzle} % CAN CHANGE (AND THERE CAN BE MULTIPLE)
+ *
+ * \pmcanonicalname{15Puzzle} % NO (WILL BE DETERMINED BY TITLE)
+ * \pmrecord{1}{9001} % NO
+ * \pmmodifier{PrimeFan}{13766} % NO
+ * \pmcreated{2007-02-28 18:18:02} % NO
+ * \pmmodified{2007-02-28 18:18:02} % NO
+ * \pmauthor{PrimeFan}{13766} % NO
+ */
+
+
+/*
+ * STEP 1.  Add some extra fields to the "edit node" page.  (This
+ * would be easy to do from the site's UI, I'm less sure about how to
+ * do it programmatically.)  Take a look at the squery module to see
+ * how to work with forms (which are outside of fields).
+ */
+
+/*
+ * STEP 2. Make a hide-show functionality and sync contents between
+ * the form and the preamble.  (This sounds like a tricky UI thing.)
+ */
+
+/*
+ * STEP 3. Programmatically stick some values into the preamble upon
+ * "save".  (This should in some sense be the easiest thing to do, so
+ * this will be what I start implementing now.)
+ */
+
+// note that comments on http://api.drupal.org/api/drupal/modules!field!field.module/function/field_get_items/7 suggest to use field_view_value()
+
+
+/* 
+ *  Implements hook_entity_update
+ */
+
+function planetmath_edit_article_node_presave($node) {
+  if ($node->type==='article'){
+
+    // 1 - we will create or update the canonical name
+
+      // check to see if the title has changed... we know it has if
+      // the canonicalized version of the title is not the same as the
+      // old canonical name...
+    $newname = canonicalize_name($node, $node->title);
+
+    if ( $node->field_canonicalname['und'][0]['value'] ) {
+      if (!($newname === $node->field_canonicalname['und'][0]['value'])) {
+	$node->field_canonicalname['und'][0]['value'] = $newname;
+      }}
+    else {
+	$node->field_canonicalname['und'][0]['value'] = $newname;
+      }
+
+
+    // 2 - we will update the preamble depending on what we know about the article
+    //     Note: we should maybe use planetmath_edit_article_node_insert for the
+    //           time when the article is created...
+
+	process_preamble($node);
+
+    dpm ($node);
+    //    $stuff = field_get_items('node', $node, 'field_preamble');
+    //   $current_preamble = $stuff[0]['value'];
+    //     $node->field_preamble['en'][0]['value'] = "%XXX do something here\n"
+    //                                            . $current_preamble;
+  }
+}
+
+function process_preamble($node){
+
+    $preamble = $node->field_latex['und'][0]['preamble'];
+    if (empty($preamble) || $preamble==""){
+
+$now = date('o-m-d G:i:s');
+
+      	$preamble =  "\\pmcanonicalname{".$node->field_canonicalname['und'][0]['value']."}\n";
+	$preamble .= "\\pmcreated{".$now."}\n";
+	$preamble .= "\\pmmodified{".$now."}\n";
+
+	global $user;
+	$preamble .= "\\pmowner{".$node->name."}{".$user->uid."}\n";
+	$preamble .= "\\pmmodifier{".$node->name."}{".$user->uid."}\n";
+	$preamble .= "\\pmtitle{".$node->title."}\n";
+	$preamble .= "\\pmrecord{1}{".$node->nid."}\n";
+	$preamble .= "\\pmauthor{".$node->name."}{".$user->uid."}\n";
+	$preamble .= "\\pmtype{".$node->type."}{"."theorem"."}\n";//this will be a custom drupal field filled by the user (?)
+    }else {
+	
+	$current_preamble = $preamble;
+
+	$block_begin_breaker = "/\% BEGIN METADATA/";
+	$block_begin_breaker = "/\% END METADATA/";
+
+	if (preg_match($block_begin_breaker,$preamble)){
+
+
+
+		$new_preamble=expode("% BEGIN METADATA BLOCK",$preamble);
+		$new_preamble = $new_preamble[1];
+
+		if (preg_match($block_end_breaker,$new_preamble)){
+			$new_preamble=expode("% END METADATA BLOCK",$preamble);
+			$new_preamble = $new_preamble[1];
+		}else {
+
+
+
+}
+
+
+
+
+
+}
+
+$new_preamble= $new_preamble[1];
+
+
+
+	}
+
+
+$node->field_latex['und'][0]['preamble'] = $preamble;
+
+// We are planning to update the preamble, but this is testing code to see how that works.
+
+
+//the result from this script will be a single line in the form
+/*
+
+"canonicalname:EmacsForDrupal: 15Puzzle:EmacsForDrupalNewline:record:EmacsForDrupal: 1:EmacsForDrupalNewline:owner:EmacsForDrupal: PrimeFan:EmacsForDrupalNewline:modifier:EmacsForDrupal: PrimeFan:EmacsForDrupalNewline:title:EmacsForDrupal: 15 Puzzle:EmacsForDrupalNewline:type:EmacsForDrupal: Pensive:EmacsForDrupalNewline:comment:EmacsForDrupal: Added MSC 00A08 per correction #12140 ('add 00A08').:EmacsForDrupalNewline:author:EmacsForDrupal: PrimeFan:EmacsForDrupalNewline:classification:EmacsForDrupal: msc:EmacsForDrupalNewline:synonym:EmacsForDrupal: Fifteen Puzzle:EmacsForDrupalNewline:"
+
+*/
+
+
+
+$call = "/home/planetary/scripts/emacs-parse-preamble.el \"" . $preamble."\"";
+$res  = system($call);
+
+}
+
+
+
+function canonicalize_name($node, $str, $count = 1) {
+  $words = explode(" ", $str);
+  $name = "";
+  foreach ($words as $word){
+    $word = ucfirst(str_replace ("$", "", $word));
+    $name = $name . $word;
+  }
+  $match = FALSE;
+
+  // needs to be adjusted for the updating case!
+  $othernames = db_query("SELECT field_canonicalname_value AS name FROM {field_data_field_canonicalname} WHERE entity_id <> :nid", array('nid' => $node->nid));
+  foreach ($othernames as $othername){
+    if(strcmp($othername->name, $name) == 0){
+      $match = TRUE;
+    }
+  }
+  if($match) {
+    canonicalize_name($name . $count, $count + 1);
+  } else {
+    // finally, replace non-alphabetic stuff
+    // (is this the best way?)
+    return preg_replace("/[^a-zA-Z0-9\s]/", "", $name);;
+  }
+}
+// EOF

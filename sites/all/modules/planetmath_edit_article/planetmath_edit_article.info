@@ -1,0 +1,5 @@
+name = PlanetMath Edit Article
+description = Provide a form-based UI to editors and update contents of the preamble accordingly
+package = PlanetMath
+core = 7.x
+files[] = planetmath_edit_article.module
