@@ -1,0 +1,126 @@
+<?php
+/*
+ * @file
+ *
+ * This module provides a minimal working example showing how to use
+ * the SPARQL API in practice.
+ *
+ * We will build a web form that lets the user enter an arbitrary
+ * SPARQL endpoint and query, and then see the result. 
+ *
+ */
+
+function pyrdfa_node_postsave($node){
+  //dd('Entering the postsave hook');
+  if ($node->type=="article"){
+    global $base_url;
+    $base_path = "/home/planetary/drupal_planetary";
+    $virtuoso_location = "http://li311-58.members.linode.com:8890";
+    
+    // Actually now the contents are being stored by canonical name not path so this should change.
+
+    $subject_uri = "http://local.virt/". $node->field_canonicalname['und'][0]['value'];
+    // drupal_set_message($subject_uri);
+
+    // will try these one by one.
+    extract_rdfa($node->uri['path'],$base_url,$base_path);
+    delete_triples($virtuoso_location,$subject_uri);
+    upload_new_triples($virtuoso_location,$base_path,$node->uri['path']);
+  }
+}
+
+function extract_rdfa($path,$domain,$base_file_path){
+  $infile_url = $domain."/".$path;
+
+  // Here we get the data of the page to process
+  $infile_contents = get_data($infile_url);
+  $infile_path = $base_file_path."/sites/default/files/drupal_in_for_".substr($path,5).'.html';
+  $infile = fopen($infile_path, 'w') or die("Error: can't open file " . $infile_path);
+  // drupal_set_message("opened file for WRITING: " . $infile_path);
+  fwrite($infile, $infile_contents);
+  fclose($infile);
+  $outfile = $base_file_path.'/sites/default/files/drupal_out_for_'.substr($path,5).'.xml';
+  // This will need to be set as a configurable value
+  $call = 'python /home/planetary/PyRDFa/scripts/localRDFa.py -x '.$infile_path . ' > ' . $outfile;
+  $res  = system($call);
+  drupal_set_message('Running: '. htmlspecialchars($call) . ' yeilds a file with these contents =><pre>'.htmlspecialchars(file_get_contents($outfile)).'...</pre>');
+  // drupal_set_message('xml file created!');
+}
+
+
+
+function upload_new_triples($virtuoso_location,$base_path,$path){
+  $cup = curl_init();
+  curl_setopt_array($cup, array());
+  $filename = $base_path."/sites/default/files/drupal_out_for_".substr($path,5).".xml";
+
+  curl_setopt($cup, CURLOPT_URL, $virtuoso_location . '/DAV/home/dba/rdf_sink/res'.substr($path,5).'.rdf');
+  curl_setopt($cup, CURLOPT_VERBOSE, 0);
+  curl_setopt($cup, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($cup, CURLOPT_USERPWD , "dav:dav");
+  curl_setopt($cup, CURLOPT_POST, true);
+  curl_setopt($cup, CURLOPT_UPLOAD, TRUE);
+
+  $postfields = array('file' => '@' . $filename);
+  curl_setopt($cup, CURLOPT_POSTFIELDS, $postfields); 
+  $fh = fopen($filename,'r');
+  curl_setopt($cup, CURLOPT_INFILE, $fh);
+  $response = curl_exec($cup);
+
+  //  drupal_set_message("INFO ABOUT CURL: <pre>".print_r(curl_getinfo($cup),true)."</pre>");
+  //  drupal_set_message("CURL RESPONSE <pre>".print_r($response,true)."</pre>");
+  curl_close($cup);
+}
+
+function delete_triples($virtuoso_location,$subject_uri){
+  $virtuoso_sparql_endpoint = $virtuoso_location."/sparql";
+  $sparql_query = 'DELETE FROM GRAPH <http://localhost:8890/DAV/home/dba/rdf_sink/> ' . '{ <' . $subject_uri . '> ?p ?o } ' . 'FROM <http://localhost:8890/DAV/home/dba/rdf_sink/> ' . 'where {  <' . $subject_uri . '> ?p ?o  .  }';
+
+  dd('Deleting: '.$subject_uri);
+
+  $post_field = array("query"=>$sparql_query);
+  $options = array(CURLOPT_USERPWD => "dav:dav");
+
+  //  dpm($post_field);
+
+  // drupal_set_message('endpoint: '.$virtuoso_sparql_endpoint.' query filed: <pre>'.htmlspecialchars(print_r($post_field['query'],true))."</pre> with options=><pre>".print_r($options,true)."</pre>");
+
+  $return = curl_post($virtuoso_sparql_endpoint,$post_field,$options);
+
+  // drupal_set_message('Attempting to delete the triples gave us this result:<pre>'.$return.'</pre>');
+}
+
+function curl_post($url, array $post = NULL, array $options = array()) {
+  //dd('curl_post() invoked..');
+  $defaults = array(
+                    CURLOPT_HEADER => 0,
+                    CURLOPT_URL => $url,
+                    CURLOPT_FRESH_CONNECT => 1,
+                    CURLOPT_RETURNTRANSFER => 1,
+                    CURLOPT_FORBID_REUSE => 1,
+                    CURLOPT_TIMEOUT => 4,
+                    CURLOPT_POSTFIELDS => $post,
+    );
+
+    $ch = curl_init();
+    curl_setopt_array($ch, ($options + $defaults));
+    $result = curl_exec($ch);
+    if( ! $result )
+    {
+      drupal_set_message("Can't load " . $url);
+    }
+    curl_close($ch);
+    return $result;
+}
+
+function get_data($url)
+{
+  //dd('get_data() invoked..');
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL,$url);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,5);
+  $data = curl_exec($ch);
+  curl_close($ch);
+  return $data;
+}
