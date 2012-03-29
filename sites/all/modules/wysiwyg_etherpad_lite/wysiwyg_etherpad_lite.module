@@ -21,7 +21,7 @@ function wysiwyg_etherpad_lite_field_formatter_info() {
 }
 
 function etherpad_init() {
-	require_once("etherpad-lite-client/etherpad-lite-client.php");
+	require_once("./etherpad-lite-client/etherpad-lite-client.php");
 }
 
 function etherpad_get_client() {
