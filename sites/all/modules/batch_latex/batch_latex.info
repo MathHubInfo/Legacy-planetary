@@ -1,0 +1,7 @@
+name = Batch LaTeX
+description = Batch process LaTeX nodes, saving them and giving a log of the success rate.
+package = Planetary Modules
+core = 7.x
+files[] = batch_latex.module
+version = "7.x-1.x-dev"
+core = "7.x"
