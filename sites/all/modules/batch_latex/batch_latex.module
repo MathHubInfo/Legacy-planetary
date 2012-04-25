@@ -38,12 +38,12 @@ function batch_latex_menu() {
 function batch_latex_simple_form() {
   $form['description'] = array(
     '#type' => 'markup',
-    '#markup' => t('This module offers one batch processing function.  It loads all of the files, 5 at a time, rendering their LaTeX and saving their metadata.'),
+    '#markup' => t('This module offers one batch processing function.  It loads all of the files, rendering their LaTeX and saving their metadata.'),
   );
   $form['batch'] = array(
     '#type' => 'select',
     '#title' => 'Choose batch',
-    '#options' => array('batch_latex' => t('Batch process the LaTeX articles, 5 nodes at a time'),
+    '#options' => array('batch_latex' => t('Batch process the LaTeX articles'),
     ),
   );
   $form['submit'] = array(
@@ -65,9 +65,6 @@ function batch_latex_simple_form_submit($form, &$form_state) {
   batch_set($batch);
 }
 
-/**
- * Batch 2 : Prepare a batch definition that will load all nodes 20 times.
- */
 function batch_latex_process() {
 
   $node_count = db_query("SELECT COUNT(DISTINCT nid) FROM {node} where type='article'")->fetchField();
@@ -116,7 +113,7 @@ function batch_latex_operation($operation_details, &$context) {
   // That way even though we're already processing at the operation level
   // the operation itself is interruptible.
 
-  $limit = 5;
+  //  $limit = 5;
 
   // Retrieve the next group of nids.
   $result = db_select('node', 'n')
@@ -125,36 +122,42 @@ function batch_latex_operation($operation_details, &$context) {
     ->condition('type','article')
     ->where('n.nid > :nid', array(':nid' => $context['sandbox']['current_node']))
     ->extend('PagerDefault')
-    ->limit($limit)
+    // ->limit($limit) 
     ->execute();
 
   // Here we actually perform our processing ...
   foreach ($result as $row) {
 
-    $node = node_load($row->nid, NULL, TRUE);
-    if(isset($node->field_latex['und'][0]['preamble']) && isset($node->field_latex['und'][0]['document'])){
-      $node->field_latex['und'][0]['preamble'] =
-        str_replace("\usepackage{xypic}","%\\usepackage{xypic}",$node->field_latex['und'][0]['preamble']);
-      $node->field_latex['und'][0]['document'] =
-        $node->field_latex['und'][0]['document'] . "%";
-      dd("Processed: " . $node->canonicalname);
-      node_save($node);
-    }
+    // just catch a few that I didn't process before.
+//    if($row->nid > 40411){
+      $node = node_load($row->nid, NULL, TRUE);
+      if(isset($node->field_latex['und'][0]['preamble']) && isset($node->field_latex['und'][0]['document'])){
+        $node->field_latex['und'][0]['preamble'] =
+          str_replace("\usepackage{xypic}","%\\usepackage{xypic}",$node->field_latex['und'][0]['preamble']);
+        $node->field_latex['und'][0]['document'] =
+          $node->field_latex['und'][0]['document'] . "%";
+        dd("Processed: " . $node->canonicalname . "(" . $node->nid . ")");
+        node_save($node);
+        // Store some result for post-processing in the finished callback.
+        // and update our progress information.
+        $context['sandbox']['current_node'] = $node->nid;
+        $context['results'][] = $node->nid . ' : ' . check_plain($node->title) . ' ' . $operation_details;
+        $context['sandbox']['progress']++;
+        $context['sandbox']['current_node'] = $node->nid;
+        $context['message'] = check_plain($node->title);
 
-    // Store some result for post-processing in the finished callback.
-    // and update our progress information.
-    $context['sandbox']['current_node'] = $node->nid;
-    $context['results'][] = $node->nid . ' : ' . check_plain($node->title) . ' ' . $operation_details;
-    $context['sandbox']['progress']++;
-    $context['sandbox']['current_node'] = $node->nid;
-    $context['message'] = check_plain($node->title);
+        // In case we are not done, inform the batch engine that we are not finished,
+        // and provide an estimation of the completion level we reached.
+        if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+          $context['finished'] = ($context['sandbox']['progress'] >= $context['sandbox']['max']);
+        }
+      }
+//    } else { 
+//      dd("Skipping: (" . $row->nid . ")"); 
+//    }
   }
 
-  // In case we are not done, inform the batch engine that we are not finished,
-  // and provide an estimation of the completion level we reached.
-  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
-    $context['finished'] = ($context['sandbox']['progress'] >= $context['sandbox']['max']);
-  }
+
 
   _batch_latex_update_http_requests();
 }
