@@ -7,7 +7,54 @@
  * @version 7.x-1.0-alpha
  * @todo Themeing functionality
  */
+define("CORRECTION_ATTACH_TYPES", serialize(array('article', 'image')));
 
+function correction_model_getAllCorrections($headers) {
+  $query = db_select('node', 'n')
+          ->fields('n', array('nid', 'title', 'changed'))
+          ->extend('PagerDefault')
+          ->extend('TableSort')
+          ->limit(20);
+  $query = $query->orderByHeader($headers);
+  $query->innerJoin('field_data_field_correction_accepted', 'fca', 'fca.entity_id = n.nid');
+  $query->innerJoin('field_data_field_correction_closed', 'fcc', 'fcc.entity_id = n.nid');
+  $query->innerJoin('users', 'u', 'u.uid = n.uid');
+  $query->fields('fca', array('field_correction_accepted_value'));
+  $query->fields('fcc', array('field_correction_closed_value'));
+  $query->fields('u', array('uid', 'name'));
+  $result = $query->execute();
+  return $result;
+}
+
+function correction_view_correctionPage() {
+  $header = array(array('data' => 'Title', 'field' => 'n.title'),
+      array('data' => "Author", 'field' => 'u.name'),
+      array('data' => "Updated", 'field' => 'n.changed'),
+      array('data' => 'Status', 'field' => 'fca.field_correction_accepted_value')
+  );
+  $corrections = correction_model_getAllCorrections($header);
+  $rows = array();
+  foreach ($corrections as $correction) {
+    $status = 'None';
+    if ($correction->field_correction_accepted_value && $correction->field_correction_closed_value) {
+      $status = 'Accepted';
+    } else if (!$correction->field_correction_accepted_value && $correction->field_correction_closed_value) {
+      $status = 'Rejected';
+    } else {
+      $status = 'Pending';
+    }
+    $rows[] = array(
+        array('data' => l($correction->title, 'node/' . $correction->nid), 'field' => 'n.title'),
+        array('data' => l($correction->name, 'user/' . $correction->uid), 'field' => 'n.title'),
+        array('data' => date('Y-m-d', $correction->changed), 'field' => 'n.changed', 'sort' => 'DESC'),
+        array('data' => $status, 'field' => 'fca.field_correction_accepted_value')
+    );
+  }
+  return l('Add a new correction', 'node/add/correction') . theme('table', array(
+              'header' => $header,
+              'rows' => $rows
+          )) . theme('pager');
+}
 
 /**
  * Implementation of hook_menu
@@ -23,6 +70,14 @@ function correction_menu() {
       'page callback' => 'correction_accept_correction',
       'page arguments' => array(1),
       'access arguments' => array('create correction content')
+  );
+
+  $items['corrections'] = array(
+      'title' => 'Corrections',
+      'type' => MENU_NORMAL_ITEM,
+      'page callback' => 'correction_view_correctionPage',
+      'page arguments' => array(1),
+      'access callback' => true
   );
 
   $items['correction/%/reject'] = array(
@@ -88,13 +143,30 @@ function correction_form_correction_node_form_alter(&$form, &$form_state, $form_
   $form['field_correction_article']['und']['#value'] = arg(3);
 }
 
+function correction_view_planetaryLinks($node) {
+  $links = array(
+      'add-correction' => l('Add correction', 'node/add/correction/' . $node->nid)
+  );
+  return $links;
+}
+
 /**
  * Implementation of hook_node_view()
  * Adds two markup fields to the correction fields. Accept/Reject links | Status of the correction
+ * @todo Show it to groups as well, not only to author
  * @param stdClass $node
  * @param string $view_mode 
  */
 function correction_node_view($node, $view_mode) {
+  if (in_array($node->type, unserialize(CORRECTION_ATTACH_TYPES))) {
+    $node->content['planetary_links'] = array(
+        '#markup' => '',
+        '#weight' => 10,
+        '#theme' => 'planetary_links',
+        '#links' => correction_view_planetaryLinks($node)
+    );
+  }
+
   if ($node->type == 'correction') {
     global $user;
     $article = node_load($node->field_correction_article['und'][0]['nid']);
@@ -106,11 +178,12 @@ function correction_node_view($node, $view_mode) {
     }
     $status = 'Waiting for response';
     if ($node->field_correction_closed['und']['0']['value']) {
-      $status = $correction->field_correction_accepted['und'][0]['value'] ? "Accepted" : "Rejected";
+      $status = $node->field_correction_accepted['und'][0]['value'] ? "Accepted" : "Rejected";
     }
-    $node->content['correction_links'] = array(
+    $node->content['correction_status'] = array(
         '#markup' => '<b>Status: </b>' . $status,
         '#weight' => '1'
     );
   }
 }
+
