@@ -12,7 +12,7 @@ define('PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK', 5);
  * Queries for the block views 
  */
 function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
-  $results = db_query("SELECT n.nid AS nid, n.title AS title, fdb.body_value AS body, u.`name` AS username, n.created
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     INNER JOIN users u ON u.uid = n.uid
@@ -25,7 +25,7 @@ function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
 }
 
 function planetmath_blocks_queryMessages() {
-  $results = db_query("SELECT n.nid AS nid, n.type, n.changed, n.title AS title, fdb.body_value AS body, u.`name` AS username, n.created
+  $results = db_query("SELECT n.nid AS nid, n.type, n.changed, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     INNER JOIN users u ON u.uid = n.uid
@@ -151,8 +151,6 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
         {
           $code = 'p';
         }
-
-      dd($code,"The result!");
       $html .= "<li>" . date('Y-m-d', $result->changed) . " - [" . l($code, 'node/'.$result->nid) . "] " . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-'.$result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
     } else {
       $html .= "<li>" . date('Y-m-d', $result->changed) . " - " . l($result->title, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
@@ -206,7 +204,7 @@ function planetmath_blocks_block_messages() {
 
 function planetmath_blocks_block_revisions() {
   return array(
-      'subject' => 'Revisions',
+      'subject' => 'Latest Revisions',
       'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryGeneral('article', 'n.changed'))
   );
 }
