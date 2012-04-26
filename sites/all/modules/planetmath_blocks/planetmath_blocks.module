@@ -24,7 +24,7 @@ function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
   return $return;
 }
 
-function planetmath_blocks_queryForums() {
+function planetmath_blocks_queryMessages() {
   $results = db_query("SELECT n.nid AS nid, n.changed, n.title AS title, fdb.body_value AS body, u.`name` AS username, n.created
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
@@ -140,9 +140,10 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
     return '<h4>No results found</h4>';
   }
   $html = "<ul>";
+  // would be nice to give some visual indication of article nodes vs forum nodes
   foreach ($results as $result) {
     if (isset($result->cid)) {
-      $html .= "<li>" . date('Y-m-d', $result->changed) . " - [" . l('P', 'node/'.$result->nid) . "]" . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-'.$result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
+      $html .= "<li>" . date('Y-m-d', $result->changed) . " - [" . l('P', 'node/'.$result->nid) . "] " . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-'.$result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
     } else {
       $html .= "<li>" . date('Y-m-d', $result->changed) . " - " . l($result->title, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
     }
@@ -188,8 +189,8 @@ function planetmath_blocks_block_corrections($nid) {
 
 function planetmath_blocks_block_messages() {
   return array(
-      'subject' => 'Forums',
-      'content' => planetmath_blocks_blockThemeMessagesResults(planetmath_blocks_queryForums())
+      'subject' => 'Latest Messages',
+      'content' => planetmath_blocks_blockThemeMessagesResults(planetmath_blocks_queryMessages())
   );
 }
 
