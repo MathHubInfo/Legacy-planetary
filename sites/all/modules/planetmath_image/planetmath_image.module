@@ -1,0 +1,164 @@
+<?php
+
+function planetmath_image_model_getAllImageNodes() {
+  $query = db_query("SELECT nid,title FROM {node} WHERE type = 'image'");
+  $return = array();
+  foreach ($query as $result) {
+    $return[$result->nid] = $result->title;
+  }
+  return $return;
+}
+
+function planetmath_image_model_clearRecordsForOneNode($aid) {
+  db_delete('article_has_image')->condition('aid', $aid)->execute();
+}
+
+function planetmath_image_model_insertImageRelation($aid, $iid) {
+  db_insert('article_has_image')
+          ->fields(array('aid' => $aid, 'iid' => $iid))
+          ->execute();
+}
+
+function planetmath_image_model_getAllNodesForImage($iid) {
+  $query = db_query("SELECT n.nid, n.title FROM node n 
+            INNER JOIN article_has_image ahi ON ahi.aid = n.nid
+            WHERE iid = :iid", array(':iid' => $iid));
+  $return = array();
+  foreach ($query as $result) {
+    $return[] = $result;
+  }
+
+  return $return;
+}
+
+function planetmath_image_model_getImagesForNode($nid) {
+  $query = db_query("SELECT n.*, ahi.*, fm.uri, fm.filename FROM node n 
+            INNER JOIN field_data_field_gallery_image fgi ON fgi.entity_id = n.nid
+            INNER JOIN file_managed fm ON fm.fid = fgi.field_gallery_image_fid
+            INNER JOIN article_has_image ahi ON ahi.iid = n.nid
+            WHERE ahi.aid = :nid LIMIT 0,10", array(':nid' => $nid));
+  $return = array();
+  foreach ($query as $result) {
+    $return[] = $result;
+  }
+
+  return $return;
+}
+
+function planetmath_image_form_article_node_form_alter(&$form, &$form_state) {
+  $imagesDefault = array();
+  $node = $form['#node'];
+  if ($node->nid) {
+    if (isset($node->images)) {
+      foreach ($node->images as $image) {
+        $imagesDefault[] = $image->nid;
+      }
+    }
+  }
+  $form['image_fieldset'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Images',
+      '#collapsible' => true
+  );
+  $form['image_fieldset']['image_conn'] = array(
+      '#title' => 'Select the images you want to attach',
+      '#type' => 'select',
+      '#options' => planetmath_image_model_getAllImageNodes(),
+      '#multiple' => true,
+      '#default_value' => $imagesDefault
+  );
+  $form['image_fieldset']['add_new_image'] = array(
+      '#markup' => l('Upload new image', 'node/add/image', array('target' => '_blank'))
+  );
+}
+
+function planetmath_image_node_insert($node) {
+  if ($node->type == 'article') {
+    foreach ($node->image_conn as $iid) {
+      planetmath_image_model_insertImageRelation($node->nid, $iid);
+    }
+  }
+}
+
+function planetmath_image_node_load($nodes, $types) {
+  if (in_array('article', $types) || in_array('image', $types)) {
+    foreach ($nodes as &$node) {
+      if ($node->type == 'article') {
+        $node->images = planetmath_image_model_getImagesForNode($node->nid);
+      }
+
+      if ($node->type == 'image') {
+        $node->articles = planetmath_image_model_getAllNodesForImage($node->nid);
+      }
+    }
+  }
+}
+
+function planetmath_image_node_update($node) {
+  if ($node->type == 'article') {
+    planetmath_image_model_clearRecordsForOneNode($node->nid);
+    planetmath_image_node_insert($node);
+  }
+}
+
+function planetmath_image_node_view($node) {
+  if ($node->type == 'article') {
+    if (!empty($node->images)) {
+      $node->content['planetmath_images'] = array(
+          '#markup' => '',
+          '#weight' => 20,
+          '#theme' => 'planetmath_image_view_images',
+          '#images' => $node->images
+      );
+    }
+  }
+  if ($node->type == 'image') {
+    if (!empty($node->articles)) {
+      $node->content['planetmath_image_articles'] = array(
+          '#markup' => '',
+          '#weight' => 20,
+          '#theme' => 'planetmath_image_view_articles',
+          '#articles' => $node->articles
+      );
+      if ($node->content['field_obj_cname']['#items']) {
+        $node->content['field_obj_cname'] = array(
+            '#markup' => '<h3>Object Cannonical Name: </h3>' . l($node->content['field_obj_cname']['#items'][0]['value'], $node->content['field_obj_cname']['#items'][0]['value']),
+            '#weight' => 1
+        );
+      }
+    }
+  }
+}
+
+function planetmath_image_theme($existing, $type, $theme, $path) {
+  return array(
+      'planetmath_image_view_images' => array(
+          'variables' => array('images' => array()),
+      ),
+      'planetmath_image_view_articles' => array(
+          'variables' => array('articles' => array()),
+      ),
+  );
+}
+
+function theme_planetmath_image_view_images($variables) {
+  $images = $variables['images'];
+  $htmlItems = array();
+  foreach ($images as $image) {
+    $htmlItems[] = l(theme_image_style(array(
+                'style_name' => 'medium',
+                'path' => $image->uri
+            )), 'node/' . $image->nid, array('html' => true));
+  }
+  return theme_item_list(array('items' => $htmlItems, 'title' => 'Images:', 'type' => 'ul', 'attributes' => array('class' => 'node-images-list')));
+}
+
+function theme_planetmath_image_view_articles($variables) {
+  $articles = $variables['articles'];
+  $articleHtml = array();
+  foreach ($articles as $article) {
+    $articleHtml[] = l($article->title, 'node/' . $article->nid);
+  }
+  return theme_item_list(array('items' => $articleHtml, 'title' => 'Articles that reference the image:', 'type' => 'ul', 'attributes' => array('class' => '')));
+}
+
