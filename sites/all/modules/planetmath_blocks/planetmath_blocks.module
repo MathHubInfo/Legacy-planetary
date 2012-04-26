@@ -25,7 +25,7 @@ function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
 }
 
 function planetmath_blocks_queryMessages() {
-  $results = db_query("SELECT n.nid AS nid, n.changed, n.title AS title, fdb.body_value AS body, u.`name` AS username, n.created
+  $results = db_query("SELECT n.nid AS nid, n.type, n.changed, n.title AS title, fdb.body_value AS body, u.`name` AS username, n.created
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     INNER JOIN users u ON u.uid = n.uid
@@ -36,7 +36,7 @@ function planetmath_blocks_queryMessages() {
     $return[] = $result;
   }
 
-  $results = db_query("SELECT c.cid, n.nid, c.subject, c.uid, c.changed, c.name AS username FROM comment c
+  $results = db_query("SELECT c.cid, n.nid, n.type, c.subject, c.uid, c.changed, c.name AS username FROM comment c
       INNER JOIN node n ON n.nid = c.nid      
       INNER JOIN users u ON u.uid = c.uid
       ORDER BY c.changed DESC LIMIT 0," . floor(PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK / 2));
@@ -140,10 +140,20 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
     return '<h4>No results found</h4>';
   }
   $html = "<ul>";
-  // would be nice to give some visual indication of article nodes vs forum nodes
+
   foreach ($results as $result) {
     if (isset($result->cid)) {
-      $html .= "<li>" . date('Y-m-d', $result->changed) . " - [" . l('P', 'node/'.$result->nid) . "] " . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-'.$result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
+
+      // This gives some small visual indication of article nodes vs forum nodes.
+      if($result->type == 'article') {
+        $code = 'P';
+      } else 
+        {
+          $code = 'p';
+        }
+
+      dd($code,"The result!");
+      $html .= "<li>" . date('Y-m-d', $result->changed) . " - [" . l($code, 'node/'.$result->nid) . "] " . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-'.$result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
     } else {
       $html .= "<li>" . date('Y-m-d', $result->changed) . " - " . l($result->title, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
     }
