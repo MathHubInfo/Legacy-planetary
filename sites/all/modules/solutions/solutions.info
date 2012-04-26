@@ -1,0 +1,6 @@
+name = "Solutions"
+description = "Allows users to add solutions to existing problems"
+package = "Planetary Modules"
+version = "7.x-1.0"
+core = "7.x"
+dependencies[] = problems

@@ -1,0 +1,544 @@
+/**
+ * @file
+ * Page Styling
+ *
+ * Style the markup found in page.tpl.php. Also includes some styling of
+ * miscellaneous Drupal elements that appear in the $content variable, such as
+ * ul.links, .pager, .more-link, etc.
+*/
+
+
+/*
+ * Body
+*/
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1.4em;
+  font-family: "Hoefler Text", Georgia, Times, serif;
+  color: #444;  
+}
+
+#page-wrapper {
+}
+
+#page {
+}
+
+/*
+ * The skip-link link will be completely hidden until a user tabs to the link.
+ * See the element-focusable rule in system.base.css.
+*/
+#skip-link a,
+#skip-link a:visited {
+  display: block;
+  width: 100%;
+  padding: 2px 0 3px 0;
+  text-align: center;
+  background-color: #666;
+  color: #fff;
+}
+
+/*
+ * Header
+*/
+#header {
+}
+
+#header .section {
+}
+
+#logo /* Wrapping link for logo */ {
+  float: left; /* LTR */
+  margin: 0;
+  padding: 0;
+}
+
+#logo img {
+  vertical-align: bottom;
+}
+
+#name-and-slogan /* Wrapper for website name and slogan */ {
+  float: left;
+}
+
+h1#site-name,
+div#site-name /* The name of the website */ {
+  margin: 0;
+  font-size: 2em;
+  line-height: 1.5em;
+}
+
+#site-name a:link,
+#site-name a:visited {
+  color: #000;
+  text-decoration: none;
+}
+
+#site-name a:hover,
+#site-name a:focus {
+  text-decoration: underline;
+}
+
+#site-slogan /* The slogan (or tagline) of a website */ {
+}
+
+.region-header /* Wrapper for any blocks placed in the header region */ {
+  clear: both; /* Clear the logo */
+}
+
+/*
+ * Main (container for everything else)
+*/
+#main-wrapper {
+}
+
+#main {
+  
+}
+
+/*
+ * Content
+*/
+#content {
+}
+
+#content .section {
+}
+
+.region-highlighted {
+}
+
+.breadcrumb /* The path to the current page in the form of a list of links */ {
+  padding-bottom: 0; /* Undo system.css */
+}
+
+h1.title, /* The title of the page */
+h2.node-title, /* Title of a piece of content when it is given in a list of content */
+h2.block-title, /* Block title */
+h2.title, /* Comment section heading */
+h2.comment-form, /* Comment form heading */
+h3.title /* Comment title */ {
+  margin: 0;
+}
+
+tr.even /* Some tables have rows marked even or odd. */ {
+  /* background-color: #eee; */ /* Drupal core uses a #eee background */
+}
+
+tr.odd {
+  /* background-color: #eee; */ /* Drupal core uses a #eee background */
+}
+
+div.messages /* Important messages (status, warning, and error) for the user. See also the declarations in messages.css. */ {
+  margin: 1.5em 0; /* Drupal core uses "6px 0" margin */
+}
+
+div.messages ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+div.status /* Normal priority messages */ {
+}
+
+div.warning,
+tr.warning /* Medium priority messages */ {
+  /* border: 1px solid #f0c020; */ /* Drupal core uses: 1px solid #f0c020 */
+}
+
+div.error,
+tr.error /* High priority messages. See also the .error declaration below. */ {
+}
+
+.error /* Errors that are separate from div.messages status messages. */ {
+  /* color: #e55; */ /* Drupal core uses a #e55 background */
+}
+
+.warning /* Warnings that are separate from div.messages status messages. */ {
+  /* color: #e09010; */ /* Drupal core uses a #e09010 background */
+}
+
+div.tabs /* See also the tabs.css file. */ {
+}
+
+.region-help /* Help text on a page */ {
+}
+
+.more-help-link /* Link to more help */ {
+}
+
+.region-content /* Wrapper for the actual page content */ {
+}
+
+ul.links /* List of links */ {
+}
+
+ul.links.inline {
+  display: block; /* Let the links be inline, but the container be a block. */
+}
+
+ul.links li {
+  padding: 0 1em 0 0; /* LTR */
+}
+
+.item-list .pager /* A list of page numbers when more than 1 page of content is available */ {
+  padding: 0;
+}
+
+.item-list .pager li /* Each page number in the pager list */ {
+  padding: 0 0.5em;
+}
+
+.feed-icon /* The link to the RSS or Atom feed for the current list of content */ {
+}
+
+.more-link /* Aggregator, blog, and forum more link */ {
+}
+
+/*
+ * First sidebar (on left in LTR languages, on right in RTL)
+ *
+ * Remember to NOT add padding or margin to your .region-sidebar-first
+ * (see the layout.css file.)
+*/
+.region-sidebar-first {
+}
+
+.region-sidebar-first .section {
+}
+
+/*
+ * Second sidebar (on right in LTR languages, on left in RTL)
+ *
+ * Remember to NOT add padding or margin to your .region-sidebar-second
+ * (see the layout.css file.)
+*/
+.region-sidebar-second {
+}
+
+.region-sidebar-second .section {
+}
+
+/*
+ * Footer
+*/
+.region-footer {
+}
+
+/*
+ * Page bottom
+*/
+.region-bottom /* Wrapper for any blocks placed in the page bottom region */ {
+}
+
+a, a:visited, a:link, a:active{
+  color: #06799F;
+  border-bottom: 1px solid #F2ECDA;  
+  text-decoration: none;
+}
+
+a:hover{
+  border-bottom: 1px solid #333;  
+}
+
+
+
+/* USER LOGIN BLOCK */
+#block-user-login .form-item{  
+  display: inline;
+}
+
+#block-user-login .form-item label {
+  display: inline-table;
+  font-weight: bold;
+}
+
+#block-user-login{
+  float: right;
+  margin-top: -70px;
+}
+
+#block-user-login ul, #block-user-login li {
+  list-style: none;
+  display: inline;
+  list-style-type: none;
+  margin-left: -10px;
+  margin-right: 40px;
+  margin-top: 20px;
+}
+
+#block-user-login .form-submit{
+  float: right;
+  margin-top: -30px;
+  font-size: 11px;
+}
+
+#block-user-login h2{
+  display: none;
+}
+
+/* SEARCH */
+
+#block-search-form{
+  float: right;
+  margin-right: -430px;
+  margin-top: 50px;
+}
+
+#block-search-form .form-submit{
+  font-size: 12px;
+}
+
+#block-search-form input.form-text{
+  width: 200px;
+}
+
+
+/* LOGO AND SLOGAN */
+#name-and-slogan{
+  margin-top: 30px;  
+}
+#logo{
+  margin-top: 10px;
+  margin-bottom: -20px;
+}
+
+#name-and-slogan a, a#logo, a#logo:link, #name-and-slogan a:link{
+  border:none;
+  text-decoration: none;
+}
+
+
+/* NAVIGATION */
+#navigation a{
+  font-size: 17px;  
+}
+
+#navigation{
+  margin-top: -55px;
+}
+
+.block-tabs{
+  width: 300px;
+}
+
+.tab-title-link{
+  font-size: 13px;
+}
+
+.tab-contents, .block .content{
+  font-size: 12px; 
+}
+
+.frontpage-content .ui-tabs .ui-tabs-panel {
+  padding: 0;  
+}
+
+.frontpage-content{
+  min-height: 700px;
+  line-height: 1.7em;
+}
+
+#front-left-block-tabs{
+  float: left;
+  width: 300px;
+  margin-left: 0px;
+  margin-right: -300px;  
+}
+
+#front-right-block-tabs{
+  float: left;
+  width: 240px;
+  margin-left: 310px;
+  margin-right: -550px;  
+}
+
+#front-mid-tabs{
+  margin-top: 400px;
+  clear: both;
+}
+
+#front-left-mid-block-tabs{
+  margin-top: -200px;
+}
+
+#front-center-block{
+  width: 560px;
+}
+
+h2.block-title{
+  border: 1px solid #AAA/*{borderColorHeader}*/;
+  background: #CCC url(../images/ui-bg_highlight-soft_75_cccccc_1x100.png)/*{bgImgUrlHeader}*/ 50%/*{bgHeaderXPos}*/ 50%/*{bgHeaderYPos}*/ repeat-x/*{bgHeaderRepeat}*/;
+  color: #222/*{fcHeader}*/;
+  font-weight: bold;
+  -webkit-border-radius: 4px/*{cornerRadius}*/;
+  border-radius: 4px/*{cornerRadius}*/;
+  margin: 0;
+  padding: .2em .2em 0;
+  text-decoration: none;
+  font-size: 100%;
+  height: 29px;
+  list-style: none;
+}
+
+.block{
+  border: 1px solid #AAA/*{borderColorContent}*/;
+  background: white/*{bgColorContent}*/ url(../images/ui-bg_flat_75_ffffff_40x100.png)/*{bgImgUrlContent}*/ 50%/*{bgContentXPos}*/ 50%/*{bgContentYPos}*/ repeat-x/*{bgContentRepeat}*/;
+  color: #222/*{fcContent}*/;
+  position: relative;
+  padding: .2em;
+  zoom: 1;
+  -webkit-border-radius: 4px/*{cornerRadius}*/;
+  border-radius: 4px/*{cornerRadius}*/;
+  font-family: Verdana,Arial,sans-serif/*{ffDefault}*/;
+  font-size: 1.1em/*{fsDefault}*/;
+
+}
+
+.block-title-helper{
+  float: left;
+  padding: .6em 1em;
+  text-decoration: none;
+  color: #212121;/*{fcActive}*/
+  border: 1px solid #AAA/*{borderColorActive}*/;
+  background: white/*{bgColorActive}*/ url(images/ui-bg_glass_65_ffffff_1x400.png)/*{bgImgUrlActive}*/ 50%/*{bgActiveXPos}*/ 50%/*{bgActiveYPos}*/ repeat-x/*{bgActiveRepeat}*/;
+  font-weight: normal/*{fwDefault}*/;
+  color: #212121/*{fcActive}*/;    
+  margin-bottom: 0;
+  padding-bottom: 1px;
+  position: relative;
+  top: 1px;
+  margin: 0 .2em 1px 2px;  
+  white-space: nowrap;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom: 0 !important;
+}
+
+#block-system-main{
+  border: 0;
+}
+
+ul.links.inline{
+  margin: 0.3em 0;
+}
+
+div.submitted{
+  margin-top: -10px;
+}
+
+h2.node-title{
+  font-size: 14px;
+  margin:0;
+  padding:0;
+}
+
+#page{
+  line-height: 1.5em;
+}
+
+div.node.view-mode-full{
+  margin-top: -40px;
+}
+.logged-in div.node.view-mode-full{
+  margin-top: -65px;
+}
+
+.logged-in #block-search-form{
+  margin-right: 0;
+}
+
+#block-user-login{
+  border: 0;
+}
+
+div.node.view-mode-full div.content{
+  margin-top: 20px;
+  min-height: 300px;
+  font-size: 12px;
+}
+
+h1#page-title{
+  color: #111;
+}
+
+.field-label{
+  color: #111;
+}
+
+#content .tabs{
+  margin-bottom: 110px;
+  margin-top: -110px;  
+}
+
+#block-menu-menu-main-menu .content ul, #block-menu-menu-main-menu .content ul li{
+  line-height: 2.3em;
+}
+.view-articles .views-row{
+  margin-bottom: 15px;
+}
+
+.view-articles .views-row h2{
+  font-size: 13.5px;
+  font-weight: normal;
+  margin-bottom: 1px
+}
+
+ul.node-images-list{
+  list-style: none;
+  display: inline;
+}
+
+ul.node-images-list li{
+  display: inline;
+} 
+
+.logged-in .node h1.title{
+margin-bottom: 70px;
+margin-top: -22px;
+}
+
+table {
+width: 100%;
+border: 1px solid #B0B0B0;
+}
+table tbody {
+/* Kind of irrelevant unless your .css is alreadt doing something else */
+margin: 0;
+padding: 0;
+border: 0;
+outline: 0;
+font-size: 100%;
+vertical-align: baseline;
+background: transparent;
+}
+table thead {
+text-align: left;
+}
+table thead th {
+background: -moz-linear-gradient(top, #F0F0F0 0, #DBDBDB 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #F0F0F0), color-stop(100%, #DBDBDB));
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F0F0F0', endColorstr='#DBDBDB', GradientType=0);
+border: 1px solid #B0B0B0;
+color: #444;
+font-size: 16px;
+font-weight: bold;
+padding: 3px 10px;
+}
+table td {
+padding: 3px 10px;
+}
+table tr:nth-child(even) {
+background: #FFF;
+}
+
+#forum table td{
+  padding: 8px 10px;
+}
+
+ul.action-links{
+margin: 0px;
+padding: 0 0 0 15px;
+}

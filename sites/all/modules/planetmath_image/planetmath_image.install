@@ -1,0 +1,26 @@
+<?php
+
+function planetmath_image_schema() {
+  $schema = array();
+  
+  $schema['article_has_image'] = array(
+      'description' => 'Relation between articles and images',
+      'fields' => array(
+          'aid' => array(
+              'type' => 'int',
+              'not null' => true,
+              'unsigned' => true,
+              'description' => 'Article Id'
+          ),
+          'iid' => array(
+              'type' => 'int',
+              'not null' => true,
+              'unsigned' => true,
+              'description' => 'Image Id'
+          ),
+      ),
+      'primary key' => array('aid', 'iid')
+  );
+  
+  return $schema;
+}

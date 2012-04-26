@@ -1,0 +1,556 @@
+<?php
+
+/**
+ * @file
+ * Shadowbox, a JavaScript media viewer application for displaying content in a
+ * modal dialogue.
+ */
+
+/**
+ * Shadowbox library default path.
+ */
+define('SHADOWBOX_DEFAULT_PATH', 'sites/all/libraries/shadowbox');
+/**
+ * Enable on every page except the listed pages.
+ */
+define('SHADOWBOX_ACTIVATION_NOTLISTED', 0);
+
+/**
+ * Enable on only the listed pages.
+ */
+define('SHADOWBOX_ACTIVATION_LISTED', 1);
+
+/**
+ * Enable if the following PHP code returns TRUE.
+ */
+define('SHADOWBOX_ACTIVATION_PHP', 2);
+
+/**
+ * Implements hook_library().
+ */
+function shadowbox_library() {
+
+  $shadowbox_location = variable_get('shadowbox_location', SHADOWBOX_DEFAULT_PATH);
+
+  $libraries['shadowbox'] = array(
+    'title' => 'Shadowbox',
+    'website' => 'http://www.shadowbox-js.com/',
+    'version' => '3.0.3',
+    'js' => array(
+      $shadowbox_location . '/shadowbox.js' => array(),
+      // Make sure to set the shadowbox path so that the language is set properly.
+      array(
+        'type' => 'setting',
+        'data' => _shadowbox_get_settings(),
+      ),
+      array(
+        'type' => 'inline',
+        'scope' => 'footer',
+        'data' => '
+          Shadowbox.path = "' . base_path() . $shadowbox_location . '/";
+	      Shadowbox.init(Drupal.settings.shadowbox);
+	    ',
+      )
+    ),
+    'css' => array(
+      variable_get('shadowbox_location', SHADOWBOX_DEFAULT_PATH) . '/shadowbox.css' => array(
+        'type' => 'file',
+        'media' => 'screen',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_help().
+ */
+function shadowbox_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#shadowbox':
+      return t('
+<p>Shadowbox is a modal media viewer application akin to !lightbox and !thickbox. You can use it to display images, movies, and other web content in a window that is overlaid on top of the page.</p>
+
+<p>The module is integrated with filefield\'s image element so you can select from a number of different options for displaying images uploaded to nodes and shown in views.</p>
+
+<p>For instructions on manually crafting your links please see the !usage.</p>
+
+<p>This module has !options that work on a site-wide basis.</p>', array(
+  '!lightbox' => l('lightbox2', 'http://drupal.org/project/lightbox2'),
+  '!thickbox' => l('thickbox', 'http://drupal.org/project/thickbox'),
+  '!options' => l('options', 'admin/settings/shadowbox'),
+  '!usage' => l('official usage guide', 'http://www.shadowbox-js.com/usage.html#markup'),
+));
+
+    case 'admin/settings/shadowbox':
+      return t('<p>This page provides access to the Shadowbox settings. The settings here work globally so any changes made here will affect Shadowbox for the entire site.</p>');
+  }
+}
+
+/**
+ * Implements hook_perm().
+ */
+function shadowbox_permission() {
+  return array(
+    'administer shadowbox' =>  array(
+      'title' => t('Administer shadowbox'),
+      'description' => t('Perform administration tasks for shadowbox.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function shadowbox_menu() {
+  $items = array();
+
+  $items['admin/config/media/shadowbox'] = array(
+    'title' => 'Shadowbox',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('shadowbox_global_settings'),
+    'access arguments' => array('administer shadowbox'),
+    'description' => 'Configure the settings for Shadowbox.',
+    'file' => 'shadowbox.admin.inc',
+  );
+  $items['admin/config/media/shadowbox/global'] = array(
+    'title' => 'Global',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('shadowbox_global_settings'),
+    'access arguments' => array('administer shadowbox'),
+    'description' => 'Configure the settings for Shadowbox.',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+    'file' => 'shadowbox.admin.inc',
+  );
+  $items['admin/config/media/shadowbox/automatic'] = array(
+    'title' => 'Auto handling',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('shadowbox_automatic_settings'),
+    'access arguments' => array('administer shadowbox'),
+    'description' => 'Configure the Shadowbox automatic image handling settings.',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+    'file' => 'shadowbox.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_init().
+ */
+function shadowbox_init() {
+  _shadowbox_construct_header();
+}
+
+/**
+ * Implements hook_theme().
+ */
+function shadowbox_theme() {
+
+  return array(
+    'shadowbox_formatter' => array(
+      'variables' => array(
+        'itemid' => NULL,
+        'item' => NULL,
+        'image_style' => "thumbnail",
+        'image_link' => "",
+        'gallery' => "",
+        'compact' => 0,
+        'title' => "",
+      ),
+    ),
+  );
+
+}
+
+/**
+ * Build the Shadowbox header by adding the necessary CSS and JS files.
+ */
+function _shadowbox_construct_header() {
+
+  $shadowbox_enabled = variable_get('shadowbox_enabled', TRUE);
+  $shadowbox_auto = variable_get('shadowbox_auto_enable_all_images', 0);
+  $shadowbox_enable_globally = variable_get('shadowbox_enable_globally', TRUE);
+
+  // Add shadowbox library files.
+  if ($shadowbox_enabled
+    && ($shadowbox_auto || $shadowbox_enable_globally)
+    && _shadowbox_activation()) {
+
+    // Add the base files.
+    drupal_add_library('shadowbox', 'shadowbox');
+
+    // automatic image handling.
+    if ($shadowbox_auto) {
+      _shadowbox_add_js('shadowbox_auto.js');
+    }
+
+  }
+
+}
+
+function _shadowbox_add_css($file) {
+  drupal_add_css(drupal_get_path('module', 'shadowbox') . '/' . $file);
+}
+
+function _shadowbox_add_js($file) {
+  drupal_add_js(drupal_get_path('module', 'shadowbox') . '/' . $file);
+}
+
+function _shadowbox_library_add_js($file) {
+  drupal_add_js(variable_get('shadowbox_location', SHADOWBOX_DEFAULT_PATH) . '/' . $file);
+}
+
+function _shadowbox_library_add_css($file) {
+  drupal_add_css(variable_get('shadowbox_location', SHADOWBOX_DEFAULT_PATH) . '/' . $file);
+}
+
+/**
+ * Construct the JS settings array.
+ *
+ * @param $override
+ *   An array of settings to override global values.
+ *
+ * @return
+ *   An array containing settings to be used in drupal_add_js.
+ */
+function _shadowbox_get_settings($override = array()) {
+  global $language;
+
+  $settings = array(
+    'animate' => variable_get('shadowbox_animate', TRUE),
+    'animateFade' => variable_get('shadowbox_animate_fade', TRUE),
+    'animSequence' => variable_get('shadowbox_animation_sequence', 'wh'),
+    'auto_enable_all_images' => variable_get('shadowbox_auto_enable_all_images', 0),
+    'auto_gallery' => variable_get('shadowbox_auto_gallery', 0),
+    'autoplayMovies' => (variable_get('shadowbox_autoplay_movies', 1) === 1) ? TRUE : FALSE,
+    'continuous' => variable_get('shadowbox_continuous_galleries', FALSE),
+    'counterLimit' => variable_get('shadowbox_counter_limit', 10),
+    'counterType' => variable_get('shadowbox_counter_type', 'default'),
+    'displayCounter' => variable_get('shadowbox_display_counter', TRUE),
+    'displayNav' => variable_get('shadowbox_display_nav', TRUE),
+    'enableKeys' => variable_get('shadowbox_enable_keys', TRUE),
+    'fadeDuration' => variable_get('shadowbox_fade_duration', 0.35),
+    'handleOversize' => variable_get('shadowbox_handle_oversize', 'resize'),
+    'handleUnsupported' => variable_get('shadowbox_handle_unsupported', 'link'),
+    'initialHeight' => variable_get('shadowbox_initial_height', 160),
+    'initialWidth' => variable_get('shadowbox_initial_width', 320),
+    'language' => $language->language,
+    'modal' => !variable_get('shadowbox_overlay_listen', TRUE),
+    'overlayColor' => '#' . variable_get('shadowbox_overlay_color', '000'),
+    'overlayOpacity' => variable_get('shadowbox_overlay_opacity', 0.8),
+    //'players' => $players,
+    'resizeDuration' => variable_get('shadowbox_resize_duration', 0.55),
+    'showMovieControls' => variable_get('shadowbox_show_movie_controls', TRUE),
+    'slideshowDelay' => variable_get('shadowbox_slideshow_delay', 0),
+    'viewportPadding' => variable_get('shadowbox_viewport_padding', 20),
+    'useSizzle' => variable_get('shadowbox_use_sizzle', FALSE),
+  );
+  $settings = array_merge($settings, $override);
+  $settings = array('shadowbox' => $settings);
+
+  return $settings;
+}
+
+/**
+ * Verify that Shadowbox should be activation for the current URL.
+ *
+ * @return
+ *   TRUE if Shadowbox should be activation for the current page.
+ */
+function _shadowbox_activation() {
+  $pages = variable_get('shadowbox_pages', "admin*\nimg_assist*\nnode/add/*\nnode/*/edit");
+  $activation = variable_get('shadowbox_activation_type', SHADOWBOX_ACTIVATION_NOTLISTED);
+  // Match path if necessary.
+  if ($pages) {
+    // Convert path to lowercase. This allows comparison of the same path
+    // with different case. Ex: /Page, /page, /PAGE.
+    $lowercase_pages = drupal_strtolower($pages);
+    if ($activation < SHADOWBOX_ACTIVATION_PHP) {
+      // Convert the Drupal path to lowercase
+      $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+      // Compare the lowercase internal and lowercase path alias (if any).
+      $page_match = drupal_match_path($path, $lowercase_pages);
+      if ($path != $_GET['q']) {
+        $page_match = $page_match || drupal_match_path($_GET['q'], $lowercase_pages);
+      }
+      // When $ACTIVATION has a value of 0 (SHADOWBOX_ACTIVATION_NOTLISTED),
+      // shadowbox is added on all pages except those listed in $pages.
+      // When set to 1 (SHADOWBOX_ACTIVATION_LISTED),
+      // it is added only on those pages listed in $pages.
+      $page_match = !($activation xor $page_match);
+    }
+    elseif (module_exists('php')) {
+      $page_match = php_eval($pages);
+    }
+    else {
+      $page_match = FALSE;
+    }
+  }
+  else {
+    $page_match = TRUE;
+  }
+
+  return $page_match;
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function shadowbox_field_formatter_info() {
+  $formatters = array(
+    'shadowbox' => array(
+      'label' => t('Shadowbox'),
+      'field types' => array('image'),
+      'settings' => array('image_style' => '', 'image_link' => '', 'gallery' => '', 'compact' => '', 'title' => ''),
+    ),
+  );
+
+  return $formatters;
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function shadowbox_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $image_styles = image_style_options(FALSE);
+  $element['image_style'] = array(
+    '#title' => t('Image style'),
+    '#type' => 'select',
+    '#default_value' => $settings['image_style'],
+    '#empty_option' => t('None (original image)'),
+    '#options' => $image_styles,
+  );
+
+  $element['image_link'] = array(
+    '#title' => t('Link image to'),
+    '#type' => 'select',
+    '#default_value' => $settings['image_link'],
+    '#empty_option' => t('None (original image)'),
+    '#options' => $image_styles,
+  );
+
+  $gallery_options = array(
+    'page' => 'gallery page',
+    'field' => 'gallery field',
+    'nid' => 'gallery node',
+  );
+
+  $element['gallery'] = array(
+    '#title' => t('gallery'),
+    '#type' => 'select',
+    '#default_value' => $settings['gallery'],
+    '#empty_option' => t('None (individual)'),
+    '#options' => $gallery_options,
+  );
+
+  $element['compact'] = array(
+    '#title' => t('compact'),
+    '#type' => 'checkbox',
+    '#default_value' => $settings['compact'],
+  );
+
+  $title_options = array(
+    'title' => 'image title',
+    'alt' => 'image alt',
+    'node' => 'node title',
+  );
+
+  $element['title'] = array(
+    '#title' => t('title'),
+    '#type' => 'select',
+    '#default_value' => $settings['title'],
+    '#empty_option' => t('None'),
+    '#options' => $title_options,
+  );
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function shadowbox_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = array();
+
+  $image_styles = image_style_options(FALSE);
+
+  // Unset possible 'No defined styles' option.
+  unset($image_styles['']);
+  // Styles could be lost because of enabled/disabled modules that defines
+  // their styles in code.
+  if (isset($image_styles[$settings['image_style']])) {
+    $summary[] = t('Image style: @style', array('@style' => $image_styles[$settings['image_style']]));
+  }
+  else {
+    $summary[] = t('Original image');
+  }
+
+  if (isset($image_styles[$settings['image_link']])) {
+    $summary[] = t('Linked to: @style', array('@style' => $image_styles[$settings['image_link']]));
+  }
+  else {
+    $summary[] = t('Linked to: Original image');
+  }
+
+  $gallery_options = array(
+    'page' => 'gallery page',
+    'field' => 'gallery field',
+    'nid' => 'gallery node',
+  );
+
+  if (isset($gallery_options[$settings['gallery']])) {
+    $summary[] = t('as @gallery', array('@gallery' => (isset($settings['compact']) && $settings['compact'] ? 'compact ' : '') . $gallery_options[$settings['gallery']]));
+  }
+
+  $title_options = array(
+    'title' => 'image title',
+    'alt' => 'image alt',
+    'node' => 'node title',
+  );
+
+  if (isset($title_options[$settings['title']])) {
+    $summary[] = t('with @title as title', array('@title' => $title_options[$settings['title']]));
+  }
+
+  return implode('<br />', $summary);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function shadowbox_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  $shadowbox_enabled_path = _shadowbox_activation() && variable_get('shadowbox_enabled', TRUE);
+
+  switch ($display['settings']['gallery']) {
+    case 'page':
+      $gallery_id = 'gallery';
+      break;
+    case 'field':
+      $gallery_id = $field['field_name'];
+      break;
+    case 'nid':
+      $gallery_id = "nid-{$entity->nid}";
+      break;
+    default:
+      $gallery_id = "";
+      break;
+  }
+
+  foreach ($items as $delta => $item) {
+
+    switch ($display['settings']['title']) {
+      case 'alt':
+        $title = $item['alt'];
+        break;
+      case 'title':
+        $title = $item['title'];
+        break;
+      case 'node':
+        $title = $entity->title;
+        break;
+      default:
+        $title = '';
+        break;
+    }
+
+    $element[$delta] = array(
+      '#theme' => 'shadowbox_formatter',
+      '#itemid' => $delta,
+      '#item' => $item,
+      '#image_style' => $display['settings']['image_style'],
+      '#image_link' => $display['settings']['image_link'],
+      '#gallery' => $gallery_id,
+      '#compact' => $display['settings']['compact'],
+      '#title' => $title,
+    );
+
+    if ($shadowbox_enabled_path) {
+      $element[$delta]['#attached']['library'][] = array('shadowbox', 'shadowbox');
+      $element[$delta]['#attached']['js'][] = array(
+        'data' => drupal_get_path('module', 'shadowbox') . '/shadowbox_auto.js',
+      );
+    }
+
+  }
+
+  return $element;
+}
+
+/**
+ * Returns HTML for an image field formatter.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - item: An array of image data.
+ *   - image_style: An optional image style.
+ *   - path: An array containing the link 'path' and link 'options'.
+ *
+ * @ingroup themeable
+ */
+function theme_shadowbox_formatter($variables) {
+
+  $item = $variables['item'];
+  $image = array(
+    'path' => $item['uri'],
+    'alt' => $item['alt'],
+  );
+  // Do not output an empty 'title' attribute.
+  if (drupal_strlen($item['title']) > 0) {
+    $image['title'] = $item['title'];
+  }
+
+  $image_style = $variables['image_style'];
+  if ( $variables['itemid'] == 0 || (isset($variables['compact']) && !$variables['compact']) ) {
+    if ($image_style) {
+      $image['style_name'] = $image_style;
+      $output = theme('image_style', $image);
+    }
+    else {
+      $output = theme('image', $image);
+    }
+  }
+  else {
+    $output = "";
+  }
+
+  $linked_style = $variables['image_link'];
+  if ($linked_style) {
+    $path = image_style_path($linked_style, $item['uri']);
+    if (!file_exists($path)) {
+      $path = image_style_url($linked_style, $item['uri']);
+    }
+  }
+  else {
+    $path = $item['uri'];
+  }
+
+  $gallery_id = $variables['gallery'];
+  $rel = ($gallery_id != '') ? "shadowbox[$gallery_id]" : 'shadowbox';
+
+  $link_attributes = array(
+    'rel' => $rel,
+    'title' => $variables['title'],
+  );
+  $options = array(
+    'attributes' => $link_attributes,
+    'html' => TRUE,
+  );
+
+  $output = l($output, file_create_url($path), $options);
+
+  $wrapper_classes = ($gallery_id != '') ? "sb-image sb-gallery sb-gallery-$gallery_id" : 'sb-image sb-individual';
+
+  return '<div class="' . $wrapper_classes . '">' . $output . '</div>';
+}

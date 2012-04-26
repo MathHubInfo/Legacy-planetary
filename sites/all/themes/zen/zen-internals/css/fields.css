@@ -1,0 +1,78 @@
+/**
+ * @file
+ * Field Styling
+ */
+
+
+.field /* Wrapper for any field. */ {
+}
+
+/*
+ * Field types (Core)
+ */
+.field-type-text {
+}
+
+.field-type-text-long {
+}
+
+.field-type-text-with-summary {
+}
+
+.field-type-image {
+}
+
+.field-type-file {
+}
+
+.field-type-taxonomy-term-reference {
+}
+
+.field-type-number-integer {
+}
+
+.field-type-number-decimal {
+}
+
+.field-type-number-float {
+}
+
+.field-type-list-text {
+}
+
+.field-type-list-boolean {
+}
+
+.field-type-list-integer {
+}
+
+.field-type-list-float {
+}
+
+/*
+ * Field types (Contrib)
+ */
+.field-type-datetime /* Always use "datetime" when creating new CCK date fields. "date" and "datestamp" are legacy types. */ {
+}
+
+.field-type-node-reference {
+}
+
+.field-type-user-reference {
+}
+
+
+/*
+ * Named fields
+ */
+.field-name-body {
+}
+
+.field-name-field-image {
+}
+
+.field-name-field-tags {
+}
+
+.field-name-field-FIELDNAME /* Underscores in field name are replaced with dashes. */ {
+}

@@ -22,10 +22,11 @@ function pyrdfa_node_postsave($node){
     $subject_uri = "http://local.virt/". $node->field_canonicalname['und'][0]['value'];
     // drupal_set_message($subject_uri);
 
+    dd("path: ".$node->path['source']);
     // will try these one by one.
-    extract_rdfa($node->uri['path'],$base_url,$base_path);
+    extract_rdfa($node->path['source'],$base_url,$base_path);
     delete_triples($virtuoso_location,$subject_uri);
-    upload_new_triples($virtuoso_location,$base_path,$node->uri['path']);
+    upload_new_triples($virtuoso_location,$base_path,$node->path['source']);
   }
 }
 
