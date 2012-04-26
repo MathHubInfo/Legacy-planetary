@@ -1,0 +1,83 @@
+/**
+ * @file
+ * CSS targeted specifically for Internet Explorer 6 for Windows.
+ *
+ * Any CSS in this file will override the rules specified in the ie.css file.
+ *
+ * References:
+ * 1. http://www.positioniseverything.net/explorer/doubled-margin.html
+ * 2. http://browservulsel.blogspot.com/2005/04/ie-overflow-auto-scrollbar-overlap.html
+ * 3. http://www.howtocreate.co.uk/wrongWithIE/?chapter=overflow%3Avisible%3B
+ */
+
+
+/*
+ * Layout CSS
+ */
+
+#main-wrapper {
+  zoom: 1; /* Otherwise with a liquid layout, sidebars disappear when resizing the windows in IE6 */
+}
+
+#content,
+#navigation,
+.region-sidebar-first,
+.region-sidebar-second /* Floating divs */ {
+  display: inline; /* display inline or double your floated margin! [1] */
+  overflow: hidden; /* in IE6, overflow auto is broken [2] and so is overflow visible [3] */
+  overflow-y: visible;
+}
+
+/*
+ * Tabs - IE6 doesn't support PNGs with alpha transparency.
+ */
+
+ul.primary li a,
+ul.primary li a .tab,
+ul.secondary li a,
+ul.secondary li a .tab {
+  display: inline-block; /* Otherwise the blocks mistakenly get 100% width in IE6 */
+}
+
+ul.primary li a {
+  background: url(../images/tab-left-ie6.png) no-repeat left -38px;
+}
+
+ul.primary li a .tab {
+  background: url(../images/tab-right-ie6.png) no-repeat right -38px;
+}
+
+ul.primary li a:hover,
+ul.primary li a:focus {
+  background: url(../images/tab-left-ie6.png) no-repeat left -76px;
+}
+
+ul.primary li a:hover .tab,
+ul.primary li a:focus .tab {
+  background: url(../images/tab-right-ie6.png) no-repeat right -76px;
+}
+
+ul.primary li.active a,
+ul.primary li.active a:hover,
+ul.primary li.active a:focus {
+  background: url(../images/tab-left-ie6.png) no-repeat left 0;
+}
+
+ul.primary li.active a .tab,
+ul.primary li.active a:hover .tab,
+ul.primary li.active a:focus .tab {
+  background: url(../images/tab-right-ie6.png) no-repeat right 0;
+}
+
+/*
+ * Wireframes - IE6 doesn't support the outline property.
+ */
+.with-wireframes #header .section,
+.with-wireframes #content .section,
+.with-wireframes #navigation .section,
+.with-wireframes .region-sidebar-first .section,
+.with-wireframes .region-sidebar-second .section,
+.with-wireframes .region-footer,
+.with-wireframes .region-bottom {
+  border: 1px solid #ccc;
+}
