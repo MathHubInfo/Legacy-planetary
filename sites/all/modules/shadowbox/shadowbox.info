@@ -1,0 +1,13 @@
+name = Shadowbox
+description = Allows content to be displayed in a JavaScript modal media viewer application.
+core = 7.x
+files[] = shadowbox.module
+files[] = shadowbox.admin.inc
+files[] = shadowbox.install
+configure = admin/config/media/shadowbox
+; Information added by drupal.org packaging script on 2012-01-03
+version = "7.x-3.0-beta8"
+core = "7.x"
+project = "shadowbox"
+datestamp = "1325619345"
+

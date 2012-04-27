@@ -173,6 +173,8 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   $m = preg_match($hasPreamble, $text, $matches);
   
   global $latex_preamble;
+  global $latex_metadata;
+
   if ($m > 0) {
 	$preamble = $matches[1];
 	$text = $matches[2];	
@@ -180,15 +182,37 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   if (isset($latex_preamble) && strlen($latex_preamble) > 0) {
   		$preamble = $latex_preamble;
   } else
+    {
      	$preamble = $filter->settings['latexml_preamble'];
+    }
+
+  if (isset($latex_metadata) && strlen($latex_metadata) > 0) {
+  		$metadata = $latex_metadata;
+  } else
+    {
+     	$metadata = "%BEGIN METADATA BLOCK
+%END METADATA BLOCK";
+    }
   
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
   
-  $data = 'profile=fragment-html&tex=' . urlencode($text);
-  if ($preamble) { $data .= "&preamble=" . urlencode($preamble); }
+
+  $data = 'profile=planetmath&tex=' . urlencode($text);
+  if ($preamble||$metadata) {
+    $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata);
+  }
   
+  dd("Article: ".$text.$preamble.$metadata);
+  dd("Data: ".$data);
   $content = do_post($host,$data);
-  $res = json_decode($content);
+
+  // dd($data);
+  // dd("++++ ".$content);
+  
+//dpm($content);
+$res = json_decode($content);
+
+
   $res = trim($res->{'result'});
   $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly. otherwise, uncomment next line.
   $res = str_replace('xml:','',$res); //also remove xml:id
