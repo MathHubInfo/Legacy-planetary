@@ -341,22 +341,22 @@ a:hover{
   line-height: 1.7em;
 }
 
-#front-left-block-tabs{
+.front-left, #front-left-block-tabs{
   float: left;
-  width: 300px;
+  width: 270px;
   margin-left: 0px;
-  margin-right: -300px;  
+  margin-right: -270px;  
 }
 
-#front-right-block-tabs{
+.front-right, #front-right-block-tabs{
   float: left;
-  width: 240px;
-  margin-left: 310px;
+  width: 270px;
+  margin-left: 280px;
   margin-right: -550px;  
 }
 
 #front-mid-tabs{
-  margin-top: 400px;
+  margin-top: 380px;
   clear: both;
 }
 
@@ -439,13 +439,6 @@ h2.node-title{
   line-height: 1.5em;
 }
 
-div.node.view-mode-full{
-  margin-top: -40px;
-}
-.logged-in div.node.view-mode-full{
-  margin-top: -65px;
-}
-
 .logged-in #block-search-form{
   margin-right: 0;
 }
@@ -462,15 +455,11 @@ div.node.view-mode-full div.content{
 
 h1#page-title{
   color: #111;
+  font-size: 20px;
 }
 
 .field-label{
   color: #111;
-}
-
-#content .tabs{
-  margin-bottom: 110px;
-  margin-top: -110px;  
 }
 
 #block-menu-menu-main-menu .content ul, #block-menu-menu-main-menu .content ul li{
@@ -541,4 +530,30 @@ background: #FFF;
 ul.action-links{
 margin: 0px;
 padding: 0 0 0 15px;
+}
+
+#front-top-tabs{
+  min-height: 80px
+}
+
+#front-right-mid-block-tabs{
+  margin-top: -200px;
+}
+
+#front-bot-tabs{
+  clear:both;
+  padding-top: 25px;
+  margin-bottom: 300px;
+}
+
+.block ul, .block li, .tab-contents ul, .tab-contents li{
+  list-style-type: circle;
+}
+
+/* LATEXML Stuff */
+.node .field-name-field-latex h1.title{
+  margin: 0;
+}
+#block-search-form{
+  z-index: 999;
 }
