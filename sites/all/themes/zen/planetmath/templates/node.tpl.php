@@ -80,6 +80,7 @@
  * @see zen_preprocess_node()
  * @see template_process()
  */
+//print_r($content['field_latex']);
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
@@ -107,6 +108,9 @@
     hide($content['comments']);
     hide($content['links']);
     hide($content['planetary_links']);
+    //HACK to get the latex field to work
+//    hide($content['field_latex']);
+    //END-HACK
     print render($content);
     ?>
   </div>

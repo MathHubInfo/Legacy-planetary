@@ -4,9 +4,10 @@
  * Adds useful blocks for the planetmath theme
  * @author Alex Dumitru <m.dumitru@jacobs-university.de> 
  */
-define('PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK', 10);
-define('PLANETMATH_BLOCKS_NUMBER_OF_USERS_ON_BLOCK', 10);
+define('PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK', 7);
+define('PLANETMATH_BLOCKS_NUMBER_OF_USERS_ON_BLOCK', 7);
 define('PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK', 5);
+define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES', serialize(array('correction', 'request', 'image', 'problem', 'solution')));
 
 /**
  * Queries for the block views 
@@ -17,6 +18,32 @@ function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     INNER JOIN users u ON u.uid = n.uid
     WHERE n.`type` = :type ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => $type));
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
+function planetmath_blocks_queryPersonalResponses($uid) {
+  $results = db_query("SELECT c.cid, n.nid, n.type, n.title, c.subject, c.uid, c.changed, u.name AS username FROM comment c
+      INNER JOIN node n ON n.nid = c.nid      
+      INNER JOIN users u ON u.uid = c.uid
+      WHERE n.uid = :node_uid AND c.uid != :comment_uid
+      ORDER BY c.changed DESC LIMIT 0,".PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array('node_uid' => $uid, 'comment_uid' => $uid));
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
+function planetmath_blocks_queryEverythingElse($sortBy = 'n.changed') {
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created
+    FROM node n 
+    LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
+    INNER JOIN users u ON u.uid = n.uid
+    WHERE n.`type` IN (:type) ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => unserialize(PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES)));
   $return = array();
   foreach ($results as $result) {
     $return[] = $result;
@@ -113,13 +140,13 @@ function planetmath_blocks_blockThemeResults($results) {
   if (empty($results)) {
     return '<h4>No results found</h4>';
   }
-  $html = "<ul>";
+  $html = '<div style="padding-left:7%;padding-right:10%;padding-bottom:10%;"><br />';
   foreach ($results as $result) {
     if (!isset($result->vid))
       $result->vid = "";
-    $html .= "<li>" . l($result->title . ' ' . $result->vid, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
+    $html .= '<span style="float:left">' . l($result->title . ' ' . $result->vid, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
   }
-  $html .= "</ul>";
+  $html .= "</div>";
   return $html;
 }
 
@@ -127,11 +154,12 @@ function planetmath_blocks_blockThemeUserListResults($results) {
   if (empty($results)) {
     return '<h4>No results found</h4>';
   }
-  $html = "<ul>";
+  // jac - got the right-justified numbers working
+  $html = '<div style="padding-left:10%;padding-right:10%;padding-bottom:10%;"><br />';
   foreach ($results as $result) {
-    $html .= "<li>" . l($result->name, 'user/' . $result->uid) . ' with ' . intval($result->points) . ' points</li>';
+    $html .= '<span style="float:left">' . l($result->name, 'user/' . $result->uid) . '</span><span style="float:right">' . intval($result->points) . ' </span><br />';
   }
-  $html .= "</ul>";
+  $html .= '</div >';
   return $html;
 }
 
@@ -139,24 +167,40 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
   if (empty($results)) {
     return '<h4>No results found</h4>';
   }
-  $html = "<ul>";
+  $html = '<div style="padding-left:7%;padding-right:10%;padding-bottom:10%;"><br />';
 
   foreach ($results as $result) {
     if (isset($result->cid)) {
 
       // This gives some small visual indication of article nodes vs forum nodes.
-      if($result->type == 'article') {
+      if ($result->type == 'article') {
         $code = 'P';
-      } else 
-        {
-          $code = 'p';
-        }
-      $html .= "<li>" . date('Y-m-d', $result->changed) . " - [" . l($code, 'node/'.$result->nid) . "] " . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-'.$result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
+      } else {
+        $code = 'p';
+      }
+      $html .= '<span style="float:left">' . date('Y-m-d', $result->changed) . " - [" . l($code, 'node/' . $result->nid) . "] " . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-' . $result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
     } else {
-      $html .= "<li>" . date('Y-m-d', $result->changed) . " - " . l($result->title, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</li>';
+      $html .= '<span style="float:left">' . date('Y-m-d', $result->changed) . " - " . l($result->title, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
     }
   }
-  $html .= "</ul>";
+  $html .= "</div>";
+  return $html;
+}
+
+function planetmath_blocks_blockThemeMyPersonalResults($results) {
+  global $user;
+  if(!$user->uid){
+    return "<h4>Please log in to view the results</h4>";
+  }
+  if (empty($results)) {
+    return '<h4>No results found</h4>';
+  }
+  $html = '<div style="padding-left:7%;padding-right:10%;padding-bottom:10%;"><br />';
+
+  foreach ($results as $result) {
+    $html .= '<span style="float:left">' . date('Y-m-d', $result->changed) . " - " . l($result->username, 'user/' . $result->uid) . " " . l('replied', 'node/' . $result->nid, array('fragment' => 'comment-' . $result->cid)) . ' to ' . l($result->title, 'user/' . $result->nid) . '</span>';
+  }
+  $html .= "</div>";
   return $html;
 }
 
@@ -165,7 +209,7 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
  */
 function planetmath_blocks_block_info() {
   $blocks = array();
-  $block_names = array('article', 'request', 'problem', 'forum', 'news', 'correction', 'pversion', 'cross-reff', 'userlist', 'revision', 'message');
+  $block_names = array('article', 'request', 'problem', 'forum', 'news', 'correction', 'pversion', 'cross-reff', 'userlist', 'revision', 'message', 'everything-else', 'personal-feed');
   foreach ($block_names as $name) {
     $blocks[$name] = array(
         'info' => t($name),
@@ -176,7 +220,7 @@ function planetmath_blocks_block_info() {
 
 function planetmath_blocks_crossRefMockBlock() {
   return array(
-      'subject' => 'Cross Refferences',
+      'subject' => 'Cross References',
       'content' => 'open problem, amenable, contradiction, relation, equivalence, clear, support, theorems, injective'
   );
 }
@@ -216,12 +260,32 @@ function planetmath_blocks_block_userList() {
   );
 }
 
+function planetmath_blocks_block_everythingElse() {
+  return array(
+      'subject' => 'Everything Else',
+      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryEverythingElse())
+  );
+}
+
+function planetmath_blocks_block_personalFeed() {
+  global $user;
+  return array(
+      'subject' => 'Personal Feed',
+      'content' => planetmath_blocks_blockThemeMyPersonalResults(planetmath_blocks_queryPersonalResponses($user->uid))
+  );
+}
+
 /**
  * Implementation of hook_block_view
  */
 function planetmath_blocks_block_view($delta = '') {
   $block = array();
-  $block_names = array('article' => 'Latest Additions', 'request' => 'Requests', 'problem' => 'Problems', 'news' => 'News', 'forum' => 'Messages', 'solution' => 'Solutions');
+  $block_names = array('article' => 'Latest Additions',
+		       'request' => 'Requests',
+		       'problem' => 'Problems',
+		       'news' => 'News',
+		       'forum' => 'Messages',
+		       'solution' => 'Solutions');
 
   foreach ($block_names as $name => $cannonicalName) {
     if ($delta == $name) {
@@ -239,10 +303,10 @@ function planetmath_blocks_block_view($delta = '') {
   if ($delta == 'revision') {
     $block = planetmath_blocks_block_revisions();
   }
-  
+
   if ($delta == 'message') {
     $block = planetmath_blocks_block_messages();
-  }  
+  }
 
   if ($delta == 'userlist') {
     $block = planetmath_blocks_block_userList();
@@ -252,8 +316,16 @@ function planetmath_blocks_block_view($delta = '') {
     $block = planetmath_blocks_crossRefMockBlock();
   }
 
+  if ($delta == 'everything-else') {
+    $block = planetmath_blocks_block_everythingElse();
+  }
+
   if ($delta == 'pversion') {
     $block = planetmath_blocks_block_versions(arg(1));
+  }
+
+  if ($delta == 'personal-feed') {
+    $block = planetmath_blocks_block_personalFeed();
   }
 
   return $block;

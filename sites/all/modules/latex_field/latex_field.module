@@ -17,7 +17,7 @@ function latex_field_field_info() {
 * Implements hook_field_is_empty().
 */
 function latex_field_field_is_empty($item, $field) {
-	return empty($item['document']) && empty($item['preamble']) && empty($item['metadata']);
+	return empty($item['document']) && empty($item['preamble']);
 }
 
 
@@ -45,7 +45,7 @@ function latex_field_field_formatter_info() {
 */
 function latex_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
 	$element = array();
-
+	//dpm($entity);
 	switch ($display['type']) {
 		// This formatter simply outputs the field as text and with a color.
 		case 'latex_formatter':
@@ -53,10 +53,8 @@ function latex_field_field_formatter_view($entity_type, $entity, $field, $instan
 				$settings = $instance['widget']['settings'];
 				$filter = $settings["filter"];
 				global $latex_preamble;
-				global $latex_metadata;
 				$latex_preamble = $item['preamble']; 
-				$latex_metadata = $item['metadata']; 
-				$fobj = check_markup($item['document'], $filter, $entity->language, true);
+				$fobj = check_markup($item['document'], $filter, $entity->language, true);  
 				$element[$delta]['#markup'] = theme("wysiwyg_etherpad_local",
 				array(
 										"content" => $fobj, 
@@ -96,12 +94,10 @@ function latex_field_field_widget_info() {
 function latex_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
 	$code = isset($items[$delta]['document']) ? $items[$delta]['document'] : '';
 	$preamble = isset($items[$delta]['preamble']) ? $items[$delta]['preamble'] : '';
-	$metadata = isset($items[$delta]['metadata']) ? $items[$delta]['metadata'] : '';
 	$element += array(
     '#delta' => $delta,
 	);
 	$element['preamble'] = array();
-	$element['metadata'] = array();
 	$element['document'] = array();
 
 	$settings = $instance['widget']['settings'];
@@ -119,11 +115,6 @@ function latex_field_field_widget_form(&$form, &$form_state, $field, $instance, 
 				"#title" => "Preamble",
 				"#type" => "textarea",
 				"#default_value" => $preamble,
-			);
-			$element['metadata'] += array(
-				"#title" => "Metadata",
-				"#type" => "textarea",
-				"#default_value" => $metadata,
 			);
 			$element['document'] += array(
 				"#title" => "LaTeX",
@@ -143,11 +134,9 @@ function latex_field_validate($element, &$form_state) {
   if (isset($form_state['values'][$field_name][$element['#language']][$delta])) {
     $values = $form_state['values'][$field_name][$element['#language']][$delta];
     form_set_value($element, array(
-				   'document' => $values["document"]["value"], 
-				   'value' => $values["document"]["value"], // just to make it work with wysiwyg
-				   'preamble' => $values["preamble"],
-				   'metadata' => $values["metadata"]),
-		   $form_state
+    	'document' => $values["document"]["value"], 
+    	'value' => $values["document"]["value"], // just to make it work with wysiwyg
+    	'preamble' => $values["preamble"]), $form_state
    	);
   }
 }
@@ -169,5 +158,16 @@ function latex_field_field_widget_settings_form($field, $instance) {
 	);
 	return $form;
 }
+
+/*
+ * implements hook_field_access
+*/
+/* function latex_field_field_access($op, $field, $entity_type, $entity, $account) { */
+/*   print_r($field, "FIELD"); */
+/*   if ($field['field_name'] == 'latex_field') { */
+/*     return TRUE; */
+/*   } */
+/*   return TRUE; */
+/* } */
 
 ?>
