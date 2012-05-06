@@ -48,7 +48,7 @@ function planetmath_image_model_getImagesForNode($nid) {
 function planetmath_image_form_article_node_form_alter(&$form, &$form_state) {
   $imagesDefault = array();
   $node = $form['#node'];
-  if ($node->nid) {
+  if (isset($node->nid)) {
     if (isset($node->images)) {
       foreach ($node->images as $image) {
         $imagesDefault[] = $image->nid;

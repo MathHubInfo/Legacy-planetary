@@ -1,0 +1,199 @@
+<?php
+
+/**
+ * Adds useful features for the organic groups
+ * @author Alex Dumitru <m.dumitru@jacobs-university.de> 
+ */
+define("PLANETMATH_OG_COAUTHOR_GROUP_PREFIX", "Editing Group for ");
+define("PLANETMATH_OG_WW_GID", 1);
+define("PLANETMATH_OG_ACCEPTED_CONTENT_TYPES", serialize(array('article')));
+
+function planetmath_og_model_getNodeEditingGroup($nid) {
+  $result = db_query("SELECT og.etid, og.gid 
+    FROM og_membership om 
+    INNER JOIN og ON og.gid = om.gid    
+    WHERE om.entity_type = 'node' AND om.etid = :etid", array('etid' => $nid))->fetchObject();
+  if (isset($result->etid)) {
+    $group = node_load($result->etid);
+    $group->gid = $result->gid;
+  } else {
+    $group = false;
+  }
+  return $group;
+}
+
+function planetmath_og_model_getWWGroup() {
+  return PLANETMATH_OG_WW_GID;
+}
+
+function planetmath_og_model_isUserGroupAdmin($uid, $group) {
+  $isAdmin = false;
+  if ($group->uid == $uid) {
+    $isAdmin = true;
+  } else {
+    $countAdmin = db_query("SELECT COUNT(uid) AS count_uid FROM og_users_roles WHERE rid = 3 AND uid = :uid AND gid = :gid", array(':uid' => $uid, ':gid' => $group->gid))->fetchObject()->count_uid;
+    if ($countAdmin >= 1) {
+      $isAdmin = true;
+    }
+  }
+  return $isAdmin;
+}
+
+function planetmath_og_model_isUserMemberOfGroup($uid, $group) {
+  $isMember = false;
+  if ($group->uid == $uid) {
+    $isMember = true;
+  } else {
+    $countAdmin = db_query("SELECT COUNT(etid) AS count_uid FROM og_membership WHERE gid = :gid AND etid = :uid AND entity_type = 'user'", array(':uid' => $uid, ':gid' => $group->gid))->fetchObject()->count_uid;
+    if ($countAdmin >= 1) {
+      $isMember = true;
+    }
+  }
+  return $isMember;
+}
+
+function planetmath_og_model_insertNodeEditingGroup($node) {
+  $groupTitle = PLANETMATH_OG_COAUTHOR_GROUP_PREFIX . $node->title;
+  $groupNode = (object) array(
+              'type' => 'group',
+              'title' => $groupTitle,
+              'uid' => $node->uid,
+              'status' => 1,
+              'comment' => 1,
+              'changed' => REQUEST_TIME,
+              'created' => REQUEST_TIME,
+              'language' => LANGUAGE_NONE
+  );
+  node_save($groupNode);
+  $gid = db_insert('og')->fields(array(
+              'etid' => $groupNode->nid,
+              'entity_type' => 'node',
+              'label' => $groupNode->title,
+              'state' => 1,
+              'created' => REQUEST_TIME
+          ))->execute();
+
+  db_insert('og_membership')->fields(array(
+      'name' => 'og_membership_type_default',
+      'etid' => $node->nid,
+      'entity_type' => 'node',
+      'gid' => $gid,
+      'state' => 1,
+      'created' => REQUEST_TIME
+  ))->execute();
+  return $gid;
+}
+
+function planetmath_og_model_addUserToGroup($gid, $uid, $isAdmin = false) {
+  db_insert('og_membership')->fields(array(
+      'name' => 'og_membership_type_default',
+      'etid' => $uid,
+      'entity_type' => 'user',
+      'gid' => $gid,
+      'state' => 1,
+      'created' => REQUEST_TIME
+  ))->execute();
+
+  db_insert('og_users_roles')->fields(array(
+      'uid' => $uid,
+      'rid' => $isAdmin ? 3 : 2,
+      'gid' => $gid
+  ))->execute();
+}
+
+function planetmath_og_menu() {
+  $items = array();
+  $items['node/%/pmgroup'] = array(
+      'type' => MENU_LOCAL_TASK,
+      'title' => 'Co-Authors',
+      'page callback' => 'planetmath_og_view_coAuthorsPage',
+      'page arguments' => array(1),
+      'access callback' => 'planetmath_og_access_coAuthorsPage',
+      'access arguments' => array(1)
+  );
+
+  $items['planetmath_og/create-coauth-group/%'] = array(
+      'type' => MENU_CALLBACK,
+      'title' => 'Create CoAuthor Group',
+      'page callback' => 'planetmath_og_callback_createCoAuthGroup',
+      'page arguments' => array(2),
+      'access arguments' => array('access content')
+  );
+  return $items;
+}
+
+function planetmath_og_access_coAuthorsPage($nid){
+  $node = node_load($nid);
+  if(in_array($node->type, unserialize(PLANETMATH_OG_ACCEPTED_CONTENT_TYPES))){
+    return true;
+  }
+  return false;
+}
+
+function planetmath_og_view_coAuthorsPage($nid) {
+  $node = node_load($nid);
+  $group = planetmath_og_model_getNodeEditingGroup($node->nid);
+  $page = "";
+  global $user;
+
+  if ($group === false) {
+    if ($node->uid == $user->uid) {
+      $page = planetmath_og_view_coAuthorsNoGroupPage($node);
+    }
+    else{
+      $page = "No co-author group was created yet. This can only be done by the original author.";
+    }
+  } else {
+    if (planetmath_og_model_isUserGroupAdmin($user->uid, $group)) {
+      $page = planetmath_og_view_coAuthorsGroupPage($node, $group);
+    } else {
+      $page = planetmath_og_view_requestInvitePage($node, $group);
+    }
+  }
+  return $page;
+}
+
+function planetmath_og_view_coAuthorsGroupPage($node, $group) {
+  $links = array(
+      'add-people' => l("Add co-authors", 'group/node/' . $group->nid . '/admin/people/add-user'),
+      'people' => l('Manage co-authors', 'group/node/' . $group->nid . '/admin/people')
+  );
+  return theme('item_list', array('items' => array_values($links), 'type' => 'ul', 'options' => array()));
+}
+
+function planetmath_og_view_coAuthorsNoGroupPage($node) {
+  $html = "<p>Currently, there is no co-author group associated to this one.</p>" .
+          l("Create co-author group", 'planetmath_og/create-coauth-group/' . $node->nid);
+  return $html;
+}
+
+function planetmath_og_callback_createCoAuthGroup($nid) {
+  $node = node_load($nid);
+  if ($node->nid) {
+    $gid = planetmath_og_model_insertNodeEditingGroup($node);
+    if ($gid) {
+      drupal_set_message("The co-author group was successfully created");
+    } else {
+      drupal_set_message("There was an error creating the co-autor group", "error");
+    }
+  } else {
+    drupal_set_message("The group was not created because the article supplied does not exist", "error");
+  }
+  drupal_goto('node/' . $nid . '/pmgroup');
+}
+
+function planetmath_og_view_requestInvitePage($node, $group) {
+  global $user;
+  $html = "";
+  if (!planetmath_og_model_isUserMemberOfGroup($user->uid, $group)) {
+    $html = l("Request to join as a co-author", 'group/node/' . $group->nid . '/subscribe');
+  } else {
+    $html = "You are a co-author on this article.";
+  }
+  return $html;
+}
+
+function planetmath_og_user_insert($edit, $account, $category) {
+  $gid = planetmath_og_model_getWWGroup();
+  planetmath_og_model_addUserToGroup($gid, $account->uid);
+}
