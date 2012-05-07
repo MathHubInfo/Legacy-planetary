@@ -72,8 +72,6 @@ dependencies[] = privatemsg
 dependencies[] = shadowbox
 dependencies[] = subform
 dependencies[] = token
-dependencies[] = evoc
-dependencies[] = rdfui
 dependencies[] = relation
 dependencies[] = relation_dummy_field
 dependencies[] = relation_endpoint
@@ -94,7 +92,6 @@ dependencies[] = views_ui
 ;; custom
 dependencies[] = curli
 dependencies[] = references
-dependencies[] = ImageMigrate
 dependencies[] = planetmath_blocks
 dependencies[] = latex_field
 dependencies[] = batch_latex
@@ -114,15 +111,15 @@ dependencies[] = wysiwyg_codemirror
 dependencies[] = wysiwyg_etherpad_lite
 
 ;; features
-dependencies[] = planetmath_permissions
+;dependencies[] = planetmath_permissions
 dependencies[] = planetmath_views
 dependencies[] = planetmath_menus
 
 ;; Migration stuff
 dependencies[] = planetmath_migration
 dependencies[] = planetmath_migration_extras
-dependencies[] = ImageMigrate
-dependencies[] = GroupMigrate
+dependencies[] = image_migrate
+dependencies[] = group_migrate
 
 ; It would probably be good to change the name of the "planetmath" to something more recognizable, like "planetmath_theme"...
 ; Note that we are not allowed to put a theme name onto the dependency list
