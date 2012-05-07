@@ -144,14 +144,14 @@ function planetmath_permissions_user_default_permissions() {
     'module' => 'userpoints',
   );
 
-  // Exported permission: administer RDF field mappings
-  $permissions['administer RDF field mappings'] = array(
-    'name' => 'administer RDF field mappings',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'rdfui',
-  );
+  /* // Exported permission: administer RDF field mappings */
+  /* $permissions['administer RDF field mappings'] = array( */
+  /*   'name' => 'administer RDF field mappings', */
+  /*   'roles' => array( */
+  /*     0 => 'administrator', */
+  /*   ), */
+  /*   'module' => 'rdfui', */
+  /* ); */
 
   // Exported permission: administer Terms and Conditions
   $permissions['administer Terms and Conditions'] = array(
@@ -306,14 +306,14 @@ function planetmath_permissions_user_default_permissions() {
     'module' => 'user',
   );
 
-  // Exported permission: administer rdf
-  $permissions['administer rdf'] = array(
-    'name' => 'administer rdf',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'rdfx',
-  );
+  /* // Exported permission: administer rdf */
+  /* $permissions['administer rdf'] = array( */
+  /*   'name' => 'administer rdf', */
+  /*   'roles' => array( */
+  /*     0 => 'administrator', */
+  /*   ), */
+  /*   'module' => 'rdfx', */
+  /* ); */
 
   // Exported permission: administer relation types
   $permissions['administer relation types'] = array(
@@ -384,23 +384,23 @@ function planetmath_permissions_user_default_permissions() {
     'module' => 'system',
   );
 
-  // Exported permission: administer sparql registry
-  $permissions['administer sparql registry'] = array(
-    'name' => 'administer sparql registry',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'sparql_registry',
-  );
+  /* // Exported permission: administer sparql registry */
+  /* $permissions['administer sparql registry'] = array( */
+  /*   'name' => 'administer sparql registry', */
+  /*   'roles' => array( */
+  /*     0 => 'administrator', */
+  /*   ), */
+  /*   'module' => 'sparql_registry', */
+  /* ); */
 
-  // Exported permission: administer sparql_views types
-  $permissions['administer sparql_views types'] = array(
-    'name' => 'administer sparql_views types',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'sparql_views',
-  );
+  /* // Exported permission: administer sparql_views types */
+  /* $permissions['administer sparql_views types'] = array( */
+  /*   'name' => 'administer sparql_views types', */
+  /*   'roles' => array( */
+  /*     0 => 'administrator', */
+  /*   ), */
+  /*   'module' => 'sparql_views', */
+  /* ); */
 
   // Exported permission: administer taxonomy
   $permissions['administer taxonomy'] = array(
