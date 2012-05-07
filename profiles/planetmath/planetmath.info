@@ -111,7 +111,7 @@ dependencies[] = wysiwyg_codemirror
 dependencies[] = wysiwyg_etherpad_lite
 
 ;; features
-dependencies[] = planetmath_permissions
+;dependencies[] = planetmath_permissions
 dependencies[] = planetmath_views
 dependencies[] = planetmath_menus
 
