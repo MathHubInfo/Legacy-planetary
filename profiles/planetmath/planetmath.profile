@@ -208,159 +208,196 @@ function planetmath_profile_patch_core() {
 // This seems to be pretty much what's needed...
 function planetmath_profile_forum_creator() {
   dd("In planetmath_profile_forum_creator");
+  set_time_limit(0);
+  dd("creating Forum 0");
+
   $edit = array(
 		'name' => t('Planetary Bugs'),
 		'description' => 'A place to report and discuss issues with the new software.',
 		'parent' => array(0),
-		'vid' => 2,
-		'weight' => -1,
+		'vid' => 1,
+		'weight' => 0,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 1");
   $edit = array(
 		'name' => t('High School/Secondary'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight'=> 1
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 2");
   $edit = array(
 		'name' => t('University/Tertiary'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 2,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 3");
   $edit = array(
 		'name' => t('Industry/Practice'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 3,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 4");
   $edit = array(
 		'name' => t('Graduate/Advanced'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 4,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 5");
   $edit = array(
 		'name' => t('Research Topics'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 5,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 6");
   $edit = array(
 		'name' => t('The Math Pub'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 6,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 7");
   $edit = array(
 		'name' => t('Math Competitions'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 7,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 8");
   $edit = array(
 		'name' => t('Math History'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 8,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 9");
   $edit = array(
 		'name' => t('Math Humor'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 9,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 10");
   $edit = array(
 		'name' => t('LaTeX help'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 10,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 11");
   $edit = array(
 		'name' => t('PlanetMath help'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 11,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 12");
   $edit = array(
 		'name' => t('PlanetMath Comments'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 12,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 13");
   $edit = array(
 		'name' => t('PlanetMath.ORG'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 13,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 14");
   $edit = array(
 		'name' => t('PlanetMath System Updates and News'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 14,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 15");
   $edit = array(
 		'name' => t('Strategic Communications Development'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 15,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  dd("creating Forum 16");
   $edit = array(
 		'name' => t('Testing messages (ignore)'),
 		'description' => 'CHANGE THIS',
 		'parent' => array(0),
-		'vid' => 2,
+		'vid' => 1,
+		'weight' => 16,
 		);
   $term = (object) $edit;
   taxonomy_term_save($term);
+
+  dd("Returning NULL");
   return NULL;
 }
 
