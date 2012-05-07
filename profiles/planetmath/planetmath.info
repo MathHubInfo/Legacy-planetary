@@ -1,0 +1,132 @@
+name = PlanetMath profile
+description = This file sets up a Drupal installation to look/feel like PlanetMath.
+core = 7.x
+
+;; Standard modules that we need
+;; Note that some are commented out until I understand better...
+dependencies[] = content_access
+dependencies[] = ctools
+dependencies[] = views_content
+dependencies[] = aggregator
+dependencies[] = block
+dependencies[] = color
+dependencies[] = comment
+dependencies[] = contextual
+dependencies[] = dashboard
+dependencies[] = dblog
+dependencies[] = field
+dependencies[] = field_sql_storage
+dependencies[] = field_ui
+dependencies[] = file
+dependencies[] = filter
+dependencies[] = forum
+dependencies[] = help
+dependencies[] = image
+dependencies[] = list
+dependencies[] = locale
+dependencies[] = menu
+dependencies[] = node
+dependencies[] = number
+dependencies[] = options
+dependencies[] = overlay
+dependencies[] = path
+dependencies[] = php
+dependencies[] = poll
+dependencies[] = rdf
+dependencies[] = search
+dependencies[] = shortcut
+dependencies[] = statistics
+dependencies[] = system
+dependencies[] = taxonomy
+dependencies[] = text
+dependencies[] = toolbar
+dependencies[] = update
+dependencies[] = user
+dependencies[] = delete_all
+dependencies[] = devel
+dependencies[] = devel_generate
+dependencies[] = devel_node_access
+dependencies[] = migrate
+dependencies[] = migrate_ui
+dependencies[] = reroute_email
+dependencies[] = article_setup
+dependencies[] = features
+dependencies[] = node_reference
+dependencies[] = og
+dependencies[] = og_access
+dependencies[] = og_context
+dependencies[] = og_field_access
+dependencies[] = og_migrate
+dependencies[] = og_register
+dependencies[] = og_ui
+dependencies[] = backup_migrate
+dependencies[] = commentrss
+dependencies[] = correction
+dependencies[] = entity
+dependencies[] = entity_token
+dependencies[] = legal
+dependencies[] = nodeconnect
+dependencies[] = nodeaccess
+dependencies[] = pathauto
+dependencies[] = privatemsg
+dependencies[] = shadowbox
+dependencies[] = subform
+dependencies[] = token
+dependencies[] = evoc
+dependencies[] = rdfui
+dependencies[] = relation
+dependencies[] = relation_dummy_field
+dependencies[] = relation_endpoint
+dependencies[] = relation_entity_collector
+dependencies[] = relation_select
+dependencies[] = rules
+dependencies[] = rules_scheduler
+dependencies[] = rules_admin
+dependencies[] = wysiwyg
+dependencies[] = userpoints
+dependencies[] = userpoints_nc
+dependencies[] = userpoints_nc_revision
+dependencies[] = efq_views
+dependencies[] = views
+dependencies[] = views_php
+dependencies[] = views_ui
+
+;; custom
+dependencies[] = curli
+dependencies[] = references
+dependencies[] = ImageMigrate
+dependencies[] = planetmath_blocks
+dependencies[] = latex_field
+dependencies[] = batch_latex
+dependencies[] = drutexml
+dependencies[] = mathjax
+dependencies[] = planetary_authorlinks
+dependencies[] = planetmath_rules
+dependencies[] = problems
+dependencies[] = tntbase_sfbrowser
+dependencies[] = solutions
+dependencies[] = tntbase
+dependencies[] = tntbase_import
+dependencies[] = planetmath_edit_article
+dependencies[] = msc_browser
+dependencies[] = pyrdfa
+dependencies[] = wysiwyg_codemirror
+dependencies[] = wysiwyg_etherpad_lite
+
+;; features
+dependencies[] = planetmath_permissions
+dependencies[] = planetmath_views
+dependencies[] = planetmath_menus
+
+;; Migration stuff
+dependencies[] = planetmath_migration
+dependencies[] = planetmath_migration_extras
+dependencies[] = ImageMigrate
+dependencies[] = GroupMigrate
+
+; It would probably be good to change the name of the "planetmath" to something more recognizable, like "planetmath_theme"...
+; Note that we are not allowed to put a theme name onto the dependency list
+dependencies[] = planetmath
+; dependencies[] = zen
+
+files[] = planetmath.profile
