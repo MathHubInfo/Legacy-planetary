@@ -24,7 +24,7 @@
  */
 
 // We need to be able to add groups, and we need to be able to add nodes as a subroutine.
-function node_add_programmatic($type, $title, $uid, $body_text) {
+function group_migrate_node_add_programmatic($type, $title, $uid, $body_text) {
 
   $node = (object) array("type"=>$type, "title"=>$title, "language"=>LANGUAGE_NONE);
 
@@ -43,14 +43,14 @@ function node_add_programmatic($type, $title, $uid, $body_text) {
 // node_add_programmatic('group','testing programmatic add for groups again',1,'bla bla woof woof');
 
 // We need to be able to add groups, and we need to be able to add nodes as a subroutine.
-function group_add_programmatic($name,$userid,$description) {
+function group_migrate_group_add_programmatic($name,$userid,$description) {
   $etid = node_add_programmatic('group', $name, $userid, $description);
   return og_get_group('node', $etid, TRUE);
 }
 
 // This operation is relatively simple; it assumes that the world writable group is group #1.
 // It also requires that object ids in the old ACL are the same as nids in Drupal (they are).
-function port_world_writable() {
+function group_migrate_port_world_writable() {
   // Creates world writable group #1 (or change the code to use the correct number)!
   group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
   $ww = db_query("SELECT gid FROM {og} where label = 'World Writable'")->fetchField();
@@ -85,7 +85,7 @@ function port_world_writable() {
                                GROUP BY planetmath_group_members.groupid ) as t
                                WHERE t.cnt > 1 AND planetmath_groups.groupid = t.groupid;  */
 
-function port_planetmath_groups_to_og() {
+function group_migrate_port_planetmath_groups_to_og() {
      
   $res = db_query("SELECT t.groupid, planetmath_groups.userid, planetmath_groups.groupname, planetmath_groups.description  FROM planetmath_groups, ( SELECT COUNT( planetmath_group_members.userid ) AS cnt, planetmath_group_members.groupid FROM planetmath_group_members GROUP BY planetmath_group_members.groupid ) as t WHERE t.cnt > 1 AND planetmath_groups.groupid = t.groupid");
      
@@ -125,7 +125,7 @@ function port_planetmath_groups_to_og() {
 	
 // There are about 1151 distinct objects shared to 1200 individuals via the ACL
 // - Create a new group for each object managed in this way, and add the users.
-function port_coauthors () {
+function group_migrate_port_coauthors () {
   // get the objects that are shared
   $objects = db_query("SELECT DISTINCT {planetmath_acl}.objectid, {planetmath_objects}.name, {planetmath_objects}.title, {planetmath_objects}.userid FROM {planetmath_acl}, {planetmath_objects} WHERE {planetmath_acl}.user_or_group = 'u' AND {planetmath_acl}.default_or_normal = 'n' AND {planetmath_objects}.uid = {planetmath_acl}.objectid");
 	
@@ -154,7 +154,7 @@ function port_coauthors () {
 // Test (well, just do the damn thing):
 // port_coauthors();
 
-function run_group_migration(){
+function group_migrate_run_group_migration(){
   port_world_writable();
   port_planetmath_groups_to_og();
   port_coauthors();

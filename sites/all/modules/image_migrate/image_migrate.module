@@ -1,6 +1,6 @@
 <?php
 /**
- * @file ImageMigrate module
+ * @file image_migrate module
  * @author v.merticariu@jacobs-university.de
  * @version 1.0
  */
@@ -13,7 +13,7 @@
  * Checks if a file has already been copied to avoid duplicates
  * @param $fname: the name of the file
  */
-function checkDuplicate($fname){
+function image_migrate_checkDuplicate($fname){
     $query = db_query("SELECT cannonical FROM imageMigrate WHERE name=:name", array('name' => $fname));
     foreach($query as $row){
         if($row->cannonical){
@@ -27,7 +27,7 @@ function checkDuplicate($fname){
  * Builds the shell command for copying the files and adds
  * every entry to the imgMigrate table
  */
-function im_buildShell(){
+function image_migrate_im_buildShell(){
     $dirs = explode('/', shell_exec('cd ../pm-fileboxes; ls -F'));
     foreach($dirs as $key => $val){
         if($key!=0){
@@ -68,7 +68,7 @@ function im_buildShell(){
  * @param type $uid
  * @param type $canName 
  */
-function createNode($imgName, $uid, $canName){
+function image_migrate_createNode($imgName, $uid, $canName){
     $cName = explode('.png', $imgName);
     $name = $cName[0];
     $node = new stdClass();
@@ -130,7 +130,7 @@ function createNode($imgName, $uid, $canName){
 /**
  * Creates nodes for every image and empties imageMigrate table.
  */
-function createAllNodes(){
+function image_migrate_createAllNodes(){
     $query = db_query("SELECT * FROM imageMigrate");
     foreach($query as $row){
         createNode($row->name, $row->uid, $row->cannonical);
@@ -146,18 +146,18 @@ function createAllNodes(){
 /**
  * Implementation of hook_menu()
  */
-function ImageMigrate_menu(){
+function image_migrate_menu(){
     $items ['migrate/img'] = array(
           'title' => 'Copy Images',
           'description' => 'Copies the files from pm-boxes/*/*.png to sites/default/files/pictures',
-          'page callback' => 'im_buildShell',
+          'page callback' => 'image_migrate_im_buildShell',
           'type' => MENU_CALLBACK,
           'access arguments' => array('administer features')
     );
     $items['migrate/nodes'] = array(
       'title' => 'Create nodes',
       'description' => 'Creates a node for each imported image',
-      'page callback' => 'createAllNodes',
+      'page callback' => 'image_migrate_createAllNodes',
       'type' => MENU_CALLBACK,
       'access arguments' => array('administer features')
     );
