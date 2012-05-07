@@ -1,6 +1,6 @@
 <?php
 
-function ImageMigrate_schema(){
+function image_migrate_schema(){
     return array(
       'imageMigrate' => array(
           'fields' => array(
