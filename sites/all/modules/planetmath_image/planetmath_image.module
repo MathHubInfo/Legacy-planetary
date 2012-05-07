@@ -150,7 +150,7 @@ function theme_planetmath_image_view_images($variables) {
                 'path' => $image->uri
             )), 'node/' . $image->nid, array('html' => true));
   }
-  return theme_item_list(array('items' => $htmlItems, 'title' => 'Images:', 'type' => 'ul', 'attributes' => array('class' => 'node-images-list')));
+  return theme_item_list(array('items' => $htmlItems, 'title' => '', 'type' => 'ul', 'attributes' => array('class' => 'node-images-list')));
 }
 
 function theme_planetmath_image_view_articles($variables) {
