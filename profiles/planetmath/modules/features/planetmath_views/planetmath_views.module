@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Planetmath views feature.
+ */
+
+include_once('planetmath_views.features.inc');
