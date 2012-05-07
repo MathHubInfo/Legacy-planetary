@@ -153,3 +153,9 @@ function planetmath_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
+function planetmath_view_theme_getUserPoints(){
+  global $user;
+  $result = db_query("SELECT points FROM userpoints_total WHERE uid = :uid", array('uid' => $user->uid))->fetchObject();
+  return $result->points;
+}
+

@@ -332,9 +332,6 @@ a:hover{
   font-size: 12px; 
 }
 
-.frontpage-content .ui-tabs .ui-tabs-panel {
-  padding: 0;  
-}
 
 .frontpage-content{
   min-height: 700px;
@@ -356,7 +353,7 @@ a:hover{
 }
 
 #front-mid-tabs{
-  margin-top: 380px;
+  margin-top: 430px;
   clear: both;
 }
 
@@ -543,11 +540,18 @@ padding: 0 0 0 15px;
 #front-bot-tabs{
   clear:both;
   padding-top: 25px;
-  margin-bottom: 300px;
+  margin-bottom: 0px;
 }
 
 .block ul, .block li, .tab-contents ul, .tab-contents li{
   list-style-type: circle;
+}
+
+.block-day-date{
+  float: right;
+}
+.block .content, .content .tab-contents{
+  padding: 10px;
 }
 
 /* LATEXML Stuff */
@@ -556,4 +560,8 @@ padding: 0 0 0 15px;
 }
 #block-search-form{
   z-index: 999;
+}
+
+.region-footer{
+  margin-top: 50px;
 }
