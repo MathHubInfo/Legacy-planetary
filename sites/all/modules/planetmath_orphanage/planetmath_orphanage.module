@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * Implements the orphanage feature
+ * @author Alex Dumitru <m.dumitru@jacobs-university.de> 
+ */
+define("PLANETMATH_ORPHANAGE_NO_OF_DAYS", 42);
+
+function planetmath_orphanage_model_createOrpahnedNode($node) {
+  db_insert('orphanage')->fields(array('nid' => $node->nid, 'puid' => $node->uid, 'created' => REQUEST_TIME))->execute();
+}
+
+function planetmath_orphanage_model_getOrphanUser() {
+  return user_load_by_mail("orphanage@planetmath.org");
+}
+
+function planetmath_orphanage_model_addNode($node) {
+  $ou = planetmath_orphanage_model_getOrphanUser();
+  planetmath_orphanage_model_createOrpahnedNode($node);
+  $node->uid = $ou->uid;
+  $node->changed = REQUEST_TIME;
+  node_save($node);
+}
+
+function planetmath_orphanage_model_getOrphanedNodes() {
+  $query = db_select('node', 'n');
+  $query->extend('PagerDefault');
+  $query->fields('n', array('nid', 'title', 'changed'))
+          ->condition('n.uid', planetmath_orphanage_model_getOrphanUser()->uid)
+          ->orderBy('n.title')
+          ->range(0, 30);
+  $results = $query->execute()->fetchAll();
+  return $results;
+}
+
+function planetmath_orphanage_model_cronJob() {
+  $results = db_query("SELECT n.created, nref.created AS ref_created, n.nid AS ref_nid
+    FROM node n
+    LEFT JOIN field_data_field_correction_closed fcc ON fcc.entity_id = n.nid
+    LEFT JOIN field_data_field_correction_article fca ON fca.entity_id = n.nid
+    LEFT JOIN node nref ON nref.nid = fca.field_correction_article_nid
+    WHERE n.`type` = 'correction' AND fcc.field_correction_closed_value = 0    
+");
+  $deadline = (PLANETMATH_ORPHANAGE_NO_OF_DAYS * 24 * 3600);
+  foreach ($results as $result) {
+    if (($result->created - $result->ref_created) > $deadline) {
+      planetmath_orphanage_model_addNode(node_load($result->ref_nid));
+    }
+  }
+}
+
+function planetmath_orphanage_menu() {
+  $items = array();
+
+  $items['orphanage'] = array(
+      'type' => MENU_NORMAL_ITEM,
+      'title' => 'orphanage',
+      'page callback' => 'planetmath_orphanage_view_mainOrphanageList',
+      'access arguments' => array('access content')
+  );
+  
+  return $items;
+}
+
+function planetmath_orphanage_view_mainOrphanageList() {
+  $orphans = planetmath_orphanage_model_getOrphanedNodes();
+  $items = array();
+  foreach ($orphans as $orphan) {
+    $items[] = l($orphan->title, 'node/' . $orphan->nid) . ' orphaned on ' . date("d-m-Y", $orphan->changed);
+  }
+  return theme('item_list', array('items' => $items, 'attributes' => array())) .
+          theme('pager');
+}
+
+function planetmath_orphanage_cron() {
+  planetmath_orphanage_model_cronJob();
+}
+

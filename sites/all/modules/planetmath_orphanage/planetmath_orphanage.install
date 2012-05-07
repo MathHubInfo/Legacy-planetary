@@ -1,0 +1,49 @@
+<?php
+
+function planetmath_orphanage_install() {
+  $orphanUser = array(
+              "name" => "Orphanage",
+              "mail" => "orphanage@planetmath.org",
+              "pass" => user_password(),
+              "init" => "orphanage@planetmath.org",
+              "status" => 1,
+              "access" => REQUEST_TIME,
+              "roles" => array(DRUPAL_AUTHENTICATED_RID => true)
+  );
+  user_save(drupal_anonymous_user(), $orphanUser);
+}
+
+function planetmath_orphanage_uninstall() {
+  $orphanUser = user_load_by_mail("orphanage@planetmath.org");
+  user_delete($orphanUser->uid);
+}
+
+function planetmath_orphanage_schema() {
+  $schema = array();
+
+  $schema['orphanage'] = array(
+      'description' => 'Records of nodes that are orphaned',
+      'fields' => array(
+          'nid' => array(
+              'type' => 'int',
+              'not null' => true,
+              'unsigned' => true
+          ),
+          'puid' => array(
+              'description' => 'THe previous owner as uid',
+              'type' => 'int',
+              'not null' => true,
+              'unsigned' => true
+          ),
+          'created' => array(
+              'type' => 'int',
+              'size' => 'big',
+              'unsigned' => true,
+              'not null' => true
+          )
+      ),
+      'primary key' => array('nid')
+  );
+  
+  return $schema;
+}
