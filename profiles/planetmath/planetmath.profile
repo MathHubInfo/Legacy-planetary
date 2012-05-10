@@ -7,9 +7,6 @@
  * run.
  */
 
-// In general this should be set interactively via some config option!
-$install_directory = '/home/planetary/drupal_planetary/';
-
 // There is a possibility to set up a sub-profile, so that could be used to create 
 // a configuration for Phanta Rhei as well as for PlanetMath.  If we can get to the
 // level of site logos and such, then we can e.g. make a configuration for
@@ -99,12 +96,12 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_forum_creator',
                                         ),
-                 'my_3rd_task' => array(
-                                        'display_name' => st('Run the migrations to import legacy data.'),
+                 'my_5th_task' => array(
+                                        'display_name' => st('Configure Node Types'),
                                         'display' => TRUE,
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'planetmath_profile_migration_runner',
+                                        'function' => 'planetmath_profile_configure_node_types',
                                         ),
                  'my_4th_task' => array(
                                         'display_name' => st('Configure DruTeXML settings properly'),
@@ -113,12 +110,19 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_drutexml_configuration',
                                         ),
-                 'my_5th_task' => array(
-                                        'display_name' => st('Configure Node Types'),
+                 /* 'my_11th_task' => array( */
+                 /*                        'display_name' => st('Add and configure an "image" field'), */
+                 /*                        'display' => TRUE, */
+                 /*                        'type' => 'normal', */
+                 /*                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED, */
+                 /*                        'function' => 'planetmath_profile_setup_image_field', */
+                 /*                        ), */
+                 'my_10th_task' => array(
+                                        'display_name' => st('Set up tagging facilities'),
                                         'display' => TRUE,
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'planetmath_profile_configure_node_types',
+                                        'function' => 'planetmath_profile_set_up_tags',
                                         ),
                  'my_5Ath_task' => array(
                                         'display_name' => st('Configure Email Rerouting'),
@@ -134,20 +138,19 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_configure_groups',
                                         ),
-                 // this would be different in another installation...
-                 'my_7th_task' => array(
-                                        'display_name' => st('Configure Blocks'),
-                                        'display' => TRUE,
-                                        'type' => 'normal',
-                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'planetmath_profile_configure_blocks',
-                                        ),
                  'my_8th_task' => array(
                                         'display_name' => st('Configure RDF mappings'),
                                         'display' => TRUE,
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_rdf_mappings',
+                                        ),
+                 'my_9Ath_task' => array(
+                                        'display_name' => st('Set up the basic Userpoints config'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'planetmath_profile_set_userpoints_variables',
                                         ),
                  'my_9th_task' => array(
                                         'display_name' => st('Set miscellaneous variables'),
@@ -156,20 +159,7 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_set_misc_variables',
                                         ),
-                 'my_10th_task' => array(
-                                        'display_name' => st('Set up tagging facilities'),
-                                        'display' => TRUE,
-                                        'type' => 'normal',
-                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'planetmath_profile_set_up_tags',
-                                        ),
-                 'my_11th_task' => array(
-                                        'display_name' => st('Add and configure an "image" field'),
-                                        'display' => TRUE,
-                                        'type' => 'normal',
-                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'planetmath_profile_setup_image_field',
-                                        ),
+
                  'my_12th_task' => array(
                                         'display_name' => st('Configure permissions'),
                                         'display' => TRUE,
@@ -191,15 +181,34 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_setup_theme',
                                         ),
+                 'my_7th_task' => array(
+                                        'display_name' => st('Configure Blocks'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'planetmath_profile_configure_blocks',
+                                        ),
+                 /* 'my_3rd_task' => array( */
+                 /*                        'display_name' => st('Run the migrations to import legacy data.'), */
+                 /*                        'display' => TRUE, */
+                 /*                        'type' => 'normal', */
+                 /*                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED, */
+                 /*                        'function' => 'planetmath_profile_migration_runner', */
+                 /*                        ), */
                  );
   return $tasks;
 }
 
 function planetmath_profile_patch_core() {
-  chdir($install_directory);
   module_enable('devel');
   dd('In planetmath_profile_patch_core');
-  // skip for now, since I just applied those by hand...
+  // In general this should be set interactively via some config option (how?)
+  $install_directory = '/home/planetary/drupal_planetary/';
+  chdir($install_directory);
+
+  //skip for now, since I just applied those by hand...
+  //it would be nice to have some logic that would only run the patch if needed.
+
   //shell_exec('patch -p5 < node.module.patch');
   //shell_exec('patch -p5 < node.api.php.patch');
   return NULL;
@@ -207,7 +216,7 @@ function planetmath_profile_patch_core() {
 
 // This seems to be pretty much what's needed...
 function planetmath_profile_forum_creator() {
-  dd("In planetmath_profile_forum_creator");
+  dd("Profile- In planetmath_profile_forum_creator");
   set_time_limit(0);
   dd("creating Forum 0");
 
@@ -403,10 +412,14 @@ function planetmath_profile_forum_creator() {
 
 function planetmath_profile_configure_email_rerouting () {
   // need to figure out what goes here! 
+  module_enable('reroute_email');
+  variable_set(REROUTE_EMAIL_ENABLE, 1);
+  variable_set(REROUTE_EMAIL_ADDRESS, "tothedarktowercame@gmail.com");
+
   return NULL;
 }
 
-// THIS FUNCTION ASSUMES:
+// NOTE: THIS FUNCTION ASSUMES:
 //
 // - that the legacy database tables have been imported/massaged
 //   using the tables-into-drupal.sql script (for now at least,
@@ -420,20 +433,23 @@ function planetmath_profile_configure_email_rerouting () {
 // - It also assumes that the images that need to be imported
 //   are accessible in ../pm-fileboxes (path relative to
 //   the base path of the drupal install directory).
+//
+// IN ORDER TO MAKE IT LESS OBNOXIOUS, MAYBE THIS SHOULD BE PRESENTED AS AN
+// OPTION TO THE USER (i.e. ONLY RUN THIS STEP IF THE USER SAYS THEY WANT TO).
 function planetmath_profile_migration_runner () {
-  dd("In planetmath_profile_migration_runner");
+  dd("Profile- In planetmath_profile_migration_runner");
   set_time_limit(0);
+
   module_enable('migrate');
   module_enable('planetmath_migration');
-
   module_enable('planetmath_migration_extras');
-
   module_enable('group_migrate');
   module_enable('image_migrate');
 
+  $install_directory = '/home/planetary/drupal_planetary/';
   chdir($install_directory);
 
-  // this should work without hardcoding of database names within the profile.
+  // this step should avoid any need for hardcoding the database name within the profile.
 
   global $databases;
 
@@ -443,25 +459,37 @@ function planetmath_profile_migration_runner () {
 
   // Not going to mess with this for now.  We COULD do this, but then we would
   // need to give permission to read the planetary database to the drupal user
-  // Not a major thing, but it does bifurcate the instructions.
+  // Not a major thing, but it does bifurcate the instructions.  Things could
+  // be rewritten so that EVERYTHING about migration could be handled from this
+  // profile (given a .sql dump) -- but for now, let's just make it so that
+  // SOMETHING can be handled.
+
+  // assume these steps have been run outside of drupal, see assumptions above.
   // shell_exec("sed -i 's/demodb/".$database_name."/g' tables-into-drupal.sql");
+  // shell_exec("mysql -u ".$database_user." --password=".$database_pass." ".$database_name." < tables-into-drupal.sql");
+  // shell_exec("cp sites/default/default.settings.php sites/default/settings.php");
 
   dd(" running tables-into-drupal-pt2.sql command");
-  shell_exec('mysql -u '.$database_user.' --password='.$database_pass.' '.$database_name. ' < tables-into-drupal-pt2.sql');
+  dd(shell_exec('mysql -u '.$database_user.' --password='.$database_pass.' '.$database_name. ' < tables-into-drupal-pt2.sql'));
 
   
   // it would also be cool if this could be executed from within a screen... or if
   // I knew how to make it run via the visual UI, but that seems like another story altogether
   dd(" running drush migrate-import PMUser");
-  shell_exec('drush migrate-import PMUser');
+  dd(shell_exec('drush migrate-import PMUser'));
+
   dd(" running drush migrate-import PMForumOP");
-  shell_exec('drush migrate-import PMForumOP');
+  dd(shell_exec('drush migrate-import PMForumOP'));
+
   dd(" running drush migrate-import PMForumFirstComment");
   shell_exec('drush migrate-import PMForumFirstComment');
+
   dd(" running drush migrate-import PMForumComment");
   shell_exec('drush migrate-import PMForumComment');
+
   dd(" running drush migrate-import PMObject");
   shell_exec('drush migrate-import PMObject');
+
   dd(" running drush migrate-import PMObjectComment");
   shell_exec('drush migrate-import PMObjectComment');
 
@@ -490,7 +518,8 @@ function planetmath_profile_migration_runner () {
 }
 
 function planetmath_profile_group_creator () {
-  dd("In planetmath_profile_group_creator");
+  dd("Profile- In planetmath_profile_group_creator");
+  set_time_limit(0);
   // probably unneeded since groups are being moved in the migration function
   return NULL;
 }
@@ -504,7 +533,8 @@ function planetmath_profile_group_creator () {
 // (That could be changed and added to this configuration script.)
 
 function planetmath_profile_drutexml_configuration() {
-  dd("In planetmath_profile_drutexml_configuration");
+  dd("Profile- In planetmath_profile_drutexml_configuration");
+  set_time_limit(0);
   module_enable('drutexml');
 
   // create a LaTeX-filter-enabled content type; name it "TeX Editor"
@@ -642,7 +672,8 @@ function planetmath_profile_drutexml_configuration() {
 
 
 function planetmath_profile_configure_node_types () {
-  dd("In planetmath_profile_configure_node_types");
+  dd("Profile- In planetmath_profile_configure_node_types");
+  set_time_limit(0);
   // Insert default pre-defined node types into the database. For a complete
   // list of available node type attributes, refer to the node type API
   // documentation at: http://api.drupal.org/api/HEAD/function/hook_node_info.
@@ -683,39 +714,50 @@ function planetmath_profile_configure_node_types () {
     node_add_body_field($type);
   }
 
-  planetmath_profile_docreate_field('field_canonicalname'   , 'article' ,'CanonicalName');
-  planetmath_profile_docreate_field('field_revisioncomment' , 'article' ,'Revision Comment');
-  planetmath_profile_docreate_field('field_msc'             , 'article' ,'MSC');
-  planetmath_profile_docreate_field('field_mathtype'        , 'article' ,'Type of Math Ojbect');
-  planetmath_profile_docreate_field('field_defines'         , 'article' ,'Defines');
-  planetmath_profile_docreate_field('field_keywords'        , 'article' ,'Keywords');
-  planetmath_profile_docreate_field('field_parent'          , 'article' ,'Parent');
-  planetmath_profile_docreate_field('field_related'         , 'article' ,'Related');
-  planetmath_profile_docreate_field('field_timecreated'     , 'article' ,'Time Created');
-  planetmath_profile_docreate_field('field_synonym'         , 'article' ,'Synonym');
+  // DON'T NEED TO ADD ANY ADDITIONAL FIELDS HERE, IF IT IS DONE IN A FEATURE...
+
+  //  planetmath_profile_docreate_field('field_canonicalname'   , 'article' ,'CanonicalName');
+  // planetmath_profile_docreate_field('field_revisioncomment' , 'article' ,'Revision Comment');
+  // planetmath_profile_docreate_field('field_msc'             , 'article' ,'MSC');
+  // planetmath_profile_docreate_field('field_mathtype'        , 'article' ,'Type of Math Ojbect');
+  // planetmath_profile_docreate_field('field_defines'         , 'article' ,'Defines');
+  // planetmath_profile_docreate_field('field_keywords'        , 'article' ,'Keywords');
+  // planetmath_profile_docreate_field('field_parent'          , 'article' ,'Parent');
+  // planetmath_profile_docreate_field('field_related'         , 'article' ,'Related');
+  // planetmath_profile_docreate_field('field_timecreated'     , 'article' ,'Time Created');
+  // planetmath_profile_docreate_field('field_synonym'         , 'article' ,'Synonym');
   return NULL;
 }
 
 
 
 function planetmath_profile_configure_groups () {
-  dd("In planetmath_profile_configure_groups");
+  dd("Profile- In planetmath_profile_configure_groups");
+  set_time_limit(0);
   // Potentially not needed - groups are being imported in the migration step,
   // and configuration MAY be automatic and/or provided by a feature (QUITE UNLIKELY).
   return NULL;
 }
 
+// note that the actual selection of blocks would presumably be
+// different in a different installation of Planetary.
 function planetmath_profile_configure_blocks () {
-  dd("In planetmath_profile_configure_blocks");
+  dd("Profile- In planetmath_profile_configure_blocks");
+  set_time_limit(0);
   // this is just copied from the standard installation for now...
   // in a moment, it should have the new PlanetMath blocks set up
   module_enable('planetmath_blocks');
+
+  // Since this is set up to run AFTER the theme has been selected,
+  // these variables should be set properly.
+  $theme_default = variable_get(theme_default);
+  $admin_theme = variable_get(admin_theme);
 
   $blocks = array(
                   array(
                         'module' => 'system',
                         'delta' => 'main',
-                        'theme' => $default_theme,
+                        'theme' => $theme_default,
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'content',
@@ -725,7 +767,7 @@ function planetmath_profile_configure_blocks () {
                   array(
                         'module' => 'search',
                         'delta' => 'form',
-                        'theme' => $default_theme,
+                        'theme' => $theme_default,
                         'status' => 1,
                         'weight' => -1,
                         'region' => 'sidebar_first',
@@ -745,7 +787,7 @@ function planetmath_profile_configure_blocks () {
                   array(
                         'module' => 'user',
                         'delta' => 'login',
-                        'theme' => $default_theme,
+                        'theme' => $theme_default,
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'sidebar_first',
@@ -755,7 +797,7 @@ function planetmath_profile_configure_blocks () {
                   array(
                         'module' => 'system',
                         'delta' => 'navigation',
-                        'theme' => $default_theme,
+                        'theme' => $theme_default,
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'sidebar_first',
@@ -765,7 +807,7 @@ function planetmath_profile_configure_blocks () {
                   array(
                         'module' => 'system',
                         'delta' => 'powered-by',
-                        'theme' => $default_theme,
+                        'theme' => $theme_default,
                         'status' => 1,
                         'weight' => 10,
                         'region' => 'footer',
@@ -775,7 +817,7 @@ function planetmath_profile_configure_blocks () {
                   array(
                         'module' => 'system',
                         'delta' => 'help',
-                        'theme' => $default_theme,
+                        'theme' => $theme_default,
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'help',
@@ -833,24 +875,29 @@ function planetmath_profile_configure_blocks () {
                         'cache' => -1,
                         ),
                   );
-  $query = db_insert('block')->fields(array(
-                                            'module',
-                                            'delta',
-                                            'theme',
-                                            'status',
-                                            'weight',
-                                            'region',
-                                            'pages',
-                                            'cache'));
   foreach ($blocks as $block) {
-    $query->values($block);
+    dd($block, "CONFIGURING... ");
+    db_merge('block')
+      ->key(array('module'=>$block['module'],
+		  'theme'=>$block['theme'],
+		  'delta' => $block['delta']))
+      ->fields(array('module'=> $block['module'],
+		     'theme' => $block['theme'],
+		     'delta' => $block['delta'],
+		     'status' => $block['status'],
+		     'weight' => $block['weight'],
+		     'region' => $block['region'],
+		     'pages' => $block['pages'],
+		     'cache' => $block['cache']))
+      ->execute();
   }
-  $query->execute();
-    return NULL;
+
+  return NULL;
 }
 
 function planetmath_profile_rdf_mappings () {
-  dd("In planetmath_profile_rdf_mappings");
+  dd("Profile- In planetmath_profile_rdf_mappings");
+  set_time_limit(0);
   // Insert default pre-defined RDF mapping into the database.
   $rdf_mappings = array(
     array(
@@ -881,8 +928,157 @@ function planetmath_profile_rdf_mappings () {
   return NULL;
 }
 
+// I do not actually understand all of these settings, but it's what I got
+// when dumping the userpoints variables out of the database.
+
+function planetmath_profile_set_userpoints_variables () {
+  dd("Profile- In planetmath_profile_set_userpoints_variables");
+
+  variable_set('userpoints_category_default_tid', 's:1:"0";');
+  variable_set('userpoints_category_default_vid', 's:1:"3";');
+  variable_set('userpoints_category_profile_display_tid', 'a:2:{s:13:"uncategorized";s:13:"uncategorized";s:3:"all";s:3:"all";}');
+  variable_set('userpoints_display_message', 's:1:"1";');
+  variable_set('userpoints_expireafter_date', 's:0:"";');
+  variable_set('userpoints_expireon_date', 'a:3:{s:5:"month";s:1:"1";s:3:"day";s:1:"1";s:4:"year";s:4:"1980";}');
+  variable_set('userpoints_expiry_description', 's:0:"";');
+  variable_set('userpoints_nc_category', 's:1:"0";');
+  variable_set('userpoints_nc_category_correction', 's:1:"0";');
+  variable_set('userpoints_nc_category_forum', 's:1:"0";');
+  variable_set('userpoints_nc_category_group', 's:1:"0";');
+  variable_set('userpoints_nc_category_image', 's:1:"0";');
+  variable_set('userpoints_nc_category_news', 's:1:"0";');
+  variable_set('userpoints_nc_category_page', 's:1:"0";');
+  variable_set('userpoints_nc_category_request', 's:1:"0";');
+  variable_set('userpoints_nc_comment_category', 's:1:"0";');
+  variable_set('userpoints_nc_comment_category_correction', 's:1:"0";');
+  variable_set('userpoints_nc_comment_category_forum', 's:1:"0";');
+  variable_set('userpoints_nc_comment_category_group', 's:1:"0";');
+  variable_set('userpoints_nc_comment_category_image', 's:1:"0";');
+  variable_set('userpoints_nc_comment_category_news', 's:1:"0";');
+  variable_set('userpoints_nc_comment_category_page', 's:1:"0";');
+  variable_set('userpoints_nc_comment_category_request', 's:1:"0";');
+  variable_set('userpoints_nc_comment_delete_deduct', 'i:1;');
+  variable_set('userpoints_nc_comment_delete_deduct_correction', 'i:1;');
+  variable_set('userpoints_nc_comment_delete_deduct_forum', 'i:1;');
+  variable_set('userpoints_nc_comment_delete_deduct_group', 'i:1;');
+  variable_set('userpoints_nc_comment_delete_deduct_image', 'i:1;');
+  variable_set('userpoints_nc_comment_delete_deduct_news', 'i:1;');
+  variable_set('userpoints_nc_comment_delete_deduct_page', 'i:1;');
+  variable_set('userpoints_nc_comment_delete_deduct_request', 'i:1;');
+  variable_set('userpoints_nc_comment_enabled', 'i:1;');
+  variable_set('userpoints_nc_comment_enabled_correction', 'i:1;');
+  variable_set('userpoints_nc_comment_enabled_forum', 'i:1;');
+  variable_set('userpoints_nc_comment_enabled_group', 'i:1;');
+  variable_set('userpoints_nc_comment_enabled_image', 'i:1;');
+  variable_set('userpoints_nc_comment_enabled_news', 'i:1;');
+  variable_set('userpoints_nc_comment_enabled_page', 'i:1;');
+  variable_set('userpoints_nc_comment_enabled_request', 'i:1;');
+  variable_set('userpoints_nc_comment_ownership_deduct', 'i:1;');
+  variable_set('userpoints_nc_comment_ownership_deduct_correction', 'i:1;');
+  variable_set('userpoints_nc_comment_ownership_deduct_forum', 'i:1;');
+  variable_set('userpoints_nc_comment_ownership_deduct_group', 'i:1;');
+  variable_set('userpoints_nc_comment_ownership_deduct_image', 'i:1;');
+  variable_set('userpoints_nc_comment_ownership_deduct_news', 'i:1;');
+  variable_set('userpoints_nc_comment_ownership_deduct_page', 'i:1;');
+  variable_set('userpoints_nc_comment_ownership_deduct_request', 'i:1;');
+  variable_set('userpoints_nc_comment_points', 's:1:"1";');
+  variable_set('userpoints_nc_comment_points_correction', 's:1:"1";');
+  variable_set('userpoints_nc_comment_points_forum', 's:1:"1";');
+  variable_set('userpoints_nc_comment_points_group', 's:1:"1";');
+  variable_set('userpoints_nc_comment_points_image', 's:1:"1";');
+  variable_set('userpoints_nc_comment_points_news', 's:1:"1";');
+  variable_set('userpoints_nc_comment_points_page', 's:1:"1";');
+  variable_set('userpoints_nc_comment_points_request', 's:1:"1";');
+  variable_set('userpoints_nc_comment_published_only', 'i:1;');
+  variable_set('userpoints_nc_delete_deduct', 'i:1;');
+  variable_set('userpoints_nc_delete_deduct_correction', 'i:1;');
+  variable_set('userpoints_nc_delete_deduct_forum', 'i:1;');
+  variable_set('userpoints_nc_delete_deduct_group', 'i:1;');
+  variable_set('userpoints_nc_delete_deduct_image', 'i:1;');
+  variable_set('userpoints_nc_delete_deduct_news', 'i:1;');
+  variable_set('userpoints_nc_delete_deduct_page', 'i:1;');
+  variable_set('userpoints_nc_delete_deduct_request', 'i:1;');
+  variable_set('userpoints_nc_enabled', 'i:1;');
+  variable_set('userpoints_nc_enabled_correction', 'i:1;');
+  variable_set('userpoints_nc_enabled_forum', 'i:1;');
+  variable_set('userpoints_nc_enabled_group', 'i:1;');
+  variable_set('userpoints_nc_enabled_image', 'i:1;');
+  variable_set('userpoints_nc_enabled_news', 'i:1;');
+  variable_set('userpoints_nc_enabled_page', 'i:1;');
+  variable_set('userpoints_nc_enabled_request', 'i:1;');
+  variable_set('userpoints_nc_ownership_deduct', 'i:1;');
+  variable_set('userpoints_nc_ownership_deduct_correction', 'i:1;');
+  variable_set('userpoints_nc_ownership_deduct_forum', 'i:1;');
+  variable_set('userpoints_nc_ownership_deduct_group', 'i:1;');
+  variable_set('userpoints_nc_ownership_deduct_image', 'i:1;');
+  variable_set('userpoints_nc_ownership_deduct_news', 'i:1;');
+  variable_set('userpoints_nc_ownership_deduct_page', 'i:1;');
+  variable_set('userpoints_nc_ownership_deduct_request', 'i:1;');
+  variable_set('userpoints_nc_points', 's:3:"100";');
+  variable_set('userpoints_nc_points_correction', 's:1:"5";');
+  variable_set('userpoints_nc_points_forum', 's:1:"5";');
+  variable_set('userpoints_nc_points_group', 's:1:"1";');
+  variable_set('userpoints_nc_points_image', 's:2:"10";');
+  variable_set('userpoints_nc_points_news', 's:3:"100";');
+  variable_set('userpoints_nc_points_page', 's:1:"1";');
+  variable_set('userpoints_nc_points_request', 's:1:"1";');
+  variable_set('userpoints_nc_published_only', 'i:1;');
+  variable_set('userpoints_nc_revision_category', 's:1:"0";');
+  variable_set('userpoints_nc_revision_category_correction', 's:1:"0";');
+  variable_set('userpoints_nc_revision_category_forum', 's:1:"0";');
+  variable_set('userpoints_nc_revision_category_group', 's:1:"0";');
+  variable_set('userpoints_nc_revision_category_image', 's:1:"0";');
+  variable_set('userpoints_nc_revision_category_news', 's:1:"0";');
+  variable_set('userpoints_nc_revision_category_page', 's:1:"0";');
+  variable_set('userpoints_nc_revision_category_request', 's:1:"0";');
+  variable_set('userpoints_nc_revision_enabled', 'i:1;');
+  variable_set('userpoints_nc_revision_enabled_correction', 'i:1;');
+  variable_set('userpoints_nc_revision_enabled_forum', 'i:1;');
+  variable_set('userpoints_nc_revision_enabled_group', 'i:1;');
+  variable_set('userpoints_nc_revision_enabled_image', 'i:1;');
+  variable_set('userpoints_nc_revision_enabled_news', 'i:1;');
+  variable_set('userpoints_nc_revision_enabled_page', 'i:1;');
+  variable_set('userpoints_nc_revision_enabled_request', 'i:1;');
+  variable_set('userpoints_nc_revision_own_nodes', 'i:0;');
+  variable_set('userpoints_nc_revision_own_nodes_correction', 'i:0;');
+  variable_set('userpoints_nc_revision_own_nodes_forum', 'i:0;');
+  variable_set('userpoints_nc_revision_own_nodes_group', 'i:0;');
+  variable_set('userpoints_nc_revision_own_nodes_image', 'i:0;');
+  variable_set('userpoints_nc_revision_own_nodes_news', 'i:0;');
+  variable_set('userpoints_nc_revision_own_nodes_page', 'i:0;');
+  variable_set('userpoints_nc_revision_own_nodes_request', 'i:0;');
+  variable_set('userpoints_nc_revision_points', 's:1:"5";');
+  variable_set('userpoints_nc_revision_points_correction', 's:1:"1";');
+  variable_set('userpoints_nc_revision_points_forum', 's:1:"0";');
+  variable_set('userpoints_nc_revision_points_group', 's:1:"1";');
+  variable_set('userpoints_nc_revision_points_image', 's:1:"5";');
+  variable_set('userpoints_nc_revision_points_news', 's:1:"5";');
+  variable_set('userpoints_nc_revision_points_page', 's:1:"1";');
+  variable_set('userpoints_nc_revision_points_request', 's:1:"1";');
+  variable_set('userpoints_points_moderation', 's:1:"0";');
+  variable_set('userpoints_report_displayzero', 's:1:"1";');
+  variable_set('userpoints_report_limit', 's:2:"10";');
+  variable_set('userpoints_report_usercount', 's:2:"30";');
+  variable_set('userpoints_transaction_timestamp', 'i:1;');
+  variable_set('userpoints_trans_lcpoint', 's:5:"point";');
+  variable_set('userpoints_trans_lcpoints', 's:5:"score";');
+  variable_set('userpoints_trans_ucpoint', 's:5:"Point";');
+  variable_set('userpoints_trans_ucpoints', 's:5:"Score";');
+  variable_set('userpoints_trans_uncat', 's:7:"General";');
+  variable_set('userpoints_truncate', 's:2:"30";');
+
+  variable_set('additional_settings__active_tab_correction', 's:27:"edit-userpoints-nc-revision";');
+  variable_set('additional_settings__active_tab_forum', 's:27:"edit-userpoints-nc-revision";');
+  variable_set('additional_settings__active_tab_group', 's:27:"edit-userpoints-nc-revision";');
+  variable_set('additional_settings__active_tab_image', 's:27:"edit-userpoints-nc-revision";');
+  variable_set('additional_settings__active_tab_page', 's:27:"edit-userpoints-nc-revision";');
+  variable_set('additional_settings__active_tab_request', 's:27:"edit-userpoints-nc-revision";');
+  variable_set('settings_additional__active_tab', 's:26:"edit-userpoints-nc-comment";');
+}
+
 function planetmath_profile_set_misc_variables () {
-  dd("In planetmath_profile_set_misc_variables");
+  dd("Profile- In planetmath_profile_set_misc_variables");
+  set_time_limit(0);
   // Default "Basic page" to not be promoted and have comments disabled.
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
@@ -903,7 +1099,8 @@ function planetmath_profile_set_misc_variables () {
 
 // This isn't hooked into the routine above since I don't know that we're using tags
 function planetmath_profile_set_up_tags () {
-  dd("In planetmath_profile_set_up_tags");
+  dd("Profile- In planetmath_profile_set_up_tags");
+  set_time_limit(0);
   // Create a default vocabulary named "Tags", enabled for the 'article' content type.
   $description = st('Use tags to group articles on similar topics into categories.');
   $help = st('Enter a comma-separated list of words to describe your content.');
@@ -956,8 +1153,10 @@ function planetmath_profile_set_up_tags () {
 
 // we probably want to do something similar for quite a few other fields?
 
+// NOTE: actually, this seems to be handled properly by features, so it is taken out of the routine above.
 function planetmath_profile_setup_image_field () {
-  dd("In planetmath_profile_setup_image_field");
+  dd("Profile- In planetmath_profile_setup_image_field");
+  set_time_limit(0);
   // Create an image field named "Image", enabled for the 'article' content type.
   // Many of the following values will be defaulted, they're included here as an illustrative examples.
   // See http://api.drupal.org/api/function/field_create_field/7
@@ -1030,925 +1229,20 @@ function planetmath_profile_setup_image_field () {
   return NULL;
 }
 
-// see function at end of this file...
+// My plan here is to cleverly load the feature we created HERE
+// (since loading it inside of the profile directory b0rked things)
+// ... OK this works.
 function planetmath_profile_setup_permissions () {
-  dd("In planetmath_profile_setup_permissions");
+  dd("Profile- In planetmath_profile_setup_permissions");
+  set_time_limit(0);
 
-  // Enable default permissions for system roles.
-  // this presumably shouldn't cause any errors...?
-
-  $filtered_html_permission = filter_permission_name($filtered_html_format);
-  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID,
-                              array('access content',
-                                    'access comments',
-                                    $filtered_html_permission));
-
-  // should be able to post contents as well
-  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID,
-                              array('access content',
-                                    'access comments',
-                                    'post comments',
-                                    'skip comment approval',
-                                    $filtered_html_permission));
-
-  // This seems to have been breaking when coming from the filter
-  /* // Exported permission: use text format filtered_html */
-  /* $permissions['use text format filtered_html'] = array( */
-  /*   'name' => 'use text format filtered_html', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'anonymous user', */
-  /*     2 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'filter', */
-  /* ); */
-
-  /* // Exported permission: use text format full_html */
-  /* $permissions['use text format full_html'] = array( */
-  /*   'name' => 'use text format full_html', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'filter', */
-  /* ); */
-
-  /* // Exported permission: use text format php_code */
-  /* $permissions['use text format php_code'] = array( */
-  /*   'name' => 'use text format php_code', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: use text format php_evaluator */
-  /* $permissions['use text format php_evaluator'] = array( */
-  /*   'name' => 'use text format php_evaluator', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'filter', */
-  /* ); */
-
-  /* // Exported permission: use text format tex_editor */
-  /* $permissions['use text format tex_editor'] = array( */
-  /*   'name' => 'use text format tex_editor', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'filter', */
-  /* ); */
-
-  /* // Exported permission: create article content */
-  /* $permissions['create article content'] = array( */
-  /*   'name' => 'create article content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create correction content */
-  /* $permissions['create correction content'] = array( */
-  /*   'name' => 'create correction content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create group content */
-  /* $permissions['create group content'] = array( */
-  /*   'name' => 'create group content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create image content */
-  /* $permissions['create image content'] = array( */
-  /*   'name' => 'create image content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create news content */
-  /* $permissions['create news content'] = array( */
-  /*   'name' => 'create news content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create page content */
-  /* $permissions['create page content'] = array( */
-  /*   'name' => 'create page content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create poll content */
-  /* $permissions['create poll content'] = array( */
-  /*   'name' => 'create poll content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create problem content */
-  /* $permissions['create problem content'] = array( */
-  /*   'name' => 'create problem content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create forum content */
-  /* $permissions['create forum content'] = array( */
-  /*   'name' => 'create forum content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-
-
-  /* // Exported permission: create relations */
-  /* $permissions['create relations'] = array( */
-  /*   'name' => 'create relations', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'relation', */
-  /* ); */
-
-  /* // Exported permission: create request content */
-  /* $permissions['create request content'] = array( */
-  /*   'name' => 'create request content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create solution content */
-  /* $permissions['create solution content'] = array( */
-  /*   'name' => 'create solution content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: create url aliases */
-  /* $permissions['create url aliases'] = array( */
-  /*   'name' => 'create url aliases', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'path', */
-  /* ); */
-
-  /* // Exported permission: customize shortcut links */
-  /* $permissions['customize shortcut links'] = array( */
-  /*   'name' => 'customize shortcut links', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'shortcut', */
-  /* ); */
-
-  /* // Exported permission: delete any article content */
-  /* $permissions['delete any article content'] = array( */
-  /*   'name' => 'delete any article content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete any correction content */
-  /* $permissions['delete any correction content'] = array( */
-  /*   'name' => 'delete any correction content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete any forum content */
-  /* $permissions['delete any forum content'] = array( */
-  /*   'name' => 'delete any forum content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete any group content */
-  /* $permissions['delete any group content'] = array( */
-  /*   'name' => 'delete any group content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete any image content */
-  /* $permissions['delete any image content'] = array( */
-  /*   'name' => 'delete any image content', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: delete any news content */
-  /* $permissions['delete any news content'] = array( */
-  /*   'name' => 'delete any news content', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: delete any page content */
-  /* $permissions['delete any page content'] = array( */
-  /*   'name' => 'delete any page content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete any poll content */
-  /* $permissions['delete any poll content'] = array( */
-  /*   'name' => 'delete any poll content', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: delete any problem content */
-  /* $permissions['delete any problem content'] = array( */
-  /*   'name' => 'delete any problem content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete any request content */
-  /* $permissions['delete any request content'] = array( */
-  /*   'name' => 'delete any request content', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: delete any solution content */
-  /* $permissions['delete any solution content'] = array( */
-  /*   'name' => 'delete any solution content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own article content */
-  /* $permissions['delete own article content'] = array( */
-  /*   'name' => 'delete own article content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own correction content */
-  /* $permissions['delete own correction content'] = array( */
-  /*   'name' => 'delete own correction content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own forum content */
-  /* $permissions['delete own forum content'] = array( */
-  /*   'name' => 'delete own forum content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own group content */
-  /* $permissions['delete own group content'] = array( */
-  /*   'name' => 'delete own group content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own image content */
-  /* $permissions['delete own image content'] = array( */
-  /*   'name' => 'delete own image content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own news content */
-  /* $permissions['delete own news content'] = array( */
-  /*   'name' => 'delete own news content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own page content */
-  /* $permissions['delete own page content'] = array( */
-  /*   'name' => 'delete own page content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own poll content */
-  /* $permissions['delete own poll content'] = array( */
-  /*   'name' => 'delete own poll content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own problem content */
-  /* $permissions['delete own problem content'] = array( */
-  /*   'name' => 'delete own problem content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own request content */
-  /* $permissions['delete own request content'] = array( */
-  /*   'name' => 'delete own request content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete own solution content */
-  /* $permissions['delete own solution content'] = array( */
-  /*   'name' => 'delete own solution content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete relations */
-  /* $permissions['delete relations'] = array( */
-  /*   'name' => 'delete relations', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'relation', */
-  /* ); */
-
-  /* // Exported permission: delete revisions */
-  /* $permissions['delete revisions'] = array( */
-  /*   'name' => 'delete revisions', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: delete terms in 1 */
-  /* $permissions['delete terms in 1'] = array( */
-  /*   'name' => 'delete terms in 1', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'taxonomy', */
-  /* ); */
-
-  /* // Exported permission: delete terms in 2 */
-  /* $permissions['delete terms in 2'] = array( */
-  /*   'name' => 'delete terms in 2', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: delete terms in 3 */
-  /* $permissions['delete terms in 3'] = array( */
-  /*   'name' => 'delete terms in 3', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: edit any article content */
-  /* $permissions['edit any article content'] = array( */
-  /*   'name' => 'edit any article content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit any correction content */
-  /* $permissions['edit any correction content'] = array( */
-  /*   'name' => 'edit any correction content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit any forum content */
-  /* $permissions['edit any forum content'] = array( */
-  /*   'name' => 'edit any forum content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit any group content */
-  /* $permissions['edit any group content'] = array( */
-  /*   'name' => 'edit any group content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit any image content */
-  /* $permissions['edit any image content'] = array( */
-  /*   'name' => 'edit any image content', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: edit any news content */
-  /* $permissions['edit any news content'] = array( */
-  /*   'name' => 'edit any news content', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: edit any page content */
-  /* $permissions['edit any page content'] = array( */
-  /*   'name' => 'edit any page content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit any poll content */
-  /* $permissions['edit any poll content'] = array( */
-  /*   'name' => 'edit any poll content', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: edit any problem content */
-  /* $permissions['edit any problem content'] = array( */
-  /*   'name' => 'edit any problem content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit any request content */
-  /* $permissions['edit any request content'] = array( */
-  /*   'name' => 'edit any request content', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: edit any solution content */
-  /* $permissions['edit any solution content'] = array( */
-  /*   'name' => 'edit any solution content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own article content */
-  /* $permissions['edit own article content'] = array( */
-  /*   'name' => 'edit own article content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own comments */
-  /* $permissions['edit own comments'] = array( */
-  /*   'name' => 'edit own comments', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'comment', */
-  /* ); */
-
-  /* // Exported permission: edit own correction content */
-  /* $permissions['edit own correction content'] = array( */
-  /*   'name' => 'edit own correction content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own forum content */
-  /* $permissions['edit own forum content'] = array( */
-  /*   'name' => 'edit own forum content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own group content */
-  /* $permissions['edit own group content'] = array( */
-  /*   'name' => 'edit own group content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own image content */
-  /* $permissions['edit own image content'] = array( */
-  /*   'name' => 'edit own image content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own news content */
-  /* $permissions['edit own news content'] = array( */
-  /*   'name' => 'edit own news content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own page content */
-  /* $permissions['edit own page content'] = array( */
-  /*   'name' => 'edit own page content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own poll content */
-  /* $permissions['edit own poll content'] = array( */
-  /*   'name' => 'edit own poll content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own problem content */
-  /* $permissions['edit own problem content'] = array( */
-  /*   'name' => 'edit own problem content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own request content */
-  /* $permissions['edit own request content'] = array( */
-  /*   'name' => 'edit own request content', */
-  /*   'roles' => array( */
-  /*     0 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit own solution content */
-  /* $permissions['edit own solution content'] = array( */
-  /*   'name' => 'edit own solution content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: edit relations */
-  /* $permissions['edit relations'] = array( */
-  /*   'name' => 'edit relations', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'relation', */
-  /* ); */
-
-  /* // Exported permission: edit terms in 1 */
-  /* $permissions['edit terms in 1'] = array( */
-  /*   'name' => 'edit terms in 1', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'taxonomy', */
-  /* ); */
-
-  /* // Exported permission: edit terms in 2 */
-  /* $permissions['edit terms in 2'] = array( */
-  /*   'name' => 'edit terms in 2', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: edit terms in 3 */
-  /* $permissions['edit terms in 3'] = array( */
-  /*   'name' => 'edit terms in 3', */
-  /*   'roles' => array(), */
-  /* ); */
-
-  /* // Exported permission: edit userpoints */
-  /* $permissions['edit userpoints'] = array( */
-  /*   'name' => 'edit userpoints', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'userpoints', */
-  /* ); */
-
-  /* // Exported permission: execute php code */
-  /* $permissions['execute php code'] = array( */
-  /*   'name' => 'execute php code', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'devel', */
-  /* ); */
-
-  /* // Exported permission: export relation types */
-  /* $permissions['export relation types'] = array( */
-  /*   'name' => 'export relation types', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'relation', */
-  /* ); */
-
-  /* // Exported permission: inspect all votes */
-  /* $permissions['inspect all votes'] = array( */
-  /*   'name' => 'inspect all votes', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'poll', */
-  /* ); */
-
-  /* // Exported permission: manage features */
-  /* $permissions['manage features'] = array( */
-  /*   'name' => 'manage features', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'features', */
-  /* ); */
-
-  /* // Exported permission: migration information */
-  /* $permissions['migration information'] = array( */
-  /*   'name' => 'migration information', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'migrate_ui', */
-  /* ); */
-
-  /* // Exported permission: moderate userpoints */
-  /* $permissions['moderate userpoints'] = array( */
-  /*   'name' => 'moderate userpoints', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'userpoints', */
-  /* ); */
-
-  /* // Exported permission: notify of path changes */
-  /* $permissions['notify of path changes'] = array( */
-  /*   'name' => 'notify of path changes', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'pathauto', */
-  /* ); */
-
-  /* // Exported permission: post comments */
-  /* $permissions['post comments'] = array( */
-  /*   'name' => 'post comments', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'comment', */
-  /* ); */
-
-  /* // Exported permission: revert revisions */
-  /* $permissions['revert revisions'] = array( */
-  /*   'name' => 'revert revisions', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: search content */
-  /* $permissions['search content'] = array( */
-  /*   'name' => 'search content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'anonymous user', */
-  /*     2 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'search', */
-  /* ); */
-
-  /* // Exported permission: select account cancellation method */
-  /* $permissions['select account cancellation method'] = array( */
-  /*   'name' => 'select account cancellation method', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'user', */
-  /* ); */
-
-  /* // Exported permission: skip comment approval */
-  /* $permissions['skip comment approval'] = array( */
-  /*   'name' => 'skip comment approval', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'comment', */
-  /* ); */
-
-  /* // Exported permission: switch shortcut sets */
-  /* $permissions['switch shortcut sets'] = array( */
-  /*   'name' => 'switch shortcut sets', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'shortcut', */
-  /* ); */
-
-  /* // Exported permission: switch users */
-  /* $permissions['switch users'] = array( */
-  /*   'name' => 'switch users', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'devel', */
-  /* ); */
-
-  /* // Exported permission: translate interface */
-  /* $permissions['translate interface'] = array( */
-  /*   'name' => 'translate interface', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'locale', */
-  /* ); */
-
-  /* // Exported permission: use PHP for settings */
-  /* $permissions['use PHP for settings'] = array( */
-  /*   'name' => 'use PHP for settings', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'php', */
-  /* ); */
-
-  /* // Exported permission: use advanced search */
-  /* $permissions['use advanced search'] = array( */
-  /*   'name' => 'use advanced search', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'anonymous user', */
-  /*     2 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'search', */
-  /* ); */
-
-  /* // Exported permission: view Terms and Conditions */
-  /* $permissions['view Terms and Conditions'] = array( */
-  /*   'name' => 'view Terms and Conditions', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'legal', */
-  /* ); */
-
-  /* // Exported permission: view devel_node_access information */
-  /* $permissions['view devel_node_access information'] = array( */
-  /*   'name' => 'view devel_node_access information', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'devel_node_access', */
-  /* ); */
-
-  /* // Exported permission: view own unpublished content */
-  /* $permissions['view own unpublished content'] = array( */
-  /*   'name' => 'view own unpublished content', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: view own userpoints */
-  /* $permissions['view own userpoints'] = array( */
-  /*   'name' => 'view own userpoints', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'userpoints', */
-  /* ); */
-
-  /* // Exported permission: view revisions */
-  /* $permissions['view revisions'] = array( */
-  /*   'name' => 'view revisions', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'node', */
-  /* ); */
-
-  /* // Exported permission: view the administration theme */
-  /* $permissions['view the administration theme'] = array( */
-  /*   'name' => 'view the administration theme', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*   ), */
-  /*   'module' => 'system', */
-  /* ); */
-
-  /* // Exported permission: view userpoints */
-  /* $permissions['view userpoints'] = array( */
-  /*   'name' => 'view userpoints', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'userpoints', */
-  /* ); */
-
-  /* // Exported permission: vote on polls */
-  /* $permissions['vote on polls'] = array( */
-  /*   'name' => 'vote on polls', */
-  /*   'roles' => array( */
-  /*     0 => 'administrator', */
-  /*     1 => 'authenticated user', */
-  /*   ), */
-  /*   'module' => 'poll', */
-  /* ); */
-
-
-  // Create a default role for site administrators, with all available permissions assigned.
+ // Create a default role for site administrators, with all available permissions assigned.
   $admin_role = new stdClass();
   $admin_role->name = 'administrator';
   $admin_role->weight = 2;
   user_role_save($admin_role);
-  user_role_grant_permissions($admin_role->rid, array_keys(module_invoke_all('permission')));
+  user_role_grant_permissions($admin_role->rid,
+			      array_keys(module_invoke_all('permission')));
   // Set this as the administrator role.
   variable_set('user_admin_role', $admin_role->rid);
 
@@ -1956,11 +1250,16 @@ function planetmath_profile_setup_permissions () {
   db_insert('users_roles')
     ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
     ->execute();
+
+  // planetmath_user_default_permissions();
+  module_enable('planetmath_permissions');
+
   return NULL;
 }
 
 function planetmath_profile_setup_menus () {
-  dd("In planetmath_profile_setup_menus");
+  dd("Profile- In planetmath_profile_setup_menus");
+  set_time_limit(0);
   // Create a Home link in the main menu.
   $item = array(
                 'link_title' => st('Home'),
@@ -1975,7 +1274,9 @@ function planetmath_profile_setup_menus () {
 }
 
 function planetmath_profile_setup_theme () {
-  dd("In planetmath_profile_setup_theme");
+  dd("Profile- In planetmath_profile_setup_theme");
+  set_time_limit(0);
+
   $enable = array(
                   'theme_default' => 'zen',
                   'admin_theme' => 'seven',
@@ -1983,11 +1284,8 @@ function planetmath_profile_setup_theme () {
 
   theme_enable($enable);
 
-  foreach ($enable as $var => $theme) {
-    if (!is_numeric($var)) {
-      variable_set($var, $theme);
-    }
-  }
+  variable_set('admin_theme', 'seven');
+  variable_set('theme_default', 'zen');
 
   // Disable the default Bartik theme
   theme_disable(array('bartik'));
@@ -2008,7 +1306,9 @@ function planetmath_profile_setup_theme () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function planetmath_profile_docreate_field ($machine_name, $bundle, $description) {
-  dd("In planetmath_profile_docreate_field");
+  dd("Profile- In planetmath_profile_docreate_field");
+  set_time_limit(0);
+
   $newfield=array(
                   'field_name' => $machine_name,
                   'type' => 'text'
@@ -2026,3 +1326,4 @@ function planetmath_profile_docreate_field ($machine_name, $bundle, $description
                            );
   field_create_instance($newfield_instance);
 }
+
