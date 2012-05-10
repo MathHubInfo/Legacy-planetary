@@ -1278,13 +1278,13 @@ function planetmath_profile_setup_theme () {
   set_time_limit(0);
 
   $enable = array(
-                  'theme_default' => 'zen',
+                  'theme_default' => 'planetmath',
                   'admin_theme' => 'seven',
                   );
 
   theme_enable($enable);
 
-  variable_set('admin_theme', 'seven');
+  variable_set('admin_theme', 'planetmath');
   variable_set('theme_default', 'zen');
 
   // Disable the default Bartik theme
