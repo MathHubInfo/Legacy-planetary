@@ -660,6 +660,220 @@ else if (!$field_correction_closed){
   $export['og_list'] = $view;
 
   $view = new view;
+  $view->name = 'people';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'users';
+  $view->human_name = 'People';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['title'] = 'People';
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['query']['options']['query_comment'] = FALSE;
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '20';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all'] = 0;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['grouping'] = '';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'name' => 'name',
+    'field_user_forename' => 'field_user_forename',
+    'field_user_surname' => 'field_user_surname',
+    'field_user_score' => 'field_user_score',
+  );
+  $handler->display->display_options['style_options']['default'] = 'field_user_score';
+  $handler->display->display_options['style_options']['info'] = array(
+    'name' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'field_user_forename' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'field_user_surname' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+    ),
+    'field_user_score' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+    ),
+  );
+  $handler->display->display_options['style_options']['override'] = 1;
+  $handler->display->display_options['style_options']['sticky'] = 1;
+  $handler->display->display_options['style_options']['order'] = 'desc';
+  $handler->display->display_options['style_options']['empty_table'] = 0;
+  /* Field: User: Name */
+  $handler->display->display_options['fields']['name']['id'] = 'name';
+  $handler->display->display_options['fields']['name']['table'] = 'users';
+  $handler->display->display_options['fields']['name']['field'] = 'name';
+  $handler->display->display_options['fields']['name']['label'] = 'Username';
+  $handler->display->display_options['fields']['name']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['word_boundary'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['ellipsis'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['name']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['name']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['name']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['name']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['name']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['name']['hide_alter_empty'] = 0;
+  $handler->display->display_options['fields']['name']['link_to_user'] = 1;
+  $handler->display->display_options['fields']['name']['overwrite_anonymous'] = 0;
+  /* Field: User: Forename */
+  $handler->display->display_options['fields']['field_user_forename']['id'] = 'field_user_forename';
+  $handler->display->display_options['fields']['field_user_forename']['table'] = 'field_data_field_user_forename';
+  $handler->display->display_options['fields']['field_user_forename']['field'] = 'field_user_forename';
+  $handler->display->display_options['fields']['field_user_forename']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['field_user_forename']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['field_user_forename']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['hide_alter_empty'] = 0;
+  $handler->display->display_options['fields']['field_user_forename']['field_api_classes'] = 0;
+  /* Field: User: Surname */
+  $handler->display->display_options['fields']['field_user_surname']['id'] = 'field_user_surname';
+  $handler->display->display_options['fields']['field_user_surname']['table'] = 'field_data_field_user_surname';
+  $handler->display->display_options['fields']['field_user_surname']['field'] = 'field_user_surname';
+  /* Field: User: Score */
+  $handler->display->display_options['fields']['field_user_score']['id'] = 'field_user_score';
+  $handler->display->display_options['fields']['field_user_score']['table'] = 'field_data_field_user_score';
+  $handler->display->display_options['fields']['field_user_score']['field'] = 'field_user_score';
+  $handler->display->display_options['fields']['field_user_score']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_user_score']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_user_score']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['field_user_score']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['field_user_score']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['hide_alter_empty'] = 0;
+  $handler->display->display_options['fields']['field_user_score']['settings'] = array(
+    'thousand_separator' => ' ',
+    'prefix_suffix' => 1,
+  );
+  $handler->display->display_options['fields']['field_user_score']['field_api_classes'] = 0;
+  /* Sort criterion: User: Created date */
+  $handler->display->display_options['sorts']['created']['id'] = 'created';
+  $handler->display->display_options['sorts']['created']['table'] = 'users';
+  $handler->display->display_options['sorts']['created']['field'] = 'created';
+  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
+  /* Filter criterion: User: Active */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'users';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = '1';
+  $handler->display->display_options['filters']['status']['group'] = 0;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: User: Forename (field_user_forename) */
+  $handler->display->display_options['filters']['field_user_forename_value']['id'] = 'field_user_forename_value';
+  $handler->display->display_options['filters']['field_user_forename_value']['table'] = 'field_data_field_user_forename';
+  $handler->display->display_options['filters']['field_user_forename_value']['field'] = 'field_user_forename_value';
+  $handler->display->display_options['filters']['field_user_forename_value']['operator'] = 'word';
+  $handler->display->display_options['filters']['field_user_forename_value']['group'] = '0';
+  $handler->display->display_options['filters']['field_user_forename_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_user_forename_value']['expose']['operator_id'] = 'field_user_forename_value_op';
+  $handler->display->display_options['filters']['field_user_forename_value']['expose']['label'] = 'Forename';
+  $handler->display->display_options['filters']['field_user_forename_value']['expose']['operator'] = 'field_user_forename_value_op';
+  $handler->display->display_options['filters']['field_user_forename_value']['expose']['identifier'] = 'field_user_forename_value';
+  $handler->display->display_options['filters']['field_user_forename_value']['expose']['required'] = 0;
+  $handler->display->display_options['filters']['field_user_forename_value']['expose']['multiple'] = FALSE;
+  /* Filter criterion: User: Surname (field_user_surname) */
+  $handler->display->display_options['filters']['field_user_surname_value']['id'] = 'field_user_surname_value';
+  $handler->display->display_options['filters']['field_user_surname_value']['table'] = 'field_data_field_user_surname';
+  $handler->display->display_options['filters']['field_user_surname_value']['field'] = 'field_user_surname_value';
+  $handler->display->display_options['filters']['field_user_surname_value']['operator'] = 'word';
+  $handler->display->display_options['filters']['field_user_surname_value']['group'] = '0';
+  $handler->display->display_options['filters']['field_user_surname_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_user_surname_value']['expose']['operator_id'] = 'field_user_surname_value_op';
+  $handler->display->display_options['filters']['field_user_surname_value']['expose']['label'] = 'Surname';
+  $handler->display->display_options['filters']['field_user_surname_value']['expose']['operator'] = 'field_user_surname_value_op';
+  $handler->display->display_options['filters']['field_user_surname_value']['expose']['identifier'] = 'field_user_surname_value';
+  $handler->display->display_options['filters']['field_user_surname_value']['expose']['required'] = 0;
+  $handler->display->display_options['filters']['field_user_surname_value']['expose']['multiple'] = FALSE;
+  /* Filter criterion: User: Name */
+  $handler->display->display_options['filters']['uid']['id'] = 'uid';
+  $handler->display->display_options['filters']['uid']['table'] = 'users';
+  $handler->display->display_options['filters']['uid']['field'] = 'uid';
+  $handler->display->display_options['filters']['uid']['value'] = '';
+  $handler->display->display_options['filters']['uid']['group'] = '0';
+  $handler->display->display_options['filters']['uid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['uid']['expose']['operator_id'] = 'uid_op';
+  $handler->display->display_options['filters']['uid']['expose']['label'] = 'Username';
+  $handler->display->display_options['filters']['uid']['expose']['operator'] = 'uid_op';
+  $handler->display->display_options['filters']['uid']['expose']['identifier'] = 'uid';
+  $handler->display->display_options['filters']['uid']['expose']['multiple'] = FALSE;
+  $handler->display->display_options['filters']['uid']['expose']['reduce'] = 0;
+
+  /* Display: Page */
+  $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['path'] = 'people';
+  $translatables['people'] = array(
+    t('Master'),
+    t('People'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort by'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('Username'),
+    t('Forename'),
+    t('Surname'),
+    t('Score'),
+    t('Page'),
+  );
+  $export['people'] = $view;
+
+
+  $view = new view;
   $view->name = 'problems';
   $view->description = '';
   $view->tag = 'default';
