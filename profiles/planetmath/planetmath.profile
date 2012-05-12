@@ -167,13 +167,13 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_setup_permissions',
                                         ),
-                 'my_13th_task' => array(
-                                        'display_name' => st('Configure Menus'),
-                                        'display' => TRUE,
-                                        'type' => 'normal',
-                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'planetmath_profile_setup_menus',
-                                        ),
+                 /* 'my_13th_task' => array( */
+                 /*                        'display_name' => st('Configure Menus'), */
+                 /*                        'display' => TRUE, */
+                 /*                        'type' => 'normal', */
+                 /*                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED, */
+                 /*                        'function' => 'planetmath_profile_setup_menus', */
+                 /*                        ), */
                  'my_14th_task' => array(
                                         'display_name' => st('Choose and install the theme'),
                                         'display' => TRUE,
@@ -754,6 +754,9 @@ function planetmath_profile_configure_blocks () {
   $admin_theme = variable_get(admin_theme);
 
   $blocks = array(
+		  // note that visibility => 0 is "all pages except those listed"
+		  // note that visibility => 1 is "Only the listed pages"
+		  // note that visibility => 2 is what you use for custom PHP logic
                   array(
                         'module' => 'system',
                         'delta' => 'main',
@@ -761,6 +764,7 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'content',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -769,8 +773,9 @@ function planetmath_profile_configure_blocks () {
                         'delta' => 'form',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -1,
-                        'region' => 'sidebar_first',
+                        'weight' => -26,
+                        'region' => 'header',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -781,6 +786,7 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 10,
                         'region' => 'dashboard_main',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -791,6 +797,7 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'sidebar_first',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -801,6 +808,7 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'sidebar_first',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -811,6 +819,7 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 10,
                         'region' => 'footer',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -821,6 +830,91 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  // turn some stuff off
+                  array(
+                        'module' => 'devel_node_access',
+                        'delta' => 'dna_node',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'forum',
+                        'delta' => 'active',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'forum',
+                        'delta' => 'new',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  array(
+                        'module' => 'forum',
+                        'delta' => 'new',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  // might be reasonable to show this on the "People" page, ... which
+		  // I'm realizing didn't make it through the migration for some
+		  // reason.
+		  array(
+                        'module' => 'user',
+                        'delta' => 'online',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  array(
+                        'module' => 'relation_entity_collector',
+                        'delta' => 'block',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  // it might be good to enable a second block below
+		  // the main menu (for admin-level tasks) but let's skip
+		  // that for now
+                  array(
+                        'module' => 'system',
+                        'delta' => 'management',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => -5,
+                        'region' => -1,
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -831,6 +925,7 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'content',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -841,6 +936,7 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'help',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -851,6 +947,7 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 10,
                         'region' => 'content',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -861,6 +958,7 @@ function planetmath_profile_configure_blocks () {
                         'status' => 1,
                         'weight' => 0,
                         'region' => 'dashboard_sidebar',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
@@ -868,15 +966,79 @@ function planetmath_profile_configure_blocks () {
                         'module' => 'search',
                         'delta' => 'form',
                         'theme' => $admin_theme,
-                        'status' => 1,
-                        'weight' => -10,
-                        'region' => 'dashboard_sidebar',
+                        'status' => 0,
+                        'weight' => -26,
+                        'region' => 'header',
+                        'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
                         ),
+		  // Configure the custom blocks that are supposed to
+		  // appear in the sidebar.  This could presumably be
+		  // done from within the planetmath_blocks module itself
+                  // but no harm prototyping here.
+                  array(
+                        'module' => 'planetmath_blocks',
+                        'delta' => 'news',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -32,
+                        'region' => 'sidebar_second',
+                        'visibility' => 1,
+                        'pages' => '<front>',
+                        'cache' => 1,
+                        ),
+		  // this is giving an error claiming that
+		  // `field_data_field_correction_article' doesn't exist
+		  // commenting out for now
+/*                   array( */
+/*                         'module' => 'planetmath_blocks', */
+/*                         'delta' => 'correction', */
+/*                         'theme' => $theme_default, */
+/*                         'status' => 1, */
+/*                         'weight' => -30, */
+/*                         'region' => 'sidebar_second', */
+/*                         'pages' => '<?php if(arg(0) == "node"){ */
+/*  return planetmath_blocks_countCorrectionsPerArticle(arg(1)); */
+/* } */
+/* return false; */
+/* ?>', */
+/*                         'cache' => 1, */
+/*                         ), */
+                  array(
+                        'module' => 'planetmath_blocks',
+                        'delta' => 'pversion',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -34,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return planetmath_blocks_countVersionsPerArticle(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+		  array(
+                        'module' => 'planetmath_blocks',
+                        'delta' => 'userlist',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -33,
+                        'region' => 'sidebar_second',
+                        'visibility' => 1,
+                        'pages' => '<front>',
+                        'cache' => 1,
+                        ),
+
                   );
   foreach ($blocks as $block) {
-    dd($block, "CONFIGURING... ");
+    //dd($block, "CONFIGURING... ");
     db_merge('block')
       ->key(array('module'=>$block['module'],
 		  'theme'=>$block['theme'],
@@ -887,6 +1049,7 @@ function planetmath_profile_configure_blocks () {
 		     'status' => $block['status'],
 		     'weight' => $block['weight'],
 		     'region' => $block['region'],
+		     'visibility' => $block['visibility'],
 		     'pages' => $block['pages'],
 		     'cache' => $block['cache']))
       ->execute();
@@ -934,146 +1097,150 @@ function planetmath_profile_rdf_mappings () {
 function planetmath_profile_set_userpoints_variables () {
   dd("Profile- In planetmath_profile_set_userpoints_variables");
 
-  variable_set('userpoints_category_default_tid', 's:1:"0";');
-  variable_set('userpoints_category_default_vid', 's:1:"3";');
-  variable_set('userpoints_category_profile_display_tid', 'a:2:{s:13:"uncategorized";s:13:"uncategorized";s:3:"all";s:3:"all";}');
-  variable_set('userpoints_display_message', 's:1:"1";');
-  variable_set('userpoints_expireafter_date', 's:0:"";');
-  variable_set('userpoints_expireon_date', 'a:3:{s:5:"month";s:1:"1";s:3:"day";s:1:"1";s:4:"year";s:4:"1980";}');
-  variable_set('userpoints_expiry_description', 's:0:"";');
-  variable_set('userpoints_nc_category', 's:1:"0";');
-  variable_set('userpoints_nc_category_correction', 's:1:"0";');
-  variable_set('userpoints_nc_category_forum', 's:1:"0";');
-  variable_set('userpoints_nc_category_group', 's:1:"0";');
-  variable_set('userpoints_nc_category_image', 's:1:"0";');
-  variable_set('userpoints_nc_category_news', 's:1:"0";');
-  variable_set('userpoints_nc_category_page', 's:1:"0";');
-  variable_set('userpoints_nc_category_request', 's:1:"0";');
-  variable_set('userpoints_nc_comment_category', 's:1:"0";');
-  variable_set('userpoints_nc_comment_category_correction', 's:1:"0";');
-  variable_set('userpoints_nc_comment_category_forum', 's:1:"0";');
-  variable_set('userpoints_nc_comment_category_group', 's:1:"0";');
-  variable_set('userpoints_nc_comment_category_image', 's:1:"0";');
-  variable_set('userpoints_nc_comment_category_news', 's:1:"0";');
-  variable_set('userpoints_nc_comment_category_page', 's:1:"0";');
-  variable_set('userpoints_nc_comment_category_request', 's:1:"0";');
-  variable_set('userpoints_nc_comment_delete_deduct', 'i:1;');
-  variable_set('userpoints_nc_comment_delete_deduct_correction', 'i:1;');
-  variable_set('userpoints_nc_comment_delete_deduct_forum', 'i:1;');
-  variable_set('userpoints_nc_comment_delete_deduct_group', 'i:1;');
-  variable_set('userpoints_nc_comment_delete_deduct_image', 'i:1;');
-  variable_set('userpoints_nc_comment_delete_deduct_news', 'i:1;');
-  variable_set('userpoints_nc_comment_delete_deduct_page', 'i:1;');
-  variable_set('userpoints_nc_comment_delete_deduct_request', 'i:1;');
-  variable_set('userpoints_nc_comment_enabled', 'i:1;');
-  variable_set('userpoints_nc_comment_enabled_correction', 'i:1;');
-  variable_set('userpoints_nc_comment_enabled_forum', 'i:1;');
-  variable_set('userpoints_nc_comment_enabled_group', 'i:1;');
-  variable_set('userpoints_nc_comment_enabled_image', 'i:1;');
-  variable_set('userpoints_nc_comment_enabled_news', 'i:1;');
-  variable_set('userpoints_nc_comment_enabled_page', 'i:1;');
-  variable_set('userpoints_nc_comment_enabled_request', 'i:1;');
-  variable_set('userpoints_nc_comment_ownership_deduct', 'i:1;');
-  variable_set('userpoints_nc_comment_ownership_deduct_correction', 'i:1;');
-  variable_set('userpoints_nc_comment_ownership_deduct_forum', 'i:1;');
-  variable_set('userpoints_nc_comment_ownership_deduct_group', 'i:1;');
-  variable_set('userpoints_nc_comment_ownership_deduct_image', 'i:1;');
-  variable_set('userpoints_nc_comment_ownership_deduct_news', 'i:1;');
-  variable_set('userpoints_nc_comment_ownership_deduct_page', 'i:1;');
-  variable_set('userpoints_nc_comment_ownership_deduct_request', 'i:1;');
-  variable_set('userpoints_nc_comment_points', 's:1:"1";');
-  variable_set('userpoints_nc_comment_points_correction', 's:1:"1";');
-  variable_set('userpoints_nc_comment_points_forum', 's:1:"1";');
-  variable_set('userpoints_nc_comment_points_group', 's:1:"1";');
-  variable_set('userpoints_nc_comment_points_image', 's:1:"1";');
-  variable_set('userpoints_nc_comment_points_news', 's:1:"1";');
-  variable_set('userpoints_nc_comment_points_page', 's:1:"1";');
-  variable_set('userpoints_nc_comment_points_request', 's:1:"1";');
-  variable_set('userpoints_nc_comment_published_only', 'i:1;');
-  variable_set('userpoints_nc_delete_deduct', 'i:1;');
-  variable_set('userpoints_nc_delete_deduct_correction', 'i:1;');
-  variable_set('userpoints_nc_delete_deduct_forum', 'i:1;');
-  variable_set('userpoints_nc_delete_deduct_group', 'i:1;');
-  variable_set('userpoints_nc_delete_deduct_image', 'i:1;');
-  variable_set('userpoints_nc_delete_deduct_news', 'i:1;');
-  variable_set('userpoints_nc_delete_deduct_page', 'i:1;');
-  variable_set('userpoints_nc_delete_deduct_request', 'i:1;');
-  variable_set('userpoints_nc_enabled', 'i:1;');
-  variable_set('userpoints_nc_enabled_correction', 'i:1;');
-  variable_set('userpoints_nc_enabled_forum', 'i:1;');
-  variable_set('userpoints_nc_enabled_group', 'i:1;');
-  variable_set('userpoints_nc_enabled_image', 'i:1;');
-  variable_set('userpoints_nc_enabled_news', 'i:1;');
-  variable_set('userpoints_nc_enabled_page', 'i:1;');
-  variable_set('userpoints_nc_enabled_request', 'i:1;');
-  variable_set('userpoints_nc_ownership_deduct', 'i:1;');
-  variable_set('userpoints_nc_ownership_deduct_correction', 'i:1;');
-  variable_set('userpoints_nc_ownership_deduct_forum', 'i:1;');
-  variable_set('userpoints_nc_ownership_deduct_group', 'i:1;');
-  variable_set('userpoints_nc_ownership_deduct_image', 'i:1;');
-  variable_set('userpoints_nc_ownership_deduct_news', 'i:1;');
-  variable_set('userpoints_nc_ownership_deduct_page', 'i:1;');
-  variable_set('userpoints_nc_ownership_deduct_request', 'i:1;');
-  variable_set('userpoints_nc_points', 's:3:"100";');
-  variable_set('userpoints_nc_points_correction', 's:1:"5";');
-  variable_set('userpoints_nc_points_forum', 's:1:"5";');
-  variable_set('userpoints_nc_points_group', 's:1:"1";');
-  variable_set('userpoints_nc_points_image', 's:2:"10";');
-  variable_set('userpoints_nc_points_news', 's:3:"100";');
-  variable_set('userpoints_nc_points_page', 's:1:"1";');
-  variable_set('userpoints_nc_points_request', 's:1:"1";');
-  variable_set('userpoints_nc_published_only', 'i:1;');
-  variable_set('userpoints_nc_revision_category', 's:1:"0";');
-  variable_set('userpoints_nc_revision_category_correction', 's:1:"0";');
-  variable_set('userpoints_nc_revision_category_forum', 's:1:"0";');
-  variable_set('userpoints_nc_revision_category_group', 's:1:"0";');
-  variable_set('userpoints_nc_revision_category_image', 's:1:"0";');
-  variable_set('userpoints_nc_revision_category_news', 's:1:"0";');
-  variable_set('userpoints_nc_revision_category_page', 's:1:"0";');
-  variable_set('userpoints_nc_revision_category_request', 's:1:"0";');
-  variable_set('userpoints_nc_revision_enabled', 'i:1;');
-  variable_set('userpoints_nc_revision_enabled_correction', 'i:1;');
-  variable_set('userpoints_nc_revision_enabled_forum', 'i:1;');
-  variable_set('userpoints_nc_revision_enabled_group', 'i:1;');
-  variable_set('userpoints_nc_revision_enabled_image', 'i:1;');
-  variable_set('userpoints_nc_revision_enabled_news', 'i:1;');
-  variable_set('userpoints_nc_revision_enabled_page', 'i:1;');
-  variable_set('userpoints_nc_revision_enabled_request', 'i:1;');
-  variable_set('userpoints_nc_revision_own_nodes', 'i:0;');
-  variable_set('userpoints_nc_revision_own_nodes_correction', 'i:0;');
-  variable_set('userpoints_nc_revision_own_nodes_forum', 'i:0;');
-  variable_set('userpoints_nc_revision_own_nodes_group', 'i:0;');
-  variable_set('userpoints_nc_revision_own_nodes_image', 'i:0;');
-  variable_set('userpoints_nc_revision_own_nodes_news', 'i:0;');
-  variable_set('userpoints_nc_revision_own_nodes_page', 'i:0;');
-  variable_set('userpoints_nc_revision_own_nodes_request', 'i:0;');
-  variable_set('userpoints_nc_revision_points', 's:1:"5";');
-  variable_set('userpoints_nc_revision_points_correction', 's:1:"1";');
-  variable_set('userpoints_nc_revision_points_forum', 's:1:"0";');
-  variable_set('userpoints_nc_revision_points_group', 's:1:"1";');
-  variable_set('userpoints_nc_revision_points_image', 's:1:"5";');
-  variable_set('userpoints_nc_revision_points_news', 's:1:"5";');
-  variable_set('userpoints_nc_revision_points_page', 's:1:"1";');
-  variable_set('userpoints_nc_revision_points_request', 's:1:"1";');
-  variable_set('userpoints_points_moderation', 's:1:"0";');
-  variable_set('userpoints_report_displayzero', 's:1:"1";');
-  variable_set('userpoints_report_limit', 's:2:"10";');
-  variable_set('userpoints_report_usercount', 's:2:"30";');
-  variable_set('userpoints_transaction_timestamp', 'i:1;');
-  variable_set('userpoints_trans_lcpoint', 's:5:"point";');
-  variable_set('userpoints_trans_lcpoints', 's:5:"score";');
-  variable_set('userpoints_trans_ucpoint', 's:5:"Point";');
-  variable_set('userpoints_trans_ucpoints', 's:5:"Score";');
-  variable_set('userpoints_trans_uncat', 's:7:"General";');
-  variable_set('userpoints_truncate', 's:2:"30";');
+  variable_set('userpoints_category_default_tid', '0');
+  variable_set('userpoints_category_default_vid', '3');
+  variable_set('userpoints_category_profile_display_tid', array('uncategorized'=>'uncategorized',
+								'all'=>'all'));
+  variable_set('userpoints_display_message', '1');
+  variable_set('userpoints_expireafter_date', '');
+  // this setting is a bit strange
+  variable_set('userpoints_expireon_date', array('month'=>'1',
+						 'day'=>'1',
+						 'year'=>'1980'));
+  variable_set('userpoints_expiry_description', '');
+  variable_set('userpoints_nc_category', '0');
+  variable_set('userpoints_nc_category_correction', '0');
+  variable_set('userpoints_nc_category_forum', '0');
+  variable_set('userpoints_nc_category_group', '0');
+  variable_set('userpoints_nc_category_image', '0');
+  variable_set('userpoints_nc_category_news', '0');
+  variable_set('userpoints_nc_category_page', '0');
+  variable_set('userpoints_nc_category_request', '0');
+  variable_set('userpoints_nc_comment_category', '0');
+  variable_set('userpoints_nc_comment_category_correction', '0');
+  variable_set('userpoints_nc_comment_category_forum', '0');
+  variable_set('userpoints_nc_comment_category_group', '0');
+  variable_set('userpoints_nc_comment_category_image', '0');
+  variable_set('userpoints_nc_comment_category_news', '0');
+  variable_set('userpoints_nc_comment_category_page', '0');
+  variable_set('userpoints_nc_comment_category_request', '0');
+  variable_set('userpoints_nc_comment_delete_deduct', 1);
+  variable_set('userpoints_nc_comment_delete_deduct_correction', 1);
+  variable_set('userpoints_nc_comment_delete_deduct_forum', 1);
+  variable_set('userpoints_nc_comment_delete_deduct_group', 1);
+  variable_set('userpoints_nc_comment_delete_deduct_image', 1);
+  variable_set('userpoints_nc_comment_delete_deduct_news', 1);
+  variable_set('userpoints_nc_comment_delete_deduct_page', 1);
+  variable_set('userpoints_nc_comment_delete_deduct_request', 1);
+  variable_set('userpoints_nc_comment_enabled', 1);
+  variable_set('userpoints_nc_comment_enabled_correction', 1);
+  variable_set('userpoints_nc_comment_enabled_forum', 1);
+  variable_set('userpoints_nc_comment_enabled_group', 1);
+  variable_set('userpoints_nc_comment_enabled_image', 1);
+  variable_set('userpoints_nc_comment_enabled_news', 1);
+  variable_set('userpoints_nc_comment_enabled_page', 1);
+  variable_set('userpoints_nc_comment_enabled_request', 1);
+  variable_set('userpoints_nc_comment_ownership_deduct', 1);
+  variable_set('userpoints_nc_comment_ownership_deduct_correction', 1);
+  variable_set('userpoints_nc_comment_ownership_deduct_forum', 1);
+  variable_set('userpoints_nc_comment_ownership_deduct_group', 1);
+  variable_set('userpoints_nc_comment_ownership_deduct_image', 1);
+  variable_set('userpoints_nc_comment_ownership_deduct_news', 1);
+  variable_set('userpoints_nc_comment_ownership_deduct_page', 1);
+  variable_set('userpoints_nc_comment_ownership_deduct_request', 1);
+  variable_set('userpoints_nc_comment_points', '1');
+  variable_set('userpoints_nc_comment_points_correction', '1');
+  variable_set('userpoints_nc_comment_points_forum', '1');
+  variable_set('userpoints_nc_comment_points_group', '1');
+  variable_set('userpoints_nc_comment_points_image', '1');
+  variable_set('userpoints_nc_comment_points_news', '1');
+  variable_set('userpoints_nc_comment_points_page', '1');
+  variable_set('userpoints_nc_comment_points_request', '1');
+  variable_set('userpoints_nc_comment_published_only', 1);
+  variable_set('userpoints_nc_delete_deduct', 1);
+  variable_set('userpoints_nc_delete_deduct_correction', 1);
+  variable_set('userpoints_nc_delete_deduct_forum', 1);
+  variable_set('userpoints_nc_delete_deduct_group', 1);
+  variable_set('userpoints_nc_delete_deduct_image', 1);
+  variable_set('userpoints_nc_delete_deduct_news', 1);
+  variable_set('userpoints_nc_delete_deduct_page', 1);
+  variable_set('userpoints_nc_delete_deduct_request', 1);
+  variable_set('userpoints_nc_enabled', 1);
+  variable_set('userpoints_nc_enabled_correction', 1);
+  variable_set('userpoints_nc_enabled_forum', 1);
+  variable_set('userpoints_nc_enabled_group', 1);
+  variable_set('userpoints_nc_enabled_image', 1);
+  variable_set('userpoints_nc_enabled_news', 1);
+  variable_set('userpoints_nc_enabled_page', 1);
+  variable_set('userpoints_nc_enabled_request', 1);
+  variable_set('userpoints_nc_ownership_deduct', 1);
+  variable_set('userpoints_nc_ownership_deduct_correction', 1);
+  variable_set('userpoints_nc_ownership_deduct_forum', 1);
+  variable_set('userpoints_nc_ownership_deduct_group', 1);
+  variable_set('userpoints_nc_ownership_deduct_image', 1);
+  variable_set('userpoints_nc_ownership_deduct_news', 1);
+  variable_set('userpoints_nc_ownership_deduct_page', 1);
+  variable_set('userpoints_nc_ownership_deduct_request', 1);
+  variable_set('userpoints_nc_points', '100');
+  variable_set('userpoints_nc_points_correction', '5');
+  variable_set('userpoints_nc_points_forum', '5');
+  variable_set('userpoints_nc_points_group', '1');
+  variable_set('userpoints_nc_points_image', '10');
+  variable_set('userpoints_nc_points_news', '100');
+  variable_set('userpoints_nc_points_page', '1');
+  variable_set('userpoints_nc_points_request', '1');
+  variable_set('userpoints_nc_published_only', 1);
+  variable_set('userpoints_nc_revision_category', '0');
+  variable_set('userpoints_nc_revision_category_correction', '0');
+  variable_set('userpoints_nc_revision_category_forum', '0');
+  variable_set('userpoints_nc_revision_category_group', '0');
+  variable_set('userpoints_nc_revision_category_image', '0');
+  variable_set('userpoints_nc_revision_category_news', '0');
+  variable_set('userpoints_nc_revision_category_page', '0');
+  variable_set('userpoints_nc_revision_category_request', '0');
+  variable_set('userpoints_nc_revision_enabled', 1);
+  variable_set('userpoints_nc_revision_enabled_correction', 1);
+  variable_set('userpoints_nc_revision_enabled_forum', 1);
+  variable_set('userpoints_nc_revision_enabled_group', 1);
+  variable_set('userpoints_nc_revision_enabled_image', 1);
+  variable_set('userpoints_nc_revision_enabled_news', 1);
+  variable_set('userpoints_nc_revision_enabled_page', 1);
+  variable_set('userpoints_nc_revision_enabled_request', 1);
+  variable_set('userpoints_nc_revision_own_nodes', 0);
+  variable_set('userpoints_nc_revision_own_nodes_correction', 0);
+  variable_set('userpoints_nc_revision_own_nodes_forum', 0);
+  variable_set('userpoints_nc_revision_own_nodes_group', 0);
+  variable_set('userpoints_nc_revision_own_nodes_image', 0);
+  variable_set('userpoints_nc_revision_own_nodes_news', 0);
+  variable_set('userpoints_nc_revision_own_nodes_page', 0);
+  variable_set('userpoints_nc_revision_own_nodes_request', 0);
+  variable_set('userpoints_nc_revision_points', '5');
+  variable_set('userpoints_nc_revision_points_correction', '1');
+  variable_set('userpoints_nc_revision_points_forum', '0');
+  variable_set('userpoints_nc_revision_points_group', '1');
+  variable_set('userpoints_nc_revision_points_image', '5');
+  variable_set('userpoints_nc_revision_points_news', '5');
+  variable_set('userpoints_nc_revision_points_page', '1');
+  variable_set('userpoints_nc_revision_points_request', '1');
+  variable_set('userpoints_points_moderation', '0');
+  variable_set('userpoints_report_displayzero', '1');
+  variable_set('userpoints_report_limit', '10');
+  variable_set('userpoints_report_usercount', '30');
+  variable_set('userpoints_transaction_timestamp', 1);
+  variable_set('userpoints_trans_lcpoint', 'point');
+  variable_set('userpoints_trans_lcpoints', 'score');
+  variable_set('userpoints_trans_ucpoint', 'Point');
+  variable_set('userpoints_trans_ucpoints', 'Score');
+  variable_set('userpoints_trans_uncat', 'General');
+  variable_set('userpoints_truncate', '30";');
 
-  variable_set('additional_settings__active_tab_correction', 's:27:"edit-userpoints-nc-revision";');
-  variable_set('additional_settings__active_tab_forum', 's:27:"edit-userpoints-nc-revision";');
-  variable_set('additional_settings__active_tab_group', 's:27:"edit-userpoints-nc-revision";');
-  variable_set('additional_settings__active_tab_image', 's:27:"edit-userpoints-nc-revision";');
-  variable_set('additional_settings__active_tab_page', 's:27:"edit-userpoints-nc-revision";');
-  variable_set('additional_settings__active_tab_request', 's:27:"edit-userpoints-nc-revision";');
-  variable_set('settings_additional__active_tab', 's:26:"edit-userpoints-nc-comment";');
+  variable_set('additional_settings__active_tab_correction', 'edit-userpoints-nc-revision');
+  variable_set('additional_settings__active_tab_forum', 'edit-userpoints-nc-revision');
+  variable_set('additional_settings__active_tab_group', 'edit-userpoints-nc-revision');
+  variable_set('additional_settings__active_tab_image', 'edit-userpoints-nc-revision');
+  variable_set('additional_settings__active_tab_page', 'edit-userpoints-nc-revision');
+  variable_set('additional_settings__active_tab_request', 'edit-userpoints-nc-revision');
+  variable_set('settings_additional__active_tab', 'edit-userpoints-nc-comment');
 }
 
 function planetmath_profile_set_misc_variables () {
@@ -1257,16 +1424,18 @@ function planetmath_profile_setup_permissions () {
   return NULL;
 }
 
+// Actually this function doesn't really seem useful or needed for anything
+// since we set up menus with a feature.
 function planetmath_profile_setup_menus () {
   dd("Profile- In planetmath_profile_setup_menus");
   set_time_limit(0);
   // Create a Home link in the main menu.
-  $item = array(
-                'link_title' => st('Home'),
-                'link_path' => '<front>',
-                'menu_name' => 'main-menu',
-                );
-  menu_link_save($item);
+  /* $item = array( */
+  /*               'link_title' => st('Home'), */
+  /*               'link_path' => '<front>', */
+  /*               'menu_name' => 'main-menu', */
+  /*               ); */
+  /* menu_link_save($item); */
 
   // Update the menu router information.
   menu_rebuild();
@@ -1290,17 +1459,30 @@ function planetmath_profile_setup_theme () {
 
   // Disable the default Bartik theme
   theme_disable(array('bartik'));
+
+  // adjust the theme settings to use our logo etc.
+  variable_set('site_slogan', 'Math for the people, by the people.');
+  variable_set('theme_settings', array (
+					'toggle_logo' => 1,
+					'toggle_name' => 1,
+					'toggle_slogan' => 1,
+					'toggle_node_user_picture' => 1,
+					'toggle_comment_user_picture' => 1,
+					'toggle_comment_user_verification' => 1,
+					'toggle_favicon' => 1,
+					'toggle_main_menu' => 1,
+					'toggle_secondary_menu' => 1,
+					'default_logo' => 0,
+					'logo_path' => 'public://alpha.png',
+					'logo_upload' => '',
+					'default_favicon' => 0,
+					'favicon_path' => 'public://planet-alpha_0_0.ico',
+					'favicon_upload' => '',
+					'favicon_mimetype' => 'image/vnd.microsoft.icon',
+					));
+
   return NULL;
 }
-
-// just sample code because I think we'll have to do a lot of database updating
-//function planetmath_profile_sample_database_updating (){
-//  db_update('system')
-//    ->fields(array('status' => 1))
-//    ->condition('type', 'theme')
-//    ->condition('name', 'seven')
-//    ->execute();
-//}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Utility functions for the above
