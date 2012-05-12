@@ -36,7 +36,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Articles',
     'options' => array(
       'attributes' => array(
-        'title' => '',
+        'title' => 'PlanetMath is known for its high-quality mathematics Encyclopedia.',
       ),
     ),
     'module' => 'menu',
@@ -126,7 +126,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'People',
     'options' => array(
       'attributes' => array(
-        'title' => 'Math for the people, by the people.',
+        'title' => 'These are the people who do math for the people.',
       ),
     ),
     'module' => 'menu',
@@ -172,6 +172,210 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '0',
   );
+
+  // We don't need this menu I don't think.
+
+  /* // Exported menu link: menu-main-menu:<front> */
+  /* $menu_links['menu-main-menu:<front>'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => '<front>', */
+  /*   'router_path' => '', */
+  /*   'link_title' => 'Feedback', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '1', */
+  /*   'has_children' => '0', */
+  /*   'expanded' => '0', */
+  /*   'weight' => '-38', */
+  /* ); */
+  // Exported menu link: menu-main-menu:aggregator
+  /* $menu_links['menu-main-menu:aggregator'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'aggregator', */
+  /*   'router_path' => 'aggregator', */
+  /*   'link_title' => 'Feed Aggregator', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '0', */
+  /*   'expanded' => '0', */
+  /*   'weight' => '-46', */
+  /* ); */
+  // Exported menu link: menu-main-menu:articles
+  /* $menu_links['menu-main-menu:articles'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'articles', */
+  /*   'router_path' => 'articles', */
+  /*   'link_title' => 'Encyclopedia', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '1', */
+  /*   'expanded' => '1', */
+  /*   'weight' => '-50', */
+  /* ); */
+  // Exported menu link: menu-main-menu:corrections
+  /* $menu_links['menu-main-menu:corrections'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'corrections', */
+  /*   'router_path' => 'corrections', */
+  /*   'link_title' => 'Corrections', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '0', */
+  /*   'expanded' => '0', */
+  /*   'weight' => '-41', */
+  /* ); */
+  // Exported menu link: menu-main-menu:forum
+  /* $menu_links['menu-main-menu:forum'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'forum', */
+  /*   'router_path' => 'forum', */
+  /*   'link_title' => 'Forums', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '0', */
+  /*   'expanded' => '0', */
+  /*   'weight' => '-39', */
+  /* ); */
+  /* // Exported menu link: menu-main-menu:gallery */
+  /* $menu_links['menu-main-menu:gallery'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'gallery', */
+  /*   'router_path' => 'gallery', */
+  /*   'link_title' => 'Gallery', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '1', */
+  /*   'expanded' => '1', */
+  /*   'weight' => '-48', */
+  /* ); */
+  /* // Exported menu link: menu-main-menu:node/add/article */
+  /* $menu_links['menu-main-menu:node/add/article'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'node/add/article', */
+  /*   'router_path' => 'node/add/article', */
+  /*   'link_title' => 'Add article', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '0', */
+  /*   'expanded' => '0', */
+  /*   'weight' => '0', */
+  /*   'parent_path' => 'articles', */
+  /* ); */
+  /* // Exported menu link: menu-main-menu:node/add/image */
+  /* $menu_links['menu-main-menu:node/add/image'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'node/add/image', */
+  /*   'router_path' => 'node/add/image', */
+  /*   'link_title' => 'Add image', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '0', */
+  /*   'expanded' => '1', */
+  /*   'weight' => '0', */
+  /*   'parent_path' => 'gallery', */
+  /* ); */
+  /* // Exported menu link: menu-main-menu:poll */
+  /* $menu_links['menu-main-menu:poll'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'poll', */
+  /*   'router_path' => 'poll', */
+  /*   'link_title' => 'Polls', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '0', */
+  /*   'expanded' => '0', */
+  /*   'weight' => '-40', */
+  /* ); */
+  /* // Exported menu link: menu-main-menu:squery */
+  /* $menu_links['menu-main-menu:squery'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'squery', */
+  /*   'router_path' => 'squery', */
+  /*   'link_title' => 'SPARQL queries', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '0', */
+  /*   'expanded' => '0', */
+  /*   'weight' => '-47', */
+  /* ); */
+  /* // Exported menu link: menu-main-menu:userpoints */
+  /* $menu_links['menu-main-menu:userpoints'] = array( */
+  /*   'menu_name' => 'menu-main-menu', */
+  /*   'link_path' => 'userpoints', */
+  /*   'router_path' => 'userpoints', */
+  /*   'link_title' => 'Userpoints', */
+  /*   'options' => array( */
+  /*     'attributes' => array( */
+  /*       'title' => '', */
+  /*     ), */
+  /*   ), */
+  /*   'module' => 'menu', */
+  /*   'hidden' => '0', */
+  /*   'external' => '0', */
+  /*   'has_children' => '0', */
+  /*   'expanded' => '0', */
+  /*   'weight' => '-44', */
+  /* ); */
+
   // Exported menu link: management:admin
   $menu_links['management:admin'] = array(
     'menu_name' => 'management',
@@ -186,206 +390,7 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '9',
   );
-  // Exported menu link: menu-main-menu:<front>
-  $menu_links['menu-main-menu:<front>'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => '<front>',
-    'router_path' => '',
-    'link_title' => 'Feedback',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '1',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-38',
-  );
-  // Exported menu link: menu-main-menu:aggregator
-  $menu_links['menu-main-menu:aggregator'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'aggregator',
-    'router_path' => 'aggregator',
-    'link_title' => 'Feed Aggregator',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-46',
-  );
-  // Exported menu link: menu-main-menu:articles
-  $menu_links['menu-main-menu:articles'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'articles',
-    'router_path' => 'articles',
-    'link_title' => 'Encyclopedia',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '1',
-    'expanded' => '1',
-    'weight' => '-50',
-  );
-  // Exported menu link: menu-main-menu:corrections
-  $menu_links['menu-main-menu:corrections'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'corrections',
-    'router_path' => 'corrections',
-    'link_title' => 'Corrections',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-41',
-  );
-  // Exported menu link: menu-main-menu:forum
-  $menu_links['menu-main-menu:forum'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'forum',
-    'router_path' => 'forum',
-    'link_title' => 'Forums',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-39',
-  );
-  // Exported menu link: menu-main-menu:gallery
-  $menu_links['menu-main-menu:gallery'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'gallery',
-    'router_path' => 'gallery',
-    'link_title' => 'Gallery',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '1',
-    'expanded' => '1',
-    'weight' => '-48',
-  );
-  // Exported menu link: menu-main-menu:node/add/article
-  $menu_links['menu-main-menu:node/add/article'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'node/add/article',
-    'router_path' => 'node/add/article',
-    'link_title' => 'Add article',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
-    'parent_path' => 'articles',
-  );
-  // Exported menu link: menu-main-menu:node/add/image
-  $menu_links['menu-main-menu:node/add/image'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'node/add/image',
-    'router_path' => 'node/add/image',
-    'link_title' => 'Add image',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '1',
-    'weight' => '0',
-    'parent_path' => 'gallery',
-  );
-  // Exported menu link: menu-main-menu:poll
-  $menu_links['menu-main-menu:poll'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'poll',
-    'router_path' => 'poll',
-    'link_title' => 'Polls',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-40',
-  );
-  // Exported menu link: menu-main-menu:squery
-  $menu_links['menu-main-menu:squery'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'squery',
-    'router_path' => 'squery',
-    'link_title' => 'SPARQL queries',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-47',
-  );
-  // Exported menu link: menu-main-menu:userpoints
-  $menu_links['menu-main-menu:userpoints'] = array(
-    'menu_name' => 'menu-main-menu',
-    'link_path' => 'userpoints',
-    'router_path' => 'userpoints',
-    'link_title' => 'Userpoints',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-44',
-  );
+
   // Exported menu link: navigation:aggregator
   $menu_links['navigation:aggregator'] = array(
     'menu_name' => 'navigation',
