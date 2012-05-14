@@ -802,17 +802,6 @@ function planetmath_profile_configure_blocks () {
                         'cache' => -1,
                         ),
                   array(
-                        'module' => 'user',
-                        'delta' => 'login',
-                        'theme' => $theme_default,
-                        'status' => 1,
-                        'weight' => 0,
-                        'region' => 'sidebar_first',
-                        'visibility' => 0,
-                        'pages' => '',
-                        'cache' => -1,
-                        ),
-                  array(
                         'module' => 'system',
                         'delta' => 'navigation',
                         'theme' => $theme_default,
