@@ -758,6 +758,17 @@ function planetmath_profile_configure_blocks () {
 		  // note that visibility => 1 is "Only the listed pages"
 		  // note that visibility => 2 is what you use for custom PHP logic
                   array(
+                        'module' => 'user',
+                        'delta' => 'login',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -27,
+                        'region' => 'header',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
                         'module' => 'system',
                         'delta' => 'main',
                         'theme' => $theme_default,
@@ -1367,6 +1378,7 @@ function planetmath_profile_set_userpoints_variables () {
 function planetmath_profile_set_misc_variables () {
   dd("Profile- In planetmath_profile_set_misc_variables");
   set_time_limit(0);
+
   // Default "Basic page" to not be promoted and have comments disabled.
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);

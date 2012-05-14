@@ -34,6 +34,9 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
       </div>
     </div>
 
+<br />
+<br />
+
     <div id="front-mid-tabs">    
       <div id="front-left-mid-block-tabs" class="front-left block-tabs">
         <ul>
