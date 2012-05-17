@@ -339,15 +339,6 @@ function planetmath_permissions_user_default_permissions() {
     'module' => 'reroute_email',
   );
 
-  // Exported permission: administer search
-  $permissions['administer search'] = array(
-    'name' => 'administer search',
-    'roles' => array(
-      0 => 'administrator',
-    ),
-    'module' => 'search',
-  );
-
   // Exported permission: administer shadowbox
   $permissions['administer shadowbox'] = array(
     'name' => 'administer shadowbox',
@@ -500,6 +491,28 @@ function planetmath_permissions_user_default_permissions() {
       0 => 'administrator',
     ),
     'module' => 'user',
+  );
+
+  // Exported permission: search content.
+  $permissions['search content'] = array(
+    'name' => 'search content',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'anonymous user',
+      2 => 'authenticated user',
+    ),
+    'module' => 'search',
+  );
+
+  // Exported permission: use advanced search.
+  $permissions['use advanced search'] = array(
+    'name' => 'use advanced search',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'anonymous user',
+      2 => 'authenticated user',
+    ),
+    'module' => 'search',
   );
 
   return $permissions;

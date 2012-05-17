@@ -97,10 +97,22 @@
       </div><!-- /#name-and-slogan -->
     <?php endif; ?>
 
-    <ul id="secondary-menu" class="links inline clearfix"><li class="menu-2 first"><a href="/user">My account</a></li>
-      <li class="menu-3637"><a href="/messages">Messages</a></li>
-      <li class="menu-2344"><a href="/myuserpoints"><?php print planetmath_view_theme_getUserPoints(); ?> points</a></li>
-      <li class="menu-15 last"><a href="/user/logout">Log out</a></li>
+    <ul id="secondary-menu" class="links inline clearfix">
+        <?php $user_menu = menu_navigation_links('user-menu');
+              print theme('links',
+			  array(
+				'links' => $user_menu,
+				'attributes' => array(
+						      'id' => 'user-menu',
+						      'class' => array('links', 'clearfix'),
+						      ),
+				'heading' => array(
+						   'text' => t('User menu'),
+						   'level' => 'h2',
+						   'class' => array('element-invisible'),
+						   ),
+				)); 
+        ?>
     </ul>
 
     <?php print render($page['header']); ?>

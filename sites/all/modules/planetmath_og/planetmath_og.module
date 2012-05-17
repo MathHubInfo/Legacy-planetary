@@ -101,6 +101,7 @@ function planetmath_og_model_addUserToGroup($gid, $uid, $isAdmin = false) {
   ))->execute();
 }
 
+// We should extend this with the ability to create an arbitrary group
 function planetmath_og_menu() {
   $items = array();
   $items['node/%/pmgroup'] = array(
@@ -196,4 +197,29 @@ function planetmath_og_view_requestInvitePage($node, $group) {
 function planetmath_og_user_insert($edit, $account, $category) {
   $gid = planetmath_og_model_getWWGroup();
   planetmath_og_model_addUserToGroup($gid, $account->uid);
+}
+
+// We need to be able to add groups, and we need to be able to add nodes as a subroutine.
+function planetmath_og_node_add_programmatic($type, $title, $uid, $body_text) {
+
+  $node = (object) array("type"=>$type, "title"=>$title, "language"=>LANGUAGE_NONE);
+
+  node_object_prepare($node);
+
+  $node->uid = $uid;
+
+  $node->body[$node->language][0]['value']   = $body_text;
+  $node->body[$node->language][0]['summary'] = text_summary($body_text);
+  $node->body[$node->language][0]['format']  = 'filtered_html';
+
+  node_save($node); // After this call we'll get a nid
+  return $node->nid;
+}
+// Test:
+// node_add_programmatic('group','testing programmatic add for groups again',1,'bla bla woof woof');
+
+// We need to be able to add groups, and we need to be able to add nodes as a subroutine.
+function planetmath_og_group_add_programmatic($name,$userid,$description) {
+  $etid = planetmath_og_node_add_programmatic('group', $name, $userid, $description);
+  return og_get_group('node', $etid, TRUE);
 }

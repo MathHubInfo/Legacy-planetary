@@ -23,36 +23,16 @@
  * Helpers
  */
 
-// We need to be able to add groups, and we need to be able to add nodes as a subroutine.
-function group_migrate_node_add_programmatic($type, $title, $uid, $body_text) {
-
-  $node = (object) array("type"=>$type, "title"=>$title, "language"=>LANGUAGE_NONE);
-
-  node_object_prepare($node);
-
-  $node->uid = $uid;
-
-  $node->body[$node->language][0]['value']   = $body_text;
-  $node->body[$node->language][0]['summary'] = text_summary($body_text);
-  $node->body[$node->language][0]['format']  = 'filtered_html';
-
-  node_save($node); // After this call we'll get a nid
-  return $node->nid;
-}
-// Test:
-// node_add_programmatic('group','testing programmatic add for groups again',1,'bla bla woof woof');
-
-// We need to be able to add groups, and we need to be able to add nodes as a subroutine.
-function group_migrate_group_add_programmatic($name,$userid,$description) {
-  $etid = node_add_programmatic('group', $name, $userid, $description);
-  return og_get_group('node', $etid, TRUE);
-}
 
 // This operation is relatively simple; it assumes that the world writable group is group #1.
 // It also requires that object ids in the old ACL are the same as nids in Drupal (they are).
 function group_migrate_port_world_writable() {
   // Creates world writable group #1 (or change the code to use the correct number)!
-  group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
+  // .. Actually, we will do that step from the profile, so this function can assume
+  // that Group 1 exists and is the World Writable group.
+
+  // planetmath_og_group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
+
   $ww = db_query("SELECT gid FROM {og} where label = 'World Writable'")->fetchField();
 
   $users = db_query("SELECT uid FROM {users} where uid>1");
@@ -91,7 +71,7 @@ function group_migrate_port_planetmath_groups_to_og() {
      
   // OUTER LOOP: create og groups corresponding to the PM groups
   foreach ($res as $record) {
-    $group = group_add_programmatic($record->groupname, $record->userid, $record->description);
+    $group = planetmath_og_group_add_programmatic($record->groupname, $record->userid, $record->description);
      
     // INNER LOOP ONE: for each group, import users belonging to that group
     $users = db_query("SELECT DISTINCT userid FROM {planetmath_group_members} WHERE {planetmath_group_members}.groupid = :groupid", array(':groupid' => $record->groupid));
@@ -131,7 +111,7 @@ function group_migrate_port_coauthors () {
 	
   // OUTER LOOP: create og groups corresponding to the articles
   foreach ($objects as $object) {
-    $group = group_add_programmatic('Editing Group for ' . $object->name, $object->userid, 'Coauthors for ' . $record->title);
+    $group = planetmath_og_group_add_programmatic('Editing Group for ' . $object->name, $object->userid, 'Coauthors for ' . $record->title);
 	
     // INNER LOOP: for each group, import users belonging to that group
     $users = db_query("SELECT DISTINCT subjectid FROM {planetmath_acl} WHERE {planetmath_acl}.objectid = :objectid", array(':objectid' => $object->objectid));

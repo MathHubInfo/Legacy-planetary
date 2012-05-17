@@ -376,6 +376,19 @@ function planetmath_menus_menu_default_menu_links() {
   /*   'weight' => '-44', */
   /* ); */
 
+  // NB if it is desired, add this stuff in
+/* features[menu_links][] = "menu-main-menu:<front>" */
+/* features[menu_links][] = "menu-main-menu:aggregator" */
+/* features[menu_links][] = "menu-main-menu:articles" */
+/* features[menu_links][] = "menu-main-menu:corrections" */
+/* features[menu_links][] = "menu-main-menu:forum" */
+/* features[menu_links][] = "menu-main-menu:gallery" */
+/* features[menu_links][] = "menu-main-menu:node/add/article" */
+/* features[menu_links][] = "menu-main-menu:node/add/image" */
+/* features[menu_links][] = "menu-main-menu:poll" */
+/* features[menu_links][] = "menu-main-menu:squery" */
+/* features[menu_links][] = "menu-main-menu:userpoints" */
+
   // Exported menu link: management:admin
   $menu_links['management:admin'] = array(
     'menu_name' => 'management',
@@ -796,8 +809,92 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '0',
   );
+
+  // Exported menu link: user-menu:user
+  $menu_links['user-menu:user'] = array(
+    'menu_name' => 'user-menu',
+    'link_path' => 'user',
+    'router_path' => 'user',
+    'link_title' => 'User account',
+    // used to say   'alter' => TRUE,
+    // but I don't know what that means
+    'options' => array(
+		       'attributes' => array(
+					     'title' => 'Your profile.',
+					     ),
+		       ),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '1',
+    'expanded' => '0',
+    'weight' => '-10',
+  );
+  // Exported menu link: user-menu:user/logout
+  $menu_links['user-menu:user/logout'] = array(
+    'menu_name' => 'user-menu',
+    'link_path' => 'user/logout',
+    'router_path' => 'user/logout',
+    'link_title' => 'Log out',
+    'options' => array(),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '10',
+  );
+  // Exported menu link: user-menu:user/watcher
+  $menu_links['user-menu:user/watcher'] = array(
+    'menu_name' => 'user-menu',
+    'link_path' => 'user/watcher',
+    'router_path' => 'user/watcher',
+    'link_title' => 'Watches',
+    'options' => array(),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+    'parent_path' => 'user',
+  );
+  // Exported menu link: user-menu:messages
+  $menu_links['user-menu:messages'] = array(
+    'menu_name' => 'user-menu',
+    'link_path' => 'messages',
+    'router_path' => 'messages',
+    'link_title' => 'Messages',
+    'options' => array(),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
+  // Exported menu link: user-menu:myuserpoints
+  $menu_links['user-menu:myuserpoints'] = array(
+    'menu_name' => 'user-menu',
+    'link_path' => 'myuserpoints',
+    'router_path' => 'myuserpoints',
+    'link_title' => 'My !points',
+    'options' => array(),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '1',
+    'expanded' => '0',
+    'weight' => '0',
+  );
+
   // Translatables
   // Included for use with string extractors like potx.
+  t('Log out');
+  t('Messages');
+  t('My !points');
+  t('User account');
+  t('Watches');
   t('Add article');
   t('Add content');
   t('Add image');
