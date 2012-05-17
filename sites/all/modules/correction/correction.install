@@ -1,200 +1,152 @@
 <?php
 
-/**
- * Provides functionality for correction content type
- * @author Alex Dumitru alex@flanche.net
- * @package Other
- * @version 7.x-1.0-alpha
- */
-
-// Um, now this node type isn't even getting created...
-function corrections_install() {
-  dd("In corrections_install");
-
-  $correctionNodeType = (object) array(
-              'type' => 'correction',
-              'name' => 'Correction',
-              'base' => 'node_content',
-              'module' => 'node',
-              'description' => t(''),
-              'has_title' => 1,
-              'custom' => false,
-              'modified' => false,
-              'locked' => 1,
-              'disabled' => 0,
-              'orig_type' => 'correction'
+function correction_install() {
+  // get the translation function relevant to our current localisation
+  $t = get_t();
+  // define the content type as an array (same as in hook_node_info())
+  $correction = array(
+    'type' => 'correction',
+    'name' => $t('Correction'),
+    'base' => 'node_content',
+    'description' => $t('Content type to handle corrections.'),
+    'body_label' => $t('Correction Description'),
+    'promote' => 0,
+    'status' => 1,
+    'comment' => 0,
   );
 
-  node_type_save($correctionNodeType);
-  // Maybe should be a LaTeX field instead of a body
-  node_add_body_field($correctionNodeType);
+  // set default values for anything not explicitly defined in the above array
+  $content_type = node_type_set_defaults($correction);
 
-  // Add some custom fields
-  $newfield=array(
-                  'field_name' => 'field_correction_accepted',
-                  'type' => 'boolean'
-                  );
-  field_create_field($newfield);
-  $newfield_instance=array(
-                           'field_name' => 'field_correction_accepted',
-                           'entity_type' => 'node',
-                           'bundle' => 'correction',
-                           'label' => t('Accepted'),
-                           'description' => t("Whether or not this correction was accepted."),
-                           'widget' => array(
-                                             'type' => 'options_onoff'
-                                             )
-                           );
-  field_create_instance($newfield_instance);
+  // add the body field to the content type
+  node_add_body_field($content_type, 'Body');
 
-  $newfield=array(
-                  'field_name' => 'field_correction_closed',
-                  'type' => 'boolean'
-                  );
-  field_create_field($newfield);
-  $newfield_instance=array(
-                           'field_name' => 'field_correction_closed',
-                           'entity_type' => 'node',
-                           'bundle' => 'correction',
-                           'label' => t('Close'),
-                           'description' => t("The current status of this correction."),
-                           'widget' => array(
-                                             'type' => 'options_onoff'
-                                             )
-                           );
-  field_create_instance($newfield_instance);
+  // create the content type
+  node_type_save($content_type);
 
-  $newfield=array(
-                  'field_name' => 'field_correction_article',
-                  'type' => 'node_reference_default'
-                  );
-  field_create_field($newfield);
-  $newfield_instance=array(
-                           'field_name' => 'field_correction_article',
-                           'entity_type' => 'node',
-                           'bundle' => 'correction',
-                           'label' => t('Close'),
-                           'description' => t('The article this correction applies to'),
-                           'widget' => array(
-                                             'type' => 'options_select'
-                                             )
-                           );
-  field_create_instance($newfield_instance);
+  // Create all the fields we are adding to our content type.
+  // http://api.drupal.org/api/function/field_create_field/7
+  foreach (_correction_installed_fields() as $field) {
+    field_create_field($field);
+  }
 
-  $newfield=array(
-                  'field_name' => 'field_correction_type',
-                  'type' => 'list_text'
-                  );
-  field_create_field($newfield);
-  $newfield_instance=array(
-                           'field_name' => 'field_correction_type',
-                           'entity_type' => 'node',
-                           'bundle' => 'correction',
-                           'label' => t('Type'),
-                           'description' => t("This correction's type."),
-                           'widget' => array(
-                                             'type' => 'options_select'
-                                             )
-                           );
-  field_create_instance($newfield_instance);
+  // Create all the instances for our fields.
+  // http://api.drupal.org/api/function/field_create_instance/7
+  foreach (_correction_installed_instances() as $instance) {
+    $instance['entity_type'] = 'node';
+    $instance['bundle'] = 'correction';
+    field_create_instance($instance);
+  }
 
-  node_types_rebuild();
-  menu_rebuild();
 }
 
-// Something like this may be needed in addition to what we did above to create
-// the field
-function correction_field_schema($field) {
-  if ($field['name']=='field_correction_type') {
-    return array(
-		 'columns' => array(
-				    'type_value' => array(
-							  'description' => 'Interesting...',
-							  'type' => 'varchar',
-							  'size' => '255',
-							  'not null' => FALSE,
-							  ),
-				    ));
-  } else if ($field['name']=='field_correction_article') {
-    return array(
-		 'columns' => array(
-				    'article_nid' => array(
-							   'description' => 'Interesting...',
-							   'type' => 'int',
-							   'size' => '10',
-							   'not null' => FALSE,
-							   ),
-				    ));
-  } else if ($field['name']=='field_correction_accepted') {
-    return array (
-		  'columns'=> array (
-				     'accepted_value' => array(
-							       'description' => 'Interesting...',
-							       'type' => 'int',
-							       'size' => '10',
-							       'not null' => FALSE,
-							       )
-				     )
-		  );
-      } else if ($field['name']=='field_correction_closed') 
-    {
-      return array (
-		    'columns'=> array (
-				       'closed_value' => array(
-							       'description' => 'Interesting...',
-							       'type' => 'int',
-							       'size' => '10',
-							       'not null' => FALSE,
-							       ),
-				       )
-		    );
-    }
-}
-
-
-function correction_schema() {
-  $schema['migrate_map_pmcorrections'] = array(
-      'description' => 'Table base for mapping legacy corrections to drupal corrections',
-      'fields' => array(
-          'sourceid1' => array(
-              'type' => 'int',
-              'unsigned' => true,
-              'not null' => true
-          ),
-          'destid1' => array(
-              'type' => 'int',
-              'unsigned' => true,
-              'not null' => true
-          ),
-          'needs_update' => array(
-              'type' => 'int',
-              'size' => 'tiny',
-              'unsigned' => true,
-              'not null' => true              
-          ),
-          'last_imported' => array(
-              'type' => 'int',
-              'size' => 'big',
-              'unsigned' => true,
-              'not null' => true                            
-          )
+// NEED
+// field_revision_field_correction_article  
+// field_revision_field_correction_accepted 
+// field_revision_field_correction_closed   
+// field_revision_field_correction_type
+function _correction_installed_fields() {
+  $t = get_t();
+  $fields = array(
+    'field_correction_article' => array(
+      'field_name'  => 'field_correction_article',
+      'label'       => $t('Reference to the article this correction is about'),
+      'cardinality' => 1,
+      'type'        => 'node_reference',
+      'settings'    => array(
+        'referenceable_types'  => array('article'),
       ),
-      'primary key' => array(
-          'sourceid1',
-          'destid1'
-      )
+    ),
+    'field_correction_accepted' => array(
+      'field_name'  => 'field_correction_accepted',
+      'label'       => $t('Status of the article (was it accepted)'),
+      'cardinality' => 1,
+      'type'        => 'boolean',
+    ),
+    'field_correction_closed' => array(
+      'field_name'  => 'field_correction_closed',
+      'label'       => $t('Status of the article (is it still pending)'),
+      'cardinality' => 1,
+      'type'        => 'boolean',
+    ),
+    'field_correction_type' => array(
+      'field_name'  => 'field_correction_type',
+      'label'       => $t('What kind of correction is this'),
+      'cardinality' => 1,
+      'type'        => 'list_text',
+    ),
   );
-  return $schema;
+  return $fields;
 }
 
-function correction_uninstall () {
-  field_delete_field('field_correction_article');
-  field_delete_field('field_correction_accepted');
-  field_delete_field('field_correction_closed');
-  db_drop_table("field_data_field_correction_closed");
-  db_drop_table("field_revision_field_correction_closed");
-  db_drop_table("field_data_field_correction_accepted");
-  db_drop_table("field_revision_field_correction_accepted");
-  db_drop_table("field_data_field_correction_article");
-  db_drop_table("field_revision_field_correction_article");
+function _correction_installed_instances() {
+  $t = get_t();
+  $instances = array(
+    'field_correction_article' => array(
+      'field_name'  => 'field_correction_article',
+      'label'       => $t('Reference to the article this correction is about'),
+      'cardinality' => 1,
+      'widget'      => array(
+        'type'          => 'node_reference_autocomplete',
+      ),
+    ),
+    'field_correction_accepted' => array(
+      'field_name'  => 'field_correction_accepted',
+      'label'       => $t('Status of the article (was it accepted)'),
+      'cardinality' => 1,
+      'widget'      => array(
+        'type'          => 'options_onoff',
+      )
+    ),
+    'field_correction_closed' => array(
+      'field_name'  => 'field_correction_closed',
+      'label'       => $t('Status of the article (is it still pending)'),
+      'cardinality' => 1,
+      'widget'      => array(
+        'type'          => 'options_onoff',
+      )
+    ),
+    'field_correction_type' => array(
+      'field_name'  => 'field_correction_type',
+      'label'       => $t('What kind of correction is this'),
+      'cardinality' => 1,
+      'widget'      => array(
+	'type'          => 'options_select',
+      )
+    ),
+  );
+  return $instances;
+}
+
+
+function correction_uninstall() {
+  // Gather all the example content that might have been created while this
+  // module was enabled.  Simple selects still use db_query().
+  // http://api.drupal.org/api/function/db_query/7
+  $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
+  $result = db_query($sql, array(':type' => 'correction'));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+
+  // Delete all the nodes at once
+  // http://api.drupal.org/api/function/node_delete_multiple/7
+  node_delete_multiple($nids);
+
+
+  // Loop over each of the fields defined by this module and delete
+  // all instances of the field, their data, and the field itself.
+  // http://api.drupal.org/api/function/field_delete_field/7
+  foreach (array_keys(_correction_installed_fields()) as $field) {
+    field_delete_field($field);
+  }
+
+  // Delete our content type
+  // http://api.drupal.org/api/function/node_type_delete/7
+  node_type_delete('correction');
+
+  // Purge all field information
+  // http://api.drupal.org/api/function/field_purge_batch/7
+  field_purge_batch(1000);
 }
