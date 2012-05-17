@@ -82,15 +82,22 @@
  * Implements hook_install_tasks
  */
 function planetmath_install_tasks($install_state) {
-  $tasks = array('my_1st_task' => array(
-                                        'display_name' => st('Your first task is to patch the core.'),
+  $tasks = array('my_0th_task' => array(
+                                        'display_name' => st('Create Full Html format.'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'planetmath_profile_create_full_html_format',
+                                        ),
+		 'my_1st_task' => array(
+                                        'display_name' => st('Patch the core.'),
                                         'display' => TRUE,
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_patch_core',
                                         ),
                  'my_2nd_task' => array(
-                                        'display_name' => st('Your second task is to create 17 forums.'),
+                                        'display_name' => st('Create 17 forums.'),
                                         'display' => TRUE,
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
@@ -199,6 +206,36 @@ function planetmath_install_tasks($install_state) {
   return $tasks;
 }
 
+// This is useful for "internal" needs, we may or may not need to expose it to the user
+// We could use PHP format everywhere instead but that might confuse people.  This seems
+// a little cleaner.
+function planetmath_profile_create_full_html_format() {
+  $full_html_format = array(
+    'format' => 'full_html', 
+    'name' => 'Full HTML', 
+    'weight' => 1, 
+    'filters' => array(
+      // URL filter.
+      'filter_url' => array(
+        'weight' => 0, 
+        'status' => 1,
+      ),
+      // Line break filter. 
+      'filter_autop' => array(
+        'weight' => 1, 
+        'status' => 1,
+      ),
+      // HTML corrector filter. 
+      'filter_htmlcorrector' => array(
+        'weight' => 10, 
+        'status' => 1,
+      ),
+    ),
+  );
+  $full_html_format = (object) $full_html_format;
+  filter_format_save($full_html_format);
+}
+
 function planetmath_profile_patch_core() {
   module_enable('devel');
   dd('In planetmath_profile_patch_core');
@@ -233,7 +270,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 1");
   $edit = array(
 		'name' => t('High School/Secondary'),
-		'description' => 'CHANGE THIS',
+		'description' => 'For discussing questions from any discipline at high school/secondary school level.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight'=> 1
@@ -244,7 +281,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 2");
   $edit = array(
 		'name' => t('University/Tertiary'),
-		'description' => 'CHANGE THIS',
+		'description' => 'Questions from any subject, at the university/tertiary/4-year college level.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 2,
@@ -255,7 +292,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 3");
   $edit = array(
 		'name' => t('Industry/Practice'),
-		'description' => 'CHANGE THIS',
+		'description' => 'Questions arising from real-world applications.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 3,
@@ -266,7 +303,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 4");
   $edit = array(
 		'name' => t('Graduate/Advanced'),
-		'description' => 'CHANGE THIS',
+		'description' => 'Questions aimed at the post- or advanced undergrad level.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 4,
@@ -277,7 +314,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 5");
   $edit = array(
 		'name' => t('Research Topics'),
-		'description' => 'CHANGE THIS',
+		'description' => 'Questions at the active research level.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 5,
@@ -288,7 +325,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 6");
   $edit = array(
 		'name' => t('The Math Pub'),
-		'description' => 'CHANGE THIS',
+		'description' => "A catch-all discussion area; for math news and current events, discussion of philosophy of mathematics, math and society, and in general the kind of casual banter you'd find in an appropriately nerdy watering hole.",
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 6,
@@ -299,7 +336,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 7");
   $edit = array(
 		'name' => t('Math Competitions'),
-		'description' => 'CHANGE THIS',
+		'description' => 'For discussing problems from mathematics competitions.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 7,
@@ -310,7 +347,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 8");
   $edit = array(
 		'name' => t('Math History'),
-		'description' => 'CHANGE THIS',
+		'description' => 'Discussion of the history of mathematics.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 8,
@@ -321,7 +358,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 9");
   $edit = array(
 		'name' => t('Math Humor'),
-		'description' => 'CHANGE THIS',
+		'description' => 'The zingiest of zingers...',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 9,
@@ -332,7 +369,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 10");
   $edit = array(
 		'name' => t('LaTeX help'),
-		'description' => 'CHANGE THIS',
+		'description' => 'This is the place for asking TeX/LaTeX questions in regards to writing PlanetMath entries.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 10,
@@ -343,7 +380,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 11");
   $edit = array(
 		'name' => t('PlanetMath help'),
-		'description' => 'CHANGE THIS',
+		'description' => 'This is the place to get assistance with tasks on PlanetMath.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 11,
@@ -351,10 +388,11 @@ function planetmath_profile_forum_creator() {
   $term = (object) $edit;
   taxonomy_term_save($term);
 
+  // check the order of forum 11 and 12...
   dd("creating Forum 12");
   $edit = array(
 		'name' => t('PlanetMath Comments'),
-		'description' => 'CHANGE THIS',
+		'description' => 'Talk about the web site itself here; comments, suggestions, complaints.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 12,
@@ -365,7 +403,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 13");
   $edit = array(
 		'name' => t('PlanetMath.ORG'),
-		'description' => 'CHANGE THIS',
+		'description' => 'Official chatter for the PlanetMath nonprofit organization, including discussion with and regarding the board and official business.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 13,
@@ -376,7 +414,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 14");
   $edit = array(
 		'name' => t('PlanetMath System Updates and News'),
-		'description' => 'CHANGE THIS',
+		'description' => 'Site news and updates not major enough for the main page.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 14,
@@ -387,7 +425,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 15");
   $edit = array(
 		'name' => t('Strategic Communications Development'),
-		'description' => 'CHANGE THIS',
+		'description' => 'Discuss strategic communications development for PlanetMath.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 15,
@@ -398,7 +436,7 @@ function planetmath_profile_forum_creator() {
   dd("creating Forum 16");
   $edit = array(
 		'name' => t('Testing messages (ignore)'),
-		'description' => 'CHANGE THIS',
+		'description' => 'This forum is for testing of message functionality.',
 		'parent' => array(0),
 		'vid' => 1,
 		'weight' => 16,
@@ -531,6 +569,9 @@ function planetmath_profile_group_creator () {
 //   admin/config/content/formats/tex_editor
 // to specify their LaTeXML daemon URL if they don't want to use the default.
 // (That could be changed and added to this configuration script.)
+
+// TODO  LaTeX field needs to be turned on for articles, problems, solutions...
+// and maybe some other content types.
 
 function planetmath_profile_drutexml_configuration() {
   dd("Profile- In planetmath_profile_drutexml_configuration");
@@ -677,65 +718,108 @@ function planetmath_profile_configure_node_types () {
   // Insert default pre-defined node types into the database. For a complete
   // list of available node type attributes, refer to the node type API
   // documentation at: http://api.drupal.org/api/HEAD/function/hook_node_info.
-  $types = array(
-    array(
-      'type' => 'page',
-      'name' => st('Basic page'),
-      'base' => 'node_content',
-      'description' => st("Use <em>basic pages</em> for your static content, like the 'About us' page."),
-      'custom' => 1,
-      'modified' => 1,
-      'locked' => 0,
-    ),
-    array(
-      'type' => 'article',
-      'name' => st('Article'),
-      'base' => 'node_content',
-      'description' => st('Use <em>articles</em> for encyclopedia content.'),
-      'custom' => 1,
-      'modified' => 1,
-      'locked' => 0,
-    ),
-    array(
-      'type' => 'news',
-      'name' => st('News'),
-      'base' => 'node_content',
-      'description' => st('Use <em>news</em> for updates on site, organization, or community activity.'),
-      'custom' => 1,
-      'modified' => 1,
-      'locked' => 0,
-    ),
-  );
 
-  foreach ($types as $type) {
-    $type = node_type_set_defaults($type);
-    node_type_save($type);
-    // Note: this is NOT what I want for articles, where in fact I actually want to remove the body field!
-    node_add_body_field($type);
-  }
+  // We treat articles slightly differently (they don't get a body field).
+  $articleDefaults = node_type_set_defaults(array(
+						  'type' => 'article',
+						  'name' => st('Article'),
+						  'base' => 'node_content',
+						  'description' => st('Use <em>articles</em> for encyclopedia content.'),
+						  'custom' => 1,
+						  'modified' => 1,
+						  'locked' => 0,
+						  ));
+  node_type_save($articleDefaults);
 
-  // DON'T NEED TO ADD ANY ADDITIONAL FIELDS HERE, IF IT IS DONE IN A FEATURE...
+  $pageDefaults = node_type_set_defaults(array(
+					       'type' => 'page',
+					       'name' => st('Basic page'),
+					       'base' => 'node_content',
+					       'description' => st("Use <em>basic pages</em> for your static content, like the 'About us' page."),
+					       'custom' => 1,
+					       'modified' => 1,
+					       'locked' => 0,
+					       ));
+  node_type_save($pageDefaults);
+  node_add_body_field($pageDefaults);
 
-  //  planetmath_profile_docreate_field('field_canonicalname'   , 'article' ,'CanonicalName');
-  // planetmath_profile_docreate_field('field_revisioncomment' , 'article' ,'Revision Comment');
-  // planetmath_profile_docreate_field('field_msc'             , 'article' ,'MSC');
-  // planetmath_profile_docreate_field('field_mathtype'        , 'article' ,'Type of Math Ojbect');
-  // planetmath_profile_docreate_field('field_defines'         , 'article' ,'Defines');
-  // planetmath_profile_docreate_field('field_keywords'        , 'article' ,'Keywords');
-  // planetmath_profile_docreate_field('field_parent'          , 'article' ,'Parent');
-  // planetmath_profile_docreate_field('field_related'         , 'article' ,'Related');
-  // planetmath_profile_docreate_field('field_timecreated'     , 'article' ,'Time Created');
-  // planetmath_profile_docreate_field('field_synonym'         , 'article' ,'Synonym');
+  $newsDefaults = node_type_set_defaults(array(
+					       'type' => 'news',
+					       'name' => st('News'),
+					       'base' => 'node_content',
+					       'description' => st('Use <em>news</em> for updates on site, organization, or community activity.'),
+					       'custom' => 1,
+					       'modified' => 1,
+					       'locked' => 0,
+					       ));
+  node_type_save($newsDefaults);
+  node_add_body_field($newsDefaults);
+
+ /* NOTE: This part would ideally be done in the module itself
+    to make the module self-contained. */
+
+  $imageDefaults = node_type_set_defaults(array(
+						'type' => 'image',
+						'name' => st('Image'),
+						'base' => 'node_content',
+						'description' => st('Use <em>images</em> in the gallery.'),
+						'custom' => 1,
+						'modified' => 1,
+						'locked' => 0,
+					       ));
+
+  node_type_save($imageDefaults);
+
+  $newfield=array(
+                  'field_name' => 'gallery_image',
+                  'type' => 'image'
+                  );
+  field_create_field($newfield);
+  $newfield_instance=array(
+                           'field_name' => 'gallery_image',
+                           'entity_type' => 'node',
+                           'bundle' => 'image',
+                           'label' => t('Image'),
+                           'description' => t('The image'),
+                           'widget' => array(
+                                             'type' => 'image_image'
+                                             )
+                           );
+  field_create_instance($newfield_instance);
+
+  // Note also: In the future we should find a way to maintain a list of multiple
+  // places where images are used.  Probably this will be done with Virtuoso.
+  // In which case, we may not need this field in the future.
+  $newfield=array(
+                  'field_name' => 'obj_cname',
+                  'type' => 'text'
+                  );
+  field_create_field($newfield);
+  $newfield_instance=array(
+                           'field_name' => 'obj_cname',
+                           'entity_type' => 'node',
+                           'bundle' => 'image',
+                           'label' => t('Object Canonical Name'),
+                           'description' => t('First article where this image is used'),
+                           'widget' => array(
+                                             'type' => 'text_textfield'
+                                             )
+                           );
+  field_create_instance($newfield_instance);
+
   return NULL;
 }
 
 
-
+// sets up a world writable group as Group #1
+// it is created by and owned by user 1
+// (Other modules will maintain the membership of this group.)
 function planetmath_profile_configure_groups () {
   dd("Profile- In planetmath_profile_configure_groups");
   set_time_limit(0);
-  // Potentially not needed - groups are being imported in the migration step,
-  // and configuration MAY be automatic and/or provided by a feature (QUITE UNLIKELY).
+
+  planetmath_og_group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
+
   return NULL;
 }
 
@@ -1067,7 +1151,7 @@ function planetmath_profile_configure_blocks () {
                         'theme' => $admin_theme,
                         'status' => 1,
                         'weight' => 10,
-                        'region' => 'content',
+                        'region' => 'header',
                         'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,

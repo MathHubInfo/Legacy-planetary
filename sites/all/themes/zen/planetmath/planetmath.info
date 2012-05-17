@@ -108,6 +108,7 @@ features[] = node_user_picture
 features[] = comment_user_picture
 features[] = favicon
 features[] = main_menu
+features[] = user_menu
 features[] = secondary_menu
 
 
