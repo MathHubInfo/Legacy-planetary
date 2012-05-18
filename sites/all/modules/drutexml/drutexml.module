@@ -67,7 +67,7 @@ function drutexml_filter_info() {
     'process callback' => '_drutexml_filter_latex_process',
     'default settings' => array(
       'latexml_url' => 'http://latexml.mathweb.org/convert',
-      'latexml_preamable' => '',
+      'latexml_preamble' => '',
     ),
     'cache' => TRUE,
     'settings callback' => '_drutexml_filter_latex_settings',
@@ -173,6 +173,8 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   $m = preg_match($hasPreamble, $text, $matches);
   
   global $latex_preamble;
+  global $latex_metadata;
+
   if ($m > 0) {
 	$preamble = $matches[1];
 	$text = $matches[2];	
@@ -180,19 +182,35 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   if (isset($latex_preamble) && strlen($latex_preamble) > 0) {
   		$preamble = $latex_preamble;
   } else
+    {
      	$preamble = $filter->settings['latexml_preamble'];
+    }
+
+  if (isset($latex_metadata) && strlen($latex_metadata) > 0) {
+  		$metadata = $latex_metadata;
+  } else
+    {
+     	$metadata = "%BEGIN METADATA BLOCK
+%END METADATA BLOCK";
+    }
   
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
   
+
   $data = 'profile=planetmath&tex=' . urlencode($text);
-  if ($preamble) { $data .= "&preamble=" . urlencode($preamble) . urlencode('\begin{document}'); }
-  
+  if ($preamble||$metadata) {
+  if ($preamble) {
+    // $data .= "&preload=" . urlencode($preamble . "\n") . urlencode($metadata);
+    $data .= "&preamble=" . urlencode($preamble) . urlencode($metadata). urlencode('\begin{document}'); }
 
+  }
+  
+   dd("Newconfig article edit...".$preamble."\n%%Article metadata:\n".$metadata."\n%%Document content:\n".$text);
+  // dd("Newconfig article edit...");
+  dd("Data: ".$data);
   $content = do_post($host,$data);
-
-  //drupal_set_message($data);
-  //dd($data);
-  
+  // dd($data);
+  //dd("++++ ".$content);
 //dpm($content);
 $res = json_decode($content);
 

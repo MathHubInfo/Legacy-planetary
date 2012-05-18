@@ -113,7 +113,11 @@ dependencies[] = wysiwyg_codemirror
 dependencies[] = wysiwyg_etherpad_lite
 
 ;; features
-;dependencies[] = planetmath_permissions
+;; Apparently we cannot load permissions unless they are required via this dependency,
+;; but when we put this here, the feature loads early in the sequence.
+;; This is resolved by dealing with permissions in a very different way in the profile
+;; itself.
+; dependencies[] = planetmath_permissions
 dependencies[] = planetmath_views
 dependencies[] = planetmath_menus
 
