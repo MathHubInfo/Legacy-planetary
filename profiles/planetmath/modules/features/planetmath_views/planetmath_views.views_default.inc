@@ -375,7 +375,7 @@ else if (!$field_correction_closed){
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
-  $handler->display->display_options['path'] = 'corrections-old';
+  $handler->display->display_options['path'] = 'corrections';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Corrections';
   $handler->display->display_options['menu']['description'] = 'Corrections to articles';
