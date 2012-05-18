@@ -493,6 +493,27 @@ function planetmath_permissions_user_default_permissions() {
     'module' => 'user',
   );
 
+  // NOTE even though this is here, it doesn't seem to get loaded
+  // properly when I run through the installation profile.
+  // Setting permission by hand makes things work well.
+  // Maybe to do with the error I get..
+  // " The block Search form was assigned to the invalid region header
+  // and has been disabled.
+  // " The block User login was assigned to the invalid region header
+  // and has been disabled.
+  //
+
+  ///dd("Running search permission add");
+
+  // Exported permission: administer search.
+  $permissions['administer search'] = array(
+    'name' => 'search content',
+    'roles' => array(
+      0 => 'administrator'
+    ),
+    'module' => 'search',
+  );
+
   // Exported permission: search content.
   $permissions['search content'] = array(
     'name' => 'search content',
