@@ -167,13 +167,7 @@ function planetmath_install_tasks($install_state) {
                                         'function' => 'planetmath_profile_set_misc_variables',
                                         ),
 
-                 'my_12th_task' => array(
-                                        'display_name' => st('Configure permissions'),
-                                        'display' => TRUE,
-                                        'type' => 'normal',
-                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'planetmath_profile_setup_permissions',
-                                        ),
+
                  /* 'my_13th_task' => array( */
                  /*                        'display_name' => st('Configure Menus'), */
                  /*                        'display' => TRUE, */
@@ -194,6 +188,13 @@ function planetmath_install_tasks($install_state) {
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_configure_blocks',
+                                        ),
+                 'my_12th_task' => array(
+                                        'display_name' => st('Configure permissions'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'planetmath_profile_setup_permissions',
                                         ),
                  /* 'my_3rd_task' => array( */
                  /*                        'display_name' => st('Run the migrations to import legacy data.'), */
@@ -444,7 +445,6 @@ function planetmath_profile_forum_creator() {
   $term = (object) $edit;
   taxonomy_term_save($term);
 
-  dd("Returning NULL");
   return NULL;
 }
 
@@ -576,9 +576,10 @@ function planetmath_profile_group_creator () {
 function planetmath_profile_drutexml_configuration() {
   dd("Profile- In planetmath_profile_drutexml_configuration");
   set_time_limit(0);
-  module_enable('drutexml');
+  //module_enable('drutexml');
 
-  // create a LaTeX-filter-enabled content type; name it "TeX Editor"
+  // create a LaTeX-filter-enabled Content Type (AKA Text format) --
+  // name it "TeX Editor"
   $tex_format = array(
                         'format' => 'tex_editor',
                         'name' => 'TeX Editor',
@@ -591,7 +592,26 @@ function planetmath_profile_drutexml_configuration() {
   $tex_format = (object) $tex_format;
   filter_format_save($tex_format);
 
-  // select CodeMirror as the TeX Editor modality, and set it up for editing "stex" content
+  // Indicate that the TeX Editor text format should enable the "latex" filter format
+  // with the default settings
+
+  db_merge('filter')
+    ->key(array('format'=> 'tex_editor', 'name'=> 'latex'))
+    ->fields(array(
+      'format' => 'tex_editor',
+      'module' => 'drutexml',
+      'name' => 'latex',
+      'weight' => 0,
+      'status' => 1,
+      'settings' => serialize(array (
+			       'latexml_url' => 'http://latexml.mathweb.org/convert',
+   			       'latexml_preamble' => '%none for now',
+				     )
+			      )))
+    ->execute();
+
+  // select CodeMirror as the TeX Editor modality,
+  // and set it up for editing "stex" content
   $vals = array(
       'default' => 1,
       'user_choose' => 0,
@@ -623,10 +643,13 @@ function planetmath_profile_drutexml_configuration() {
 
   $query = db_merge('wysiwyg')
            ->key(array('format'=> 'tex_editor'))
-           ->fields(array('format'=>'tex_editor', 'editor'=>'codemirror2', 'settings' => serialize($vals)))
+           ->fields(array('format'=>'tex_editor',
+			  'editor'=>'codemirror2',
+			  'settings' => serialize($vals)))
            ->execute();
 
-  // select TeX Editor as the "Filter to be used" for the latex field (and adjust the other settings of that field).
+  // Finally, select TeX Editor as the "Filter to be used" for on a LATEX FIELD
+  // (and adjust the other settings of that field).
 
   $fl = db_query("SELECT * FROM  `field_config_instance` WHERE  `field_name` LIKE  'field_latex' LIMIT 0 , 30")
         ->fetchObject();
@@ -684,6 +707,8 @@ function planetmath_profile_drutexml_configuration() {
                                ));
 
   db_merge('field_config_instance')->key(array('id' => $fl->id))->fields((array)$fl)->execute();
+
+
   return NULL;
 }
 
@@ -1614,6 +1639,7 @@ function planetmath_profile_setup_permissions () {
   $admin_role->name = 'administrator';
   $admin_role->weight = 2;
   user_role_save($admin_role);
+
   user_role_grant_permissions($admin_role->rid,
 			      array_keys(module_invoke_all('permission')));
   // Set this as the administrator role.
@@ -1624,8 +1650,17 @@ function planetmath_profile_setup_permissions () {
     ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
     ->execute();
 
+  //$install_directory = '/home/planetary/drupal_planetary/';
+  //chdir($install_directory);
+
   // planetmath_user_default_permissions();
-  module_enable('planetmath_permissions');
+  dd("ENABLING PERMISSIONS");
+  //dd(shell_exec('drush -y en planetmath_permissions'));
+
+  // Ah, OK this is the way to do it! ('cause this way works)
+  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','use text format tex_editor'));
+
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','cancel account','use text format tex_editor'));
 
   return NULL;
 }
