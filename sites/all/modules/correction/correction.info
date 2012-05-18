@@ -1,4 +1,9 @@
 name = "Correction"
-description = "Provides functionality for correction content type"
+description = "Provides functionality for correction content type, now upgraded so that it installs its own fields out of the box."
 version = "7.x-1.0"
 core = "7.x"
+
+dependencies[] = node_reference
+
+files[] = correction.install
+files[] = correction.module

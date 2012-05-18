@@ -9,6 +9,18 @@
  */
 define("CORRECTION_ATTACH_TYPES", serialize(array('article', 'image')));
 
+function correction_node_info() {
+ return array(
+	      'correction' => array(
+				    'name' => "Correction",
+				    'base' => 'node_content',
+				    'description' => 'Useful for pointing out mistakes in articles.',
+				    'has_title' => '1',
+				    'title_label' => 'Title',
+				    'help' => '',
+				    ));
+}
+
 function correction_model_getAllCorrections($headers) {
   $query = db_select('node', 'n')
           ->fields('n', array('nid', 'title', 'changed'))
