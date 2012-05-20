@@ -2,6 +2,9 @@ name = PlanetMath profile
 description = This file sets up a Drupal installation to look/feel like PlanetMath.
 core = 7.x
 
+;; Note that I have commented out everything related to "migration" which can be
+;; done separately by those who know how!
+
 ;; Standard modules that we need
 ;; Note that some are commented out until I understand better...
 dependencies[] = content_access
@@ -46,8 +49,8 @@ dependencies[] = delete_all
 dependencies[] = devel
 dependencies[] = devel_generate
 dependencies[] = devel_node_access
-dependencies[] = migrate
-dependencies[] = migrate_ui
+; dependencies[] = migrate
+; dependencies[] = migrate_ui
 dependencies[] = reroute_email
 dependencies[] = article_setup
 dependencies[] = features
@@ -56,7 +59,7 @@ dependencies[] = og
 dependencies[] = og_access
 dependencies[] = og_context
 dependencies[] = og_field_access
-dependencies[] = og_migrate
+; dependencies[] = og_migrate
 dependencies[] = og_register
 dependencies[] = og_ui
 dependencies[] = backup_migrate
@@ -100,7 +103,8 @@ dependencies[] = latex_field
 dependencies[] = drutexml
 dependencies[] = mathjax
 dependencies[] = planetary_authorlinks
-dependencies[] = planetmath_rules
+; dependencies[] = planetmath_rules
+dependencies[] = planetmath_og
 dependencies[] = problems
 dependencies[] = tntbase_sfbrowser
 dependencies[] = solutions
@@ -120,12 +124,13 @@ dependencies[] = wysiwyg_etherpad_lite
 ; dependencies[] = planetmath_permissions
 dependencies[] = planetmath_views
 dependencies[] = planetmath_menus
+dependencies[] = organic_groups_content_type
 
 ;; Migration stuff
-dependencies[] = planetmath_migration
-dependencies[] = planetmath_migration_extras
-dependencies[] = image_migrate
-dependencies[] = group_migrate
+; dependencies[] = planetmath_migration
+; dependencies[] = planetmath_migration_extras
+; dependencies[] = image_migrate
+; dependencies[] = group_migrate
 
 ; It would probably be good to change the name of the "planetmath" to something more recognizable, like "planetmath_theme"...
 ; Note that we are not allowed to put a theme name onto the dependency list
