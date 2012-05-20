@@ -607,30 +607,6 @@ else if (!$field_correction_closed){
   );
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
-  // beginning of header stuff for groups
-  /* Header: Global: Text area */
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['label'] = 'AddGroup';
-  $handler->display->display_options['header']['area']['empty'] = FALSE;
-  $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/group">Add new Group</a></li> 
-</ul> ';
-  $handler->display->display_options['header']['area']['format'] = 'full_html';
-  $handler->display->display_options['header']['area']['tokenize'] = 0;
-  /* No results behavior: Global: Text area */
-  $handler->display->display_options['empty']['area']['id'] = 'area';
-  $handler->display->display_options['empty']['area']['table'] = 'views';
-  $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['label'] = 'AddGroup';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
-  $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/group">Add new Group</a></li> 
-</ul> ';
-  $handler->display->display_options['empty']['area']['format'] = 'full_html';
-  $handler->display->display_options['empty']['area']['tokenize'] = 0;
-  // End of header stuff for groups
   /* Relationship: Group: Node group */
   $handler->display->display_options['relationships']['og_rel']['id'] = 'og_rel';
   $handler->display->display_options['relationships']['og_rel']['table'] = 'node';
@@ -695,6 +671,7 @@ else if (!$field_correction_closed){
     'page_1' => 'page_1',
     'default' => 0,
   );
+
   $translatables['og_list'] = array(
     t('Defaults'),
     t('Groups list'),
@@ -714,6 +691,7 @@ else if (!$field_correction_closed){
     t('Page'),
     t('Feed'),
   );
+
   $export['og_list'] = $view;
 
   $view = new view;

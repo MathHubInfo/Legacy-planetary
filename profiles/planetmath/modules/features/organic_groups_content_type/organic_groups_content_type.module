@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the organic groups content type feature.
+ */
+
+include_once('organic_groups_content_type.features.inc');
