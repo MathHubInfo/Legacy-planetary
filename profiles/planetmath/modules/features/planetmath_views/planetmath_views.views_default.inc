@@ -45,6 +45,7 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['header']['area']['empty'] = FALSE;
   $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
  <li><a href="node/add/article">Add new Article</a></li> 
+ <li><a href="msc_browser">View sorted by MSC</a></li> 
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = 0;
@@ -58,9 +59,10 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['label'] = 'AddArticle';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
  <li><a href="node/add/article">Add new Article</a></li> 
+ <li><a href="msc_browser">View sorted by MSC</a></li>
 </ul> ';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   $handler->display->display_options['empty']['area']['tokenize'] = 0;
@@ -236,7 +238,7 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = 'No corrections found.';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   $handler->display->display_options['empty']['area']['tokenize'] = 0;
@@ -510,7 +512,7 @@ else if (!$field_correction_closed){
   $handler->display->display_options['header']['area']['label'] = 'AddImage';
   $handler->display->display_options['header']['area']['empty'] = FALSE;
   $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Image</a></li> 
+ <li><a href="node/add/image">Add new Image</a></li> 
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = 0;
@@ -519,9 +521,9 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['label'] = 'AddImage';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Image</a></li> 
+ <li><a href="node/add/image">Add new Image</a></li> 
 </ul> ';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   $handler->display->display_options['empty']['area']['tokenize'] = 0;
@@ -607,6 +609,16 @@ else if (!$field_correction_closed){
   );
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['label'] = 'AddGroup';
+  $handler->display->display_options['header']['area']['empty'] = TRUE;
+  $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
+ <li><a href="node/add/group">Add new Group</a></li> 
+</ul> ';
+  $handler->display->display_options['header']['area']['format'] = 'full_html';
+  $handler->display->display_options['header']['area']['tokenize'] = 0;
   /* Relationship: Group: Node group */
   $handler->display->display_options['relationships']['og_rel']['id'] = 'og_rel';
   $handler->display->display_options['relationships']['og_rel']['table'] = 'node';
@@ -946,11 +958,11 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['label'] = 'AddProblem';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
  <li><a href="node/add/problem">Add new Problem</a></li> 
 </ul> ';
-  $handler->display->display_options['empty']['area']['format'] = 'full_html';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   $handler->display->display_options['empty']['area']['tokenize'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -1062,11 +1074,11 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['label'] = 'AddSolution';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
  <li><a href="node/add/solution">Add new Solution</a></li> 
 </ul> ';
-  $handler->display->display_options['empty']['area']['format'] = 'full_html';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   $handler->display->display_options['empty']['area']['tokenize'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -1110,11 +1122,11 @@ else if (!$field_correction_closed){
   $handler->display->display_options['path'] = 'solutions';
 
   /* Display: Feed */
-  $handler = $view->new_display('feed', 'Feed', 'problemfeed_1');
+  $handler = $view->new_display('feed', 'Feed', 'solutionfeed_1');
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['style_plugin'] = 'rss';
   $handler->display->display_options['row_plugin'] = 'node_rss';
-  $handler->display->display_options['path'] = 'problems/rss.xml';
+  $handler->display->display_options['path'] = 'solutions/rss.xml';
   $handler->display->display_options['displays'] = array(
     'page' => 'page',
     'default' => 0,
