@@ -1,25 +1,18 @@
 <?php
 
-/**
- * Provides functionality for the correction content type
- * @author Alex Dumitru alex@flanche.net
- * @package Other
- * @version 7.x-1.0-alpha
- * @todo Themeing functionality
- */
-define("CORRECTION_ATTACH_TYPES", serialize(array('article', 'image')));
-
 function correction_node_info() {
  return array(
 	      'correction' => array(
 				    'name' => "Correction",
 				    'base' => 'node_content',
-				    'description' => 'Useful for pointing out mistakes in articles.',
+				    'description' => 'Here for pointing out mistakes.',
 				    'has_title' => '1',
 				    'title_label' => 'Title',
 				    'help' => '',
 				    ));
 }
+
+define("CORRECTION_ATTACH_TYPES", serialize(array('article', 'image')));
 
 function correction_model_getAllCorrections($headers) {
   $query = db_select('node', 'n')
@@ -108,7 +101,7 @@ function correction_menu() {
  * @param $nid The correction's id 
  */
 function correction_accept_correction($nid) {
-  global $user;
+  global $user;  
   $correction = node_load($nid);
   $article = node_load($correction->field_correction_article['und'][0]['nid']);
   if ($article->uid === $user->uid) {
@@ -116,6 +109,17 @@ function correction_accept_correction($nid) {
     $correction->field_correction_closed['und'][0]['value'] = 1;
     node_save($correction);
     drupal_set_message("The correction was accepted");
+    
+    $points_params = array('uid' => $user->uid,
+                            'points' => 10,
+                            'description' => 'Correction has been accepted',
+                            'entity_id' => $nid,
+                            'entity_type' => 'node'
+                    );
+    userpoints_userpointsapi($points_params);
+    
+    drupal_set_message("added 10 points");
+    
   } else {
     drupal_set_message("You can't accept the correction!");
   }
@@ -155,7 +159,7 @@ function correction_form_correction_node_form_alter(&$form, &$form_state, $form_
   $form['field_correction_article']['und']['#value'] = arg(3);
 }
 
-function correction_view_planetaryLinks($node) {
+function correction_add_links($node) {
   $links = array(
       'add-correction' => l('Add correction', 'node/add/correction/' . $node->nid)
   );
@@ -171,11 +175,27 @@ function correction_view_planetaryLinks($node) {
  */
 function correction_node_view($node, $view_mode) {
   if (in_array($node->type, unserialize(CORRECTION_ATTACH_TYPES))) {
+    $newlinks = array();
+    if (isset($node->content['planetary_links'])) {
+      //dd($node->content['planetary_links']);
+	$oldlinks=$node->content['planetary_links']['#links'];
+	//dd($oldlinks,"old");
+	if(!empty($oldlinks)) {
+	  $newlinks=array_merge($oldlinks,correction_add_links($node));
+	} else {
+	  $newlinks = correction_add_links($node);
+	  //  dd($newlinks,"NEW - inner ");
+	}
+    } else {
+      $newlinks = correction_add_links($node);
+      // dd($newlinks,"NEW - outer ");
+    }
+
     $node->content['planetary_links'] = array(
         '#markup' => '',
         '#weight' => 10,
         '#theme' => 'planetary_links',
-        '#links' => correction_view_planetaryLinks($node)
+        '#links' => $newlinks
     );
   }
 

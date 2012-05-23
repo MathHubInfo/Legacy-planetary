@@ -1,10 +1,32 @@
 <?php
 
 /*
- * Problems module
+ * Problem module
  */
 
-function problems_mode_getSolutions($problem) {
+function problem_node_info() {
+ return array(
+	      'problem' => array(
+				    'name' => "Problem",
+				    'base' => 'node_content',
+				    'description' => 'Exercises for learning purposes.',
+				    'has_title' => '1',
+				    'title_label' => 'Title',
+				    'help' => '',
+				    ));
+}
+
+/*
+ *  This almost-empty hook is needed to list the content type?
+ *  Well, that doesn't seem to be working here, though whatever we have going
+ *  for corrections does actually seem to work, I think.
+ */
+function problem_form($node, &$form_state) {
+  $form = array();
+  return $form;
+}
+
+function problem_mode_getSolutions($problem) {
   $query = db_query("SELECT * FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id
     INNER JOIN problem_has_solution phs ON phs.sid = n.nid
@@ -18,7 +40,7 @@ function problems_mode_getSolutions($problem) {
   return $solutions;
 }
 
-function problems_view_getLinks($node) {
+function problem_view_getLinks($node) {
   $links = array(
       'solution-add' => l('Add a new Solution', 'node/add/solution/' . $node->nid),
       'similar-problem' => l('Add a similar Problem', 'node/add/problem')
@@ -26,8 +48,8 @@ function problems_view_getLinks($node) {
   return $links;
 }
 
-function problems_view_renderSolutions($problem){
-  $solutions = problems_mode_getSolutions($problem);
+function problem_view_renderSolutions($problem){
+  $solutions = problem_mode_getSolutions($problem);
   $return = array();
   foreach($solutions as $solution){
     $return[] = l($solution->title, 'node/'.$solution->nid);
@@ -37,10 +59,10 @@ function problems_view_renderSolutions($problem){
   return $out;
 }
 
-function problems_node_view($node){
+function problem_node_view($node){
   if($node->type == 'problem'){
     $node->content['solutions'] = array(
-      '#markup' => problems_view_renderSolutions($node)
+      '#markup' => problem_view_renderSolutions($node)
     );
   }
 }
