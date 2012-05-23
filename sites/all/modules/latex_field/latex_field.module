@@ -61,7 +61,7 @@ function latex_field_field_formatter_view($entity_type, $entity, $field, $instan
 		case 'latex_formatter':
 			foreach ($items as $delta => $item) {
 				$settings = $instance['widget']['settings'];
-				$filter = $settings["filter"];
+				$filter = $item['format'];
 				global $latex_preamble;
 				global $latex_metadata;
 				$latex_preamble = $item['preamble']; 
