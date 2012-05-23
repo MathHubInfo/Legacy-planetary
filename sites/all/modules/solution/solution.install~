@@ -15,7 +15,7 @@ function solutions_install() {
               'orig_type' => 'solution'
   );
   node_type_save($solutionNodeType);
-  node_add_body_field($solutionNodeType);
+  //node_add_body_field($solutionNodeType);
   node_types_rebuild();
   menu_rebuild();
 }

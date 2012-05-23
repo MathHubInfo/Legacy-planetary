@@ -23,7 +23,8 @@ function msc_browser_menu() {
 }
 
 function msc_browser_handler($cat='') {
-  $endpoint = sparql_registry_load_by_uri("http://li311-58.members.linode.com:8890/sparql");
+  //  $endpoint = sparql_registry_load_by_uri("http://li311-58.members.linode.com:8890/sparql");
+  $endpoint = (object) array('uri' => "http://li311-58.members.linode.com:8890/sparql");
   $graph="http://localhost:8890/DAV/home/dba/rdf_sink/";
   $query = "";
   $result ="";

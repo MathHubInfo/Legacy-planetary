@@ -115,11 +115,17 @@ function latex_field_field_widget_form(&$form, &$form_state, $field, $instance, 
 				'#delta' => $delta,
 			);
 			
+			// Would be nice to make this hide/show on demand
 			$element['preamble'] += array(
 				"#title" => "Preamble",
 				"#type" => "textarea",
 				"#default_value" => $preamble,
 			);
+			// try making this "hidden" instead of "textarea"
+			// seems to work fine for display, let's see if it
+			// also works for programmatic setting and getting
+			// of values.  That didn't seem to lead to the results
+			// we want -- nothing shows up!
 			$element['metadata'] += array(
 				"#title" => "Metadata",
 				"#type" => "textarea",
@@ -136,6 +142,7 @@ function latex_field_field_widget_form(&$form, &$form_state, $field, $instance, 
 	return $element;
 }
 
+// Is there a good way to make the metadata stuff run completely selectively?
 function latex_field_validate($element, &$form_state) {
   $delta = $element['#delta']; 
   $field = $form_state['field'][$element['#field_name']][$element['#language']]['field'];
