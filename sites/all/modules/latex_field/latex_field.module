@@ -34,6 +34,16 @@ function latex_field_field_formatter_info() {
 	);
 }
 
+function latex_field_theme($existing, $type, $theme, $path) {
+	return array(
+		"localedit" => array(
+ 			'render element' => 'element', 
+      		'template' => 'localedit',		
+      	)
+	);
+}
+
+
 /**
 * Implements hook_field_formatter_view().
 *
@@ -57,7 +67,7 @@ function latex_field_field_formatter_view($entity_type, $entity, $field, $instan
 				$latex_preamble = $item['preamble']; 
 				$latex_metadata = $item['metadata']; 
 				$fobj = check_markup($item['document'], $filter, $entity->language, true);
-				$element[$delta]['#markup'] = theme("wysiwyg_etherpad_local",
+				$element[$delta]['#markup'] = theme("localedit",
 				array(
 										"content" => $fobj, 
 										"link" => url('<front>')."localedit/".$entity->nid."/".$field["field_name"]));
@@ -94,17 +104,20 @@ function latex_field_field_widget_info() {
 *
 */
 function latex_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+	$settings = $instance['widget']['settings'];
+
 	$code = isset($items[$delta]['document']) ? $items[$delta]['document'] : '';
 	$preamble = isset($items[$delta]['preamble']) ? $items[$delta]['preamble'] : '';
 	$metadata = isset($items[$delta]['metadata']) ? $items[$delta]['metadata'] : '';
+	$format = isset($items[$delta]['format']) ? $items[$delta]['format'] : $settings["filter"];
 	$element += array(
     '#delta' => $delta,
 	);
 	$element['preamble'] = array();
 	$element['metadata'] = array();
 	$element['document'] = array();
+	$element['format'] = array();
 
-	$settings = $instance['widget']['settings'];
 	
 	switch ($instance['widget']['type']) {
 
@@ -135,7 +148,7 @@ function latex_field_field_widget_form(&$form, &$form_state, $field, $instance, 
 				"#title" => "LaTeX",
 				"#type" => "text_format",
 				"#default_value" => $code,
-				"#format" => $settings["filter"],
+				"#format" => $format,
 			);
 		break;
 	}
@@ -153,7 +166,8 @@ function latex_field_validate($element, &$form_state) {
 				   'document' => $values["document"]["value"], 
 				   'value' => $values["document"]["value"], // just to make it work with wysiwyg
 				   'preamble' => $values["preamble"],
-				   'metadata' => $values["metadata"]),
+				   'metadata' => $values["metadata"],
+				   'format' => $values["document"]["format"]),
 		   $form_state
    	);
   }
