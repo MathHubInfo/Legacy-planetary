@@ -962,7 +962,7 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
  <li><a href="node/add/problem">Add new Problem</a></li> 
 </ul> ';
-  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
+  $handler->display->display_options['empty']['area']['format'] = 'full_html';
   $handler->display->display_options['empty']['area']['tokenize'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -1078,7 +1078,7 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
  <li><a href="node/add/solution">Add new Solution</a></li> 
 </ul> ';
-  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
+  $handler->display->display_options['empty']['area']['format'] = 'full_html';
   $handler->display->display_options['empty']['area']['tokenize'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
