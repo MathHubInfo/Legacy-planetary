@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the PlanetMath Encyclopedia feature.
- */
-
-include_once('planetmath_encyclopedia.features.inc');
