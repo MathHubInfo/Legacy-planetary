@@ -1,0 +1,107 @@
+<?php
+
+/*
+ * Reviews module
+ */
+
+function review_menu() {
+    $items = array();
+
+    $items['reviews/add/%'] = array(
+        'title' => 'Attach review',
+        'type' => MENU_CALLBACK,
+        'page callback' => 'review_add_review',
+        'page arguments' => array(1),
+        'access arguments' => array('create correction content')
+    );
+
+    $items['reviews/confirm/%/%'] = array(
+        'title' => 'Confirm attachment',
+        'type' => MENU_CALLBACK,
+        'page callback' => 'review_confirm_review_attachment',
+        'page arguments' => array(2, 3),
+        'access arguments' => array('create correction content')
+    );
+
+
+    return $items;
+}
+
+/*
+ * store in the databse the solution-review binding
+ * and redirect to the solution page
+ */
+
+function review_confirm_review_attachment($nid_of_solution, $nid_of_review) {
+    db_merge('solution_has_review')
+            ->key(array('sid' => $nid_of_solution, 'pid' => $nid_of_review))
+            ->fields(array('sid' => $nid_of_solution, 'pid' => $nid_of_review))
+            ->execute();
+    drupal_set_message('review ' . $nid_of_review . ' is now attached with this solution');
+    drupal_goto('node/' . $nid_of_solution);
+}
+
+// is this compatible with what we were are with the node_insert hook?
+function review_add_review($sid) {
+    drupal_goto('node/add/review');
+}
+
+function review_node_insert($node) {
+    if ($node->type == 'review') {
+        //dest would be an array with a string in the form node/add/review/58579
+        $dest = drupal_get_destination();
+        dd($dest);
+        //we need to extract the numeric
+        preg_match("/node\/add\/review\/([0-9]*)/", $dest['destination'], $matches);
+        dd($matches);
+        if (isset($matches[1])) {
+	  //dd('i am in the block');
+            dd($matches[1]);
+            $solutionID = $matches[1];
+            db_merge('solution_has_review')
+                    ->key(array('sid' =>$solutionID , 'rid' => $node->nid))
+                    ->fields(array('sid' =>$solutionID , 'rid' => $node->nid))
+                    ->execute();
+            drupal_set_message('Review has been submitted to this solution');
+            drupal_goto('node/' . $solutionID);
+        }
+    }
+}
+
+function review_node_view($node) {
+    // for node with type==article
+      dd('HM');
+      dd($node->type);
+    if ($node->type == 'solution') {
+      dd('Looking at a solution node');
+        $newlinks = array();
+        if (isset($node->content['planetary_links'])) {
+            $oldlinks = $node->content['planetary_links']['#links'];
+            if (!empty($oldlinks)) {
+                $newlinks = array_merge($oldlinks, review_add_links($node));
+                //dd($newlinks,"NEW - merge - problem");
+            } else {
+                $newlinks = review_add_links($node);
+                //dd($newlinks,"NEW - inner - problem");
+            }
+        } else {
+            $newlinks = review_add_links($node);
+            //dd($newlinks,"NEW - outer - problem ");
+        }
+
+        dd($newlinks,"In the end. ");
+        $node->content['planetary_links'] = array(
+            '#markup' => '',
+            '#weight' => 10,
+            '#theme' => 'planetary_links',
+            '#links' => $newlinks
+        );
+    }
+}
+
+function review_add_links($node) {
+    $links = array(
+        'attach-review' => l('Submit a review of this solution', 'node/add/review/' . $node->nid)
+    );
+    return $links;
+}
