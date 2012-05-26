@@ -139,10 +139,15 @@ function _drutexml_cache_read($md5) {
 }
 
 function _drutexml_cache_set($md5, $xhtml) {
-	db_insert("drutexml_cache")->fields(array(
+  dd("merging drutexml cache on ".$md5);
+	db_merge("drutexml_cache")
+	  ->key(array("cachemd5" => $md5))
+	  ->fields(array(
 		"cachemd5" => $md5,
 		"xhtml" => $xhtml	
-	))->execute();
+			 )
+		   )
+	  ->execute();
 }
 
 function _drutexml_cache_clear() {
@@ -165,16 +170,21 @@ function _drutexml_filter_reset_cache($form, &$form_state) {
 function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   $key = md5($text);
   $cache = _drutexml_cache_read($key);
-  if (isset($cache)) {
-  	return $cache;
-  }
+  //if (isset($cache)) {
+  //	return $cache;
+  //}
   
+  //dd($text, "received text"); 
   $hasPreamble = '/^([\s\S]*)\\\\begin{document}([\s\S]*)\\\\end{document}([\s\S]*)$/';
   $m = preg_match($hasPreamble, $text, $matches);
   
   global $latex_preamble;
   global $latex_metadata;
 
+  //dd($latex_preamble,"received preamble");
+  //dd($latex_metadata, "received metadata");
+
+  // so it receives the right data
   if ($m > 0) {
 	$preamble = $matches[1];
 	$text = $matches[2];	
@@ -201,17 +211,17 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   if ($preamble||$metadata) {
   if ($preamble) {
     // $data .= "&preload=" . urlencode($preamble . "\n") . urlencode($metadata);
-    $data .= "&preamble=" . urlencode($preamble) . urlencode($metadata). urlencode('\begin{document}'); }
+    $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); }
 
   }
   
-   dd("Newconfig article edit...".$preamble."\n%%Article metadata:\n".$metadata."\n%%Document content:\n".$text);
-  // dd("Newconfig article edit...");
-  dd("Data: ".$data);
+  //dd("Newconfig article edit...".$preamble."\n%%Article metadata:\n".$metadata."\n%%Document content:\n".$text);
+
+  //dd("Data: ".$data);
   $content = do_post($host,$data);
-  // dd($data);
+
   //dd("++++ ".$content);
-//dpm($content);
+
 $res = json_decode($content);
 
 

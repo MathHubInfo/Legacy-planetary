@@ -1,12 +1,12 @@
 <?php
 
-function problem_install() {
+function review_install() {
   // get the translation function relevant to our current localisation
   $t = get_t();
   // define the content type as an array (same as in hook_node_info())
-  $problem = array(
-              'type' => 'problem',
-              'name' => 'Problem',
+  $review = array(
+              'type' => 'review',
+              'name' => 'Review',
               'base' => 'node_content',
               'module' => 'node',
               'description' => t(''),
@@ -18,11 +18,11 @@ function problem_install() {
 	      'promote' => 0,
 	      'status' => 1,
 	      'comment' => 0,
-              'orig_type' => 'problem'
+              'orig_type' => 'review'
   );
 
   // set default values for anything not explicitly defined in the above array
-  $content_type = node_type_set_defaults($problem);
+  $content_type = node_type_set_defaults($review);
 
   // add the body field to the content type - actually we don't want this here
   // node_add_body_field($content_type, 'Body');
@@ -34,28 +34,28 @@ function problem_install() {
 
   // Create all the fields we are adding to our content type.
   // http://api.drupal.org/api/function/field_create_field/7
-  foreach (_problem_installed_fields() as $field) {
+  foreach (_review_installed_fields() as $field) {
     field_create_field($field);
   }
 
   // Create all the instances for our fields.
   // http://api.drupal.org/api/function/field_create_instance/7
-  foreach (_problem_installed_instances() as $instance) {
+  foreach (_review_installed_instances() as $instance) {
     $instance['entity_type'] = 'node';
-    $instance['bundle'] = 'problem';
+    $instance['bundle'] = 'review';
     field_create_instance($instance);
   }
 
 }
 
 // NEED
-// field_data_field_problem_latex
-function _problem_installed_fields() {
+// field_data_field_review_latex
+function _review_installed_fields() {
   $t = get_t();
   $fields = array(
-    'field_problem_latex' => array(
-      'field_name'  => 'field_problem_latex',
-      'label'       => $t('LaTeX field for this problem.'),
+    'field_review_latex' => array(
+      'field_name'  => 'field_review_latex',
+      'label'       => $t('LaTeX field for this review.'),
       'cardinality' => 1,
       'type'        => 'field_latex',
       'settings' => array(
@@ -66,14 +66,14 @@ function _problem_installed_fields() {
   return $fields;
 }
 
-function _problem_installed_instances() {
+function _review_installed_instances() {
   $t = get_t();
   $instances = array(
-    'field_problem_latex' => array(
-      'field_name'  => 'field_problem_latex',
-      'label'       => $t('LaTeX field for this problem.'),
+    'field_review_latex' => array(
+      'field_name'  => 'field_review_latex',
+      'label'       => $t('LaTeX field for this review'),
       'cardinality' => 1,
-      'bundle' => 'problem',
+      'bundle' => 'review',
       'widget' => array(
 			'active' => 1,
 			'module' => 'latex_field',
@@ -82,17 +82,40 @@ function _problem_installed_instances() {
 					    ),
 			'type' => 'latex_widget',
 			),
+      // hoping this is the right way to make the label hidden
+      'display' => array(
+			 'default' => array(
+					    'label' => 'hidden',
+					    'module' => 'latex_field',
+					    'settings' => array(),
+					    'type' => 'latex_formatter',
+					    'weight' => '6',
+					    ),
+			 'full' => array(
+					 'label' => 'hidden',
+					 'module' => 'latex_field',
+					 'settings' => array(),
+					 'type' => 'latex_formatter',
+					 'weight' => '0',
+					 ),
+			 'teaser' => array(
+					   'label' => 'above',
+					   'settings' => array(),
+					   'type' => 'hidden',
+					   'weight' => 0,
+					   ),
+			 )
     ),
   );
   return $instances;
 }
 
-function problem_uninstall() {
+function review_uninstall() {
   // Gather all the example content that might have been created while this
   // module was enabled.  Simple selects still use db_query().
   // http://api.drupal.org/api/function/db_query/7
   $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
-  $result = db_query($sql, array(':type' => 'problem'));
+  $result = db_query($sql, array(':type' => 'review'));
   $nids = array();
   foreach ($result as $row) {
     $nids[] = $row->nid;
@@ -106,15 +129,41 @@ function problem_uninstall() {
   // Loop over each of the fields defined by this module and delete
   // all instances of the field, their data, and the field itself.
   // http://api.drupal.org/api/function/field_delete_field/7
-  foreach (array_keys(_problem_installed_fields()) as $field) {
+  foreach (array_keys(_review_installed_fields()) as $field) {
     field_delete_field($field);
   }
 
   // Delete our content type
   // http://api.drupal.org/api/function/node_type_delete/7
-  node_type_delete('problem');
+  node_type_delete('review');
 
   // Purge all field information
   // http://api.drupal.org/api/function/field_purge_batch/7
   field_purge_batch(1000);
+}
+
+
+function review_schema() {
+  $schema = array();
+
+  $schema['solution_has_review'] = array(
+      'description' => 'Connection table between solutions and reviews',
+      'fields' => array(
+          'sid' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true,
+              'description' => 'solution Id'
+          ),
+          'rid' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true,
+              'description' => 'review Id'
+          )
+      ),
+      'primary key' => array('sid', 'rid')
+  );
+
+  return $schema;
 }
