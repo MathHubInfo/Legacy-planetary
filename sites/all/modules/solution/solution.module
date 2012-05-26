@@ -50,12 +50,9 @@ function solution_form_solution_node_form_alter(&$form, &$form_state) {
   );
 }
 
-function solution_node_insert($node) {
-  if ($node->type == 'solution') {
-    solution_model_saveSolution($node);
-  }
-}
 
+// This is only relevant if the user changes the problem that the solution is
+// attached to.  Which, in theory, could happen.
 function solution_node_update($node) {
   if ($node->type == 'solution') {
     solution_model_saveSolution($node);
@@ -72,14 +69,61 @@ function solution_node_load($nodes, $types) {
   }
 }
 
-function solution_node_view($node, $view_mode, $langcode) {
-  if ($node->type == 'solution') {
+function solution_node_insert($node) {
+    if ($node->type == 'solution') {
+        //dest would be an array with a string in the form node/add/review/58579
+        $dest = drupal_get_destination();
+        dd($dest);
+        //we need to extract the numeric
+        preg_match("/node\/add\/solution\/([0-9]*)/", $dest['destination'], $matches);
+        dd($matches);
+        if (isset($matches[1])) {
+	  //dd('i am in the block');
+            dd($matches[1]);
+            $problemID = $matches[1];
+            db_merge('problem_has_solution')
+                    ->key(array('pid' =>$problemID , 'sid' => $node->nid))
+                    ->fields(array('pid' =>$problemID , 'sid' => $node->nid))
+                    ->execute();
+            drupal_set_message('Solution has been added to the problem');
+            drupal_goto('node/' . $problemID);
+        }
+    }
+}
+
+function solution_node_view($node){
+  
+  // for node with type==solution
+  // .. nothing special (at least for now)
+
+  // for node with type==problem
+  if($node->type == 'problem'){
+    $newlinks = array();
+    if (isset($node->content['planetary_links'])) {
+	$oldlinks=$node->content['planetary_links']['#links'];
+	if(!empty($oldlinks)) {
+	  $newlinks=array_merge($oldlinks,solution_add_links($node));
+	} else {
+	  $newlinks = solution_add_links($node);
+	}
+      } else {
+      $newlinks = solution_add_links($node);
+    }
+
     $node->content['planetary_links'] = array(
         '#markup' => '',
         '#weight' => 10,
         '#theme' => 'planetary_links',
-        '#links' => solution_view_getLinks($node)
+        '#links' => $newlinks
     );
   }
+}
+
+// We will only consider adding new solutions, not existing solutions
+function solution_add_links($node) {
+    $links = array(
+        'attach-solution' => l('Add a solution to this problem', 'node/add/solution/' . $node->nid)
+    );
+    return $links;
 }
 

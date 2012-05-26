@@ -756,6 +756,7 @@ function planetmath_profile_configure_node_types () {
 						  ));
   node_type_save($articleDefaults);
 
+
   $pageDefaults = node_type_set_defaults(array(
 					       'type' => 'page',
 					       'name' => st('Basic page'),
@@ -1254,6 +1255,63 @@ return false;
 ?>',
                         'cache' => 1,
                         ),
+                  array(
+                        'module' => 'planetmath_blocks',
+                        'delta' => 'problem',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -35,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return planetmath_blocks_countProblems(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'planetmath_blocks',
+                        'delta' => 'solution',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -35,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return planetmath_blocks_countSolutions(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'planetmath_blocks',
+                        'delta' => 'review',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -35,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return planetmath_blocks_countReviews(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
 		  array(
                         'module' => 'planetmath_blocks',
                         'delta' => 'userlist',
@@ -1481,6 +1539,31 @@ function planetmath_profile_set_misc_variables () {
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
 
+  // this seems to be a way to make it so that articles are always versioned.
+  variable_set('node_options_article', array (
+					      0 => 'status',
+					      1 => 'revision',
+					      ));
+
+  // And similarly for other vaguely "article like" node types...
+
+  variable_set('node_options_correction', array (
+						 0 => 'status',
+						 1 => 'revision',
+						 ));
+  variable_set('node_options_problem', array (
+					      0 => 'status',
+					      1 => 'revision',
+					      ));
+  variable_set('node_options_solution', array (
+					       0 => 'status',
+					       1 => 'revision',
+					       ));
+  variable_set('node_options_review', array (
+					     0 => 'status',
+					     1 => 'revision',
+					     ));
+
   // Don't display date and author information for "Basic page" nodes by default.
   variable_set('node_submitted_page', FALSE);
 
@@ -1492,6 +1575,18 @@ function planetmath_profile_set_misc_variables () {
 
   // Allow visitor account creation with administrative approval.
   variable_set('user_register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL);
+
+
+  // some settings for pathauto - note that in some sense this "should"
+  // imply that all content types have a canonical name field.
+  // In fact, what seems to happen, is that the replacement is made whenever
+  // there actually is a canonical name field.  Which for the moment is just
+  // with articles (IIRC).
+  variable_set('pathauto_node_pattern', "[node:field_canonicalname]");
+  variable_set('pathauto_user_pattern', "users/[user:name]");
+  variable_set('pathauto_taxonomy_term_pattern', "[term:vocabulary]/[term:name]");
+  variable_set('pathauto_forum_pattern', "[term:vocabulary]/[term:name]");
+
   return NULL;
 }
 

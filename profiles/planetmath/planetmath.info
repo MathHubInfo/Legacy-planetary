@@ -94,9 +94,9 @@ dependencies[] = views_ui
 
 ;; rdf stuff - hopefully it will get the ARC2 parser this way.
 ;; Note that there may be other ways with fewer dependencies!
-dependencies[] = libraries
+; dependencies[] = libraries
 dependencies[] = rdfx
-dependencies[] = sparql_views
+; dependencies[] = sparql_views
 dependencies[] = rdfui
 
 ;; custom
@@ -113,6 +113,7 @@ dependencies[] = planetmath_og
 dependencies[] = problem
 dependencies[] = tntbase_sfbrowser
 dependencies[] = solution
+dependencies[] = review
 dependencies[] = tntbase
 dependencies[] = tntbase_import
 dependencies[] = planetmath_edit_article
