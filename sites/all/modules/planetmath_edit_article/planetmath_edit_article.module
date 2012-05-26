@@ -61,6 +61,11 @@ function planetmath_edit_article_node_presave($node) {
 	$node->field_canonicalname['und'][0]['value'] = $newname;
       }
 
+    $path= array('source' => 'node/'.$node->nid,
+		 'alias' => $node->field_canonicalname['und'][0]['value']);
+
+    path_save($path);
+
     // 2 - we will update the metadata depending on what we know about the article
     //     Note: we should maybe use planetmath_edit_article_node_insert for the
     //           time when the article is created...
