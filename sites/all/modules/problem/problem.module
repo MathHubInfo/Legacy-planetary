@@ -19,11 +19,138 @@ function problem_node_info() {
 /*
  *  This almost-empty hook is needed to list the content type?
  *  Well, that doesn't seem to be working here, though whatever we have going
- *  for corrections does actually seem to work, I think.
+ *  for corrections does actually seem to work, I think.  This might not be needed.
+ *  TEST.
  */
-function problem_form($node, &$form_state) {
-  $form = array();
-  return $form;
+/* function problem_form($node, &$form_state) { */
+/*   $form = array(); */
+/*   return $form; */
+/* } */
+
+
+function problem_menu() {
+  $items = array();
+
+  $items['problems/%/attach'] = array(
+      'title' => 'Attach problem',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'problem_attach_problem',
+      'page arguments' => array(1),
+      'access arguments' => array('create correction content')
+  );
+
+  
+  $items['problems/confirm/%/%'] = array(
+      'title' => 'Confirm attachment',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'problem_confirm_attachment',
+      'page arguments' => array(2,3),//'nid_of_article','nid_of_problem'),
+      'access arguments' => array('create correction content')
+  );
+  
+  $items['problems/decouple/%/%'] = array(
+      'title' => 'Decouple article-problem connection',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'problem_decouple_article_problem_connection',
+      'page arguments' => array(2,3),//'nid_of_article','nid_of_problem'),
+      'access arguments' => array('create correction content'));
+   
+  
+  return $items;
+}
+
+function problem_confirm_attachment($nid_of_article,$nid_of_problem){
+    db_merge('article_has_problem')
+            ->key(array('aid' => $nid_of_article, 'pid' => $nid_of_problem))
+            ->fields(array('aid' => $nid_of_article, 'pid' => $nid_of_problem))
+            ->execute();
+    drupal_set_message('Problem '.$nid_of_problem.' is now attached with this article');
+    drupal_goto('node/'.$nid_of_article);
+}
+
+function problem_decouple_article_problem_connection($nid_of_article,$nid_of_problem){
+    $num_deleted = db_delete('article_has_problem')
+            ->condition('aid', $nid_of_article)
+            ->condition('pid',$nid_of_problem)
+            ->execute();
+    drupal_set_message('Problem '.$nid_of_problem.' is no longer connected with this article');
+    drupal_goto('node/'.$nid_of_article);
+}
+
+function problem_get_all_problems(){
+    $query = db_select('node', 'n')
+          ->fields('n')
+          ->condition('type','problem','=')
+          ->extend('PagerDefault')
+          ->extend('TableSort')
+          ->limit(20);
+  $result = $query->execute();
+  return $result;
+}
+
+function problem_attach_problem($nid){
+  global $base_url;
+  //dd('in the attach prob func');
+  //dd($nid);
+
+  $count=db_query("SELECT COUNT(nid) as count FROM node WHERE type = 'problem'")->fetchObject();
+
+
+  if($count->count > 0) {
+    $problems = problem_get_all_problems();
+    $header = array(array('data' => 'Title', 'field' => 'n.nid'),
+		    array('data' => "Author", 'field' => 'n.title'),
+		    array('data' => 'Attach', 'field' => 'Attach')
+		    );
+    $rows = array();
+    foreach ($problems as $problem) {
+      $rows[] = array(
+		      array('data' => l($problem->title, 'node/' . $problem->nid), 
+			                'field' => 'n.title'),
+		      array('data' => l(user_load($problem->uid)->name, 
+					'user/' . $problem->uid), 'field' => 'n.author'),
+		      array('data' => theme('attach_icon',
+					    array('url'=>$base_url.'/problems/confirm/'
+						                  .$nid.'/'
+						                  .$problem->nid)))
+		      );
+    }
+    return l('Add a new problem', 'node/add/problem') 
+           . theme('table', array(
+				  'header' => $header,
+				  'rows' => $rows
+				  )) 
+           . theme('pager');
+  } else {
+    // Rather than spitting out the link and making a person click on it,
+    // we should really just redirect to the relevant menu for "attach"...
+    // return l('Add a new problem', 'node/add/problem');
+    drupal_set_message("Please go ahead and create a new problem.  It will be attached to article ".$nid."!");
+    drupal_goto('node/add/problem/'.$nid);
+  }
+}
+
+function theme_attach_icon($variables){
+  //dd('vars');
+  //dd($variables);
+  $output = l(
+	      t('Attach problem'),
+	      $variables['url'],
+	      array(
+      
+		    'attributes' => array(
+					  'class' => "attach_problem_icon",
+					  'title' => t('Attach this problem to article'),
+					  ))
+	      );
+  return $output;
+}
+
+function problem_theme($existing, $type, $theme, $path){
+  return array('attach_icon' => array(
+				      'variables' => array('url' => NULL,
+							   'query' => NULL)
+				      ));
 }
 
 function problem_mode_getSolutions($problem) {
@@ -48,21 +175,91 @@ function problem_view_getLinks($node) {
   return $links;
 }
 
+// not clear we really want to do this, instead we could just put them in a block
 function problem_view_renderSolutions($problem){
   $solutions = problem_mode_getSolutions($problem);
-  $return = array();
-  foreach($solutions as $solution){
-    $return[] = l($solution->title, 'node/'.$solution->nid);
+  if (!empty($solutions)) {
+    $return = array();
+    foreach($solutions as $solution){
+      $return[] = l($solution->title, 'node/'.$solution->nid);
+    }
+    $out = "<h3>Solutions</h3>";
+    $out .= theme('item_list', array('items' => $return));
+    return $out;
+  } else {
+    return;
   }
-  $out = "<h3>Solutions</h3>";
-  $out .= theme('item_list', array('items' => $return));
-  return $out;
+}
+
+function problem_node_insert($node) {
+    if ($node->type == 'problem') {
+        //dest would be an array with a string in the form node/add/review/58579
+        $dest = drupal_get_destination();
+        dd($dest);
+        //we need to extract the numeric
+        preg_match("/node\/add\/problem\/([0-9]*)/", $dest['destination'], $matches);
+        dd($matches);
+        if (isset($matches[1])) {
+	  //dd('i am in the block');
+            dd($matches[1]);
+            $articleID = $matches[1];
+            db_merge('article_has_problem')
+                    ->key(array('aid' =>$articleID , 'pid' => $node->nid))
+                    ->fields(array('aid' =>$articleID , 'pid' => $node->nid))
+                    ->execute();
+            drupal_set_message('The problem has been attached to the article.');
+            drupal_goto('node/' . $articleID);
+        }
+    }
 }
 
 function problem_node_view($node){
-  if($node->type == 'problem'){
+  
+  // for node with type==problem 
+  // Personally, I think this part is a little annoying.  Maybe good in some summaries
+  // to show the number of solutions (for instance), but it should basically be handled
+  // with a block
+  /* 
+   if($node->type == 'problem'){
     $node->content['solutions'] = array(
       '#markup' => problem_view_renderSolutions($node)
     );
   }
+  */
+
+  // for node with type==article
+  if($node->type == 'article'){
+    $newlinks = array();
+    if (isset($node->content['planetary_links'])) {
+	//dd($node->content['planetary_links'],"In Problems");
+	$oldlinks=$node->content['planetary_links']['#links'];
+	//dd($oldlinks,"old");
+	if(!empty($oldlinks)) {
+	  $newlinks=array_merge($oldlinks,problem_add_links($node));
+	  //dd($newlinks,"NEW - merge - problem");
+	} else {
+	  $newlinks = problem_add_links($node);
+	  //dd($newlinks,"NEW - inner - problem");
+	}
+      } else {
+      $newlinks = problem_add_links($node);
+      //dd($newlinks,"NEW - outer - problem ");
+    }
+
+    $node->content['planetary_links'] = array(
+        '#markup' => '',
+        '#weight' => 10,
+        '#theme' => 'planetary_links',
+        '#links' => $newlinks
+    );
+  }
 }
+
+// From this page we can either add a new problem or attach an existing one
+function problem_add_links($node) {
+    $links = array(
+        'attach-problem' => l('Attach a problem to this article', 'problems/' . $node->nid. '/attach')
+    );
+    return $links;
+}
+
