@@ -82,16 +82,17 @@ function _problem_installed_instances() {
 					    ),
 			'type' => 'latex_widget',
 			),
+      // hoping this is the right way to make the label hidden
       'display' => array(
 			 'default' => array(
-					    'label' => 'above',
+					    'label' => 'hidden',
 					    'module' => 'latex_field',
 					    'settings' => array(),
 					    'type' => 'latex_formatter',
 					    'weight' => '6',
 					    ),
 			 'full' => array(
-					 'label' => 'above',
+					 'label' => 'hidden',
 					 'module' => 'latex_field',
 					 'settings' => array(),
 					 'type' => 'latex_formatter',
@@ -109,6 +110,8 @@ function _problem_installed_instances() {
   return $instances;
 }
 
+// should presumably be modified to delete the `article_has_problem' table
+// defined in the schema
 function problem_uninstall() {
   // Gather all the example content that might have been created while this
   // module was enabled.  Simple selects still use db_query().
@@ -139,4 +142,29 @@ function problem_uninstall() {
   // Purge all field information
   // http://api.drupal.org/api/function/field_purge_batch/7
   field_purge_batch(1000);
+}
+
+function problem_schema() {
+  $schema = array();
+
+  $schema['article_has_problem'] = array(
+      'description' => 'Connection table between articles and problems',
+      'fields' => array(
+          'aid' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true,
+              'description' => 'Article Id'
+          ),
+          'pid' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true,
+              'description' => 'Problem Id'
+          )
+      ),
+      'primary key' => array('aid', 'pid')
+  );
+
+  return $schema;
 }
