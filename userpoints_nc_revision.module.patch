@@ -1,0 +1,9 @@
+10a11,14
+> // jac - May 8, 2012, I was getting some kind of warning
+> // about $node->revision (which doesn't exist)
+> // Not sure what the logic is here, but the change should
+> // make this stop being annoying
+12c16
+<   if ($node->revision && userpoints_nc_get_setting('revision_enabled', $node->type, TRUE)) {
+---
+>   if ($node->revision_timestamp && userpoints_nc_get_setting('revision_enabled', $node->type, TRUE)) {
