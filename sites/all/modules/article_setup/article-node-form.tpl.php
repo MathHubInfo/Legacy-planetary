@@ -1,43 +1,37 @@
 <div class="node-add-wrapper clear-block">
-    <div class="node-column-sidebar">
-        <?php if ($sidebar): ?>
-            <?php print render($sidebar); ?>
-        <?php endif; ?>
-    </div>
     <div class="node-column-main">
         <?php
         global $user;
         //dd($user);
         ?>
         <?php if ($form): ?>
-            <!--<label for="edit-field-canonicalname-und-0-value">editing article:</label>-->
-            <h3>Canonical Name: <?php
-        print l($form['field_canonicalname']['und'][0]['value']['#default_value'], $form['field_canonicalname']['und'][0]['value']['#default_value']);
-            ?></h3>
+           <?php if (0!=strcmp("CanonicalName",$form['field_canonicalname']['und'][0]['value']['#default_value'] ) ) :  ?>
+              <h3>Canonical Name:
+               <?php
+                    print l($form['field_canonicalname']['und'][0]['value']['#default_value'], $form['field_canonicalname']['und'][0]['value']['#default_value']);
+               ?>
+             </h3>
+            <?php endif; ?>
             <?php hide($form['field_canonicalname']); ?>
             <?php print drupal_render_children($form); ?>
         <?php endif; ?>
-
-        <?php if ($buttons): ?>
-            <div class="node-buttons">
-                <?php print render($buttons); ?>
-            </div>
-        <?php endif; ?>
     </div>
-    <?php
+   <?php if(db_table_exists('field_user_preamble_value AS preamble')) {
     $preamble = db_query('SELECT field_user_preamble_value AS preamble
     FROM field_data_field_user_preamble 
     WHERE entity_id=' . $user->uid)->fetchObject();
     $preamble = $preamble->preamble;
 
     if (empty($preamble)) {
-        $preamble = '%SITEWIDE DEFUALT SHOULD GO HERE';
-    }
+        $preamble = '%SITEWIDE DEFAULT SHOULD GO HERE';
+    }} else {$preamble = '%SITEWIDE DEFAULT SHOULD GO HERE';}
     ?>
+
     <script>
-        
-     //remove grippies code
-       var addNewEvent;
+// There's probably a "cooler" way to do this.
+
+//remove grippies code
+var addNewEvent;
 
 if (document.addEventListener) {
 	addNewEvent= function(element, type, handler) {
@@ -69,14 +63,11 @@ function RemoveGrippies() {
 	return;
 
 }
-        
      //end of remove grippies code        
         
-        
-        
-        
-        
         jQuery(document).ready(function(){
+	    jQuery('.form-item-field-latex-und-0-metadata').hide();
+
             jQuery('#edit-field-latex-und-0-preamble').html(<?php
     echo json_encode($preamble);
     ?>);                
