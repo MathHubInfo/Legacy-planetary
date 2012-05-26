@@ -5,6 +5,7 @@
  * @author Alex Dumitru <m.dumitru@jacobs-university.de> 
  */
 define("PLANETMATH_ORPHANAGE_NO_OF_DAYS", 42);
+define("PLANETMATH_NOTICE_NO_OF_DAYS", 30);
 
 function planetmath_orphanage_model_createOrpahnedNode($node) {
   db_insert('orphanage')->fields(array('nid' => $node->nid, 'puid' => $node->uid, 'created' => REQUEST_TIME))->execute();
@@ -24,27 +25,45 @@ function planetmath_orphanage_model_addNode($node) {
 
 function planetmath_orphanage_model_getOrphanedNodes() {
   $query = db_select('node', 'n');
-  $query->extend('PagerDefault');
+  $query->extend('PagerDefault')->limit(30);
   $query->fields('n', array('nid', 'title', 'changed'))
           ->condition('n.uid', planetmath_orphanage_model_getOrphanUser()->uid)
-          ->orderBy('n.title')
-          ->range(0, 30);
+          ->orderBy('n.title');
   $results = $query->execute()->fetchAll();
   return $results;
 }
 
+function planetmath_orphanage_model_claimOrphanedNode($node, $user) {
+  $node->uid = $user->uid;
+  node_save($node);
+}
+
 function planetmath_orphanage_model_cronJob() {
-  $results = db_query("SELECT n.created, nref.created AS ref_created, n.nid AS ref_nid
+  $results = db_query("SELECT n.created, n.nid AS ref_nid, fca.entity_id AS refnid
     FROM node n
     LEFT JOIN field_data_field_correction_closed fcc ON fcc.entity_id = n.nid
     LEFT JOIN field_data_field_correction_article fca ON fca.entity_id = n.nid
-    LEFT JOIN node nref ON nref.nid = fca.field_correction_article_nid
     WHERE n.`type` = 'correction' AND fcc.field_correction_closed_value = 0    
 ");
   $deadline = (PLANETMATH_ORPHANAGE_NO_OF_DAYS * 24 * 3600);
+  //after how many days to send a notice to user that his
+  //article is about to die
+  $notice   = (PLANETMATH_NOTICE_NO_OF_DAYS    * 24 * 3600);
   foreach ($results as $result) {
-    if (($result->created - $result->ref_created) > $deadline) {
-      planetmath_orphanage_model_addNode(node_load($result->ref_nid));
+    $refNode = node_load($result->refnid);
+    
+    //if cron job is not executed too often
+    // then it would be a good idea to specify the exact time window
+    // something like:
+    // if ($result->created - $refNode->changed) > $notice &&
+    //     $result->created - $refNode->changed) < $notice + 2*24*3600 )    
+    if (($result->created - $refNode->changed) > $notice  && $refNode->noticed==false) {
+      //planetmath_orphanage_model_addNode(node_load($refNode->nid));
+        $refNode->noticed = true;
+    }
+    
+    if (($result->created - $refNode->changed) > $deadline) {
+      planetmath_orphanage_model_addNode(node_load($refNode->nid));
     }
   }
 }
@@ -54,25 +73,53 @@ function planetmath_orphanage_menu() {
 
   $items['orphanage'] = array(
       'type' => MENU_NORMAL_ITEM,
-      'title' => 'orphanage',
+      'title' => 'Orphanage',
       'page callback' => 'planetmath_orphanage_view_mainOrphanageList',
       'access arguments' => array('access content')
   );
-  
+
+  $items['node/%/claim'] = array(
+      'type' => MENU_LOCAL_TASK,
+      'title' => 'Claim this article',
+      'page callback' => 'planetmath_orphanage_view_claimOrphanage',
+      'page arguments' => array(1),
+      'access arguments' => array(1),
+      'access callback' => 'planetmath_orphanage_access_claim'
+  );
+
   return $items;
+}
+
+function planetmath_orphanage_access_claim($nid) {
+  $access = false;
+  $node = node_load($nid);
+  if ($node->uid == planetmath_orphanage_model_getOrphanUser()->uid) {
+    $access = true;
+  }
+  return $access;
+}
+
+function planetmath_orphanage_view_claimOrphanage($nid) {
+  $node = node_load($nid);
+  global $user;
+  if ($node->uid == planetmath_orphanage_model_getOrphanUser()->uid) {
+    planetmath_orphanage_model_claimOrphanedNode($node, $user);
+  }
+  drupal_goto();
 }
 
 function planetmath_orphanage_view_mainOrphanageList() {
   $orphans = planetmath_orphanage_model_getOrphanedNodes();
   $items = array();
   foreach ($orphans as $orphan) {
-    $items[] = l($orphan->title, 'node/' . $orphan->nid) . ' orphaned on ' . date("d-m-Y", $orphan->changed);
+    $items[] = l($orphan->title, 'node/' . $orphan->nid) . ' orphaned on ' . date("d-m-Y", $orphan->changed) . "<span style='float:right'>" . l('Claim this article', 'node/' . $orphan->nid . '/claim') . '</span>';
   }
-  return theme('item_list', array('items' => $items, 'attributes' => array())) .
-          theme('pager');
+  return '<div style="width:420px">' . theme('item_list', array('items' => $items, 'attributes' => array())) .
+          theme('pager') . '</div>';
 }
 
 function planetmath_orphanage_cron() {
   planetmath_orphanage_model_cronJob();
 }
+
 
