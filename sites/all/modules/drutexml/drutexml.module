@@ -139,10 +139,15 @@ function _drutexml_cache_read($md5) {
 }
 
 function _drutexml_cache_set($md5, $xhtml) {
-	db_insert("drutexml_cache")->fields(array(
+  dd("merging drutexml cache on ".$md5);
+	db_merge("drutexml_cache")
+	  ->key(array("cachemd5" => $md5))
+	  ->fields(array(
 		"cachemd5" => $md5,
 		"xhtml" => $xhtml	
-	))->execute();
+			 )
+		   )
+	  ->execute();
 }
 
 function _drutexml_cache_clear() {
@@ -169,15 +174,15 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   //	return $cache;
   //}
   
-  dd($text, "received text"); 
+  //dd($text, "received text"); 
   $hasPreamble = '/^([\s\S]*)\\\\begin{document}([\s\S]*)\\\\end{document}([\s\S]*)$/';
   $m = preg_match($hasPreamble, $text, $matches);
   
   global $latex_preamble;
   global $latex_metadata;
 
-  dd($latex_preamble,"received preamble");
-  dd($latex_metadata, "received metadata");
+  //dd($latex_preamble,"received preamble");
+  //dd($latex_metadata, "received metadata");
 
   // so it receives the right data
   if ($m > 0) {
@@ -210,13 +215,13 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
 
   }
   
-   dd("Newconfig article edit...".$preamble."\n%%Article metadata:\n".$metadata."\n%%Document content:\n".$text);
-  // dd("Newconfig article edit...");
-  dd("Data: ".$data);
+  //dd("Newconfig article edit...".$preamble."\n%%Article metadata:\n".$metadata."\n%%Document content:\n".$text);
+
+  //dd("Data: ".$data);
   $content = do_post($host,$data);
-  // dd($data);
-  dd("++++ ".$content);
-//dpm($content);
+
+  //dd("++++ ".$content);
+
 $res = json_decode($content);
 
 
