@@ -3,4 +3,12 @@
  * @file
  */
 
-// Drupal needs this blank file.
+function article_setup_theme($existing, $type, $theme, $path) {
+    return array(
+        'article_node_form' => array(
+            'render element' => 'form',            
+            'template' => 'article-node-form',
+            'path' => drupal_get_path('module', 'article_setup'),
+        )
+    );
+}
