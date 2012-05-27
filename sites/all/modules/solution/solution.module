@@ -5,8 +5,8 @@
  */
 function solution_model_saveSolution($node) {
   db_merge('problem_has_solution')
-          ->key(array('sid' => $node->nid, 'pid' => $node->problem))
-          ->fields(array('sid' => $node->nid, 'pid' => $node->problem))
+          ->key(array('sid' => $node->nid, 'pid' => $node->field_solution_problem['und'][0]['nid']))
+          ->fields(array('sid' => $node->nid, 'pid' => $node->field_solution_problem['und'][0]['nid']))
           ->execute();
 }
 
@@ -19,17 +19,23 @@ function solution_model_getAllProblems() {
   return $return;
 }
 
+// This is an interesting function, which really implies that we don't "need" to have
+// a field that keeps track of which problem the solution solves.  However, for the
+// moment it's not SO bad to have the information in two places.  We can fix this
+// later.
 function solution_model_getProblem($node) {
   $result = db_query("SELECT n.nid FROM node n INNER JOIN problem_has_solution phs ON phs.pid = n.nid WHERE phs.sid = :sid", array(':sid' => $node->nid))->fetchObject();
+
+  // Note: instead of doing this, we could just return $result->nid
   $problem = node_load($result->nid);
   return $problem;
 }
 
 function solution_view_getLinks($node) {
   $links = array(
-      'problem-preview' => l('See Problem', 'node/' . $node->problem->nid),
-      'solution-new' => l('Add new Solution', 'node/add/solution/' . $node->problem->nid),
-      'solution-other' => l('View other Solutions', 'node/' . $node->problem->nid . '/solutions')
+      'problem-preview' => l('See Problem', 'node/' . $node->field_solution_problem['und'][0]['nid']->nid),
+      'solution-new' => l('Add new Solution', 'node/add/solution/' . $node->field_solution_problem['und'][0]['nid']->nid),
+      'solution-other' => l('View other Solutions', 'node/' . $node->field_solution_problem['und'][0]['nid']->nid . '/solutions')
   );
   return $links;
 }
@@ -41,14 +47,14 @@ function solution_view_getLinks($node) {
 /**
  * Implementation of hook_form 
  */
-function solution_form_solution_node_form_alter(&$form, &$form_state) {
-  $form['problem'] = array(
-      '#type' => 'select',
-      '#title' => 'Problem',
-      '#options' => solution_model_getAllProblems(),
-      '#default_value' => arg(3)
-  );
-}
+/* function solution_form_solution_node_form_alter(&$form, &$form_state) { */
+/*   $form['problem'] = array( */
+/*       '#type' => 'select', */
+/*       '#title' => 'Problem', */
+/*       '#options' => solution_model_getAllProblems(), */
+/*       '#default_value' => arg(3) */
+/*   ); */
+/* } */
 
 
 // This is only relevant if the user changes the problem that the solution is
@@ -59,15 +65,7 @@ function solution_node_update($node) {
   }
 }
 
-function solution_node_load($nodes, $types) {
-  if (in_array('solution', $types)) {
-    foreach ($nodes as &$node) {
-      if ($node->type == 'solution') {
-        $node->problem = solution_model_getProblem($node);
-      }
-    }
-  }
-}
+
 
 function solution_node_insert($node) {
     if ($node->type == 'solution') {
@@ -119,6 +117,35 @@ function solution_node_view($node){
   }
 }
 
+
+/**
+ * Implementation of hook_form_FORM_ID_alter()
+ * @param array $form
+ * @param array $form_state
+ * @param array $form_id 
+ */
+
+// I'm not entirely sure this will work for us, but maybe.
+// We SELECT the argument, but will it also be displayed?  It should be!
+function solution_form_solution_node_form_alter(&$form, &$form_state, $form_id) {
+  global $user;
+  //dd($form['#node']);
+
+  if(isset($form['#node']->field_solution_problem['und'][0]['nid'])) {
+    $val = $form['#node']->field_solution_problem['und'][0]['nid'];
+  } else {
+    $val = arg(3); 
+  }
+  // SOMEHOW THIS STUFF SCREWS UP THE VALIDATION
+  // SO COMMENTING IT OUT.
+  // ANYWAY, I'M GUESSING THE AUTOCOMPLETE FIELD TAKES CARE OF CHOOSING AVAILABLE ITEMS
+  // FOR US...
+  //$form['field_solution_problem']['und']['#type'] = 'select';
+  //$form['field_solution_problem']['und']['#title'] = 'Problem';
+  //$form['field_solution_problem']['und']['#options'] = solution_model_getAllProblems();
+  $form['field_solution_problem']['und'][0]['nid']['#default_value'] = $val;
+}
+
 // We will only consider adding new solutions, not existing solutions
 function solution_add_links($node) {
     $links = array(
@@ -126,4 +153,3 @@ function solution_add_links($node) {
     );
     return $links;
 }
-
