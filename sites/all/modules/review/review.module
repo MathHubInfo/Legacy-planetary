@@ -37,13 +37,15 @@ function review_confirm_review_attachment($nid_of_solution, $nid_of_review) {
             ->key(array('sid' => $nid_of_solution, 'pid' => $nid_of_review))
             ->fields(array('sid' => $nid_of_solution, 'pid' => $nid_of_review))
             ->execute();
-    drupal_set_message('review ' . $nid_of_review . ' is now attached with this solution');
+    drupal_set_message('review ' . $nid_of_review . ' is now attached to this solution');
     drupal_goto('node/' . $nid_of_solution);
 }
 
 // is this compatible with what we were are with the node_insert hook?
+// It seems to me that maybe this callback isn't really used.
 function review_add_review($sid) {
     drupal_goto('node/add/review');
+    drupal_set_message('Add a review for solution ' . $sid);
 }
 
 function review_node_insert($node) {
@@ -68,12 +70,21 @@ function review_node_insert($node) {
     }
 }
 
+function review_form_review_node_form_alter(&$form, &$form_state, $form_id) {
+  global $user;
+
+  if(isset($form['#node']->field_review_solution['und'][0]['nid'])) {
+    $val = $form['#node']->field_review_solution['und'][0]['nid'];
+  } else {
+    $val = arg(3); 
+  }
+
+  $form['field_review_solution']['und'][0]['nid']['#default_value'] = arg(3);
+}
+
 function review_node_view($node) {
-    // for node with type==article
-      dd('HM');
-      dd($node->type);
     if ($node->type == 'solution') {
-      dd('Looking at a solution node');
+      //dd('Looking at a solution node');
         $newlinks = array();
         if (isset($node->content['planetary_links'])) {
             $oldlinks = $node->content['planetary_links']['#links'];
@@ -89,7 +100,7 @@ function review_node_view($node) {
             //dd($newlinks,"NEW - outer - problem ");
         }
 
-        dd($newlinks,"In the end. ");
+        //dd($newlinks,"In the end. ");
         $node->content['planetary_links'] = array(
             '#markup' => '',
             '#weight' => 10,

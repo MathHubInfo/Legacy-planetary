@@ -62,6 +62,25 @@ function _review_installed_fields() {
 			  'filter' => 'latex',
 			  ),
     ),
+    'field_review_result' => array(
+      'field_name'  => 'field_review_result',
+      'label'       => $t('Is the solution ultimately sucessful, unsuccessful, or is the reviewer unsure?'),
+      'cardinality' => 1,
+      'type'        => 'list_text',
+      'settings'    => array(
+        'allowed_values' => array('suc' => 'Success', 'uns' => 'Not Successful', 'unk' => 'Reviewer unsure',),
+        'allowed_values_function' => '',
+      ),
+    ),
+    'field_review_solution' => array(
+      'field_name'  => 'field_review_solution',
+      'label'       => $t('Reference to the solution this review concerns.'),
+      'cardinality' => 1,
+      'type'        => 'node_reference',
+      'settings'    => array(
+        'referenceable_types'  => array('solution'),
+      ),
+    ),
   );
   return $fields;
 }
@@ -69,6 +88,22 @@ function _review_installed_fields() {
 function _review_installed_instances() {
   $t = get_t();
   $instances = array(
+    'field_review_result' => array(
+      'field_name'  => 'field_review_result',
+      'label'       => $t('Is the solution ultimately sucessful, unsuccessful, or is the reviewer unsure?'),
+      'cardinality' => 1,
+      'widget'      => array(
+	'type'          => 'options_select',
+     ),
+    ),
+    'field_review_solution' => array(
+      'field_name'  => 'field_review_solution',
+      'label'       => $t('Reference to the solution this review concerns.'),
+      'cardinality' => 1,
+      'widget'      => array(
+        'type'          => 'node_reference_autocomplete',
+      ),
+    ),
     'field_review_latex' => array(
       'field_name'  => 'field_review_latex',
       'label'       => $t('LaTeX field for this review'),

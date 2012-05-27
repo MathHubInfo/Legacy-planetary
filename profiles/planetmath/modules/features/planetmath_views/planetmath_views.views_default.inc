@@ -44,11 +44,25 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['header']['area']['label'] = 'Add article';
   $handler->display->display_options['header']['area']['empty'] = FALSE;
   $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/article">Add new Article</a></li> 
- <li><a href="msc_browser">View sorted by MSC</a></li> 
+ <li><a href="../node/add/article">Add new Article</a></li> 
+ <li><a href="../msc_browser">View sorted by MSC</a></li> 
+ <li><a href="../articles/a">A</a> <a href="../articles/b">B</a> <a href="../articles/c">C</a> <a href="../articles/d">D</a> <a href="../articles/e">E</a> <a href="../articles/f">F</a> <a href="../articles/g">G</a> <a href="../articles/h">H</a> <a href="../articles/i">I</a> <a href="../articles/j">J</a> <a href="../articles/k">K</a>  <a href="../articles/l">L</a>  <a href="../articles/m">M</a>  <a href="../articles/n">N</a> <a href="../articles/o">O</a> <a href="../articles/p">P</a>  <a href="../articles/q">Q</a> <a href="../articles/r">R</a> <a href="../articles/s">S</a> <a href="../articles/t">T</a>  <a href="../articles/u">U</a> <a href="../articles/v">V</a> <a href="../articles/w">W</a> <a href="../articles/x">X</a> <a href="../articles/y">Y</a>  <a href="../articles/z">Z</a> <a href="../articles/0">0-9</a>  <a href="../articles/a">other symbols</a> </li>
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = 0;
+  /* Contextual filter: Content: Title */
+  $handler->display->display_options['arguments']['title']['id'] = 'title';
+  $handler->display->display_options['arguments']['title']['table'] = 'node';
+  $handler->display->display_options['arguments']['title']['field'] = 'title';
+  $handler->display->display_options['arguments']['title']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['title']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['title']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['title']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['title']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['title']['glossary'] = 1;
+  $handler->display->display_options['arguments']['title']['limit'] = '1';
+  $handler->display->display_options['arguments']['title']['transform_dash'] = 0;
+  $handler->display->display_options['arguments']['title']['break_phrase'] = 0;
   /* Relationship: Content: Author */
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'node';
@@ -62,7 +76,6 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
  <li><a href="node/add/article">Add new Article</a></li> 
- <li><a href="msc_browser">View sorted by MSC</a></li>
 </ul> ';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   $handler->display->display_options['empty']['area']['tokenize'] = 0;
