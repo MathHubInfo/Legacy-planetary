@@ -156,7 +156,19 @@ function correction_form_correction_node_form_alter(&$form, &$form_state, $form_
   global $user;
   unset($form['field_correction_accepted']);
   unset($form['field_correction_closed']);
-  $form['field_correction_article']['und']['#value'] = arg(3);
+
+  // WE SHOULD USE THE EXISTING SETTING WHEN WE EDIT,
+  // esp. BECAUSE IN THAT CASE arg(3) IS BLANK.
+
+  if(isset($form['#node']->field_correction_article['und'][0]['nid'])) {
+    $val = $form['#node']->field_correction_article['und'][0]['nid'];
+  } else {
+    $val = arg(3); 
+  }
+
+  $form['field_correction_article']['und'][0]['nid']['#default_value'] = $val;
+
+  //$form['field_correction_article']['und']['#value'] = arg(3);
 }
 
 function correction_add_links($node) {
@@ -174,6 +186,7 @@ function correction_add_links($node) {
  * @param string $view_mode 
  */
 function correction_node_view($node, $view_mode) {
+
   if (in_array($node->type, unserialize(CORRECTION_ATTACH_TYPES))) {
     $newlinks = array();
     if (isset($node->content['planetary_links'])) {
@@ -202,14 +215,14 @@ function correction_node_view($node, $view_mode) {
   if ($node->type == 'correction') {
     global $user;
     $article = node_load($node->field_correction_article['und'][0]['nid']);
-    if ($article->uid == $user->uid && !$node->field_correction_closed['und']['0']['value']) {
+    if ($article->uid == $user->uid && !isset($node->field_correction_closed['und'][0]['value'])) {
       $node->content['correction_links'] = array(
           '#markup' => '<h4 style="font-weight:bold">Manage Correction:</h4>' . l('Accept Correction', 'correction/' . $node->nid . '/accept', array('query' => drupal_get_destination())) . ' | ' . l('Reject Correction', 'correction/' . $node->nid . '/reject', array('query' => drupal_get_destination())),
           '#weight' => '-3'
       );
     }
     $status = 'Waiting for response';
-    if ($node->field_correction_closed['und']['0']['value']) {
+    if (isset($node->field_correction_closed['und'][0]['value'])) {
       $status = $node->field_correction_accepted['und'][0]['value'] ? "Accepted" : "Rejected";
     }
     $node->content['correction_status'] = array(

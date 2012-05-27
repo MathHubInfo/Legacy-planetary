@@ -1222,20 +1222,25 @@ function planetmath_profile_configure_blocks () {
 		  // this is giving an error claiming that
 		  // `field_data_field_correction_article' doesn't exist
 		  // commenting out for now
-/*                   array( */
-/*                         'module' => 'planetmath_blocks', */
-/*                         'delta' => 'correction', */
-/*                         'theme' => $theme_default, */
-/*                         'status' => 1, */
-/*                         'weight' => -30, */
-/*                         'region' => 'sidebar_second', */
-/*                         'pages' => '<?php if(arg(0) == "node"){ */
-/*  return planetmath_blocks_countCorrectionsPerArticle(arg(1)); */
-/* } */
-/* return false; */
-/* ?>', */
-/*                         'cache' => 1, */
-/*                         ), */
+                  array(
+                        'module' => 'planetmath_blocks',
+                        'delta' => 'correction',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -30,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return planetmath_blocks_countCorrectionsPerArticle(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
                   array(
                         'module' => 'planetmath_blocks',
                         'delta' => 'pversion',
@@ -1260,7 +1265,7 @@ return false;
                         'delta' => 'problem',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -35,
+                        'weight' => -32,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 
@@ -1279,7 +1284,7 @@ return false;
                         'delta' => 'solution',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -35,
+                        'weight' => -32,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 
@@ -1298,7 +1303,7 @@ return false;
                         'delta' => 'review',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -35,
+                        'weight' => -32,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 

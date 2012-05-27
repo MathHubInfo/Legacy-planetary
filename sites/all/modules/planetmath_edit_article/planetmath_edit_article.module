@@ -53,16 +53,29 @@ function planetmath_edit_article_node_presave($node) {
     // old canonical name...
     $newname = canonicalize_name($node, $node->title);
 
+    //dd("NEW NAME");
+    //dd($newname);
+
+    // if the canonical name is set...
     if ( $node->field_canonicalname['und'][0]['value'] ) {
+      // AND the newname is different
       if (!($newname === $node->field_canonicalname['und'][0]['value'])) {
+	// assign the newname
 	$node->field_canonicalname['und'][0]['value'] = $newname;
       }}
+    // otherwise, the canonical name is not set, and we assign the brand new newname
     else {
 	$node->field_canonicalname['und'][0]['value'] = $newname;
       }
 
+    //dd("ASSIGNING PATH");
+    //dd($node->field_canonicalname['und'][0]['value']);
+
+    //NOTE: it is important to set 'language' here, otherwise, your aliases
+    //come back with an extra "-0" attached to them -- which is rather confusing!
     $path= array('source' => 'node/'.$node->nid,
-		 'alias' => $node->field_canonicalname['und'][0]['value']);
+		 'alias' => $node->field_canonicalname['und'][0]['value'],
+		 'language' => '');
 
     path_save($path);
 
@@ -178,24 +191,30 @@ function process_metadata($node){
 }
 
 function canonicalize_name($node, $str, $count = 1) {
+  //dd('Canonicalizing: ' . $str);
   $words = explode(" ", $str);
   $name = "";
   foreach ($words as $word){
+    // maybe we need more aggressive replacement
     $word = ucfirst(str_replace ("$", "", $word));
     $name = $name . $word;
   }
+
   $match = FALSE;
 
   // needs to be adjusted for the updating case!
-  $othernames = db_query("SELECT field_canonicalname_value AS name FROM {field_data_field_canonicalname} WHERE entity_id <> :nid", array('nid' => $node->nid));
+  $othernames = db_query("SELECT field_canonicalname_value AS name, entity_id FROM {field_data_field_canonicalname} WHERE entity_id <> :nid", array('nid' => $node->nid));
   foreach ($othernames as $othername){
-    if(strcmp($othername->name, $name) == 0){
+    if(strcmp($othername->name, $name) === 0){
       $match = TRUE;
+      //dd('found match');
     }
   }
+
   if($match) {
-    canonicalize_name($name . $count, $count + 1);
+    return canonicalize_name($name . $count, $count + 1);
   } else {
+    //dd('Returning: ' . preg_replace("/[^a-zA-Z0-9\s]/", "", $name));
     // finally, replace non-alphabetic stuff
     // (is this the best way?)
     return preg_replace("/[^a-zA-Z0-9\s]/", "", $name);;
