@@ -74,7 +74,7 @@ function _review_installed_fields() {
     ),
     'field_review_solution' => array(
       'field_name'  => 'field_review_solution',
-      'label'       => $t('Reference to the solution this review concerns.'),
+      'label'       => $t('Reference to the solution this review concerns'),
       'cardinality' => 1,
       'type'        => 'node_reference',
       'settings'    => array(
