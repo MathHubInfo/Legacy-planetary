@@ -117,6 +117,15 @@ function solution_node_view($node){
   }
 }
 
+function solution_theme($existing, $type, $theme, $path){
+  return array('solution_node_form' => array(
+					    'render element' => 'form',            
+					    'template' => 'solution-node-form',
+					    'path' => drupal_get_path('module', 'solution'),
+					    )
+  );
+}
+
 
 /**
  * Implementation of hook_form_FORM_ID_alter()
