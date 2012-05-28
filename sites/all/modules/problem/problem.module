@@ -150,7 +150,13 @@ function problem_theme($existing, $type, $theme, $path){
   return array('attach_icon' => array(
 				      'variables' => array('url' => NULL,
 							   'query' => NULL)
-				      ));
+				      ),
+	       'problem_node_form' => array(
+					    'render element' => 'form',            
+					    'template' => 'problem-node-form',
+					    'path' => drupal_get_path('module', 'problem'),
+					    )
+  );
 }
 
 function problem_mode_getSolutions($problem) {
