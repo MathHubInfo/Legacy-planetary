@@ -115,51 +115,54 @@ function batch_latex_operation($operation_details, &$context) {
 
   //  $limit = 5;
 
-  // Retrieve the next group of nids.
-  $result = db_select('node', 'n')
-    ->fields('n', array('nid'))
-    ->orderBy('n.nid', 'ASC')
-    ->condition('type','article')
-    ->where('n.nid > :nid', array(':nid' => $context['sandbox']['current_node']))
-    ->extend('PagerDefault')
-    // ->limit($limit) 
-    ->execute();
+// Retrieve the next group of nids.
+// NOTE: that this will loop, so be careful!
+$result = db_select('node', 'n')
+  ->fields('n', array('nid'))
+  ->orderBy('n.nid', 'ASC')
+  ->condition('type','article')
+  ->where('n.nid > :nid', array(':nid' => $context['sandbox']['current_node']))
+  ->execute();
 
-  // Here we actually perform our processing ...
-  foreach ($result as $row) {
+foreach ($result as $row) {
+  $node = node_load($row->nid, NULL, TRUE);
+  // dd($node);
+  if(isset($node->field_latex['und'][0]['preamble']) &&
+     isset($node->field_latex['und'][0]['document'])){
+    $node->field_latex['und'][0]['preamble'] =
+      str_replace("\usepackage{xypic}","%\\usepackage{xypic}",$node->field_latex['und'][0]['preamble']);
+    $node->field_latex['und'][0]['document'] =
+      $node->field_latex['und'][0]['document'] . "%";
+    dd("Processed: " .
+       $node->field_canonicalname['und'][0]['value'] . " (" . $node->nid .
+       ") " . date("Y-m-d h:i:s",time()));
+    // Key line...
+    $node->field_latex['und'][0]['format'] = 'tex_editor';
+    // dpm($node);
+    node_save($node);
+    // also needed
+    node_view($node);
+  }
+ 
+  // Store some result for post-processing in the finished callback.
+  // and update our progress information.
+  $context['sandbox']['current_node'] = $node->nid;
+  $context['results'][] = $node->nid . ' : ' . check_plain($node->title) . ' ' . $operation_details;
+  $context['sandbox']['progress']++;
+  $context['sandbox']['current_node'] = $node->nid;
+  $context['message'] = check_plain($node->title);
 
-    // just catch a few that I didn't process before.
-//    if($row->nid > 40411){
-      $node = node_load($row->nid, NULL, TRUE);
-      if(isset($node->field_latex['und'][0]['preamble']) && isset($node->field_latex['und'][0]['document'])){
-        $node->field_latex['und'][0]['preamble'] =
-          str_replace("\usepackage{xypic}","%\\usepackage{xypic}",$node->field_latex['und'][0]['preamble']);
-        $node->field_latex['und'][0]['document'] =
-          $node->field_latex['und'][0]['document'] . "%";
-        dd("Processed: " . $node->canonicalname . "(" . $node->nid . ")");
-        node_save($node);
-        // Store some result for post-processing in the finished callback.
-        // and update our progress information.
-        $context['sandbox']['current_node'] = $node->nid;
-        $context['results'][] = $node->nid . ' : ' . check_plain($node->title) . ' ' . $operation_details;
-        $context['sandbox']['progress']++;
-        $context['sandbox']['current_node'] = $node->nid;
-        $context['message'] = check_plain($node->title);
-
-        // In case we are not done, inform the batch engine that we are not finished,
-        // and provide an estimation of the completion level we reached.
-        if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
-          $context['finished'] = ($context['sandbox']['progress'] >= $context['sandbox']['max']);
-        }
-      }
+  // In case we are not done, inform the batch engine that we are not finished,
+  // and provide an estimation of the completion level we reached.
+  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    $context['finished'] = ($context['sandbox']['progress'] >= $context['sandbox']['max']);
+  }
+}
 //    } else { 
 //      dd("Skipping: (" . $row->nid . ")"); 
 //    }
-  }
 
-
-
-  _batch_latex_update_http_requests();
+_batch_latex_update_http_requests();
 }
 
 /**
