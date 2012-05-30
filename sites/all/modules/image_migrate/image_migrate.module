@@ -45,7 +45,7 @@ function image_migrate_im_buildShell(){
                 if(strstr($name,'.png')){
                     $rName = explode('.png', $name);
                     $name = $rName[0] . '.png';
-                    if(checkDuplicate($name)){
+                    if(image_migrate_checkDuplicate($name)){
                         db_insert('imageMigrate')->fields(array(
                                 'uid' => $row->userid,
                                 'name' => $name,
@@ -53,6 +53,7 @@ function image_migrate_im_buildShell(){
                         )->execute();
                         //  add the shell command to copy the file
                         $shell = 'cp ../pm-fileboxes/'.$row->name.'/*.png sites/default/files/pictures';
+			dd($shell);
                         shell_exec($shell);
                     }
                 }
@@ -115,14 +116,14 @@ function image_migrate_createNode($imgName, $uid, $canName){
         'id' => $node->nid,
         'count' => 1
     ))->execute();
-    db_insert('field_data_field_gallery_image')->fields(array(
+    db_insert('field_data_gallery_image')->fields(array(
         'entity_type' => 'node',
         'bundle' => 'image',
         'deleted' => 0,
         'entity_id' => $node->nid,
         'language' => 'und',
         'delta' => 0,
-        'field_gallery_image_fid' => $fid,
+        'gallery_image_fid' => $fid,
     ))->execute();
     return 1;
 }
@@ -133,7 +134,7 @@ function image_migrate_createNode($imgName, $uid, $canName){
 function image_migrate_createAllNodes(){
     $query = db_query("SELECT * FROM imageMigrate");
     foreach($query as $row){
-        createNode($row->name, $row->uid, $row->cannonical);
+        image_migrate_createNode($row->name, $row->uid, $row->cannonical);
     }
     db_query("TRUNCATE TABLE imageMigrate");
     return 'Nodes created!';
