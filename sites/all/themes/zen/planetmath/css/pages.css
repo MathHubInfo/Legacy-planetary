@@ -341,13 +341,17 @@ a:hover{
 .front-left, #front-left-block-tabs{
   float: left;
   width: 270px;
+  height: 500px;
   margin-left: 0px;
   margin-right: -270px;  
+  line-height: 150%;
 }
 
 .front-right, #front-right-block-tabs{
   float: left;
   width: 270px;
+  height: 500px;
+  line-height: 270%;
   margin-left: 280px;
   margin-right: -550px;  
 }
@@ -358,7 +362,7 @@ a:hover{
 }
 
 #front-left-mid-block-tabs{
-  margin-top: -200px;
+  margin-top: -40px;
 }
 
 #front-center-block{
@@ -534,7 +538,7 @@ padding: 0 0 0 15px;
 }
 
 #front-right-mid-block-tabs{
-  margin-top: -200px;
+  margin-top: -40px;
 }
 
 #front-bot-tabs{
