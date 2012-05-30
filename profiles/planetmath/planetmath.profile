@@ -807,6 +807,27 @@ function planetmath_profile_configure_node_types () {
                            'bundle' => 'image',
                            'label' => t('Image'),
                            'description' => t('The image'),
+			   'display' => array(
+					      'default' => array(
+								 'label' => 'above',
+								 'module' => 'shadowbox',
+								 'settings' => array(
+										     'compact' => 0,
+										     'gallery' => '',
+										     'image_link' => '',
+										     'image_style' => '',
+										     'title' => '',
+										     ),
+								 'type' => 'shadowbox',
+								 'weight' => '0',
+								 ),
+					      'teaser' => array(
+								'label' => 'above',
+								'settings' => array(),
+								'type' => 'hidden',
+								'weight' => 0,
+								),
+					      ),
                            'widget' => array(
                                              'type' => 'image_image'
                                              )
