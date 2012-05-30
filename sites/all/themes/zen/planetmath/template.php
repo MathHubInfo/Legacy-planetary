@@ -159,3 +159,19 @@ function planetmath_view_theme_getUserPoints(){
   return $result->points;
 }
 
+
+    // Preprocess variables for  html.tpl.php.
+    //template_preprocess_html
+    function planetmath_preprocess_html(&$variables) {
+     if (module_exists('rdf')) {
+         $variables['doctype'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML+RDFa 1.1//EN">' . "\n";
+         $variables['rdf']->version = ' version="HTML+RDFa 1.1"';
+         $variables['rdf']->namespaces = $variables['rdf_namespaces'];
+         $variables['rdf']->profile = ' profile="' . $variables['grddl_profile'] . '"';
+     } else {
+         $variables['doctype'] = '<!DOCTYPE html>' . "\n";
+         $variables['rdf']->version = '';
+         $variables['rdf']->namespaces = '';
+         $variables['rdf']->profile = '';
+     }
+    }
