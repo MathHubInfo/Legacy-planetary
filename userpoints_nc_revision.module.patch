@@ -1,9 +1,25 @@
-10a11,14
-> // jac - May 8, 2012, I was getting some kind of warning
-> // about $node->revision (which doesn't exist)
-> // Not sure what the logic is here, but the change should
-> // make this stop being annoying
-12c16
-<   if ($node->revision && userpoints_nc_get_setting('revision_enabled', $node->type, TRUE)) {
----
->   if ($node->revision_timestamp && userpoints_nc_get_setting('revision_enabled', $node->type, TRUE)) {
+*** /home/joe/drupal_planetary/sites/all/modules/userpoints_nc/userpoints_nc_revision/userpoints_nc_revision.module	2011-06-18 05:50:06.000000000 -0400
+--- /home/joe/userpoints_nc_revision.module	2012-05-28 18:17:56.000000000 -0400
+***************
+*** 8,15 ****
+  /**
+   * Implements hook_node_update().
+   */
+  function userpoints_nc_revision_node_update($node) {
+!   if ($node->revision && userpoints_nc_get_setting('revision_enabled', $node->type, TRUE)) {
+      global $user;
+      $points_own_nodes = userpoints_nc_get_setting('revision_own_nodes', $node->type);
+  
+--- 8,19 ----
+  /**
+   * Implements hook_node_update().
+   */
++ // jac - May 8, 2012, I was getting some kind of warning
++ // about $node->revision (which doesn't exist)
++ // Not sure what the logic is here, but the change should
++ // make this stop being annoying
+  function userpoints_nc_revision_node_update($node) {
+!   if ($node->revision_timestamp && userpoints_nc_get_setting('revision_enabled', $node->type, TRUE)) {
+      global $user;
+      $points_own_nodes = userpoints_nc_get_setting('revision_own_nodes', $node->type);
+  

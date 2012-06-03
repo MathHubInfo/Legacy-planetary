@@ -74,7 +74,7 @@ function planetmath_og_model_insertNodeEditingGroup($node) {
           ))->execute();
 
   db_insert('og_membership')->fields(array(
-      'name' => 'og_membership_type_default',
+      'type' => 'og_membership_type_default',
       'etid' => $node->nid,
       'entity_type' => 'node',
       'gid' => $gid,
@@ -86,7 +86,7 @@ function planetmath_og_model_insertNodeEditingGroup($node) {
 
 function planetmath_og_model_addUserToGroup($gid, $uid, $isAdmin = false) {
   db_insert('og_membership')->fields(array(
-      'name' => 'og_membership_type_default',
+      'type' => 'og_membership_type_default',
       'etid' => $uid,
       'entity_type' => 'user',
       'gid' => $gid,
@@ -194,6 +194,11 @@ function planetmath_og_view_requestInvitePage($node, $group) {
   return $html;
 }
 
+// This hook will make it so that every new user is added to the world writable group.
+// That is good, but there is one problem.  If planetmath_og is enabled when migrations
+// run, the function planetmath_og_model_addUserToGroup() that it calls ends up giving
+// errors.  It seems that's just a "typo" in the code above however! 
+// (Specifically, 'name' should be 'type').
 function planetmath_og_user_insert($edit, $account, $category) {
   $gid = planetmath_og_model_getWWGroup();
   planetmath_og_model_addUserToGroup($gid, $account->uid);

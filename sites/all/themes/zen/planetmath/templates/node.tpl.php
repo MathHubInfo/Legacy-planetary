@@ -84,11 +84,10 @@
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
-  <?php print $user_picture; ?>
 
-  <?php print render($title_prefix); ?>
-  <?php if (!$page && $title): ?>
-    <h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
+ <?php print render($title_prefix); ?>
+ <?php if ($node->textitle) : ?>
+    <h1<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $node->textitle; ?></a></h1>
   <?php endif; ?>
   <?php print render($title_suffix); ?>
 
@@ -107,13 +106,24 @@
     // We hide the comments and links now so that we can render them later.
     hide($content['comments']);
     hide($content['links']);
+    hide($content['field_msc']);
+    hide($content['field_revisioncomment']);
     hide($content['planetary_links']);
     //HACK to get the latex field to work
 //    hide($content['field_latex']);
     //END-HACK
     print render($content);
-    ?>
+?> <?php if(isset($node->field_msc['und'][0]['value'])): ?>
+  
+<h2>Mathematics Subject Classification</h2>
+
+<?php $codes=explode(",",$node->field_msc['und'][0]['value']); 
+foreach($codes as $code){
+  $code = trim($code);
+  print $code . " " . l(msc_browser_get_label($code),"msc_browser/".$code) . "<br/>";
+} endif; ?>
   </div>
+
   <br />  
   <div id="planetary-links">
   <?php

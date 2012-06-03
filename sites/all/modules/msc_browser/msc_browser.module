@@ -15,11 +15,64 @@ function msc_browser_menu() {
 
     $items['msc_browser'] = array(
         'title' => 'MSC browser',
+        'title callback' => 'msc_browser_title',
         'page callback' => 'msc_browser_handler',
         'access callback' => TRUE,
         'type' => MENU_CALLBACK,);
 
     return $items;
+}
+
+function msc_browser_title(){
+  if (arg(1)) {
+      $ret =  'MSC browser: ' . arg(1) . ' ('. msc_browser_get_label(arg(1)) . ') ';
+  } else {
+    $ret =  'MSC browser';
+  }
+  return $ret;
+}
+
+function msc_browser_get_label($code) {
+  include_once('sites/all/libraries/ARC2/arc/ARC2.php');
+  $endpoint = (object) array('uri' => "http://li311-58.members.linode.com:8890/sparql");
+  $graph="http://localhost:8890/DAV/home/dba/rdf_sink/";
+
+  $query = "PREFIX msc: <http://msc2010.org/resources/MSC/2010/> ".
+           "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ".
+           "PREFIX dct: <http://purl.org/dc/terms/> ".
+           "PREFIX local: <http://local.virt/> ".
+           "SELECT ?label WHERE { ".
+           "GRAPH <".$graph."> { ".
+              "msc:".$code." skos:prefLabel ?label ".
+              "FILTER langMatches( lang(?label), \"en\" ) ".
+           "}}";
+    $result = sparql_request($query, $endpoint);
+    if (isset($result['result']['rows'][0]['label']))
+      return $result['result']['rows'][0]['label'];
+    else
+      return '';
+}
+
+function msc_browser_get_parent($code) {
+  include_once('sites/all/libraries/ARC2/arc/ARC2.php');
+  $endpoint = (object) array('uri' => "http://li311-58.members.linode.com:8890/sparql");
+  $graph="http://localhost:8890/DAV/home/dba/rdf_sink/";
+
+  $query = "PREFIX msc: <http://msc2010.org/resources/MSC/2010/> ".
+           "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ".
+           "PREFIX dct: <http://purl.org/dc/terms/> ".
+           "PREFIX local: <http://local.virt/> ".
+           "SELECT ?notation { ".
+           "GRAPH <".$graph."> { ".
+              "?parent skos:narrower msc:".$code. " ." .
+              "?parent skos:notation ?notation".
+           "}}";
+    $result = sparql_request($query, $endpoint);
+
+    if (isset($result['result']['rows'][0]['notation']))
+      return $result['result']['rows'][0]['notation'];
+    else
+      return '';
 }
 
 function msc_browser_handler($cat='') {
@@ -30,6 +83,8 @@ function msc_browser_handler($cat='') {
   $result ="";
   $articles_flag = 0;
   $level =-1;
+
+  global $base_url;
 
   if ($cat === '') {
     // then we are at the top, so get the top concepts
@@ -47,6 +102,9 @@ function msc_browser_handler($cat='') {
   } else {
     // if this is is a terminal category
     // then we will query for articles
+    $parent =  msc_browser_get_parent($cat);
+    //dd("PARENT");
+    //dd($parent);
 
     if (preg_match("/...[0-9][0-9]/",$cat)){
       $articles_query = "PREFIX dc:<http://purl.org/dc/terms/> ".
@@ -76,9 +134,20 @@ function msc_browser_handler($cat='') {
   $toReturn = "";
 
   if (sizeof($result['result']['rows'])==0){
-    $toReturn .="<p>No articles found.</p>";
+    $toReturn .="<p><em>No articles found. Up to ".l($parent,"msc_browser/".$parent).".</em></p>";
   } else {
-    $toReturn .= "<ul>";
+    if($parent){
+      $toReturn .= "<p><em>Up to ".l($parent,"msc_browser/".$parent)."</em></p>";
+      $toReturn .= "<ul>";
+    } else {
+      if($cat) {
+	$toReturn .= "<p><em>Up to ".l("top","msc_browser/")."</em></p>";
+	$toReturn .= "<ul>";
+      } else {
+	$toReturn .= "<ul>";
+      }
+    }
+    
     for ($i = 0; $i < sizeof($result['result']['rows']); $i++) {
       $sub_cat_codes = explode("/", $result['result']['rows'][$i]['child']);
       $sub_cat_code = $sub_cat_codes[sizeof($sub_cat_codes)-1];
@@ -143,10 +212,15 @@ SELECT ?article WHERE {".
 	    $count = count($result_of_count_query['result']['rows']);
 	  }
 
-	$toReturn .= "<li>".$sub_cat_code." <a href='/msc_browser/" . $sub_cat_code . "'>" . $result['result']['rows'][$i]['label'] . "</a> (".$count.")</li>";
+	//dd($result);
+	$toReturn .= "<li>".$sub_cat_code." <a href='$base_url/msc_browser/" . $sub_cat_code . "'>" . $result['result']['rows'][$i]['label'] . "</a> (".$count.")</li>";
       } else {
 	// printing articles
-	$toReturn .= "<li><a href='/".$result['result']['rows'][$i]['canonicalname']."'>" . $result['result']['rows'][$i]['canonicalname'] . "</a></li>";
+
+	$title=db_query("SELECT n.title from {node} n JOIN field_data_field_canonicalname f WHERE n.nid = f.entity_id AND f.field_canonicalname_value = :cn", array(':cn' => $result['result']['rows'][$i]['canonicalname']))->fetchObject();
+	//dd("TITLE".$title->title);
+
+	$toReturn .= "<li><a href='$base_url/".$result['result']['rows'][$i]['canonicalname']."'>" . ucfirst($title->title) . "</a></li>";
       }
     }
 

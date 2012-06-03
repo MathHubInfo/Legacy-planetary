@@ -14,7 +14,7 @@ div.tabs {
 }
 
 ul.primary {
-  margin: 0;
+  margin-bottom: -5px;
   padding: 0 0 0 10px; /* LTR */
   border-width: 0;
   list-style: none;

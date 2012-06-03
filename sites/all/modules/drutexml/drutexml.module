@@ -224,10 +224,13 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
 
 $res = json_decode($content);
 
+//dd($res);
 
   $res = trim($res->{'result'});
-  $res = str_replace('m:','',$res); //stupid firefox doesn't know about namespaces in HTML ... so it's rendered badly. otherwise, uncomment next line.
-  $res = str_replace('xml:','',$res); //also remove xml:id
+  // Post-processing isn't necessary now that we get HTML5 output from LaTeXML
+  // (Plus Deyan says never to use a regexp for this sort of thing!)
+  // $res = str_replace('m:','',$res); 
+  // $res = str_replace('xml:','',$res); 
   _drutexml_cache_set($key, $res);
   return $res;
 }

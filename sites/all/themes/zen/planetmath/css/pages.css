@@ -18,9 +18,13 @@ body {
   line-height: 1.4em;
   font-family: "Hoefler Text", Georgia, Times, serif;
   color: #444;  
+  background-image: url(../images/paper.jpg);
+  background-repeat: repeat-y;
+  background-size: 100% 100%;
 }
 
 #page-wrapper {
+  padding: 10px;
 }
 
 #page {
@@ -232,9 +236,10 @@ ul.links li {
 */
 .region-bottom /* Wrapper for any blocks placed in the page bottom region */ {
 }
-
+/*06799F*/
+/*062edb*/
 a, a:visited, a:link, a:active{
-  color: #06799F;
+  color: #062edb;
   border-bottom: 1px solid #F2ECDA;  
   text-decoration: none;
 }
@@ -257,6 +262,7 @@ a:hover{
 
 #block-user-login{
   float: right;
+  margin-right: -300px;
   margin-top: -70px;
 }
 
@@ -281,10 +287,13 @@ a:hover{
 
 /* SEARCH */
 
+
 #block-search-form{
   float: right;
-  margin-right: -430px;
+  margin-right: 0;
   margin-top: 50px;
+  background: none;
+  border: none;
 }
 
 #block-search-form .form-submit{
@@ -299,6 +308,7 @@ a:hover{
 /* LOGO AND SLOGAN */
 #name-and-slogan{
   margin-top: 30px;  
+  margin-left: 20px;  
 }
 #logo{
   margin-top: 10px;
@@ -324,12 +334,19 @@ a:hover{
   width: 300px;
 }
 
+.block-tabs ul li{
+    font-weight:bold;
+    color:black;
+    
+}
+
 .tab-title-link{
   font-size: 13px;
 }
 
 .tab-contents, .block .content{
   font-size: 12px; 
+  margin: 0px 10px;
 }
 
 
@@ -341,34 +358,101 @@ a:hover{
 .front-left, #front-left-block-tabs{
   float: left;
   width: 270px;
+  height: 365px;
   margin-left: 0px;
-  margin-right: -270px;  
+  margin-right: -265px;  
+  line-height: 150%;
+  background-image: url(../images/old-paper.jpg);
 }
 
 .front-right, #front-right-block-tabs{
   float: left;
   width: 270px;
+  height: 365px;
+  line-height: 200%;
   margin-left: 280px;
   margin-right: -550px;  
+  background-image: url(../images/old-paper3.jpg);
 }
 
 #front-mid-tabs{
-  margin-top: 430px;
+  margin-top: 50px;
   clear: both;
 }
 
-#front-left-mid-block-tabs{
-  margin-top: -200px;
+#front-right-mid-block-tabs{
+  background-image: url(../images/grid.jpg);
 }
+
+#front-left-mid-block-tabs{
+  margin-top: -40px;
+  background-image: url(../images/envelope-cropped.jpg);
+}
+
+.ui-tabs .ui-tabs-nav li {
+    font-family: Verdana,Arial,sans-serif;
+    padding:0px 0px 0px 0px;
+    font-size:1.1em;
+}
+
+.ui-widget-content {
+    font-family: Verdana,Arial,sans-serif;
+    padding:0px;
+    border: 1px solid #AAA;
+    border-radius: 4px 4px 4px 4px;
+    margin-bottom:5px;
+    
+}
+
+/*
+
+.block-tabs ul li{
+    font-weight:bold;
+    color:black;
+    
+}
+.ui-tabs .ui-tabs-nav li {
+    padding:5px 0px 5px 10px;
+    font-size:1.1em;
+}
+.ui-widget-content {
+    padding:4px;
+    border:2px solid #ccc;
+    border-radius: 4px 4px 4px 4px;
+    margin-bottom:5px;
+    
+}
+
+
+#front-top-tabs h2,#front-mid-tabs h2 , #front-bot-tabs h2 {
+    color:black;
+    font-weight:bold;
+    padding:1px 0px 2px 20px;
+    font-family:Arial,serif;
+    font-size:110%;
+}
+*/
 
 #front-center-block{
   width: 560px;
+  background-image: url(../images/laid.jpg);
+  background-size: 100%;
 }
 
+#front-center-block .block-title-helper{
+  background: transparent;
+}
+
+#block-planetmath-blocks-news{
+ /* background-image: url(../images/newsprint.jpg); */
+}
+
+#block-planetmath-blocks-userlist{
+/*  background-image: url(../images/origami.jpg); */
+}
+
+
 h2.block-title{
-  border: 1px solid #AAA/*{borderColorHeader}*/;
-  background: #CCC url(../images/ui-bg_highlight-soft_75_cccccc_1x100.png)/*{bgImgUrlHeader}*/ 50%/*{bgHeaderXPos}*/ 50%/*{bgHeaderYPos}*/ repeat-x/*{bgHeaderRepeat}*/;
-  color: #222/*{fcHeader}*/;
   font-weight: bold;
   -webkit-border-radius: 4px/*{cornerRadius}*/;
   border-radius: 4px/*{cornerRadius}*/;
@@ -382,10 +466,10 @@ h2.block-title{
 
 .block{
   border: 1px solid #AAA/*{borderColorContent}*/;
-  background: white/*{bgColorContent}*/ url(../images/ui-bg_flat_75_ffffff_40x100.png)/*{bgImgUrlContent}*/ 50%/*{bgContentXPos}*/ 50%/*{bgContentYPos}*/ repeat-x/*{bgContentRepeat}*/;
+  background: rgb(248, 248, 255);
+  background: rgba(248, 248, 255, 0.6);
   color: #222/*{fcContent}*/;
   position: relative;
-  padding: .2em;
   zoom: 1;
   -webkit-border-radius: 4px/*{cornerRadius}*/;
   border-radius: 4px/*{cornerRadius}*/;
@@ -396,12 +480,12 @@ h2.block-title{
 
 .block-title-helper{
   float: left;
-  padding: .6em 1em;
+  padding: .1em .4em;
   text-decoration: none;
   color: #212121;/*{fcActive}*/
-  border: 1px solid #AAA/*{borderColorActive}*/;
-  background: white/*{bgColorActive}*/ url(images/ui-bg_glass_65_ffffff_1x400.png)/*{bgImgUrlActive}*/ 50%/*{bgActiveXPos}*/ 50%/*{bgActiveYPos}*/ repeat-x/*{bgActiveRepeat}*/;
-  font-weight: normal/*{fwDefault}*/;
+  background: rgba(248, 248, 255);
+  background: rgba(248, 248, 255, 0.6);
+  font-weight: bold/*{fwDefault}*/;
   color: #212121/*{fcActive}*/;    
   margin-bottom: 0;
   padding-bottom: 1px;
@@ -409,13 +493,22 @@ h2.block-title{
   top: 1px;
   margin: 0 .2em 1px 2px;  
   white-space: nowrap;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
   border-bottom: 0 !important;
+}
+
+.node-title{
+  padding-top: .7em;
 }
 
 #block-system-main{
   border: 0;
+  background: rgb(255, 250, 250);
+  background: rgba(255, 250, 250, 1.0);
+  margin-top: -.1em;
+}
+
+.view-header {
+  padding: 1em;
 }
 
 ul.links.inline{
@@ -482,8 +575,8 @@ ul.node-images-list li{
 } 
 
 .logged-in .node h1.title{
-margin-bottom: 70px;
-margin-top: -22px;
+margin-bottom: 10px;
+margin-top: -5px;
 }
 
 table {
@@ -524,6 +617,10 @@ background: #FFF;
   padding: 8px 10px;
 }
 
+#forum-list-17{
+  background: #FCD116;
+}
+
 ul.action-links{
 margin: 0px;
 padding: 0 0 0 15px;
@@ -533,8 +630,16 @@ padding: 0 0 0 15px;
   min-height: 80px
 }
 
+#front-top-tabs h2,#front-mid-tabs h2 , #front-bot-tabs h2 {
+    color:black;
+    font-weight:bold;
+    padding:0px 1px 0px 10px; 
+    font-family:Arial,serif;
+    font-size:110%;
+}
+
 #front-right-mid-block-tabs{
-  margin-top: -200px;
+  margin-top: -40px;
 }
 
 #front-bot-tabs{
@@ -550,8 +655,9 @@ padding: 0 0 0 15px;
 .block-day-date{
   float: right;
 }
+
 .block .content, .content .tab-contents{
-  padding: 10px;
+  margin-bottom: 10px;
 }
 
 /* LATEXML Stuff */
@@ -564,4 +670,12 @@ padding: 0 0 0 15px;
 
 .region-footer{
   margin-top: 50px;
+}
+
+.region-bottom{
+  margin-top: 20px;
+}
+
+#forum {
+margin:0px -10px 0px -10px;
 }

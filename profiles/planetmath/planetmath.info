@@ -121,6 +121,8 @@ dependencies[] = msc_browser
 dependencies[] = pyrdfa
 dependencies[] = wysiwyg_codemirror
 dependencies[] = wysiwyg_etherpad_lite
+dependencies[] = planetmath_orphanage
+dependencies[] = planetmath_image
 
 ;; features
 ;; Apparently we cannot load permissions unless they are required via this dependency,

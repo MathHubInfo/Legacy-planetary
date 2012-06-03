@@ -20,7 +20,7 @@
 -- Those can be run as the demodb user.  Details follow:
 
 -- BEFORE Drupal migrations:
--- $ mysql -u demodb --password=PASSWORD demodb < tables-into-drupal-pt3.sql
+-- $ mysql -u demodb --password=PASSWORD demodb < tables-into-drupal-pt2.sql
 
 -- AFTER Drupal migrations:
 -- $ mysql -u demodb --password=PASSWORD demodb < tables-into-drupal-pt3.sql

@@ -14,7 +14,7 @@ function pyrdfa_node_postsave($node){
   //dd('Entering the postsave hook');
   if ($node->type=="article"){
     global $base_url;
-    $base_path = "/home/planetary/drupal_planetary";
+    $base_path = "/home/joe/drupal_planetary";
     $virtuoso_location = "http://li311-58.members.linode.com:8890";
     
     // Actually now the contents are being stored by canonical name not path so this should change.
@@ -22,11 +22,11 @@ function pyrdfa_node_postsave($node){
     $subject_uri = "http://local.virt/". $node->field_canonicalname['und'][0]['value'];
     // drupal_set_message($subject_uri);
 
-    dd("path: ".$node->path['source']);
+    //dd("path: ".$node->path['source']);
     // will try these one by one.
-    extract_rdfa($node->path['source'],$base_url,$base_path);
+    extract_rdfa('node/'.$node->nid,$base_url,$base_path);
     delete_triples($virtuoso_location,$subject_uri);
-    upload_new_triples($virtuoso_location,$base_path,$node->path['source']);
+    upload_new_triples($virtuoso_location,$base_path,'node/'.$node->nid);
   }
 }
 
@@ -44,7 +44,7 @@ function extract_rdfa($path,$domain,$base_file_path){
   // This will need to be set as a configurable value
   $call = 'python /home/planetary/PyRDFa/scripts/localRDFa.py -x '.$infile_path . ' > ' . $outfile;
   $res  = system($call);
-  drupal_set_message('Running: '. htmlspecialchars($call) . ' yeilds a file with these contents =><pre>'.htmlspecialchars(file_get_contents($outfile)).'...</pre>');
+  //drupal_set_message('Running: '. htmlspecialchars($call) . ' yeilds a file with these contents =><pre>'.htmlspecialchars(file_get_contents($outfile)).'...</pre>');
   // drupal_set_message('xml file created!');
 }
 
@@ -69,7 +69,7 @@ function upload_new_triples($virtuoso_location,$base_path,$path){
   $response = curl_exec($cup);
 
   //  drupal_set_message("INFO ABOUT CURL: <pre>".print_r(curl_getinfo($cup),true)."</pre>");
-  //  drupal_set_message("CURL RESPONSE <pre>".print_r($response,true)."</pre>");
+  dd("CURL RESPONSE <pre>".print_r($response,true)."</pre>");
   curl_close($cup);
 }
 
@@ -116,7 +116,7 @@ function curl_post($url, array $post = NULL, array $options = array()) {
 
 function get_data($url)
 {
-  //dd('get_data() invoked..');
+  dd('get_data() invoked..');
   $ch = curl_init();
   curl_setopt($ch,CURLOPT_URL,$url);
   curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
