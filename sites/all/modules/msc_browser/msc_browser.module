@@ -143,6 +143,8 @@ function msc_browser_handler($cat='') {
       if($cat) {
 	$toReturn .= "<p><em>Up to ".l("top","msc_browser/")."</em></p>";
 	$toReturn .= "<ul>";
+      } else {
+	$toReturn .= "<ul>";
       }
     }
     
@@ -211,12 +213,14 @@ SELECT ?article WHERE {".
 	  }
 
 	//dd($result);
-
-
 	$toReturn .= "<li>".$sub_cat_code." <a href='$base_url/msc_browser/" . $sub_cat_code . "'>" . $result['result']['rows'][$i]['label'] . "</a> (".$count.")</li>";
       } else {
 	// printing articles
-	$toReturn .= "<li><a href='$base_url/".$result['result']['rows'][$i]['canonicalname']."'>" . $result['result']['rows'][$i]['canonicalname'] . "</a></li>";
+
+	$title=db_query("SELECT n.title from {node} n JOIN field_data_field_canonicalname f WHERE n.nid = f.entity_id AND f.field_canonicalname_value = :cn", array(':cn' => $result['result']['rows'][$i]['canonicalname']))->fetchObject();
+	//dd("TITLE".$title->title);
+
+	$toReturn .= "<li><a href='$base_url/".$result['result']['rows'][$i]['canonicalname']."'>" . ucfirst($title->title) . "</a></li>";
       }
     }
 
