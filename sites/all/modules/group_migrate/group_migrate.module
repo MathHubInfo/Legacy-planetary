@@ -76,28 +76,28 @@ function group_migrate_port_planetmath_groups_to_og() {
     // INNER LOOP ONE: for each group, import users belonging to that group
     $users = db_query("SELECT DISTINCT userid FROM {planetmath_group_members} WHERE {planetmath_group_members}.groupid = :groupid", array(':groupid' => $record->groupid));
       
-    dd('running users...');
+    //dd('running users...');
     foreach ($users as $uid) {
       if($uid->userid != $record->userid){
-        dd($uid->userid, 'user id loaded...');
+        //dd($uid->userid, 'user id loaded...');
         $user = user_load($uid->userid, TRUE);
-        dd($group->gid, 'adding user to this new group...');
+        //dd($group->gid, 'adding user to this new group...');
         // drush_set_error('DEBUGGING', dt('Will attempt to add user ' . $uid . ' to group ' . $gid . '.'));
         og_membership_save(og_membership_create($group->gid, 'user', $uid->userid));
-        dd('user membership recorded...');
+        //dd('user membership recorded...');
       }
     }
      
     // INNER LOOP TWO: for each group, import its articles
     $articles = db_query("SELECT DISTINCT objectid FROM {planetmath_acl} WHERE user_or_group = 'g' and subjectid = :groupid", array(':groupid' => $record->groupid));
      
-    dd('running articles...');
+    //dd('running articles...');
     foreach ($articles as $nid) {
-      dd($nid->objectid, 'object id loaded...');
+      //dd($nid->objectid, 'object id loaded...');
       $node = node_load($nid->objectid);
       og_membership_save(og_membership_create($group->gid, 'node', $nid->objectid));
     }
-    dd('done with this loop...');
+    //dd('done with this loop...');
   }
 }
 // Test (well, just do the damn thing):
@@ -116,14 +116,14 @@ function group_migrate_port_coauthors () {
     // INNER LOOP: for each group, import users belonging to that group
     $users = db_query("SELECT DISTINCT subjectid FROM {planetmath_acl} WHERE {planetmath_acl}.objectid = :objectid", array(':objectid' => $object->objectid));
 	 
-    dd('running users...');
+    //dd('running users...');
     foreach ($users as $uid) {
       if ($uid->subjectid != $object->userid && $uid->subjectid != -1){
-        dd($uid->subjectid, 'user id loaded...');
+        //dd($uid->subjectid, 'user id loaded...');
         // $user = user_load($uid->userid, TRUE);
-        dd($group->gid, 'adding user to this new group...');
+        //dd($group->gid, 'adding user to this new group...');
         og_membership_save(og_membership_create($group->gid, 'user', $uid->subjectid));
-        dd('user membership recorded...');
+        //dd('user membership recorded...');
       }
     }
 	
@@ -135,9 +135,10 @@ function group_migrate_port_coauthors () {
 // port_coauthors();
 
 function group_migrate_run_group_migration(){
-  port_world_writable();
-  port_planetmath_groups_to_og();
-  port_coauthors();
+  set_time_limit(0);
+  // port_world_writable();
+  group_migrate_port_planetmath_groups_to_og();
+  group_migrate_port_coauthors();
   return 'Groups created.';
 }
 
