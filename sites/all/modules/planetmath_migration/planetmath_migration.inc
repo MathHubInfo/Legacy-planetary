@@ -214,12 +214,16 @@ class PMForumOPMigration extends Migration {
     $this->addFieldMapping('promote')->defaultValue(0);
     $this->addFieldMapping('title', 'subject');
     $this->addFieldMapping(NULL, 'prefix');
-    $arguments = MigrateTextFieldHandler::arguments(array('source_type' => 'tid'));
-    $this->addFieldMapping('taxonomy_forums', 'objectid')
-         ->arguments($arguments);
+    $this->addFieldMapping('language')->defaultValue('und');
+    $arguments = MigrateTextFieldHandler::arguments(NULL,
+						    NULL,
+						    'und');
+    $this->addFieldMapping('taxonomy_forums:tid', 'objectid')
+      ->arguments($arguments);
 
     $this->addFieldMapping('body', 'body');
   }
+
 }
 
 // forum posts that are attached to already-existing threads
