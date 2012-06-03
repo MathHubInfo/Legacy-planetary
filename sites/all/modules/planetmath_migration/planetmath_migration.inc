@@ -215,11 +215,9 @@ class PMForumOPMigration extends Migration {
     $this->addFieldMapping('title', 'subject');
     $this->addFieldMapping(NULL, 'prefix');
     $this->addFieldMapping('language')->defaultValue('und');
-    $arguments = MigrateTextFieldHandler::arguments(NULL,
-						    NULL,
-						    'und');
-    $this->addFieldMapping('taxonomy_forums:tid', 'objectid')
-      ->arguments($arguments);
+    $this->addFieldMapping('taxonomy_forums', 'objectid');
+    $this->addFieldMapping('taxonomy_forums:source_type')
+      ->defaultValue('tid');
 
     $this->addFieldMapping('body', 'body');
   }
