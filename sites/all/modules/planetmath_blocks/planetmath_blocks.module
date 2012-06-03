@@ -4,7 +4,9 @@
  * Adds useful blocks for the planetmath theme
  * @author Alex Dumitru <m.dumitru@jacobs-university.de> 
  */
+define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_NUMBER_OF_ITEMS_ON_BLOCK', 10);
 define('PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK', 7);
+define('PLANETMATH_BLOCKS_NUMBER_OF_MESSAGES_ON_BLOCK', 10);
 define('PLANETMATH_BLOCKS_NUMBER_OF_USERS_ON_BLOCK', 7);
 define('PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK', 5);
 define('PLANETMATH_BLOCKS_NUMBER_OF_PROBLEMS_ON_BLOCK', 5);
@@ -53,7 +55,7 @@ function planetmath_blocks_queryEverythingElse($sortBy = 'n.changed') {
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     INNER JOIN users u ON u.uid = n.uid
-    WHERE n.`type` IN (:type) ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => unserialize(PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES)));
+    WHERE n.`type` IN (:type) ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_EVERYTHING_ELSE_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => unserialize(PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES)));
   $return = array();
   foreach ($results as $result) {
     $return[] = $result;
@@ -66,7 +68,7 @@ function planetmath_blocks_queryMessages() {
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     INNER JOIN users u ON u.uid = n.uid
-    WHERE n.`type` = 'forum' ORDER BY n.changed DESC LIMIT 0," . floor(PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK / 2));
+    WHERE n.`type` = 'forum' ORDER BY n.changed DESC LIMIT 0," . ceil(PLANETMATH_BLOCKS_NUMBER_OF_MESSAGES_ON_BLOCK / 2));
   $return = array();
 
   foreach ($results as $result) {
@@ -76,7 +78,7 @@ function planetmath_blocks_queryMessages() {
   $results = db_query("SELECT c.cid, n.nid, n.type, c.subject, c.uid, c.changed, c.name AS username FROM comment c
       INNER JOIN node n ON n.nid = c.nid      
       INNER JOIN users u ON u.uid = c.uid
-      ORDER BY c.changed DESC LIMIT 0," . floor(PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK / 2));
+      ORDER BY c.changed DESC LIMIT 0," . floor(PLANETMATH_BLOCKS_NUMBER_OF_MESSAGES_ON_BLOCK / 2));
 
   foreach ($results as $result) {
     $return[] = $result;
@@ -281,7 +283,7 @@ function planetmath_blocks_blockThemeEverythingElseWithDate($results, $sortBy = 
     // It would be nice to include the "parent" in some fashion, when it exists, i.e.
     // new solution XX to problem YY.
 
-    $html .= '<span >' . 'new '. $result->type . ': '
+    $html .= '<span>' . 'new '. $result->type . ': '
               . l($result->title . ' ' . $result->vid, 'node/' . $result->nid) 
               . ' by ' . l($result->username, 'user/' . $result->uid) 
               . '</span><br />';
@@ -319,9 +321,10 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
       } else {
         $code = 'p';
       }
-      $html .= '<span >' . date('Y-m-d', $result->changed) . " - [" . l($code, 'node/' . $result->nid) . "] " . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-' . $result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
+
+      $html .=  '<span class="block-day-date">' . date('Y-m-d', $result->changed) . '</span>'. '<br /><span class="message-block-item">'. ' [' . l($code, 'node/' . $result->nid) . "] " . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-' . $result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
     } else {
-      $html .= '<span >' . date('Y-m-d', $result->changed) . " - " . l($result->title, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
+      $html .= '<span class="block-day-date">'. date('Y-m-d', $result->changed) . '</span>' . '<br /><span class="message-block-item">' . l($result->title, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
     }
   }
   //$html .= "</div>";
@@ -339,7 +342,11 @@ function planetmath_blocks_blockThemeMyPersonalResults($results) {
   $html = "";// '<div style="padding-left:7%;padding-right:10%;padding-bottom:10%;"><br />';
 
   foreach ($results as $result) {
-    $html .= '<span>' . date('Y-m-d', $result->changed) . " - " . l($result->username, 'user/' . $result->uid) . " " . l('replied', 'node/' . $result->nid, array('fragment' => 'comment-' . $result->cid)) . ' to ' . l($result->title, 'user/' . $result->nid) . '</span><br />';
+    $html .= '<span>' . date('Y-m-d', $result->changed) 
+              . " - " . l($result->username, 'user/' . $result->uid)
+              . " " . l('replied', 'node/' . $result->nid, 
+                           array('fragment' => 'comment-' . $result->cid))
+              . ' to ' . l($result->title, 'node/' . $result->nid) . '</span><br />';
   }
  // $html .= "</div>";
   return $html;
