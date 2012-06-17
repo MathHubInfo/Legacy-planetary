@@ -228,3 +228,79 @@ function planetmath_og_group_add_programmatic($name,$userid,$description) {
   $etid = planetmath_og_node_add_programmatic('group', $name, $userid, $description);
   return og_get_group('node', $etid, TRUE);
 }
+
+// ATTEMPT TO MODIFY THE DISPLAY OF GROUPS USING A THEME
+
+function planetmath_og_theme($existing, $type, $theme, $path) {
+  $to_return = array(
+	       'planetmath_group_users' => array(
+						 'variables' => array('links' => array()),
+						 ),
+	       'planetmath_group_content' => array(
+						   'variables' => array('links' => array()),
+						   ),
+	       );
+  return $to_return;
+}
+
+function theme_planetmath_group_users($variables) {
+  $return = "Members: ";
+  foreach ($variables['links'] as $link) {
+    $return = $return . l($link->name, 'user/' . $link->uid) . " ";
+    }
+    
+    dd($return);
+  return $return;
+}
+
+function theme_planetmath_group_content($variables) {
+ dd($variables);
+ $return = "Content: ";
+ foreach ($variables['links'] as $link) {
+   $return = $return . l($link->title, 'node/' . $link->nid) . " ";
+   }
+   
+ dd($return);
+ return $return;
+}
+
+function planetmath_og_node_view($node) {
+
+  if($node->type == 'group'){
+
+    // first select relevant information about group members 
+
+    $user_info = db_query("SELECT u.name, u.uid FROM users u INNER JOIN og INNER JOIN og_membership ON og.gid = og_membership.gid WHERE og.etid = :nid AND og.entity_type='node' AND og_membership.entity_type = 'user' AND og_membership.etid = u.uid LIMIT 20;", array(':nid' => $node->nid));
+
+    $links = array();
+    foreach ($user_info as $result) {
+      $links[] = $result;
+    }
+   
+
+    $node->content['planetmath_group_users'] = array(
+        '#markup' => '',
+        '#weight' => 10,
+        '#theme' => 'planetmath_group_users',
+        '#links' => $links,
+    );
+    
+    // then select relevant information about group content (nodes)
+
+    $content_info = db_query("SELECT n.title,n.nid FROM node n INNER JOIN og INNER JOIN og_membership ON og.gid = og_membership.gid WHERE og.etid =:nid AND og.entity_type='node' AND og_membership.entity_type = 'node' AND og_membership.etid = n.nid LIMIT 20", array(':nid' => $node->nid));
+
+   $links = array();
+   foreach ($content_info as $result) {
+     $links[] = $result;
+   }
+   
+   $node->content['planetmath_group_content'] = array(
+       '#markup' => '',
+       '#weight' => 10,
+       '#theme' => 'planetmath_group_content',
+       '#links' => $links,
+   );
+    
+   
+  }
+}

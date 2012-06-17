@@ -101,6 +101,22 @@
     </div>
   <?php endif; ?>
 
+   <?php if ($type === 'group'): ?>
+   <div id="planetmath_group">
+   <h2> Group information </h2>
+   <?php
+   dd($content);
+     print render($content['planetmath_group_users']); 
+   ?> <br />
+   <?php
+     print render($content['planetmath_group_content']);
+     // I don't know why, but this seems to be needed to get "subscribe" link
+     // to show up for non-admin users
+     print render($content['group_group'][0]);
+   ?>
+   </div>
+   <?php endif; ?>
+
   <div class="content"<?php print $content_attributes; ?>>
     <?php
     // We hide the comments and links now so that we can render them later.
