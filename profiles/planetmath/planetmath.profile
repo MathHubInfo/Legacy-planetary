@@ -124,6 +124,13 @@ function planetmath_install_tasks($install_state) {
                  /*                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED, */
                  /*                        'function' => 'planetmath_profile_setup_image_field', */
                  /*                        ), */
+                 'my_mth_task' => array(
+                                        'display_name' => st('Add extra fields to user entities'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'planetmath_profile_setup_user_entities',
+                                        ),
                  'my_10th_task' => array(
                                         'display_name' => st('Set up tagging facilities'),
                                         'display' => TRUE,
@@ -256,194 +263,225 @@ function planetmath_profile_patch_core() {
 function planetmath_profile_forum_creator() {
   dd("Profile- In planetmath_profile_forum_creator");
   set_time_limit(0);
-  dd("creating Forum 0");
 
-  $edit = array(
-		'name' => t('Planetary Bugs'),
-		'description' => 'A place to report and discuss issues with the new software.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 0,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+  // Note that there will already be a "general discussion" forum created out of
+  // the box.  It would be best to delete it so that the mappings are consistent.
+  // This should do it:
+  taxonomy_term_delete(taxonomy_term_load(1));
 
   dd("creating Forum 1");
-  $edit = array(
-		'name' => t('High School/Secondary'),
-		'description' => 'For discussing questions from any discipline at high school/secondary school level.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight'=> 1
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'PlanetMath System Updates and News';
+  $forum_topic_fields['values']['description'] = 'Site news and updates not major enough for the main page.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
 
   dd("creating Forum 2");
-  $edit = array(
-		'name' => t('University/Tertiary'),
-		'description' => 'Questions from any subject, at the university/tertiary/4-year college level.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 2,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'PlanetMath Comments';
+  $forum_topic_fields['values']['description'] = 'Talk about the web site itself here; comments, suggestions, complaints.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 3");
-  $edit = array(
-		'name' => t('Industry/Practice'),
-		'description' => 'Questions arising from real-world applications.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 3,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Math Competitions';
+  $forum_topic_fields['values']['description'] = 'For discussing problems from mathematics competitions.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 4");
-  $edit = array(
-		'name' => t('Graduate/Advanced'),
-		'description' => 'Questions aimed at the post- or advanced undergrad level.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 4,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'High School/Secondary';
+  $forum_topic_fields['values']['description'] = 'For discussing questions from any discipline at high school/secondary school level.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 5");
-  $edit = array(
-		'name' => t('Research Topics'),
-		'description' => 'Questions at the active research level.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 5,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Math Humor';
+  $forum_topic_fields['values']['description'] = 'The zingiest of zingers...';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 6");
-  $edit = array(
-		'name' => t('The Math Pub'),
-		'description' => "A catch-all discussion area; for math news and current events, discussion of philosophy of mathematics, math and society, and in general the kind of casual banter you'd find in an appropriately nerdy watering hole.",
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 6,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'University/Tertiary';
+  $forum_topic_fields['values']['description'] = 'Questions from any subject, at the university/tertiary/4-year college level.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
 
   dd("creating Forum 7");
-  $edit = array(
-		'name' => t('Math Competitions'),
-		'description' => 'For discussing problems from mathematics competitions.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 7,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Testing messages (ignore)';
+  $forum_topic_fields['values']['description'] = 'This forum is for testing of message functionality.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
 
   dd("creating Forum 8");
-  $edit = array(
-		'name' => t('Math History'),
-		'description' => 'Discussion of the history of mathematics.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 8,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'LaTeX help';
+  $forum_topic_fields['values']['description'] = 'This is the place for asking TeX/LaTeX questions in regards to writing PlanetMath entries.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
 
   dd("creating Forum 9");
-  $edit = array(
-		'name' => t('Math Humor'),
-		'description' => 'The zingiest of zingers...',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 9,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'PlanetMath help';
+  $forum_topic_fields['values']['description'] = 'This is the place to get assistance with tasks on PlanetMath.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
 
   dd("creating Forum 10");
-  $edit = array(
-		'name' => t('LaTeX help'),
-		'description' => 'This is the place for asking TeX/LaTeX questions in regards to writing PlanetMath entries.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 10,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'The Math Pub';
+  $forum_topic_fields['values']['description'] = "A catch-all discussion area; for math news and current events, discussion of philosophy of mathematics, math and society, and in general the kind of casual banter you'd find in an appropriately nerdy watering hole.";
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
 
   dd("creating Forum 11");
-  $edit = array(
-		'name' => t('PlanetMath help'),
-		'description' => 'This is the place to get assistance with tasks on PlanetMath.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 11,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
 
-  // check the order of forum 11 and 12...
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Graduate/Advanced';
+  $forum_topic_fields['values']['description'] = 'Questions aimed at the post- or advanced undergrad level.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
   dd("creating Forum 12");
-  $edit = array(
-		'name' => t('PlanetMath Comments'),
-		'description' => 'Talk about the web site itself here; comments, suggestions, complaints.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 12,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Research Topics';
+  $forum_topic_fields['values']['description'] = 'Questions at the active research level.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
 
   dd("creating Forum 13");
-  $edit = array(
-		'name' => t('PlanetMath.ORG'),
-		'description' => 'Official chatter for the PlanetMath nonprofit organization, including discussion with and regarding the board and official business.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 13,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Industry/Practice';
+  $forum_topic_fields['values']['description'] = 'Questions arising from real-world applications.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 14");
-  $edit = array(
-		'name' => t('PlanetMath System Updates and News'),
-		'description' => 'Site news and updates not major enough for the main page.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 14,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Math History';
+  $forum_topic_fields['values']['description'] = 'Discussion of the history of mathematics.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
 
   dd("creating Forum 15");
-  $edit = array(
-		'name' => t('Strategic Communications Development'),
-		'description' => 'Discuss strategic communications development for PlanetMath.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 15,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Strategic Communications Development';
+  $forum_topic_fields['values']['description'] = 'Discuss strategic communications development for PlanetMath.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 16");
-  $edit = array(
-		'name' => t('Testing messages (ignore)'),
-		'description' => 'This forum is for testing of message functionality.',
-		'parent' => array(0),
-		'vid' => 1,
-		'weight' => 16,
-		);
-  $term = (object) $edit;
-  taxonomy_term_save($term);
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'PlanetMath.ORG';
+  $forum_topic_fields['values']['description'] = 'Official chatter for the PlanetMath nonprofit organization, including discussion with and regarding the board and official business.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
+  dd("creating Forum 17");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Planetary Bugs';
+  $forum_topic_fields['values']['description'] = 'A place to report and discuss issues with the new software.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+
+  $forum = forum_form_forum($forum_topic_fields);
+  forum_form_submit($forum,$forum_topic_fields);
+
 
   return NULL;
 }
@@ -1748,6 +1786,24 @@ function planetmath_profile_setup_image_field () {
   return NULL;
 }
 
+function planetmath_profile_setup_user_entities () {
+  dd("Profile- In planetmath_profile_setup_user_entities");
+  set_time_limit(0);
+
+
+    planetmath_profile_docreate_user_field('user_forename', 'Forename', 'Forename');
+    planetmath_profile_docreate_user_field('user_surname', 'Surname', 'Surname');
+    planetmath_profile_docreate_user_field('user_city', 'City', 'City');
+    planetmath_profile_docreate_user_field('user_state', 'State', 'State');
+    planetmath_profile_docreate_user_field('user_country', 'Country', 'Country');
+    planetmath_profile_docreate_user_field('user_homepage', 'Homepage', 'Homepage');
+    planetmath_profile_docreate_user_field_long('user_preamble', 'Preamble', 'Preamble');
+    planetmath_profile_docreate_user_field_long('user_bio', 'Bio', 'Bio');
+    // Let's not port the score for now, they are being re-calculated, or if we really
+    // need them, they can be reimported later.
+
+    return NULL;
+}
 // My plan here is to cleverly load the feature we created HERE
 // (since loading it inside of the profile directory b0rked things)
 // ... OK this works.
@@ -1779,9 +1835,12 @@ function planetmath_profile_setup_permissions () {
   //dd(shell_exec('drush -y en planetmath_permissions'));
 
   // Ah, OK this is the way to do it! ('cause this way works)
-  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','use text format tex_editor'));
+  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search'));
 
-  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','cancel account','use text format tex_editor'));
+  // Run  SELECT * FROM role_permission;  in mysql to see the
+  // list of available permissions
+
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','cancel account','use text format tex_editor', 'create article content', 'create correction content', 'create forum content', 'create group content', 'create image content', 'create problem content', 'create review content', 'create solution content', 'edit own article content', 'edit own correction content', 'edit own forum content', 'edit own group content', 'edit own image content', 'edit own problem content', 'edit own review content', 'edit own solution content', 'delete own article content', 'delete own correction content', 'delete own group content', 'delete own image content', 'delete own problem content', 'delete own review content', 'delete own solution content', 'read privatemsg', 'write privatemsg'));
 
   return NULL;
 }
@@ -1872,3 +1931,63 @@ function planetmath_profile_docreate_field ($machine_name, $bundle, $description
   field_create_instance($newfield_instance);
 }
 
+function planetmath_profile_docreate_user_field ($myField_name, $label, $desc){
+
+    if(!field_info_field($myField_name)) // check if the field already exists.
+    {
+        $field = array(
+            'field_name'    => $myField_name,
+            'type'          => 'text',
+        );
+        field_create_field($field);
+
+        $field_instance = array(
+            'field_name'    => $myField_name,
+            'entity_type'   => 'user',
+            'bundle'        => 'user',
+            'label'         => t($label),
+            'description'   => t($desc),
+            'widget'        => array(
+                'type'      => 'text_textfield',
+                'weight'    => 10,
+            ),
+            'formatter'     => array(
+                'label'     => t($label),
+                'format'    => 'text_default'
+            ),
+            'settings'      => array(
+            )
+        );
+        field_create_instance($field_instance);
+    }
+}
+
+function planetmath_profile_docreate_user_field_long ($myField_name, $label, $desc)
+{
+        $field = array(
+            'field_name'    => $myField_name,
+            'type'          => 'text_long',
+        );
+        field_create_field($field);
+
+        $field_instance = array(
+            'field_name'    => $myField_name,
+            'entity_type'   => 'user',
+            'bundle'        => 'user',
+            'label'         => t($label),
+            'description'   => t($desc),
+            'widget'        => array(
+                'type'      => 'text_textarea',
+                'weight'    => 10,
+            ),
+            'formatter'     => array(
+                'label'     => t($label),
+                'format'    => 'text_default'
+            ),
+            'settings'      => array(
+            )
+        );
+        field_create_instance($field_instance);
+
+
+}
