@@ -23,22 +23,25 @@ function planetmath_migration_extras_migrateUserFields() {
       'homepage',
       'bio',
       'preamble',
-      'score',
+      // 'score',
   );
-  $count = db_query("SELECT COUNT(uid) AS user_count FROM {users}")->fetchObject();
-  for ($i = 0; $i < $count->user_count; $i += 50) {
+  $count = db_query("SELECT COUNT(uid) AS user_count FROM {users}")->fetchObject();  
+
+for ($i = 0; $i < $count->user_count; $i += 50) {
     $users = db_query("SELECT name, uid FROM {users} WHERE status = 1 LIMIT $i, 50 ")->fetchAll();
     foreach ($fieldList as $field) {
-      $insert = db_insert('field_data_field_user_' . $field)->fields(array(
-          'entity_type',
-          'bundle',
-          'deleted',
-          'entity_id',
-          'revision_id',
-          'language',
-          'delta',
-          'field_user_' . $field . '_value',
-              ));
+      $insert = db_insert('field_data_field_user_' . $field)
+	         ->fields(array(
+				'entity_type',
+				'bundle',
+				'deleted',
+				'entity_id',
+				'revision_id',
+				'language',
+				'delta',
+				'field_user_' . $field . '_value',
+				)
+			  );
       foreach ($users as $user) {
         $planetUser = db_query("SELECT * FROM planetmath_users WHERE username = :username", array(':username' => $user->name))->fetchObject();
         if ($planetUser) {
@@ -74,9 +77,8 @@ function planetmath_migration_extras_corrections() {
   global $language;
   $count = db_query("SELECT COUNT(uid) AS corr_count FROM planetmath_corrections")->fetchObject();
   for ($i = 0; $i < $count->corr_count; $i += 50) {
-    $corrections = db_query("SELECT pc.*, mo.destid1 AS dest_id, mu.destid1 AS user_id FROM planetmath_corrections pc 
+    $corrections = db_query("SELECT pc.*, mo.destid1 AS dest_id FROM planetmath_corrections pc 
             INNER JOIN migrate_map_pmobject mo ON pc.objectid = mo.sourceid1
-            INNER JOIN migrate_map_pmuser mu ON pc.userid = mu.sourceid1
             ORDER BY pc.uid ASC
             LIMIT $i, 50")->fetchAll();
     foreach ($corrections as $correction) {
@@ -84,7 +86,7 @@ function planetmath_migration_extras_corrections() {
       $node->type = 'correction';
       $node->title = $correction->title;
       $node->language = $language->language;
-      $node->uid = $correction->user_id;
+      $node->uid = $correction->userid;
       node_object_prepare($node);
       $node->body[$language->language][0]['format'] = 'tex_editor';
       $node->body[$language->language][0]['value'] = $correction->data . '<br />' . $correction->comment;
