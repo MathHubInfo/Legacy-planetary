@@ -953,6 +953,7 @@ input#edit-filters-filter-html-settings-allowed-html {
  * modules/forum/forum-rtl.css
  */
 
+
 #forum tr td.forum {
   padding-left: 0.5em;
   padding-right: 25px;
@@ -2023,6 +2024,12 @@ span.admin-enabled {
 }
 span.admin-missing {
   color: #f00;
+}
+span.message-block-item {
+  color: #f00;
+}
+span.red-letter a.link {
+  color: red;
 }
 a.module-link {
   display: block;
