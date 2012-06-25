@@ -1827,6 +1827,19 @@ function planetmath_profile_setup_permissions () {
     ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
     ->execute();
 
+  // For whatever reason, it seems that we need to set this explicitly (maybe?)
+  variable_set('nodeaccess-types', array('group'=>TRUE,
+					 'poll'=>TRUE,
+					 'problem'=>TRUE,
+					 'forum'=>TRUE,
+					 'article'=>TRUE,
+					 'correction'=>TRUE,
+					 'image'=>TRUE,
+					 'news'=>TRUE,
+					 'page'=>TRUE,
+					 'review'=>TRUE,
+					 'solution'=>TRUE));
+
   //$install_directory = '/home/planetary/drupal_planetary/';
   //chdir($install_directory);
 
