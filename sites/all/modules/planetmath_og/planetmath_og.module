@@ -3,19 +3,36 @@
 /**
  * Adds useful features for the organic groups
  * @author Alex Dumitru <m.dumitru@jacobs-university.de> 
+ *
+ * Ported to og-7.x-2.x-dev by Joe Corneli <holtzermann17@gmail.com>
+ * and Lucas Anastasiou <holtzermann17@gmail.com>
  */
+
+/*
+ * NOTES:
+ * Instead of doing db_insert
+ * Maybe we should be using
+ *  og_membership_save(og_membership_create($group->nid, 'user', $uid->userid));
+ * and
+ *  og_membership_save(og_membership_create($group->nid, 'node', $nid->objectid));
+ * ...
+ * But testing is still needed to see whether those functions work at all!  If
+ * they work, then they are at a higher level of abstraction than database calls
+ * and that is likely better for portability.
+ */
+
 define("PLANETMATH_OG_COAUTHOR_GROUP_PREFIX", "Editing Group for ");
 define("PLANETMATH_OG_WW_GID", 1);
+
+// use this to limit the places where you can create a group
 define("PLANETMATH_OG_ACCEPTED_CONTENT_TYPES", serialize(array('article')));
 
 function planetmath_og_model_getNodeEditingGroup($nid) {
-  $result = db_query("SELECT og.etid, og.gid 
+  $result = db_query("SELECT om.etid, om.gid 
     FROM og_membership om 
-    INNER JOIN og ON og.gid = om.gid    
     WHERE om.entity_type = 'node' AND om.etid = :etid", array('etid' => $nid))->fetchObject();
   if (isset($result->etid)) {
-    $group = node_load($result->etid);
-    $group->gid = $result->gid;
+    $group = node_load($result->gid);
   } else {
     $group = false;
   }
@@ -31,7 +48,7 @@ function planetmath_og_model_isUserGroupAdmin($uid, $group) {
   if ($group->uid == $uid) {
     $isAdmin = true;
   } else {
-    $countAdmin = db_query("SELECT COUNT(uid) AS count_uid FROM og_users_roles WHERE rid = 3 AND uid = :uid AND gid = :gid", array(':uid' => $uid, ':gid' => $group->gid))->fetchObject()->count_uid;
+    $countAdmin = db_query("SELECT COUNT(uid) AS count_uid FROM og_users_roles WHERE rid = 3 AND uid = :uid AND gid = :gid", array(':uid' => $uid, ':gid' => $group->nid))->fetchObject()->count_uid;
     if ($countAdmin >= 1) {
       $isAdmin = true;
     }
@@ -44,16 +61,25 @@ function planetmath_og_model_isUserMemberOfGroup($uid, $group) {
   if ($group->uid == $uid) {
     $isMember = true;
   } else {
-    $countAdmin = db_query("SELECT COUNT(etid) AS count_uid FROM og_membership WHERE gid = :gid AND etid = :uid AND entity_type = 'user'", array(':uid' => $uid, ':gid' => $group->gid))->fetchObject()->count_uid;
-    if ($countAdmin >= 1) {
+    $countMembership = db_query("SELECT COUNT(etid) AS count_uid FROM og_membership WHERE gid = :gid AND etid = :uid AND entity_type = 'user'", array(':uid' => $uid, ':gid' => $group->nid))->fetchObject()->count_uid;
+    if ($countMembership >= 1) {
       $isMember = true;
     }
   }
   return $isMember;
 }
 
+// If we're going to use 7.x-2.x-dev then this 
 function planetmath_og_model_insertNodeEditingGroup($node) {
   $groupTitle = PLANETMATH_OG_COAUTHOR_GROUP_PREFIX . $node->title;
+
+  // Just creating the node is all that needs to happen in order to make the group..
+  //  (I think).
+  // Though it may end up being important to set some extra field that isn't set
+  // here?
+
+  // How do we know that the user is an administrator member?bbb
+
   $groupNode = (object) array(
               'type' => 'group',
               'title' => $groupTitle,
@@ -65,21 +91,25 @@ function planetmath_og_model_insertNodeEditingGroup($node) {
               'language' => LANGUAGE_NONE
   );
   node_save($groupNode);
-  $gid = db_insert('og')->fields(array(
-              'etid' => $groupNode->nid,
-              'entity_type' => 'node',
-              'label' => $groupNode->title,
-              'state' => 1,
-              'created' => REQUEST_TIME
-          ))->execute();
+
+  /* $gid = db_insert('og')->fields(array( */
+  /*             'etid' => $groupNode->nid, */
+  /*             'entity_type' => 'node', */
+  /*             'label' => $groupNode->title, */
+  /*             'state' => 1, */
+  /*             'created' => REQUEST_TIME */
+  /*         ))->execute(); */
 
   db_insert('og_membership')->fields(array(
       'type' => 'og_membership_type_default',
       'etid' => $node->nid,
       'entity_type' => 'node',
-      'gid' => $gid,
+      'gid' => $groupNode->nid,
+      'group_type' => 'node',
       'state' => 1,
-      'created' => REQUEST_TIME
+      'created' => REQUEST_TIME,
+      'field_name' => 'og_group_ref',
+      'language' => 'en'
   ))->execute();
   return $gid;
 }
@@ -90,8 +120,13 @@ function planetmath_og_model_addUserToGroup($gid, $uid, $isAdmin = false) {
       'etid' => $uid,
       'entity_type' => 'user',
       'gid' => $gid,
+      // THIS NEXT LINE IS IMPORTANT FOR THE 7.x-2.x-dev VERSION OF OG! 
+      'group_type' => 'node',
       'state' => 1,
-      'created' => REQUEST_TIME
+      'created' => REQUEST_TIME,
+      // THIS NEXT LINE IS IMPORTANT FOR THE 7.x-2.x-dev VERSION OF OG! 
+      'field_name' => 'og_user_group_ref',
+      'language' => 'en'
   ))->execute();
 
   db_insert('og_users_roles')->fields(array(
@@ -110,6 +145,17 @@ function planetmath_og_menu() {
       'page callback' => 'planetmath_og_view_coAuthorsPage',
       'page arguments' => array(1),
       'access callback' => 'planetmath_og_access_coAuthorsPage',
+      // argument to this callback duh
+      'access arguments' => array(1)
+  );
+
+  $items['node/%/pmxxx'] = array(
+      'type' => MENU_LOCAL_TASK,
+      'title' => 'BAD Co-Authors',
+      'page callback' => 'planetmath_og_view_coAuthorsPage',
+      'page arguments' => array(1),
+      'access callback' => 'planetmath_og_access_coAuthorsPage',
+      // argument to this callback duh
       'access arguments' => array(1)
   );
 
@@ -118,11 +164,12 @@ function planetmath_og_menu() {
       'title' => 'Create CoAuthor Group',
       'page callback' => 'planetmath_og_callback_createCoAuthGroup',
       'page arguments' => array(2),
-      'access arguments' => array('access content')
+      'access arguments' => array('create group content')
   );
   return $items;
 }
 
+// Called for every node view!  But filters out everything besides articles (for now)
 function planetmath_og_access_coAuthorsPage($nid){
   $node = node_load($nid);
   if(in_array($node->type, unserialize(PLANETMATH_OG_ACCEPTED_CONTENT_TYPES))){
@@ -146,7 +193,7 @@ function planetmath_og_view_coAuthorsPage($nid) {
     }
   } else {
     if (planetmath_og_model_isUserGroupAdmin($user->uid, $group)) {
-      $page = planetmath_og_view_coAuthorsGroupPage($node, $group);
+      $page = planetmath_og_view_coAuthorsGroupPage($group);
     } else {
       $page = planetmath_og_view_requestInvitePage($node, $group);
     }
@@ -154,7 +201,8 @@ function planetmath_og_view_coAuthorsPage($nid) {
   return $page;
 }
 
-function planetmath_og_view_coAuthorsGroupPage($node, $group) {
+// http://metameso.org/p/group/node/13/admin/people/add-user
+function planetmath_og_view_coAuthorsGroupPage($group) {
   $links = array(
       'add-people' => l("Add co-authors", 'group/node/' . $group->nid . '/admin/people/add-user'),
       'people' => l('Manage co-authors', 'group/node/' . $group->nid . '/admin/people')
@@ -175,7 +223,7 @@ function planetmath_og_callback_createCoAuthGroup($nid) {
     if ($gid) {
       drupal_set_message("The co-author group was successfully created");
     } else {
-      drupal_set_message("There was an error creating the co-autor group", "error");
+      drupal_set_message("There was an error creating the co-author group", "error");
     }
   } else {
     drupal_set_message("The group was not created because the article supplied does not exist", "error");
@@ -194,25 +242,24 @@ function planetmath_og_view_requestInvitePage($node, $group) {
   return $html;
 }
 
+/*
+ * Implements hook_user_insert
+ */
+
 // This hook will make it so that every new user is added to the world writable group.
-// That is good, but there is one problem.  If planetmath_og is enabled when migrations
-// run, the function planetmath_og_model_addUserToGroup() that it calls ends up giving
-// errors.  It seems that's just a "typo" in the code above however! 
-// (Specifically, 'name' should be 'type').
+
 function planetmath_og_user_insert($edit, $account, $category) {
   $gid = planetmath_og_model_getWWGroup();
   planetmath_og_model_addUserToGroup($gid, $account->uid);
 }
 
 // We need to be able to add groups, and we need to be able to add nodes as a subroutine.
+// Returns the nid of the new node
 function planetmath_og_node_add_programmatic($type, $title, $uid, $body_text) {
 
   $node = (object) array("type"=>$type, "title"=>$title, "language"=>LANGUAGE_NONE);
-
   node_object_prepare($node);
-
   $node->uid = $uid;
-
   $node->body[$node->language][0]['value']   = $body_text;
   $node->body[$node->language][0]['summary'] = text_summary($body_text);
   $node->body[$node->language][0]['format']  = 'filtered_html';
@@ -226,7 +273,8 @@ function planetmath_og_node_add_programmatic($type, $title, $uid, $body_text) {
 // We need to be able to add groups, and we need to be able to add nodes as a subroutine.
 function planetmath_og_group_add_programmatic($name,$userid,$description) {
   $etid = planetmath_og_node_add_programmatic('group', $name, $userid, $description);
-  return og_get_group('node', $etid, TRUE);
+  // ANOTHER DIFFERENCE FROM OLD VERSION OF THIS CODE
+  return entity_load_single('node', $etid);
 }
 
 // ATTEMPT TO MODIFY THE DISPLAY OF GROUPS USING A THEME
@@ -266,18 +314,17 @@ function theme_planetmath_group_content($variables) {
 
 function planetmath_og_node_view($node) {
 
-  if($node->type == 'group'){
+ if($node->type == 'group'){ 
 
-    // first select relevant information about group members 
+  // first select relevant information about group members
 
-    $user_info = db_query("SELECT u.name, u.uid FROM users u INNER JOIN og INNER JOIN og_membership ON og.gid = og_membership.gid WHERE og.etid = :nid AND og.entity_type='node' AND og_membership.entity_type = 'user' AND og_membership.etid = u.uid LIMIT 20;", array(':nid' => $node->nid));
+    $user_info = db_query("SELECT u.name, u.uid FROM users u INNER JOIN og_membership ON og_membership.etid = u.uid WHERE og_membership.gid = :nid AND og_membership.group_type='node' AND og_membership.entity_type = 'user' LIMIT 20;", array(':nid' => $node->nid));
 
     $links = array();
     foreach ($user_info as $result) {
       $links[] = $result;
     }
    
-
     $node->content['planetmath_group_users'] = array(
         '#markup' => '',
         '#weight' => 10,
@@ -287,7 +334,7 @@ function planetmath_og_node_view($node) {
     
     // then select relevant information about group content (nodes)
 
-    $content_info = db_query("SELECT n.title,n.nid FROM node n INNER JOIN og INNER JOIN og_membership ON og.gid = og_membership.gid WHERE og.etid =:nid AND og.entity_type='node' AND og_membership.entity_type = 'node' AND og_membership.etid = n.nid LIMIT 20", array(':nid' => $node->nid));
+    $content_info = db_query("SELECT n.title,n.nid FROM node n INNER JOIN og_membership WHERE og_membership.gid =:nid AND og_membership.entity_type='node' AND og_membership.entity_type = 'node' AND og_membership.etid = n.nid LIMIT 20", array(':nid' => $node->nid));
 
    $links = array();
    foreach ($content_info as $result) {
@@ -300,7 +347,7 @@ function planetmath_og_node_view($node) {
        '#theme' => 'planetmath_group_content',
        '#links' => $links,
    );
-    
-   
+
   }
+
 }
