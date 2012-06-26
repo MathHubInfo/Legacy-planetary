@@ -1,0 +1,34 @@
+*** /home/joe/drupal_planetary/sites/all/modules/og/og_ui/og_ui.module	2012-06-26 15:06:51.735697938 +0100
+--- og_ui-new.module	2012-06-26 15:07:57.098876212 +0100
+***************
+*** 572,583 ****
+        }
+  
+        list($id,, $bundle) = entity_extract_ids($entity_type, $entity);
+!       if (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_ACTIVE, OG_STATE_PENDING))) {
+!         if (og_user_access($entity_type, $id, 'unsubscribe', $account)) {
+!           $links['title'] = t('Unsubscribe from group');
+!           $links['href'] = "group/$entity_type/$id/unsubscribe";
+!         }
+!       }
+        else {
+          if (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_BLOCKED))) {
+            // If user is blocked, they should not be able to apply for
+--- 572,588 ----
+        }
+  
+        list($id,, $bundle) = entity_extract_ids($entity_type, $entity);
+!             if (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_ACTIVE))) {
+!                 if (og_user_access($entity_type, $id, 'unsubscribe', $account)) {
+!                     $links['title'] = t('Unsubscribe from group');
+!                     $links['href'] = "group/$entity_type/$id/unsubscribe";
+!                 }
+!             } else if (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_PENDING))) {
+!                 if (og_user_access($entity_type, $id, 'unsubscribe', $account)) {
+!                     $links['title'] = t("You application is pending. Click here to cancel");
+!                     $links['href'] = "group/$entity_type/$id/unsubscribe";
+!                 }
+!             }
+        else {
+          if (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_BLOCKED))) {
+            // If user is blocked, they should not be able to apply for
