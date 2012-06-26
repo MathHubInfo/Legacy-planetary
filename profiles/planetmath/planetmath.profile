@@ -267,7 +267,7 @@ function planetmath_profile_forum_creator() {
   // Note that there will already be a "general discussion" forum created out of
   // the box.  It would be best to delete it so that the mappings are consistent.
   // This should do it:
-  taxonomy_term_delete(taxonomy_term_load(1));
+  taxonomy_term_delete(1);
 
   dd("creating Forum 1");
 
