@@ -1,0 +1,5 @@
+name = "Planetmath user"
+description = "Enhanches user profile page"
+package = "Planetary Modules"
+core = "7.x"
+version = "7.x-1.0"

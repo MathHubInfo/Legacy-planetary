@@ -1,0 +1,83 @@
+<?php
+
+// Query to get articles by user id "$uid"
+function planetmath_user_querymyarticles($uid, $sortBy = 'n.title') {
+
+  $results = db_query("SELECT n.nid, n.title, n.uid, n.created, n.changed
+    FROM node n 
+    WHERE n.`type` = 'article' AND n.uid=$uid ORDER BY $sortBy DESC");
+  $links = array();
+  foreach ($results as $result) {
+    $links = array_merge($links,
+			 planetmath_user_add_links($result->title, $result->nid));
+  }
+
+  return $links;
+}
+
+// Used in the above function to build the list of links
+function planetmath_user_add_links($title, $nid) {
+    $links = array(
+		   "$nid" => l($title, 'node/' . $nid),
+		   );
+    return $links;
+}
+
+/*
+ * implements hook_theme
+ */ 
+function planetmath_user_theme($existing, $type, $theme, $path) {
+  $to_return =  array(
+		      // this identifier ends up being the index of the
+		      // array that gets themed in the the template
+		      'planetmath_user_articles' => 
+                      // use standard theming elements here, like "links"
+		      array('variables' => array('links' => 
+						             array(),
+						 ),
+			    )
+		      );
+  return $to_return;
+}
+
+/*
+ * Implements theme_IDENTIFIER, where IDENTIFIER is supplied by 
+ * implementation of hook_theme above.
+ * This is what produces the HTML that will be printed when we
+ *   print render($user_profile[IDENTIFIER]);
+ */
+
+function theme_planetmath_user_articles($variables) {
+if (isset($variables['links'])) {
+    $html = '';
+    $html .= '<div class="field field-type-entityreference field-label-above">';
+    $html .= '<div class="field-label">My articles:&nbsp;</div>';
+    foreach ($variables['links'] as $link) {
+      $html .= '<div class="field-item">';
+      $html .= $link;
+      $html .= '</div>';
+    }
+    $html .= '</div>';
+    return $html;
+  } else
+     return; 
+}
+
+/*
+ * Implements hook_user_view, which can modify $account by adding "content"
+ * This is the point of entry to this module.
+ */
+function planetmath_user_view($account, $view_mode, $langcode) {
+
+  // get items from the database to push into the page
+  $mylinks = planetmath_user_querymyarticles($account->uid, 'n.title');
+  
+  // use IDENTIFIER above both for the index of the content that we extend
+  // and for the theme that will render this content.
+  $account->content['planetmath_user_articles'] = array(
+						'#markup' => '',
+						'#weight' => 10,
+						'#theme' => 'planetmath_user_articles',
+						'#links' => $mylinks
+						);
+}

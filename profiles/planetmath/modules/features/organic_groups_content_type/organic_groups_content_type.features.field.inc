@@ -10,7 +10,7 @@
 function organic_groups_content_type_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-group-body'
+  // Exported field: 'node-group-body'.
   $fields['node-group-body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -33,6 +33,7 @@ function organic_groups_content_type_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '1',
@@ -77,12 +78,80 @@ function organic_groups_content_type_field_default_fields() {
           'summary_rows' => 5,
         ),
         'type' => 'text_textarea_with_summary',
-        'weight' => 1,
+        'weight' => '1',
       ),
     ),
   );
 
-  // Exported field: 'node-group-group_group'
+  // Exported field: 'node-group-field_group_subtype'.
+  $fields['node-group-field_group_subtype'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_group_subtype',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'value' => array(
+          0 => 'value',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+          'Coauthors' => 'Coauthors',
+          'Team' => 'Team',
+          'Buddies' => 'Buddies',
+        ),
+        'allowed_values_function' => '',
+      ),
+      'translatable' => '0',
+      'type' => 'list_text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'group',
+      'default_value' => array(
+        0 => array(
+          'value' => 'Team',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_default',
+          'weight' => 4,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_group_subtype',
+      'label' => 'Group subtype',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => '31',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-group-group_group'.
   $fields['node-group-group_group'] = array(
     'field_config' => array(
       'active' => '1',
@@ -96,6 +165,7 @@ function organic_groups_content_type_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'no_ui' => TRUE,
       'settings' => array(
@@ -121,9 +191,11 @@ function organic_groups_content_type_field_default_fields() {
         'default' => array(
           'label' => 'above',
           'module' => 'og_ui',
-          'settings' => array(),
+          'settings' => array(
+            'field_name' => 'og_group_ref',
+          ),
           'type' => 'og_group_subscribe',
-          'weight' => 3,
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -155,13 +227,13 @@ function organic_groups_content_type_field_default_fields() {
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_buttons',
-        'weight' => 3,
+        'weight' => '3',
       ),
       'widget_type' => 'options_select',
     ),
   );
 
-  // Exported field: 'node-group-og_views'
+  // Exported field: 'node-group-og_views'.
   $fields['node-group-og_views'] = array(
     'field_config' => array(
       'active' => '1',
@@ -175,6 +247,7 @@ function organic_groups_content_type_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'no_ui' => TRUE,
       'settings' => array(
@@ -225,7 +298,7 @@ function organic_groups_content_type_field_default_fields() {
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_select',
-        'weight' => 2,
+        'weight' => '2',
       ),
       'widget_type' => 'options_select',
     ),
@@ -234,6 +307,7 @@ function organic_groups_content_type_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Body');
+  t('Group subtype');
   t('Group type');
   t('Groups views');
 
