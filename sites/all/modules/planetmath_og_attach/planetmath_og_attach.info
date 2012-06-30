@@ -1,0 +1,8 @@
+name = "Add content"
+description = "PlanetMath implement the add content to groups functionality"
+version = "7.x-1.0"
+core = "7.x"
+package = "Planetary Modules"
+
+dependencies[] = og
+dependencies[] = planetmath_og
