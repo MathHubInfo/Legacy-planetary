@@ -100,7 +100,7 @@ function planetmath_og_model_insertNodeEditingGroup($node) {
   /*             'created' => REQUEST_TIME */
   /*         ))->execute(); */
 
-  db_insert('og_membership')->fields(array(
+  $gid = db_insert('og_membership')->fields(array(
       'type' => 'og_membership_type_default',
       'etid' => $node->nid,
       'entity_type' => 'node',
@@ -165,7 +165,10 @@ function planetmath_og_menu() {
       'page callback' => 'planetmath_og_callback_createCoAuthGroup',
       'page arguments' => array(2),
       'access arguments' => array('create group content')
-  );
+  );  
+  
+  
+  
   return $items;
 }
 
@@ -277,7 +280,7 @@ function planetmath_og_group_add_programmatic($name,$userid,$description) {
   return entity_load_single('node', $etid);
 }
 
-// ATTEMPT TO MODIFY THE DISPLAY OF GROUPS USING A THEME
+// MODIFY THE DISPLAY OF GROUPS USING A THEME
 
 function planetmath_og_theme($existing, $type, $theme, $path) {
   $to_return = array(
@@ -351,3 +354,67 @@ function planetmath_og_node_view($node) {
   }
 
 }
+
+/**
+ * Implementation of hook_form_FORM_ID_alter()
+ * @param array $form
+ * @param array $form_state
+ * @param array $form_id 
+ *
+ * The purpose of this code is to adjust the form that the user is
+ * presented with when editing an article, so that the "buddies list"
+ * of the user is presented as the default "team" to share this article
+ * with (and so that only groups that are "teams" are available as options)
+ * 
+ * COMMENT: This implementation may be inefficient, since we use
+ * node_load()... but it does work.
+ *
+ * NOTE: Some later implementation would be needed to make groups show
+ * up as an option to add content to when the user is not an admin (if
+ * we want that).
+ */
+
+function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_id) {
+  
+  global $user;
+
+  //dd($form['og_group_ref']['und']['#options']);
+
+  $filtered_group_list = array();
+
+  //
+  // find the 'buddy' group of this user
+  //
+  //dd($GLOBALS['user']);
+  $buddy_group_id = get_user_buddy_group_id($GLOBALS['user']['uid']);
+
+  if (!isset($form['og_group_ref']['und']['#default_value'][0]) || $buddy_group_id==0){
+    $form['og_group_ref']['und']['#default_value'] = $buddy_group_id;
+  }
+
+  //dd($form);
+  //dd('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n');
+  //dd($form_state);
+  //$form['og_group_ref']['und']['#default_value'] = $buddy_group_id;
+  $filtered_group_list[0]='none';
+
+  foreach ($form['og_group_ref']['und']['#options'] as $gid=>$group_title){
+    $group = node_load($gid);
+    if (isset($group->field_group_subtype['und'][0]) && 
+	$group->field_group_subtype['und'][0] == 'Team'){
+      $filtered_group_list[$gid]=$group_title;
+    }
+  }
+
+  $form['og_group_ref']['und']['#options'] = $filtered_group_list;
+
+  //dd(node_load(23)->field_group_subtype['und'][0]);
+}
+
+// Needs to be implemented properly...
+function get_user_buddy_group_id($uid){
+  $gid =0;
+  return $gid;
+}
+
+
