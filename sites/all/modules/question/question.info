@@ -1,0 +1,8 @@
+name = "Question"
+description = "Adds a content type for questions"
+package = "Planetary Modules"
+version = "7.x-1.0"
+core = "7.x"
+
+files[] = question.install
+files[] = question.module

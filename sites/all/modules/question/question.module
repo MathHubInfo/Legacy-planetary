@@ -1,0 +1,169 @@
+<?php
+
+/*
+ * Question module
+ *
+ * Similar to StackExchange, a question can have multiple answers.
+ * Still to do: provide a way to rate answers or select the best answer etc.
+ */
+
+function question_node_info() {
+ return array(
+	      'question' => array(
+				    'name' => "Question",
+				    'base' => 'node_content',
+				    'description' => 'Questions as they come up.',
+				    'has_title' => '1',
+				    'title_label' => 'Title',
+				    'help' => '',
+				    ));
+}
+
+
+// Rather than attaching solutions, we can attach places where this question is 
+// answered.  In the "requests" case, this would be an article that fulfils the
+// request.
+
+function question_menu() {
+  $items = array();
+
+  $items['questions/%/attach'] = array(
+      'title' => 'Attach answer',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'question_attach_answer',
+      'page arguments' => array(1),
+      'access arguments' => array('create correction content')
+  );
+
+  $items['questions/confirm/%/%'] = array(
+      'title' => 'Confirm attachment',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'question_confirm_attachment',
+      'page arguments' => array(2,3),
+      'access arguments' => array('create correction content')
+  );
+  
+  $items['questions/decouple/%/%'] = array(
+      'title' => 'Decouple question-article connection',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'question_decouple_connection',
+      'page arguments' => array(2,3),
+      'access arguments' => array('create correction content'));
+
+  return $items;
+}
+
+function question_confirm_attachment($nid_of_question,$nid_of_answer){
+    db_merge('question_has_answer')
+            ->key(array('aid' => $nid_of_question, 'pid' => $nid_of_answer))
+            ->fields(array('aid' => $nid_of_question, 'pid' => $nid_of_answer))
+            ->execute();
+    drupal_set_message('Answer '.$nid_of_answer.' is now attached with this question');
+    drupal_goto('node/'.$nid_of_question);
+}
+
+function question_decouple_connection($nid_of_question,$nid_of_answer){
+    $num_deleted = db_delete('question_has_answer')
+            ->condition('aid', $nid_of_question)
+            ->condition('pid',$nid_of_answer)
+            ->execute();
+    drupal_set_message('Answer '.$nid_of_answer.' is no longer connected with this question');
+    drupal_goto('node/'.$nid_of_question);
+}
+
+// this isn't necessarily what we want, but for now it will give us
+// the ability to attach *something*... and it might not be exactly wrong.
+function question_get_all_articles(){
+    $query = db_select('node', 'n')
+          ->fields('n')
+          ->condition('type','article','=')
+          ->extend('PagerDefault')
+          ->extend('TableSort')
+          ->limit(20);
+  $result = $query->execute();
+  return $result;
+}
+
+function question_attach_answer($nid){
+  global $base_url;
+
+  $count=db_query("SELECT COUNT(nid) as count FROM node WHERE type = 'article'")
+         ->fetchObject();
+
+  if($count->count > 0) {
+    $articles = question_get_all_articles();
+    $header = array(array('data' => 'Title', 'field' => 'n.nid'),
+		    array('data' => "Author", 'field' => 'n.title'),
+		    array('data' => 'Attach', 'field' => 'Attach')
+		    );
+    $rows = array();
+    foreach ($articles as $article) {
+      $rows[] = array(
+		      array('data' => l($article->title, 'node/' . $article->nid), 
+			                'field' => 'n.title'),
+		      array('data' => l(user_load($article->uid)->name, 
+					'user/' . $article->uid), 'field' => 'n.author'),
+		      array('data' => theme('attach_answer',
+					    array('url'=>$base_url.'/questions/confirm/'
+						                  .$nid.'/'
+						                  .$article->nid)))
+		      );
+    }
+    return l('Add a new article', 'node/add/article')
+           . theme('table', array(
+				  'header' => $header,
+				  'rows' => $rows
+				  ))
+           . theme('pager');
+  } else {
+    drupal_set_message("Please go ahead and create a new article. "
+		       . " It will be attached to article ".$nid."!");
+    drupal_goto('node/add/article/'.$nid);
+  }
+}
+
+function theme_attach_answer($variables){
+  $output = l(
+	      t('Attach as answer'),
+	      $variables['url'],
+	      array(
+      
+		    'attributes' => array(
+					  'class' => "attach_question_icon",
+					  'title' => t('Attach article as an answer'),
+					  ))
+	      );
+  return $output;
+}
+
+function question_theme($existing, $type, $theme, $path){
+  return array('attach_answer' => array(
+					'variables' => array('url' => NULL,
+							     'query' => NULL)
+				      ),
+  );
+}
+
+// Not a bad idea to keep using the planetary_links
+// mechanism introduced in other modules, since
+// when we have an "interact box", that will get
+// themed nicely...
+function question_node_view($node){
+  if($node->type == 'article'){
+    $node->content['planetary_links'] = array(
+        '#markup' => '',
+        '#weight' => 10,
+        '#theme' => 'planetary_links',
+        '#links' => $newlinks
+    );
+  }
+}
+
+// From this page we can either add a new problem or attach an existing one
+function question_add_links($node) {
+    $links = array(
+        'attach-problem' => l('Attach a problem to this article', 'problems/' . $node->nid. '/attach')
+    );
+    return $links;
+}
+

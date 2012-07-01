@@ -225,7 +225,72 @@ class PMForumOPMigration extends Migration {
 }
 
 // forum posts that are attached to already-existing threads
-class PMForumFirstCommentMigration extends Migration {
+/* class PMForumFirstCommentMigration extends Migration { */
+/*   public function __construct() { */
+/*     parent::__construct(); */
+
+/*     $this->dependencies = array('PMForumOP'); */
+
+/*     $this->map = new MigrateSQLMap( */
+/*       $this->machineName, */
+/*       array( */
+/*         'uid' => array( */
+/*           'type' => 'int', */
+/*           'unsigned' => TRUE, */
+/*           'not null' => TRUE, */
+/*         ), */
+/*       ), */
+/*       MigrateDestinationComment::getKeySchema() */
+/*     ); */
+
+/*     $query = db_select('planetmath_forum_first_comments', 'pmfic') */
+/*       ->fields('pmfic', array('uid', */
+/*                              'replyto', */
+/*                              'objectid', */
+/*                              'userid', */
+/*                              'username', */
+/*                              'subject', */
+/*                              'epoch_created', */
+/*                              'threadid', */
+/*                              'tbl', */
+/*                              'visible', */
+/*                              'body')) */
+/*       ->orderBy('epoch_created', 'ASC'); */
+
+/*     $this->source = new MigrateSourceSQL($query, array(), NULL, array('map_joinable' => FALSE)); */
+/*     $this->destination = new MigrateDestinationComment('comment_node_forum'); */
+
+/*     $this->addFieldMapping('status') */
+/*          ->defaultValue(COMMENT_PUBLISHED); */
+
+/*     // Note that the FIRST comment, the "reply to" is meaningful as a NID, */
+/*     //  so we save that. */
+
+/*     $this->addFieldMapping('nid', 'replyto') */
+/*          ->description(t('Preserve old objectid as nid in Drupal')); */
+/*     $this->addFieldMapping('pid') */
+/*          ->defaultValue(0); */
+/*     $this->addFieldMapping('subject', 'subject'); */
+/*     $this->addFieldMapping('created', 'epoch_created'); */
+/*     $this->addFieldMapping('changed', 'epoch_created'); */
+/*     $this->addFieldMapping('comment_body', 'body'); */
+/*     $this->addFieldMapping('name', 'username'); */
+/*     $this->addFieldMapping('uid', 'userid'); */
+/*     $this->addFieldMapping(NULL, 'visible'); */
+/*     $this->addFieldMapping(NULL, 'tbl'); */
+
+/*     $this->addUnmigratedDestinations(array('mail', */
+/*                                            'path', */
+/*                                            'homepage', */
+/*                                            'threadid', */
+/*                                            'language', */
+/*                                            'changed', */
+/*                                            'hostname')); */
+/*   } */
+/* } */
+
+// forum posts that are attached to already-existing threads
+class PMForumCommentMigration extends Migration {
   public function __construct() {
     parent::__construct();
 
@@ -243,71 +308,10 @@ class PMForumFirstCommentMigration extends Migration {
       MigrateDestinationComment::getKeySchema()
     );
 
-    $query = db_select('planetmath_forum_first_comments', 'pmfic')
-      ->fields('pmfic', array('uid',
-                             'replyto',
-                             'objectid',
-                             'userid',
-                             'username',
-                             'subject',
-                             'epoch_created',
-                             'threadid',
-                             'tbl',
-                             'visible',
-                             'body'))
-      ->orderBy('epoch_created', 'ASC');
-
-    $this->source = new MigrateSourceSQL($query, array(), NULL, array('map_joinable' => FALSE));
-    $this->destination = new MigrateDestinationComment('comment_node_forum');
-
-    $this->addFieldMapping('status')
-         ->defaultValue(COMMENT_PUBLISHED);
-
-    $this->addFieldMapping('nid', 'replyto')
-         ->description(t('Preserve old objectid as nid in Drupal'));
-    $this->addFieldMapping('pid')
-         ->defaultValue(0);
-    $this->addFieldMapping('subject', 'subject');
-    $this->addFieldMapping('created', 'epoch_created');
-    $this->addFieldMapping('changed', 'epoch_created');
-    $this->addFieldMapping('comment_body', 'body');
-    $this->addFieldMapping('name', 'username');
-    $this->addFieldMapping('uid', 'userid');
-    $this->addFieldMapping(NULL, 'visible');
-    $this->addFieldMapping(NULL, 'tbl');
-
-    $this->addUnmigratedDestinations(array('mail',
-                                           'path',
-                                           'homepage',
-                                           'threadid',
-                                           'language',
-                                           'changed',
-                                           'hostname'));
-  }
-}
-
-// forum posts that are attached to already-existing threads
-class PMForumCommentMigration extends Migration {
-  public function __construct() {
-    parent::__construct();
-
-    $this->dependencies = array('PMForumFirstComment');
-
-    $this->map = new MigrateSQLMap(
-      $this->machineName,
-      array(
-        'uid' => array(
-          'type' => 'int',
-          'unsigned' => TRUE,
-          'not null' => TRUE,
-        ),
-      ),
-      MigrateDestinationComment::getKeySchema()
-    );
-
     $query = db_select('planetmath_forum_comments', 'pmfc')
       ->fields('pmfc', array('uid',
                              'replyto',
+                             'op',
                              'objectid',
                              'userid',
                              'username',
@@ -325,8 +329,13 @@ class PMForumCommentMigration extends Migration {
     $this->addFieldMapping('status')
          ->defaultValue(COMMENT_PUBLISHED);
 
-    $this->addFieldMapping('nid', 'objectid')
-         ->description(t('Preserve old objectid as nid in Drupal'));
+    // We should get the nid of the op (which means we need to add an appropriate
+    // column into the table we're porting over)
+
+    $this->addFieldMapping('nid', 'op')
+         ->description(t('Preserve old OP as nid in Drupal'));
+
+    // All subsequent comments are replies to other comments
     $this->addFieldMapping('pid', 'replyto')
          ->description(t('Preserve old replyto as pid in Drupal'));
     $this->addFieldMapping('subject', 'subject');
