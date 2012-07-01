@@ -1,0 +1,198 @@
+<?php
+
+function question_install() {
+  // get the translation function relevant to our current localisation
+  $t = get_t();
+  // define the content type as an array (same as in hook_node_info())
+  $question = array(
+              'type' => 'question',
+              'name' => 'Question',
+              'base' => 'node_content',
+              'module' => 'node',
+              'description' => t(''),
+              'has_title' => 1,
+              'custom' => false,
+              'modified' => false,
+              'locked' => 1,
+              'disabled' => 0,
+	      'promote' => 0,
+	      'status' => 1,
+	      'comment' => 0,
+              'orig_type' => 'question'
+  );
+
+  // set default values for anything not explicitly defined in the above array
+  $content_type = node_type_set_defaults($question);
+
+  // add the body field to the content type - actually we don't want this here
+  // node_add_body_field($content_type, 'Body');
+
+  // create the content type
+  node_type_save($content_type);
+  node_types_rebuild();
+  menu_rebuild();
+
+  // Create all the fields we are adding to our content type.
+  // http://api.drupal.org/api/function/field_create_field/7
+  foreach (_question_installed_fields() as $field) {
+    field_create_field($field);
+  }
+
+  // Create all the instances for our fields.
+  // http://api.drupal.org/api/function/field_create_instance/7
+  foreach (_question_installed_instances() as $instance) {
+    $instance['entity_type'] = 'node';
+    $instance['bundle'] = 'question';
+    field_create_instance($instance);
+  }
+
+}
+
+// NEED
+// field_data_field_question_latex
+//
+// NOTE: if we want this to be maximally accessible to users,
+// we may want to use plain text here (or allow them to use text)
+// *Actually* giving users the ability to choose which format they
+// want to use is maybe a little tricky (since they can supply plain
+// text to a LaTeX field, but then it will be treated as latex...).
+function _question_installed_fields() {
+  $t = get_t();
+  $fields = array(
+   'field_question_type' => array(
+      'field_name'  => 'field_question_type',
+      'label'       => $t('What kind of question is this'),
+      'cardinality' => 1,
+      'type'        => 'list_text',
+      'settings'    => array(
+        'allowed_values' => array('hlp' => 'Help',
+				  'hnt' => 'Hint',
+				  'req' => 'Request',
+				  'cur' => 'Curiousity',
+				  'oth' => 'Other'),
+        'allowed_values_function' => '',
+      ),
+    ),
+    'field_question_latex' => array(
+      'field_name'  => 'field_question_latex',
+      'label'       => $t('LaTeX field for this question.'),
+      'cardinality' => 1,
+      'type'        => 'field_latex',
+      'settings' => array(
+			  'filter' => 'latex',
+			  ),
+    ),
+  );
+  return $fields;
+}
+
+function _question_installed_instances() {
+  $t = get_t();
+  $instances = array(
+    'field_question_type' => array(
+      'field_name'  => 'field_question_type',
+      'label'       => $t('What kind of question is this'),
+      'cardinality' => 1,
+      'widget'      => array(
+	'type'          => 'options_select',
+     ),
+    ),
+    'field_question_latex' => array(
+      'field_name'  => 'field_question_latex',
+      'label'       => $t('LaTeX field for this question'),
+      'cardinality' => 1,
+      'bundle' => 'problem',
+      'widget' => array(
+			'active' => 1,
+			'module' => 'latex_field',
+			'settings' => array(
+					    'filter' => 'tex_editor',
+					    ),
+			'type' => 'latex_widget',
+			),
+      // hoping this is the right way to make the label hidden
+      'display' => array(
+			 'default' => array(
+					    'label' => 'hidden',
+					    'module' => 'latex_field',
+					    'settings' => array(),
+					    'type' => 'latex_formatter',
+					    'weight' => '6',
+					    ),
+			 'full' => array(
+					 'label' => 'hidden',
+					 'module' => 'latex_field',
+					 'settings' => array(),
+					 'type' => 'latex_formatter',
+					 'weight' => '0',
+					 ),
+			 'teaser' => array(
+					   'label' => 'above',
+					   'settings' => array(),
+					   'type' => 'hidden',
+					   'weight' => 0,
+					   ),
+			 )
+    ),
+  );
+  return $instances;
+}
+
+// should presumably be modified to delete the `article_has_problem' table
+// defined in the schema
+function question_uninstall() {
+  // Gather all the example content that might have been created while this
+  // module was enabled.  Simple selects still use db_query().
+  // http://api.drupal.org/api/function/db_query/7
+  $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
+  $result = db_query($sql, array(':type' => 'question'));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+
+  // Delete all the nodes at once
+  // http://api.drupal.org/api/function/node_delete_multiple/7
+  node_delete_multiple($nids);
+
+
+  // Loop over each of the fields defined by this module and delete
+  // all instances of the field, their data, and the field itself.
+  // http://api.drupal.org/api/function/field_delete_field/7
+  foreach (array_keys(_question_installed_fields()) as $field) {
+    field_delete_field($field);
+  }
+
+  // Delete our content type
+  // http://api.drupal.org/api/function/node_type_delete/7
+  node_type_delete('question');
+
+  // Purge all field information
+  // http://api.drupal.org/api/function/field_purge_batch/7
+  field_purge_batch(1000);
+}
+
+function question_schema() {
+  $schema = array();
+
+  $schema['question_has_answer'] = array(
+      'description' => 'Connection table between questions and answers (typically, articles)',
+      'fields' => array(
+          'qid' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true,
+              'description' => 'Question Id'
+          ),
+          'aid' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true,
+              'description' => 'Answer Id'
+          )
+      ),
+      'primary key' => array('qid', 'aid')
+  );
+
+  return $schema;
+}

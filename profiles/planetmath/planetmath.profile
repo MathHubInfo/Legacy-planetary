@@ -267,19 +267,27 @@ function planetmath_profile_forum_creator() {
   // Note that there will already be a "general discussion" forum created out of
   // the box.  It would be best to delete it so that the mappings are consistent.
   // This should do it:
-  taxonomy_term_delete(1);
+  //---- taxonomy_term_delete(1);
+  // Try this a different way:
 
-  dd("creating Forum 1");
+  dd("Revising definition of Forum 1");
 
-  $forum_topic_fields = array();
-  $forum_topic_fields['values']['name'] = 'PlanetMath System Updates and News';
-  $forum_topic_fields['values']['description'] = 'Site news and updates not major enough for the main page.';
-  $forum_topic_fields['values']['parent'][0] = array(0);
-  $forum_topic_fields['values']['weight'] = 0;
-  $forum_topic_fields['values']['vid'] = 1;
+  $firstForum = taxonomy_term_load(1);
+  $firstForum->name = 'PlanetMath System Updates and News';
+  $firstForum->description = 'Site news and updates not major enough for the main page.';
+  taxonomy_term_save($firstForum);
 
-  $forum = forum_form_forum($forum_topic_fields);
-  forum_form_submit($forum,$forum_topic_fields);
+
+
+  /* $forum_topic_fields = array(); */
+  /* $forum_topic_fields['values']['name'] = 'PlanetMath System Updates and News'; */
+  /* $forum_topic_fields['values']['description'] = 'Site news and updates not major enough for the main page.'; */
+  /* $forum_topic_fields['values']['parent'][0] = array(0); */
+  /* $forum_topic_fields['values']['weight'] = 0; */
+  /* $forum_topic_fields['values']['vid'] = 1; */
+
+  /* $forum = forum_form_forum($forum_topic_fields); */
+  /* forum_form_submit($forum,$forum_topic_fields); */
 
 
   dd("creating Forum 2");
