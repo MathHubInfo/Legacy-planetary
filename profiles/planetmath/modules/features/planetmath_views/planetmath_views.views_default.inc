@@ -622,21 +622,16 @@ else if (!$field_correction_closed){
   );
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
+  /* Header: Global: Text area */
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['label'] = 'AddGroup';
   $handler->display->display_options['header']['area']['empty'] = TRUE;
   $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
  <li><a href="node/add/group">Add new Group</a></li> 
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = 0;
-  /* Relationship: Group: Node group */
-  $handler->display->display_options['relationships']['og_rel']['id'] = 'og_rel';
-  $handler->display->display_options['relationships']['og_rel']['table'] = 'node';
-  $handler->display->display_options['relationships']['og_rel']['field'] = 'og_rel';
-  $handler->display->display_options['relationships']['og_rel']['required'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -651,32 +646,22 @@ else if (!$field_correction_closed){
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: OG group: Created */
-  $handler->display->display_options['fields']['created']['id'] = 'created';
-  $handler->display->display_options['fields']['created']['table'] = 'og';
-  $handler->display->display_options['fields']['created']['field'] = 'created';
-  $handler->display->display_options['fields']['created']['relationship'] = 'og_rel';
-  $handler->display->display_options['fields']['created']['label'] = 'Since';
-  $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['created']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['created']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['created']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['created']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['created']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['created']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['created']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['created']['date_format'] = 'time ago';
-  /* Filter criterion: OG group: State */
-  $handler->display->display_options['filters']['state']['id'] = 'state';
-  $handler->display->display_options['filters']['state']['table'] = 'og';
-  $handler->display->display_options['filters']['state']['field'] = 'state';
-  $handler->display->display_options['filters']['state']['relationship'] = 'og_rel';
-  $handler->display->display_options['filters']['state']['value'] = array(
-    1 => '1',
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'group' => 'group',
   );
-  $handler->display->display_options['filters']['state']['expose']['label'] = 'Group: Group\'s state';
-  $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
+  $handler->display->display_options['filters']['type']['group'] = 1;
+  /* Filter criterion: Content: Group subtype (field_group_subtype) */
+  $handler->display->display_options['filters']['field_group_subtype_value']['id'] = 'field_group_subtype_value';
+  $handler->display->display_options['filters']['field_group_subtype_value']['table'] = 'field_data_field_group_subtype';
+  $handler->display->display_options['filters']['field_group_subtype_value']['field'] = 'field_group_subtype_value';
+  $handler->display->display_options['filters']['field_group_subtype_value']['value'] = array(
+    'Team' => 'Team',
+  );
+  $handler->display->display_options['filters']['field_group_subtype_value']['group'] = 1;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
@@ -696,7 +681,6 @@ else if (!$field_correction_closed){
     'page_1' => 'page_1',
     'default' => 0,
   );
-
   $translatables['og_list'] = array(
     t('Defaults'),
     t('Groups list'),
@@ -709,14 +693,13 @@ else if (!$field_correction_closed){
     t('Items per page'),
     t('- All -'),
     t('Offset'),
-    t('group'),
+    t('<ul class="action-links"> 
+ <li><a href="node/add/group">Add new Group</a></li> 
+</ul> '),
     t('Title'),
-    t('Since'),
-    t('Group: Group\'s state'),
     t('Page'),
     t('Feed'),
   );
-
   $export['og_list'] = $view;
 
   $view = new view;
