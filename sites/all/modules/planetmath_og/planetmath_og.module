@@ -268,15 +268,17 @@ function planetmath_og_node_add_programmatic($type, $title, $uid, $body_text, $g
   $node->body[$node->language][0]['format']  = 'tex_editor';
 
   if ($group_subtype) {
-    $node->field_group_subtype[$node->language][0] = $group_subtype;
+    $node->field_group_subtype[$node->language][0]['value'] = $group_subtype;
   }
  
-
   node_save($node); // After this call we'll get a nid
   return $node->nid;
 }
 
 // We need to be able to add groups, and we need to be able to add nodes as a subroutine.
+// The default subtype is "Team".
+// You can also add groups w/ subtype "Coauthors" or "Buddies".
+
 function planetmath_og_group_add_programmatic($name,$userid,$description,$group_subtype='Team') {
   $etid = planetmath_og_node_add_programmatic('group', $name, $userid, $description, $group_subtype);
   // ANOTHER DIFFERENCE FROM OLD VERSION OF THIS CODE
