@@ -911,6 +911,34 @@ function planetmath_profile_configure_groups () {
   dd("Profile- In planetmath_profile_configure_groups");
   set_time_limit(0);
 
+  // The following code works when it is executed after the profile runs,
+  // However it does not work well when run within the profile (for now,
+  // just run it through devel/php immediately after this process completes).
+
+  // An interesting point: it is possible to add a group programmatically
+  // even without running this (see just below), but if you try to add groups
+  // interactively without running this, that causes an error.
+
+  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
+  /* $og_field['field']['settings']['target_type'] = 'node'; */
+  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
+  /*   'status' => TRUE, */
+  /*   'action' => 'none', */
+  /*   'fallback' => 'none', */
+  /*   'skip_perm' => FALSE, */
+  /* ); */
+  /* og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field); */
+
+  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
+  /* $og_field['field']['settings']['target_type'] = 'node'; */
+  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
+  /*   'status' => TRUE, */
+  /*   'action' => 'none', */
+  /*   'fallback' => 'none', */
+  /*   'skip_perm' => FALSE, */
+  /* ); */
+  /* og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field); */
+
   planetmath_og_group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
 
   return NULL;
