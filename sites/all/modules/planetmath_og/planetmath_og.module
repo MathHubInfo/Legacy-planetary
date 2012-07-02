@@ -258,24 +258,27 @@ function planetmath_og_user_insert($edit, $account, $category) {
 
 // We need to be able to add groups, and we need to be able to add nodes as a subroutine.
 // Returns the nid of the new node
-function planetmath_og_node_add_programmatic($type, $title, $uid, $body_text) {
+function planetmath_og_node_add_programmatic($type, $title, $uid, $body_text, $group_subtype=NULL) {
 
   $node = (object) array("type"=>$type, "title"=>$title, "language"=>LANGUAGE_NONE);
   node_object_prepare($node);
   $node->uid = $uid;
   $node->body[$node->language][0]['value']   = $body_text;
   $node->body[$node->language][0]['summary'] = text_summary($body_text);
-  $node->body[$node->language][0]['format']  = 'filtered_html';
+  $node->body[$node->language][0]['format']  = 'tex_editor';
+
+  if ($group_subtype) {
+    $node->field_group_subtype[$node->language][0] = $group_subtype;
+  }
+ 
 
   node_save($node); // After this call we'll get a nid
   return $node->nid;
 }
-// Test:
-// node_add_programmatic('group','testing programmatic add for groups again',1,'bla bla woof woof');
 
 // We need to be able to add groups, and we need to be able to add nodes as a subroutine.
-function planetmath_og_group_add_programmatic($name,$userid,$description) {
-  $etid = planetmath_og_node_add_programmatic('group', $name, $userid, $description);
+function planetmath_og_group_add_programmatic($name,$userid,$description,$group_subtype='Team') {
+  $etid = planetmath_og_node_add_programmatic('group', $name, $userid, $description, $group_subtype);
   // ANOTHER DIFFERENCE FROM OLD VERSION OF THIS CODE
   return entity_load_single('node', $etid);
 }
