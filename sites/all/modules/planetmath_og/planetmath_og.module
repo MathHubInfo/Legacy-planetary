@@ -391,7 +391,7 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   // find the 'buddy' group of this user
   //
   //dd($GLOBALS['user']);
-  $buddy_group_id = get_user_buddy_group_id($GLOBALS['user']['uid']);
+  $buddy_group_id = get_user_buddy_group_id($user->uid);
 
   if (!isset($form['og_group_ref']['und']['#default_value'][0]) || $buddy_group_id==0){
     $form['og_group_ref']['und']['#default_value'] = $buddy_group_id;
