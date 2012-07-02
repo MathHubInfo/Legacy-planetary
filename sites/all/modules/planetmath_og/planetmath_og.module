@@ -28,11 +28,22 @@ define("PLANETMATH_OG_WW_GID", 1);
 define("PLANETMATH_OG_ACCEPTED_CONTENT_TYPES", serialize(array('article')));
 
 function planetmath_og_model_getNodeEditingGroup($nid) {
-  $result = db_query("SELECT om.etid, om.gid 
-    FROM og_membership om 
-    WHERE om.entity_type = 'node' AND om.etid = :etid", array('etid' => $nid))->fetchObject();
-  if (isset($result->etid)) {
-    $group = node_load($result->gid);
+  // This query will select ONE group from the og_membership table
+  // that contains this node.  But we actually don't want that.
+  $result = db_query("SELECT om.etid as myid, om.gid as mygid
+    FROM og_membership om INNER JOIN field_data_field_group_subtype subtype
+    WHERE om.entity_type = 'node' AND om.etid = :etid
+    AND subtype.field_group_subtype_value = 'Coauthors'
+    AND subtype.entity_id = om.gid ", array('etid' => $nid))
+      ->fetchObject();
+  dd("MY NID");
+  dd($nid);
+  dd("MY GID");
+  dd($result->mygid);
+  dd("MY ETID");
+  dd($result->myid);
+  if (isset($result->myid)) {
+    $group = node_load($result->mygid);
   } else {
     $group = false;
   }
@@ -73,13 +84,6 @@ function planetmath_og_model_isUserMemberOfGroup($uid, $group) {
 function planetmath_og_model_insertNodeEditingGroup($node) {
   $groupTitle = PLANETMATH_OG_COAUTHOR_GROUP_PREFIX . $node->title;
 
-  // Just creating the node is all that needs to happen in order to make the group..
-  //  (I think).
-  // Though it may end up being important to set some extra field that isn't set
-  // here?
-
-  // How do we know that the user is an administrator member?bbb
-
   $groupNode = (object) array(
               'type' => 'group',
               'title' => $groupTitle,
@@ -90,6 +94,7 @@ function planetmath_og_model_insertNodeEditingGroup($node) {
               'created' => REQUEST_TIME,
               'language' => LANGUAGE_NONE
   );
+  $groupNode->field_group_subtype['und'][0]['value'] = 'Coauthors';
   node_save($groupNode);
 
   /* $gid = db_insert('og')->fields(array( */
@@ -149,16 +154,6 @@ function planetmath_og_menu() {
       'access arguments' => array(1)
   );
 
-  $items['node/%/pmxxx'] = array(
-      'type' => MENU_LOCAL_TASK,
-      'title' => 'BAD Co-Authors',
-      'page callback' => 'planetmath_og_view_coAuthorsPage',
-      'page arguments' => array(1),
-      'access callback' => 'planetmath_og_access_coAuthorsPage',
-      // argument to this callback duh
-      'access arguments' => array(1)
-  );
-
   $items['planetmath_og/create-coauth-group/%'] = array(
       'type' => MENU_CALLBACK,
       'title' => 'Create CoAuthor Group',
@@ -181,6 +176,8 @@ function planetmath_og_access_coAuthorsPage($nid){
   return false;
 }
 
+// user = 3
+// article = 12
 function planetmath_og_view_coAuthorsPage($nid) {
   $node = node_load($nid);
   $group = planetmath_og_model_getNodeEditingGroup($node->nid);
@@ -233,6 +230,7 @@ function planetmath_og_callback_createCoAuthGroup($nid) {
   }
   drupal_goto('node/' . $nid . '/pmgroup');
 }
+
 
 function planetmath_og_view_requestInvitePage($node, $group) {
   global $user;
@@ -324,7 +322,8 @@ function planetmath_og_node_view($node) {
 
  if($node->type == 'group'){ 
 
-  // first select relevant information about group members
+  // first select relevant information about group members (given an nid)
+  // this can be made into a separate function
 
     $user_info = db_query("SELECT u.name, u.uid FROM users u INNER JOIN og_membership ON og_membership.etid = u.uid WHERE og_membership.gid = :nid AND og_membership.group_type='node' AND og_membership.entity_type = 'user' LIMIT 20;", array(':nid' => $node->nid));
 
@@ -340,7 +339,8 @@ function planetmath_og_node_view($node) {
         '#links' => $links,
     );
     
-    // then select relevant information about group content (nodes)
+    // then select relevant information about group content (nodes) 
+    // maybe we also want this as a separate function
 
     $content_info = db_query("SELECT n.title,n.nid FROM node n INNER JOIN og_membership WHERE og_membership.gid =:nid AND og_membership.entity_type='node' AND og_membership.entity_type = 'node' AND og_membership.etid = n.nid LIMIT 20", array(':nid' => $node->nid));
 
@@ -406,7 +406,7 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   foreach ($form['og_group_ref']['und']['#options'] as $gid=>$group_title){
     $group = node_load($gid);
     if (isset($group->field_group_subtype['und'][0]) && 
-	$group->field_group_subtype['und'][0] == 'Team'){
+	$group->field_group_subtype['und'][0]['value'] == 'Team'){
       $filtered_group_list[$gid]=$group_title;
     }
   }
