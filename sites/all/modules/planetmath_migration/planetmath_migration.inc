@@ -138,17 +138,22 @@ class PMUserMigration extends PMMigration {
     // Rather than leaving these things unmapped, we'll try creating some new fields to hold them.
     // Note that this doesn't seem to actually do anything -- should put in a support request I guess.
 
-    $this->addFieldMapping('planetmath_migrate_prefs', 'prefs');
-    $this->addFieldMapping('planetmath_migrate_preamble', 'preamble');
-    $this->addFieldMapping('planetmath_migrate_surname', 'surname');
-    $this->addFieldMapping('planetmath_migrate_forename', 'forename');
-    $this->addFieldMapping('planetmath_migrate_lastip', 'lastip');
-    $this->addFieldMapping('planetmath_migrate_bio', 'bio');
-    $this->addFieldMapping('planetmath_migrate_city', 'city');
-    $this->addFieldMapping('planetmath_migrate_state', 'state');
-    $this->addFieldMapping('planetmath_migrate_country', 'country');
-    $this->addFieldMapping('planetmath_migrate_homepage', 'homepage');
-    $this->addFieldMapping('planetmath_migrate_score', 'score');
+
+    $this->addFieldMapping('user_forename', 'forename');
+    $this->addFieldMapping('user_surname', 'surname');
+    $this->addFieldMapping('user_city', 'city');
+    $this->addFieldMapping('user_state', 'state');
+    $this->addFieldMapping('user_country', 'country');
+    $this->addFieldMapping('user_homepage', 'homepage');
+    $this->addFieldMapping('user_preamble', 'preamble');
+    $this->addFieldMapping('user_bio', 'bio');
+
+    $this->addFieldMapping(NULL, 'lastip')
+         ->issueGroup(t('DNM'));
+    $this->addFieldMapping(NULL, 'score')
+         ->issueGroup(t('DNM'));
+    $this->addFieldMapping(NULL, 'prefs')
+         ->issueGroup(t('DNM'));
 
     // Unmapped source field
     $this->addFieldMapping(NULL, 'karma')
@@ -426,7 +431,7 @@ class PMObjectMigration extends PMMigration {
 
     // Rather than leaving these things unmapped, we'll try creating some new fields to hold them.
 
-    $this->addFieldMapping('field_preamble', 'preamble');
+    // $this->addFieldMapping('field_preamble', 'preamble');
 
     //    $this->addFieldMapping('planetmath_migrate_parentid', 'parentid');
     //    $this->addFieldMapping('planetmath_migrate_name', 'name');
