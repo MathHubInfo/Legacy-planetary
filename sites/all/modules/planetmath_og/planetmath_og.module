@@ -193,7 +193,7 @@ function planetmath_og_view_coAuthorsPage($nid) {
     }
   } else {
     if (planetmath_og_model_isUserGroupAdmin($user->uid, $group)) {
-      $page = planetmath_og_view_coAuthorsGroupPage($group);
+      $page = planetmath_og_view_coAuthorsGroupPage($group,$nid);
     } else {
       $page = planetmath_og_view_requestInvitePage($node, $group);
     }
@@ -201,9 +201,20 @@ function planetmath_og_view_coAuthorsPage($nid) {
   return $page;
 }
 
+///*
+// * a helper function to reverse find the article (node in general) id 
+// * from the corresponding coauthor group id
+// */
+//function get_node_id_from_editing_group_id($gid){
+//  $result = db_query("SELECT  ".
+//      " = :nid ", array(':gid' => $gid));
+//  return $result->nid;
+//}
+
 // http://metameso.org/p/group/node/13/admin/people/add-user
-function planetmath_og_view_coAuthorsGroupPage($group) {
-  $links = array(
+function planetmath_og_view_coAuthorsGroupPage($group,$nid) {
+  $links = array( 
+      'transfer-ownership' => l("Transfer ownership", 'node/'.$nid.'/transfer'),
       'add-people' => l("Add co-authors", 'group/node/' . $group->nid . '/admin/people/add-user'),
       'people' => l('Manage co-authors', 'group/node/' . $group->nid . '/admin/people')
   );
@@ -212,7 +223,8 @@ function planetmath_og_view_coAuthorsGroupPage($group) {
 
 function planetmath_og_view_coAuthorsNoGroupPage($node) {
   $html = "<p>Currently, there is no co-author group associated to this one.</p>" .
-          l("Create co-author group", 'planetmath_og/create-coauth-group/' . $node->nid);
+          "<p>".l("Transfer owenrship","node/".$node->nid."/transfer")."</p>".
+          "<p>".l("Create co-author group", 'planetmath_og/create-coauth-group/' . $node->nid)."</p>";
   return $html;
 }
 
