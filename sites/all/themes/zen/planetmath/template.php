@@ -150,6 +150,13 @@ function planetmath_form_alter(&$form, &$form_state, $form_id) {
 //    $form['pass']['#required'] = false;
 //    $form['pass']['#value'] = 'password';
 //    print_r($form);
+  } else if ($form_id == 'article_node_form' || $form_id == 'problem_node_form' ) {
+    $path = drupal_get_path('theme','planetmath');
+    // We worked out what to do about preambles in the July 2 version of the code
+    // but I neglected to commit until later.
+    //dd('i am in the theme function just for latex_field...'.$path);
+    drupal_add_js("$path/js/theme_latex_field.js");   
+    //dd('success');
   }
 }
 
