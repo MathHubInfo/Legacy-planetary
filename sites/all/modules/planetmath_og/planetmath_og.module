@@ -36,12 +36,7 @@ function planetmath_og_model_getNodeEditingGroup($nid) {
     AND subtype.field_group_subtype_value = 'Coauthors'
     AND subtype.entity_id = om.gid ", array('etid' => $nid))
       ->fetchObject();
-  dd("MY NID");
-  dd($nid);
-  dd("MY GID");
-  dd($result->mygid);
-  dd("MY ETID");
-  dd($result->myid);
+
   if (isset($result->myid)) {
     $group = node_load($result->mygid);
   } else {
@@ -105,7 +100,7 @@ function planetmath_og_model_insertNodeEditingGroup($node) {
   /*             'created' => REQUEST_TIME */
   /*         ))->execute(); */
 
-  $gid = db_insert('og_membership')->fields(array(
+  db_insert('og_membership')->fields(array(
       'type' => 'og_membership_type_default',
       'etid' => $node->nid,
       'entity_type' => 'node',
@@ -116,7 +111,7 @@ function planetmath_og_model_insertNodeEditingGroup($node) {
       'field_name' => 'og_group_ref',
       'language' => 'en'
   ))->execute();
-  return $gid;
+  return $groupNode->nid;
 }
 
 function planetmath_og_model_addUserToGroup($gid, $uid, $isAdmin = false) {
