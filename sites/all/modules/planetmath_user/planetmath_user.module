@@ -1,42 +1,108 @@
 <?php
 
+define("PLANETMATH_USER_BUDDY_LIST_PREFIX", "Buddy List of ");
+
+// Callbacks:
+//  'link/to/group/create/page/' ~
+//  'buddies/autocomplete_form' ~ select an existing team by autocompletion
+// 
+// For the latter, we will need to do some custom autocompletion, in
+// order to filter the available groups down to the Teams facet.
+
+function planetmath_user_menu() {
+  $items = array();
+
+  // This one creates a buddy list
+  $items['user/create-buddy-list/%'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Create Buddy List',
+    'page callback' => 'planetmath_user_createBuddyList',
+    'page arguments' => array(2),
+    'access arguments' => array('create group content')
+  );
+
+  // Will print the page...
+  $items['user/designate-buddy-list/%'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Designate Buddy List',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('planetmath_user_group_selector', 2),
+    'access arguments' => array('create group content')
+  );
+
+  // get the autocomplete form
+  $items['buddies/autocomplete_form'] = array(
+    'title' => 'Group selector (form)',
+    'access arguments' => array('create group content'),
+    'type' => MENU_NORMAL_ITEM
+  );
+
+  // get the autocomplete result
+  $items['buddies/autocomplete'] = array(
+    'title' => 'Group selector (result)',
+    'page callback' => 'planetmath_user_group_selector_result',
+    'access arguments' => array('create group content'),
+    'type' => MENU_CALLBACK
+  );
+  return $items;
+}
+
+/*
+ * when the user buddy list is deleted we also need to set the user's
+ * buddy_list field back to null
+ */
+
+function planetmath_user_node_delete($node) {
+  if ($node->type == 'group') {
+    db_delete("field_data_field_buddy_list")
+        ->condition('field_buddy_list_nid', $node->nid, "=")
+        ->execute();
+    /* If we want to be more efficient, I think we can just clear these caches:
+     * entity_info:en
+     * entity_property_info:en
+     */
+    cache_clear_all();
+  }
+}
+
 // Query to get articles by user id "$uid"
 function planetmath_user_querymyarticles($uid, $sortBy = 'n.title') {
-
   $results = db_query("SELECT n.nid, n.title, n.uid, n.created, n.changed
     FROM node n 
     WHERE n.`type` = 'article' AND n.uid=$uid ORDER BY $sortBy DESC");
   $links = array();
   foreach ($results as $result) {
-    $links = array_merge($links,
-			 planetmath_user_add_links($result->title, $result->nid));
+    $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));
   }
-
   return $links;
 }
 
 // Used in the above function to build the list of links
 function planetmath_user_add_links($title, $nid) {
-    $links = array(
-		   "$nid" => l($title, 'node/' . $nid),
-		   );
-    return $links;
+  $links = array(
+    "$nid" => l($title, 'node/' . $nid),
+  );
+  return $links;
 }
 
 /*
  * implements hook_theme
- */ 
+ */
+
 function planetmath_user_theme($existing, $type, $theme, $path) {
-  $to_return =  array(
-		      // this identifier ends up being the index of the
-		      // array that gets themed in the the template
-		      'planetmath_user_articles' => 
-                      // use standard theming elements here, like "links"
-		      array('variables' => array('links' => 
-						             array(),
-						 ),
-			    )
-		      );
+  $to_return = array(
+    // this identifier ends up being the index of the
+    // array that gets themed in the the template
+    'planetmath_user_articles' =>
+    // use standard theming elements here, like "links"
+    array('variables' => array(
+        'links' => array(),
+    )),
+    'planetmath_user_buddies' =>
+    array('variables' => array(
+        'links' => array(),
+    )),
+  );
   return $to_return;
 }
 
@@ -48,7 +114,7 @@ function planetmath_user_theme($existing, $type, $theme, $path) {
  */
 
 function theme_planetmath_user_articles($variables) {
-if (isset($variables['links'])) {
+  if (isset($variables['links'])) {
     $html = '';
     $html .= '<div class="field field-type-entityreference field-label-above">';
     $html .= '<div class="field-label">My articles:&nbsp;</div>';
@@ -60,24 +126,200 @@ if (isset($variables['links'])) {
     $html .= '</div>';
     return $html;
   } else
-     return; 
+    return;
+}
+
+/*
+ * Another implementation of theme_IDENTIFIER, see comments above.
+ */
+
+function theme_planetmath_user_buddies($variables) {
+  $html = '';
+  $html .= '<div class="field field-type-entityreference field-label-above">';
+  $html .= '<div class="field-label">My buddies:&nbsp;</div>';
+  foreach ($variables['links'] as $buddy) {
+    $html .= '<div class="field-item">';
+    $html .= '» ' . $buddy;
+    $html .= '</div>';
+  }
+  $html .= "</div></div>";
+  return $html;
 }
 
 /*
  * Implements hook_user_view, which can modify $account by adding "content"
- * This is the point of entry to this module.
+ * (This is the point of entry to this module.)
  */
+
 function planetmath_user_view($account, $view_mode, $langcode) {
 
   // get items from the database to push into the page
   $mylinks = planetmath_user_querymyarticles($account->uid, 'n.title');
-  
+
   // use IDENTIFIER above both for the index of the content that we extend
   // and for the theme that will render this content.
+  //dd($account->content['planetmath_user_articles']); 
+
   $account->content['planetmath_user_articles'] = array(
-						'#markup' => '',
-						'#weight' => 10,
-						'#theme' => 'planetmath_user_articles',
-						'#links' => $mylinks
-						);
+    '#markup' => '',
+    '#weight' => 10,
+    '#theme' => 'planetmath_user_articles',
+    '#links' => $mylinks
+  );
+
+  $user = user_load($account->uid);
+  // This should be a nid associated with a group, let's check...
+  $buddies_list = $user->field_buddy_list['und'][0]['nid'];
+  dd('************** ');
+  dd($user->field_buddy_list);
+  dd("BUDDIES LIST (USER) IS...");
+  dd($user);
+
+  if (empty($buddies_list)) {
+    $buddies_links = array(
+      // We need a custom callback for creating the buddy list
+      'buddy_list_add' => l('Create Buddy List', 'user/create-buddy-list/' . $account->uid),
+      // We need to use custom autocompletion for this
+      'buddy_list_specify' => l('Designate Existing Team', 'user/designate-buddy-list/' . $account->uid),
+    );
+  }
+  else {
+    // Later we can show the list of most active users in the given group or whatever
+    // Note: when the buddy list is a Team, the user might not actually have permission
+    // to manage the team, even though they have designated it as their Buddy list...
+    // So we have to think what to do in this case.
+    $buddies_links = array(
+      'the_buddy_list' => l("Manage Buddies List", 'node/' . $buddies_list . '/group')
+    );
+  }
+
+  $account->content['planetmath_user_buddies'] = array(
+    '#markup' => '',
+    '#weight' => 1,
+    '#theme' => 'planetmath_user_buddies',
+    '#links' => $buddies_links
+  );
+}
+
+
+function planetmath_user_createBuddyList($uid) {
+  dd('in the planetmath_user_createBuddyList()');
+  dd($uid);
+  $user = user_load($uid);
+  if ($user->uid) {
+    // 
+    dd('in the block');
+    $gid = planetmath_user_insertBuddyList($user);
+    if ($gid) {
+      drupal_set_message("The Buddy List was successfully created");
+      drupal_goto('node/' . $gid . '/group');
+      return;
+    }
+    else {
+      drupal_set_message("There was an error creating the Buddy List", "error");
+    }
+  }
+  else {
+    drupal_set_message("The buddy list was not created because the user does not exist", "error");
+  }
+  //
+  drupal_goto('user/' . $uid);
+}
+
+// Returns the autocomplete form.
+function planetmath_user_group_selector($form, &$form_state,$uid) {
+  $form = array();
+
+  $form['uid'] = array('#type' => 'value', '#value' => $uid);
+
+  // We could offer the user another way to select things 
+  // I.e. "Or choose from list."
+  $form['auto'] = array(
+			'#type' => 'textfield',
+			'#autocomplete_path' => 'buddies/autocomplete',
+			'#description' => t('Please type any letter.'),
+			);
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Submit'));
+
+  return $form;
+}
+
+// This will be the submit routine for the form suggested above, and will 
+// implement the logic to finish the job
+function planetmath_user_group_selector_submit($form, &$form_state) {
+  $uid=$form['uid']['#value'];
+  $auto=$form['auto']['#value'];
+  
+  $result=db_query("SELECT nid FROM node WHERE title=:title AND type='group'",
+		   array(':title' => $auto))->fetchObject();
+
+  $user = user_load($uid);
+  $user->field_buddy_list['und'][0]['nid'] = $result->nid;
+  user_save($user);
+  drupal_goto('user/'.$uid);
+}
+
+// Does the autocompletion and returns matches
+
+// This query is fine as long as the titles of groups are distinct.
+// Maybe we should enforce distinct titles at group creation time.
+// Either that or we should find a way to disambiguate here...
+function planetmath_user_group_selector_result($string = '') {
+  $matches = array();
+  if ($string) {
+    $result =
+      db_query_range("SELECT title FROM node INNER JOIN field_data_field_group_subtype subtype ON subtype.entity_id = node.nid WHERE LOWER(title) LIKE LOWER('$string%') AND subtype.field_group_subtype_value = 'Team'", 0, 10); // only 10 results will show
+    foreach ($result as $match) {
+      $matches[$match->title] = check_plain($match->title);
+    }
+  }
+  drupal_json_output($matches); //Returns the data in JSON format
+}
+
+// Need to check this...
+function planetmath_user_insertBuddyList($user) {
+  //dd('in the planetmath_user_insertBuddyList()');
+  //dd('user object is:');
+  //dd($user);
+
+  $groupTitle = PLANETMATH_USER_BUDDY_LIST_PREFIX . $user->name;
+
+  $groupNode = (object) array(
+        'type' => 'group',
+        'title' => $groupTitle,
+        'uid' => $user->uid,
+        'status' => 1,
+        'comment' => 1,
+        'changed' => REQUEST_TIME,
+        'created' => REQUEST_TIME,
+        'language' => LANGUAGE_NONE
+  );
+  $groupNode->field_group_subtype['und'][0]['value'] = 'Buddies';
+
+  node_save($groupNode);
+
+  $user->field_buddy_list['und'][0]['nid'] = $groupNode->nid;
+  user_save($user);
+
+
+  // dd('The newly created (buddy) group node is:');
+  //dd($groupNode);
+
+
+  db_insert('og_membership')->fields(array(
+    'type' => 'og_membership_type_default',
+    'etid' => $user->uid,
+    'entity_type' => 'node',
+    'gid' => $groupNode->nid,
+    'group_type' => 'node',
+    'state' => 1,
+    'created' => REQUEST_TIME,
+    'field_name' => 'og_group_ref',
+    'language' => 'en'
+  ))->execute();
+
+  //
+  return $groupNode->nid;
 }
