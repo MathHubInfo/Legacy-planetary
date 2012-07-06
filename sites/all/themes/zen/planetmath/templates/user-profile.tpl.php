@@ -34,7 +34,6 @@
 ?>
 <div class="profile"<?php print $attributes; ?>>
 <?php 
-   dd($user_profile);
    print render($user_profile['privatemsg_send_new_message']);
    print render($user_profile['userpoints']);
    print render($user_profile['summary']);
@@ -52,6 +51,7 @@
 </td>
 <td width="50%" >
   <?php
+         print render($user_profile['planetmath_user_buddies']);
          print render($user_profile['og_group_ref']);
          print render($user_profile['og_user_group_ref']); ?>
 </td>

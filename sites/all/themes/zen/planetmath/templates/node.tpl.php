@@ -97,7 +97,16 @@
 
   <?php if ($display_submitted): ?>
     <div class="submitted">
-      <?php print $submitted; ?>
+      <?php print $submitted;
+?>
+  <?php if ($type === 'article'): ?>
+      <p> Authors:
+     <?php
+   dd($content['planetmath_og_display_coauthors']);
+            print render($content['planetmath_og_display_coauthors']); 
+      ?>
+      </p>
+  <?php endif; ?>
     </div>
   <?php endif; ?>
 
