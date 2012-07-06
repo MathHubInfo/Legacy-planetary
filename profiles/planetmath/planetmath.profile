@@ -911,6 +911,8 @@ function planetmath_profile_configure_groups () {
   dd("Profile- In planetmath_profile_configure_groups");
   set_time_limit(0);
 
+  // NOTE: these comments are irrelevant for latest versions of OG
+
   // The following code works when it is executed after the profile runs,
   // However it does not work well when run within the profile (for now,
   // just run it through devel/php immediately after this process completes).
