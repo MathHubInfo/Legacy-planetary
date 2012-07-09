@@ -151,6 +151,12 @@ function planetmath_form_alter(&$form, &$form_state, $form_id) {
 //    $form['pass']['#value'] = 'password';
 //    print_r($form);
   }
+  else if ($form_id == 'article_node_form' || $form_id == 'problem_node_form' ) {
+    $path = drupal_get_path('theme','planetmath');
+    dd('i am in the theme function just for latex_field...'.$path);
+    drupal_add_js("$path/js/theme_latex_field.js");   
+    dd('success');
+  }
 }
 
 function planetmath_view_theme_getUserPoints(){
@@ -175,3 +181,5 @@ function planetmath_view_theme_getUserPoints(){
          $variables['rdf']->profile = '';
      }
     }
+
+
