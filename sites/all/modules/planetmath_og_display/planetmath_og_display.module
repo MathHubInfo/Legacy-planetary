@@ -1,0 +1,97 @@
+<?php
+
+// Query to get articles by user id "$uid"
+function planetmath_og_display_querycoauthors($nid, $sortBy = 'users.name') {
+
+  $node = node_load($nid);
+  $owner=user_load($node->uid);
+  // Get the coauthor group for this node, if any
+  $group=planetmath_og_model_getNodeEditingGroup($nid);
+  
+  // This query needs to be fixed
+  $results = db_query("SELECT users.name,users.uid
+    FROM og_membership om INNER JOIN users
+    ON om.etid = users.uid 
+    WHERE om.entity_type = 'user' AND om.gid= :gid ORDER BY $sortBy DESC",
+		      array(':gid' => $group->nid));
+
+  $links = array(
+		 "$owner->name" => l($owner->name, 'user/' . $owner->uid),
+		 );
+
+  foreach ($results as $result) {
+    $new = planetmath_og_display_add_links($result->name, $result->uid);
+    $links = array_merge($links,$new );
+  }
+
+  return $links;
+}
+
+// Used in the above function to build the list of links
+function planetmath_og_display_add_links($name, $uid) {
+    $links = array(
+		   "$name" => l($name, 'user/' . $uid),
+		   );
+    return $links;
+}
+
+/*
+ * implements hook_theme
+ */ 
+function planetmath_og_display_theme($existing, $type, $theme, $path) {
+  $to_return =  array(
+		      // this identifier ends up being the index of the
+		      // array that gets themed in the the template
+		      'planetmath_og_display_coauthors' => 
+                      // use standard theming elements here, like "links"
+		      array('variables' => array('links' => 
+						             array(),
+						 ),
+			    )
+		      );
+  return $to_return;
+}
+
+/*
+ * Implements theme_IDENTIFIER, where IDENTIFIER is supplied by 
+ * implementation of hook_theme above.
+ * This is what produces the HTML that will be printed when we
+ *   print render($user_profile[IDENTIFIER]);
+ */
+
+function theme_planetmath_og_display_coauthors($variables) {
+if (isset($variables['links'])) {
+    $html = '';
+    //$html .= '<div class="field field-type-entityreference field-label-above">';
+    // $html .= '<div class="field-label">Co-authors:&nbsp;</div>';
+    $html .= implode($variables['links'], ", ");
+    /* foreach ($variables['links'] as $link) { */
+    /*   // $html .= '<div class="field-item">'; */
+    /*   $html .= $link; */
+    /*   $html .= ' '; */
+    /*   // $html .= '</div>'; */
+    /* } */
+    //$html .= '</div>';
+    return $html;
+  } else
+     return; 
+}
+
+/*
+ * Implements hook_node_view, which can modify $account by adding "content"
+ * This is the point of entry to this module.
+ */
+function planetmath_og_display_node_view($node, $view_mode, $langcode) {
+
+  if($node->type == 'article') {
+
+  // get items from the database to push into the page
+  $mylinks = planetmath_og_display_querycoauthors($node->nid, 'users.name');
+  $node->content['planetmath_og_display_coauthors'] = array(
+						'#markup' => '',
+						'#weight' => 10,
+						'#theme' => 'planetmath_og_display_coauthors',
+						'#links' => $mylinks
+						);
+  }
+}
