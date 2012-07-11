@@ -54,6 +54,7 @@ function latex_field_theme($existing, $type, $theme, $path) {
 *   background color of div.region-content.
 */
 function latex_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  
 	$element = array();
 
 	switch ($display['type']) {
@@ -191,6 +192,72 @@ function latex_field_field_widget_settings_form($field, $instance) {
     '#description' => t('Please choose the filter to be used for the content.'),
 	);
 	return $form;
+}
+
+// Retrieve the user's preamble or site wide preamble, and populate the "preamble" 
+// This seems to work fine, but it isn't going to be GENERAL unless we name
+// the latex field in a consistent way.  OK, the function here now sorts out the
+// naming concerns... and together with the corresponding JS (and removing the
+// content-type-specific template files) this is ready to deploy.
+function latex_field_form_alter(&$form, &$form_state, $form_id){
+
+  global $user;
+
+  //dd("THIS IS THE FORM ID");
+  //dd($form_id);
+  if ($form_id == 'article_node_form' 
+      || $form_id == 'problem_node_form'
+      || $form_id == 'solution_node_form'
+      || $form_id == 'review_node_form' ){
+
+    if($form_id == 'article_node_form') {
+      $fieldname='field_latex';
+    } else {
+      preg_match("/(.*)_node_form/", $form_id, $matches);
+      $fieldname='field_'.$matches[1].'_latex';
+    }
+
+    // THE NEXT THING IS TO BE SURE TO GET THE *LOCAL* PREAMBLE IN CASE IT EXISTS
+    // AND USE THAT.  OF COURSE, THIS IS ONLY MEANINGFUL WHEN THE NID IS DEFINED
+    // I.E. WHEN THE NODE IS NOT A NEW ONE. 
+    $preamble='';
+    // if we're revising a node, the local preamble has the precident
+    if(isset($form['nid']['#value'])){
+      $tablename='field_data_'.$fieldname;
+      $columnname=$fieldname.'_preamble';
+
+      if(db_table_exists($tablename)) {
+        $preamble = db_query('SELECT '.$columnname.' AS preamble
+    FROM '.$tablename.' 
+    WHERE entity_id=' . $form['nid']['#value'])->fetchObject();
+        $preamble = $preamble->preamble;
+      }
+    }
+    // otherwise, the user preamble has next precident
+    if(empty($preamble)){
+      if(db_table_exists('field_data_field_user_preamble')) {
+        $preamble = db_query('SELECT field_user_preamble_value AS preamble
+    FROM field_data_field_user_preamble 
+    WHERE entity_id=' . $user->uid)->fetchObject();
+        $preamble = $preamble->preamble;
+      }
+    }
+    // otherwise, we use the global preamble
+    if (empty($preamble)) {
+      $form[$fieldname]['und'][0]['preamble']['#default_value'] = '%SITEWIDE DEFAULT SHOULD GO HERE';
+    } else {
+      $form[$fieldname]['und'][0]['preamble']['#default_value']= $preamble;
+    }
+
+    // This code does work to insert the js, but we still need
+    // some way to get the actual preamble inserted... but
+    // that should now be done by the above.
+    $path = drupal_get_path('theme','planetmath');
+    dd('i am theming the latex_field...'.$path);
+    drupal_add_js("$path/js/theme_latex_field.js");   
+    dd('success');
+
+  }
 }
 
 ?>
