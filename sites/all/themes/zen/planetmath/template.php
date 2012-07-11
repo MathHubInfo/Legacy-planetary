@@ -141,23 +141,7 @@ function STARTERKIT_preprocess_block(&$variables, $hook) {
 }
 // */
 
-function planetmath_form_alter(&$form, &$form_state, $form_id) {  
-  if ($form_id == 'user_login_block') {
-//    $form['name']['#title_display'] = 'invisible';
-//    $form['name']['#required'] = false;
-//    $form['name']['#default_value'] = 'Username';
-//    $form['pass']['#title_display'] = 'invisible';
-//    $form['pass']['#required'] = false;
-//    $form['pass']['#value'] = 'password';
-//    print_r($form);
-  }
-  else if ($form_id == 'article_node_form' || $form_id == 'problem_node_form' ) {
-    $path = drupal_get_path('theme','planetmath');
-    dd('i am in the theme function just for latex_field...'.$path);
-    drupal_add_js("$path/js/theme_latex_field.js");   
-    dd('success');
-  }
-}
+
 
 function planetmath_view_theme_getUserPoints(){
   global $user;
@@ -181,5 +165,4 @@ function planetmath_view_theme_getUserPoints(){
          $variables['rdf']->profile = '';
      }
     }
-
 
