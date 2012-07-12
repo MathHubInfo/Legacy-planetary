@@ -120,8 +120,12 @@
    <?php
      print render($content['planetmath_group_content']);
      // I don't know why, but this seems to be needed to get "subscribe" link
-     // to show up for non-admin users
-     print render($content['group_group'][0]);
+     // to show up for non-admin users (but we hide this for the World Writable group)
+      if($content['group_group']['#object']->nid != 1){
+        print render($content['group_group'][0]);
+      } else {
+        hide($content['group_group'][0]);
+      }
    ?>
    </div>
    <?php endif; ?>
