@@ -2,6 +2,7 @@
 
 function planetmath_orphanage_install() {
   $orphanUser = array(
+              "uid" => 1000000,
               "name" => "Orphanage",
               "mail" => "orphanage@planetmath.org",
               "pass" => user_password(),
