@@ -4,6 +4,7 @@ version = "7.x-1.0"
 core = "7.x"
 
 dependencies[] = node_reference
+dependencies[] = user_reference
 
 files[] = correction.install
 files[] = correction.module
