@@ -56,9 +56,49 @@ function question_install() {
 // *Actually* giving users the ability to choose which format they
 // want to use is maybe a little tricky (since they can supply plain
 // text to a LaTeX field, but then it will be treated as latex...).
+
 function _question_installed_fields() {
   $t = get_t();
   $fields = array(
+    'field_question_article' => array(
+      'field_name'  => 'field_question_article',
+      'label'       => $t('Reference to the article this question is about (for requests, this will be the answer).'),
+      'cardinality' => 1,
+      'type'        => 'node_reference',
+      'settings'    => array(
+        'referenceable_types'  => array('article'),
+      ),
+    ),
+    'field_question_fulfiller' => array(
+      'field_name'  => 'field_question_fulfiller',
+      'label'       => $t('Reference to the user who fulfilled i.e. answered the question'),
+      'cardinality' => 1,
+      'type'        => 'user_reference',
+      'settings'    => array(
+                             ),
+    ),
+    'field_question_closed' => array(
+      'field_name'  => 'field_question_closed',
+      'label'       => $t('Time when the answer was accepted and the question closed'),
+      'cardinality' => 1,
+      'type'        => 'datetime',
+      'module' => 'date',
+      'settings' => array(
+                          'cache_count' => '4',
+                          'cache_enabled' => 0,
+                          'granularity' => array(
+                                                 'day' => 'day',
+                                                 'hour' => 'hour',
+                                                 'minute' => 'minute',
+                                                 'month' => 'month',
+                                                 'second' => 0,
+                                                 'year' => 'year',
+                                                 ),
+                          'timezone_db' => 'UTC',
+                          'todate' => '',
+                          'tz_handling' => 'site',
+                          ),
+    ),
    'field_question_type' => array(
       'field_name'  => 'field_question_type',
       'label'       => $t('What kind of question is this'),
@@ -89,6 +129,30 @@ function _question_installed_fields() {
 function _question_installed_instances() {
   $t = get_t();
   $instances = array(
+    'field_question_article' => array(
+      'field_name'  => 'field_question_article',
+      'label'       => $t('Reference to the article this question is about'),
+      'cardinality' => 1,
+      'widget'      => array(
+        'type'          => 'node_reference_autocomplete',
+      ),
+    ),
+    'field_question_fulfiller' => array(
+      'field_name'  => 'field_question_fulfiller',
+      'label'       => $t('Reference to the user who fulfilled i.e. answered the question'),
+      'cardinality' => 1,
+      'settings'    => array(
+                             'type'          => 'user_reference_autocomplete',
+                             ),
+    ),
+    'field_question_closed' => array(
+      'field_name'  => 'field_question_closed',
+      'label'       => $t('Time when the answer was accepted and the question closed'),
+      'cardinality' => 1,
+      'widget' => array(
+                          'type' => 'text_field',
+                        ),
+    ),
     'field_question_type' => array(
       'field_name'  => 'field_question_type',
       'label'       => $t('What kind of question is this'),

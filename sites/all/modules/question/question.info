@@ -4,5 +4,9 @@ package = "Planetary Modules"
 version = "7.x-1.0"
 core = "7.x"
 
+dependencies[] = node_reference
+dependencies[] = user_reference
+dependencies[] = date
+
 files[] = question.install
 files[] = question.module
