@@ -48,6 +48,22 @@ function correction_install() {
 function _correction_installed_fields() {
   $t = get_t();
   $fields = array(
+    'field_correction_remark' => array(
+      'field_name'  => 'field_correction_remark',
+      'label'       => $t('Parting words from the person who closed the correction.'),
+      'cardinality' => 1,
+      'type'        => 'text',
+      'settings'    => array(
+                             ),
+    ),
+    'field_correction_closedby' => array(
+      'field_name'  => 'field_correction_closedby',
+      'label'       => $t('Reference to the user who closed the correction.'),
+      'cardinality' => 1,
+      'type'        => 'user_reference',
+      'settings'    => array(
+                             ),
+    ),
     'field_correction_article' => array(
       'field_name'  => 'field_correction_article',
       'label'       => $t('Reference to the article this correction is about'),
@@ -96,6 +112,27 @@ function _correction_installed_fields() {
 function _correction_installed_instances() {
   $t = get_t();
   $instances = array(
+    'field_correction_remark' => array(
+      'field_name'  => 'field_correction_remark',
+      'label'       => $t('Parting words from the person who closed the correction'),
+      'cardinality' => 1,
+      'widget'    => array(
+                             'type'          => 'text_textfield',
+                             ),
+      'formatter'     => array(
+                               'label'     => t('Closing words'),
+                               'format'    => 'text_default'
+                               ),
+    ),
+    'field_correction_closedby' => array(
+      'field_name'  => 'field_correction_closedby',
+      'label'       => $t('Reference to the user who closed the correction.'),
+      'description' => $t('This should be someone with editing rights, typically one of the article coauthors.'),
+      'cardinality' => 1,
+      'widget'    => array(
+                             'type'          => 'user_reference_autocomplete',
+                             ),
+    ),
     'field_correction_article' => array(
       'field_name'  => 'field_correction_article',
       'label'       => $t('Reference to the article this correction is about'),
@@ -106,7 +143,7 @@ function _correction_installed_instances() {
     ),
     'field_correction_accepted' => array(
       'field_name'  => 'field_correction_accepted',
-      'label'       => $t('Status of the article (was it accepted)'),
+      'label'       => $t('Status of the article (was it accepted?)'),
       'cardinality' => 1,
       'widget'      => array(
         'type'          => 'options_onoff',
@@ -115,7 +152,7 @@ function _correction_installed_instances() {
     ),
     'field_correction_closed' => array(
       'field_name'  => 'field_correction_closed',
-      'label'       => $t('Status of the article (is it still pending)'),
+      'label'       => $t('Status of the article (is it closed?)'),
       'cardinality' => 1,
       'widget'      => array(
         'type'          => 'options_onoff',
