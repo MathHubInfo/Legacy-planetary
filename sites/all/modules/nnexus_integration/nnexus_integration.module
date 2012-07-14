@@ -1,0 +1,70 @@
+<?php
+
+/* This is a module to provide NNexus integration for Planetary, implementing the API and any needed Planetary hooks.
+
+   NNexus will run as a web service, which can be interacted with via the following functions:
+     linkentry, addobject, updatelinkpolicy, deleteobject, checkvalid
+   which take arguments as follows:
+
+   linkentry        : $objid $text $format $nolink
+   addobject        : $title $body $objid $author $linkpolicy $classes $synonyms $defines $batchmode 
+   updatelinkpolicy : $objid $linkpolicy
+   deleteobject     : $objid
+   checkvalid       : $objid
+
+   (The one we're most interested in now is autolink.)
+  */
+
+/*
+ * Implements hook_drutexml_postprocess.
+ * $text is xhtml that has been returned from LaTeXML
+ */
+function nnexus_integration_drutexml_postprocess($text) {
+  return nnexus_integration_autolink($text,'xhtml');
+}
+
+// $format should be one of: xhtml, html, and latex.
+// $text should be in the corresponding format!
+function nnexus_integration_autolink($text,$format) {
+  $data = 'function=linkentry&text='.urlencode($text).'&format='.$format.'&nolink=false';
+  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  return $content;
+}
+
+// this function should be called when new articles are added (so, we need to implement the right hook for that)
+// Not immediately clear whether we need a different function to deal with the updating case?
+function nnexus_integration_add($title, $body, $objid, $author, $linkpolicy, $classes, $synonyms, $defines, $batchmode ) {
+  $data = 'function=addobject&title='.urlencode($title).
+          '&body='.urlencode($body).
+          '&objid='.urlencode($objid).
+          '&author='.urlencode($author).
+          '&linkpolicy='.urlencode($linkpolicy).
+          '&classes='.urlencode($classes).
+          '&synonyms='.urlencode($synonyms).
+          '&defines='.urlencode($defines).
+          '&batchmode='.urlencode($batchmode);
+  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  return $content;
+}
+
+function nnexus_integration_update($objid, $linkpolicy) {
+  $data = 'function=updatelinkpolicy' .
+          '&objid='.urlencode($objid).
+          '&linkpolicy='.urlencode($linkpolicy);
+  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  return $content;
+}
+
+function nnexus_integration_delete($objid) {
+  $data = 'function=deleteobject' .
+          '&objid='.urlencode($objid);
+  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  return $content;
+}
+
+function nnexus_integration_check($objid) {
+  $data = 'function=checkvalid' .
+          '&objid='.urlencode($objid);
+  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  return $content;
+}
