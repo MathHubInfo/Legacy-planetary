@@ -34,7 +34,7 @@ function extract_rdfa($path,$domain,$base_file_path){
   $infile_url = $domain."/".$path;
 
   // Here we get the data of the page to process
-  $infile_contents = get_data($infile_url);
+  $infile_contents = planetary_webglue_get_data($infile_url);
   $infile_path = $base_file_path."/sites/default/files/drupal_in_for_".substr($path,5).'.html';
   $infile = fopen($infile_path, 'w') or die("Error: can't open file " . $infile_path);
   // drupal_set_message("opened file for WRITING: " . $infile_path);
@@ -114,14 +114,3 @@ function curl_post($url, array $post = NULL, array $options = array()) {
     return $result;
 }
 
-function get_data($url)
-{
-  dd('get_data() invoked..');
-  $ch = curl_init();
-  curl_setopt($ch,CURLOPT_URL,$url);
-  curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,5);
-  $data = curl_exec($ch);
-  curl_close($ch);
-  return $data;
-}
