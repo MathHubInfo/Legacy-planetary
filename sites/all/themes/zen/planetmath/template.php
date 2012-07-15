@@ -150,19 +150,27 @@ function planetmath_view_theme_getUserPoints(){
 }
 
 
-    // Preprocess variables for  html.tpl.php.
-    //template_preprocess_html
-    function planetmath_preprocess_html(&$variables) {
-     if (module_exists('rdf')) {
-         $variables['doctype'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML+RDFa 1.1//EN">' . "\n";
-         $variables['rdf']->version = ' version="HTML+RDFa 1.1"';
-         $variables['rdf']->namespaces = $variables['rdf_namespaces'];
-         $variables['rdf']->profile = ' profile="' . $variables['grddl_profile'] . '"';
-     } else {
-         $variables['doctype'] = '<!DOCTYPE html>' . "\n";
-         $variables['rdf']->version = '';
-         $variables['rdf']->namespaces = '';
-         $variables['rdf']->profile = '';
-     }
-    }
+// Preprocess variables for  html.tpl.php.
+//template_preprocess_html
+function planetmath_preprocess_html(&$variables) {
+ if (module_exists('rdf')) {
+     $variables['doctype'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML+RDFa 1.1//EN">' . "\n";
+     $variables['rdf']->version = ' version="HTML+RDFa 1.1"';
+     $variables['rdf']->namespaces = $variables['rdf_namespaces'];
+     $variables['rdf']->profile = ' profile="' . $variables['grddl_profile'] . '"';
+ } else {
+     $variables['doctype'] = '<!DOCTYPE html>' . "\n";
+     $variables['rdf']->version = '';
+     $variables['rdf']->namespaces = '';
+     $variables['rdf']->profile = '';
+ }
+}
 
+
+function planetmath_preprocess_page(&$variables) {
+  // Get the entire main menu tree
+  $main_menu_tree = menu_tree_all_data('main-menu');
+
+  // Add the rendered output to the $main_menu_expanded variable
+  $variables['main_menu_expanded'] = menu_tree_output($main_menu_tree);
+}

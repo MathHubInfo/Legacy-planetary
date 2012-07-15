@@ -262,7 +262,7 @@ a:hover{
 
 #block-user-login{
   float: right;
-  margin-right: -300px;
+  margin-right: -12px;
   margin-top: -70px;
 }
 
@@ -290,7 +290,7 @@ a:hover{
 
 #block-search-form{
   float: right;
-  margin-right: 0;
+  margin-right: -390px;
   margin-top: 50px;
   background: none;
   border: none;
@@ -327,7 +327,11 @@ a:hover{
 }
 
 #navigation{
-  margin-top: -55px;
+  margin-top: -79px;
+}
+
+#navigation li{
+  float: left;
 }
 
 .block-tabs{
