@@ -1657,13 +1657,13 @@ function planetmath_profile_set_misc_variables () {
                                                                  'remember' => ""
                                                                  ),
                                              'filter' => array (
-                                                                'type' => "blacklist"
+                                                                'type' => "blacklist",
                                                                 'list' => array(
-                                                                                'devel' => 0
-                                                                                'main-menu' => 0
-                                                                                'management' => 0
-                                                                                'navigation' => 0
-                                                                                'shortcut-set-1' => 0
+                                                                                'devel' => 0,
+                                                                                'main-menu' => 0,
+                                                                                'management' => 0,
+                                                                                'navigation' => 0,
+                                                                                'shortcut-set-1' => 0,
                                                                                 'user-menu' => 0
                                                                     ))
                                              ));
@@ -2076,13 +2076,13 @@ function planetmath_profile_docreate_user_field_long ($myField_name, $label, $de
 function planetmath_profile_docreate_user_buddy_list_field ()
 {
         $field = array(
-            'field_name'    => "Buddy List",
+            'field_name'    => "buddy_list",
             'type'          => 'node_reference',
         );
         field_create_field($field);
 
         $field_instance = array(
-            'field_name'    => "Buddy List",
+            'field_name'    => "buddy_list",
             'entity_type'   => 'user',
             'bundle'        => 'user',
             'label'         => t("Buddy List"),
