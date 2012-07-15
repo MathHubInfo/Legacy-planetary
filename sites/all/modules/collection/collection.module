@@ -9,6 +9,17 @@ function collection_menu() {
 
   $items = array();
 
+  $items['collection/%/reorder'] = array(
+    'title' => 'Reorder collection',
+    'description' => 'Show a page with a sortable tabledrag form',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('collection_form', 1),
+    'access callback' => TRUE,
+    // Do not name an includes file the same as your form name, as you may run
+    // into 'undefined index in drupal_retrieve_form()' notices.
+    'file' => 'collection.table.inc',
+  );
+
   $items['collection/%/attach'] = array(
     'title' => 'Attach content',
     'type' => MENU_CALLBACK,
@@ -116,29 +127,180 @@ function theme_attach_content_icon($variables) {
   return $output;
 }
 
-//function collection_theme($existing, $type, $theme, $path){
-//  return array('attach_content_icon' => array(
-//				      'variables' => array('type'=>NULL,'url' => NULL)
-//				      ),
-//	       
-//  );
-//}
-
 function collection_confirm_attachment($collection_id, $content_id) {
 
   $count = db_query("SELECT COUNT(*) as count FROM collection_has_content WHERE cid=$collection_id")->fetchObject();
-  
-  dd($count);
-  $how_many = $count->count + 1;
 
-  
+  $how_many = $count->count + 1;
 
   db_merge('collection_has_content')
       ->key(array('cid' => $collection_id, 'nid' => $content_id))
-      ->fields(array('cid' => $collection_id, 'nid' => $content_id, 'order' => $how_many))
+      ->fields(array('cid' => $collection_id, 'nid' => $content_id, 'rank' => $how_many))
       ->execute();
+
   $content = node_load($content_id);
 
   drupal_set_message($content->type . ' has succesfully attached to collection');
   drupal_goto('collection/' . $collection_id);
 }
+
+function collection_node_view($node) {
+  global $user;
+ 
+  if ($node->type == 'collection') {
+    $contents_of_this_collection = db_query("SELECT n.* from node n INNER JOIN collection_has_content chc ON (n.nid=chc.nid) WHERE chc.cid=:col_id", array(':col_id' => $node->nid));
+
+//    $links = array();
+//    foreach ($contents_of_this_collection as $content) {
+//      $links[] = $content;
+//    }
+    // $header = array(t('Name'), t('author'));
+//construct the header of the table
+    $header = array(
+      array('data' => 'Title', 'field' => 'n.nid'),
+      array('data' => "Author", 'field' => 'n.title'),
+      array('data' => "Paradata", 'field' => 'paradata'),
+    );
+
+
+    //iterate over the content and construct the rows of the table to show 
+    $rows = array();
+    
+    
+    foreach ($contents_of_this_collection as $content_item) {
+      $paradataColumn = "";
+      if ($user->uid){
+      if ($content_item->type=='problem'){
+        //find if current logged in user has submitted a solution to this problem
+        
+        //currently logged in user -> $user
+        $sql = "select * from problem_has_solution phs INNER JOIN node n ON (phs.sid=n.nid) ".
+            "WHERE pid=:pid AND n.uid=:uid";
+        dd('SQL');
+        dd($sql);
+        dd($content_item->nid);
+        dd($user->uid);
+        $solutions = db_query($sql,array(':pid'=>$content_item->nid,':uid'=>$user->uid));
+        dd($solutions);
+        
+         $counter =0;
+         $submittedSolutionsLinks = "";
+         foreach ($solutions as $sol){
+            $counter++;
+            $submittedSolutionsLinks .= " (".l($counter,'node/'.$sol->sid).") ";
+          }
+        
+        if ($counter>0){
+          $paradataColumn .= "Submitted".$submittedSolutionsLinks;
+        }else {
+          $paradataColumn .= l("Submit a solution",'node/add/solution/'.$sol->pid);
+        }
+        
+      }else if ($content_item->type=='article'){
+        
+        
+        
+        $sql = "select count(*) AS count from userpoints_txn WHERE uid=:uid AND entity_id=:nid AND points=0";
+        $article_read = db_query($sql,array(':nid'=>$content_item->nid,':uid'=>$user->uid))->fetchObject();
+        
+        dd("ARTICLEEEEEEEEEEEE");
+        dd($sql);
+        dd($article_read);
+        
+        if ($article_read->count>0){
+          $paradataColumn .= "article read already";
+        }else {
+          $paradataColumn .= "not yet read";
+        }
+          
+        
+      }
+      }
+      
+      
+      $rows[] = array(
+        array('data' => l($content_item->title, 'node/' . $content_item->nid),
+          'field' => 'n.title'),
+        array('data' => l(user_load($content_item->uid)->name, 'user/' . $content_item->uid), 'field' => 'n.author'),
+        array('data' => $paradataColumn, 'field' => 'paradata'),
+      );
+    }
+
+
+    $html = theme('table', array(
+          'header' => $header,
+          'rows' => $rows
+        ))
+        . theme('pager'); //adds the pagination element in the bottom of the table
+
+    //do not show the reorder link if only one entry
+    if (count($rows) > 1) {
+      $html .= l("Reorder this list", 'collection/' . $node->nid . '/reorder');
+    }
+    $html .= " ".l("Attach item", 'collection/' . $node->nid . '/attach');
+    
+    //
+    // field collections_contents_table will be picked up by the template 
+    // to print it
+    // $html contains a rendered html markup so no need for further rendering
+    //
+    $node->content['collection_contents_table'] = array(
+      '#markup' => $html,
+      '#weight' => 10,
+      '#theme' => 'table',
+    );
+
+
+
+
+//    $node->content['collection_contents'] = array(
+//      '#markup' => '',
+//      '#weight' => 10,
+//      '#theme' => 'collection_contents',
+//      '#links' => $links,
+//    );
+  }
+
+  if ($user->uid) {
+    if($node->type=='article'){
+      $points_params = array('uid' => $user->uid,
+			     'points' => 0,
+			     // there must be a way to make this show up as a link...?
+			     // look in the userpoints.pages.inc
+			     'description' => $node->title.' viewed',
+			     'entity_id' => $node->nid,
+			     'entity_type' => 'node'
+			     );
+      userpoints_userpointsapi($points_params);
+    }
+  }
+}
+
+function collection_theme($existing, $type, $theme, $path) {
+  $to_return = array(
+    'collection_form' => array(
+      'render element' => 'form',
+      'file' => 'collection.table.inc',
+    ),
+    'collection_contents' => array(
+      'variables' => array('links' => array()),
+    ),
+      //'collection_contents_table' => array(),    
+  );
+  return $to_return;
+}
+
+function theme_collection_contents($variables) {
+  dd('in the theme of articles of this collection');
+  $return = "";
+  foreach ($variables['links'] as $link) {
+    $return = $return . l($link->title, 'node/' . $link->nid) . " ";
+  }
+  return $return;
+}
+
+
+/* implements node_view 
+   Ceiling cat is watching you read math articles
+*/
+
