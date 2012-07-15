@@ -176,12 +176,12 @@ function collection_node_view($node) {
         //currently logged in user -> $user
         $sql = "select * from problem_has_solution phs INNER JOIN node n ON (phs.sid=n.nid) ".
             "WHERE pid=:pid AND n.uid=:uid";
-        dd('SQL');
-        dd($sql);
-        dd($content_item->nid);
-        dd($user->uid);
+        //dd('SQL');
+        //dd($sql);
+        //dd($content_item->nid);
+        //dd($user->uid);
         $solutions = db_query($sql,array(':pid'=>$content_item->nid,':uid'=>$user->uid));
-        dd($solutions);
+        //dd($solutions);
         
          $counter =0;
          $submittedSolutionsLinks = "";
@@ -203,9 +203,9 @@ function collection_node_view($node) {
         $sql = "select count(*) AS count from userpoints_txn WHERE uid=:uid AND entity_id=:nid AND points=0";
         $article_read = db_query($sql,array(':nid'=>$content_item->nid,':uid'=>$user->uid))->fetchObject();
         
-        dd("ARTICLEEEEEEEEEEEE");
-        dd($sql);
-        dd($article_read);
+        //dd("ARTICLEEEEEEEEEEEE");
+        //dd($sql);
+        //dd($article_read);
         
         if ($article_read->count>0){
           $paradataColumn .= "article read already";
@@ -291,7 +291,7 @@ function collection_theme($existing, $type, $theme, $path) {
 }
 
 function theme_collection_contents($variables) {
-  dd('in the theme of articles of this collection');
+  //dd('in the theme of articles of this collection');
   $return = "";
   foreach ($variables['links'] as $link) {
     $return = $return . l($link->title, 'node/' . $link->nid) . " ";

@@ -1864,8 +1864,11 @@ function planetmath_profile_setup_user_entities () {
     planetmath_profile_docreate_user_field('user_homepage', 'Homepage', 'Homepage');
     planetmath_profile_docreate_user_field_long('user_preamble', 'Preamble', 'Preamble');
     planetmath_profile_docreate_user_field_long('user_bio', 'Bio', 'Bio');
-    // Let's not port the score for now, they are being re-calculated, or if we really
-    // need them, they can be reimported later.
+    planetmath_profile_docreate_user_buddy_list_field();
+
+    // Let's not port the score for now, they are being re-calculated; if we really
+    // need to get the old score properly, it can be fixed up after the install 
+    // profile finishes
 
     return NULL;
 }
@@ -2069,3 +2072,29 @@ function planetmath_profile_docreate_user_field_long ($myField_name, $label, $de
 
 
 }
+
+function planetmath_profile_docreate_user_buddy_list_field ()
+{
+        $field = array(
+            'field_name'    => "Buddy List",
+            'type'          => 'node_reference',
+        );
+        field_create_field($field);
+
+        $field_instance = array(
+            'field_name'    => "Buddy List",
+            'entity_type'   => 'user',
+            'bundle'        => 'user',
+            'label'         => t("Buddy List"),
+            'cardinality'   => 1,
+            'description'   => t("People in the buddy list have permission to edit all of your articles!  You can use this, for example, to make everything you submit to the site world writable."),
+            'widget'        => array(
+                'type'      => 'node_reference_autocomplete',
+                'weight'    => 10,
+            ),
+            'settings'      => array(
+				     ),
+        );
+        field_create_instance($field_instance);
+}
+
