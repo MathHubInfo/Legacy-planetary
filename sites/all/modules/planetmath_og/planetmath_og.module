@@ -395,7 +395,9 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   global $user;
   $filtered_group_list = array();
 
-  // find the 'buddy' group of this user
+  // find the 'buddy' group of this user (if one exists)
+  // TODO: need to sort things out so that the value is set properly, otherwise
+  // there are problems when trying to save the article
   $buddy_group_id = get_user_buddy_group_id($user->uid);
 
   if (!isset($form['og_group_ref']['und']['#default_value'][0]) || $buddy_group_id==0){
@@ -418,7 +420,12 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
 
 // TODO: This needs to be implemented properly.
 function get_user_buddy_group_id($uid){
-  $gid =0;
+  $gid = 0;
+  $user = user_load($uid);
+  dpm($user->field_buddy_list);
+  if(isset($user->field_buddy_list)){
+    $gid=$user->field_buddy_list['und'][0]['value']
+  }
   return $gid;
 }
 
@@ -426,15 +433,15 @@ function planetmath_og_form_group_node_form_alter(&$form, &$form_state, $form_id
   //dd($form);
   // This gets rid of some "options" that are actually confusing (particularly since the user
   // would have been supposed to choose the default anyway)
-  unset($form['field_group_subtype']);
-  unset($form['group_group']);
-  unset($form['og_views']);
+  $form['field_group_subtype']['#access'] = FALSE;
+  $form['group_group']['#access'] = FALSE;
+  $form['og_views']['#access'] = FALSE;
 }
 
 function planetmath_og_form_og_ui_add_users_alter(&$form, &$form_state, $form_id) {
-  unset($form['og_user']['state']);
-  unset($form['og_user']['field_name']);
+  dpm($form);
+  $form['og_user']['state']['#access'] = FALSE;
+  $form['og_user']['field_name']['#access'] = FALSE;
   $form['membership_fields']['og_membership_request']['und'][0]['value']['#description'] = "Send a note to the new group member (optional).";
-  //dpm($form);
   //dd($form);
 }
