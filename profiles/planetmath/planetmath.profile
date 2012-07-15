@@ -1641,6 +1641,33 @@ function planetmath_profile_set_misc_variables () {
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
 
+  variable_set('dhtml_menu_settings', array (
+                                             'nav' => "hover",
+                                             'animation' => array (
+                                                                   'effects' => array (
+                                                                                       'height' => "height",
+                                                                                       'opacity' => "opacity",
+                                                                                       'width' => 0
+                                                                                       ),
+                                                                   'speed' => "500"
+                                                                   ),
+                                             'effects' => array (
+                                                                 'siblings' => "close-same-tree",
+                                                                 'children' => "none",
+                                                                 'remember' => ""
+                                                                 ),
+                                             'filter' => array (
+                                                                'type' => "blacklist"
+                                                                'list' => array(
+                                                                                'devel' => 0
+                                                                                'main-menu' => 0
+                                                                                'management' => 0
+                                                                                'navigation' => 0
+                                                                                'shortcut-set-1' => 0
+                                                                                'user-menu' => 0
+                                                                    ))
+                                             ));
+
   // this seems to be a way to make it so that articles are always versioned.
   variable_set('node_options_article', array (
 					      0 => 'status',

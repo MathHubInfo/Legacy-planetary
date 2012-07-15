@@ -5,10 +5,12 @@ core = 7.x
 ;; Note that I have commented out everything related to "migration" which can be
 ;; done separately by those who know how!
 
-;; Standard modules that we need
+;; Standard "Contrib" modules that we need
 ;; Note that some are commented out until I understand better...
 dependencies[] = content_access
 dependencies[] = ctools
+dependencies[] = date
+dependencies[] = dhtml_menu
 dependencies[] = views_content
 dependencies[] = aggregator
 dependencies[] = block
@@ -52,7 +54,6 @@ dependencies[] = devel_node_access
 ; dependencies[] = migrate
 ; dependencies[] = migrate_ui
 dependencies[] = reroute_email
-dependencies[] = article_setup
 dependencies[] = features
 dependencies[] = node_reference
 dependencies[] = og
@@ -64,7 +65,6 @@ dependencies[] = og_register
 dependencies[] = og_ui
 dependencies[] = backup_migrate
 dependencies[] = commentrss
-dependencies[] = correction
 dependencies[] = entity
 dependencies[] = entity_token
 dependencies[] = legal
@@ -102,7 +102,9 @@ dependencies[] = rdfx
 dependencies[] = rdfui
 
 ;; custom
+dependencies[] = article_setup
 dependencies[] = curli
+dependencies[] = correction
 dependencies[] = references
 dependencies[] = planetmath_blocks
 dependencies[] = latex_field
@@ -112,10 +114,14 @@ dependencies[] = mathjax
 dependencies[] = planetary_authorlinks
 ; dependencies[] = planetmath_rules
 dependencies[] = planetmath_og
+dependencies[] = planetmath_og_attach
+dependencies[] = planetmath_og_display 
 dependencies[] = problem
 dependencies[] = tntbase_sfbrowser
 dependencies[] = solution
 dependencies[] = review
+dependencies[] = question
+dependencies[] = collection
 dependencies[] = tntbase
 dependencies[] = tntbase_import
 dependencies[] = planetmath_edit_article
@@ -124,6 +130,9 @@ dependencies[] = pyrdfa
 dependencies[] = wysiwyg_codemirror
 dependencies[] = wysiwyg_etherpad_lite
 dependencies[] = planetmath_orphanage
+dependencies[] = planetmath_owner
+dependencies[] = planetmath_user
+;; I'll like this module when it integrates with the gallery properly
 ; dependencies[] = planetmath_image
 
 ;; features
