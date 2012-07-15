@@ -1,0 +1,6 @@
+name = NNexus Integration
+description = Provide autolinking and light linguistic services
+package = Planetary Modules
+dependencies[] = planetary_webglue
+core = 7.x
+files[] = nnexus_integration.module

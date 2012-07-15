@@ -3,22 +3,6 @@
 /**
  * A module that allows new input types such as LaTeX and sTeX
  */
-/**
- * A function to do a POST request to a certain $host with the $data
- * @param string $host the URL of the backend
- * @param string $data the POST data formatted as a string
- */
-function do_post($host, $data){
-  $session = curl_init($host);
-  curl_setopt($session, CURLOPT_POST, true);
-  curl_setopt($session, CURLOPT_POSTFIELDS, $data);
-  curl_setopt($session, CURLOPT_HEADER, false);
-  curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-  $response = curl_exec($session);
-  curl_close($session);
-  return $response;
-}
-
 
 /**
  * Implements hook_help
@@ -217,8 +201,8 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   
   //dd("Newconfig article edit...".$preamble."\n%%Article metadata:\n".$metadata."\n%%Document content:\n".$text);
 
-  //dd("Data: ".$data);
-  $content = do_post($host,$data);
+  //dd("Data: ".$data);*
+  $content = planetary_webglue_do_post($host,$data);
 
   //dd("++++ ".$content);
 

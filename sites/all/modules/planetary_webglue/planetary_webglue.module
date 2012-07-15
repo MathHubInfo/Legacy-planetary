@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * A function to do a POST request to a certain $host with the $data
+ * @param string $host the URL of the backend
+ * @param string $data the POST data formatted as a string
+ */
+function planetary_webglue_do_post($host, $data){
+  $session = curl_init($host);
+  curl_setopt($session, CURLOPT_POST, true);
+  curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+  curl_setopt($session, CURLOPT_HEADER, false);
+  curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($session);
+  curl_close($session);
+  return $response;
+}
+
+function planetary_webglue_get_data($url)
+{
+  $ch = curl_init();
+  curl_setopt($ch,CURLOPT_URL,$url);
+  curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,5);
+  $data = curl_exec($ch);
+  curl_close($ch);
+  return $data;
+}

@@ -1,6 +1,7 @@
 name = SPARQL Query Example Module
 description = A minimal working example using the SPARQL API
 package = RDF
+dependencies[] = planetary_webglue
 dependencies[] = sparql
 dependencies[] = sparql_registry
 core = 7.x
