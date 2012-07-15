@@ -7,13 +7,13 @@
    which take arguments as follows:
 
    linkentry        : $objid $text $format $nolink
-   addobject        : $title $body $objid $author $linkpolicy $classes $synonyms $defines $batchmode 
+   addobject        : $title $body $objid $authorid $linkpolicy $classes $synonyms $defines $batchmode 
    updatelinkpolicy : $objid $linkpolicy
    deleteobject     : $objid
    checkvalid       : $objid
 
    (The one we're most interested in now is autolink.)
-  */
+*/
 
 /*
  * Implements hook_drutexml_postprocess.
@@ -26,45 +26,89 @@ function nnexus_integration_drutexml_postprocess($text) {
 // $format should be one of: xhtml, html, and latex.
 // $text should be in the corresponding format!
 function nnexus_integration_autolink($text,$format) {
-  $data = 'function=linkentry&text='.urlencode($text).'&format='.$format.'&nolink=false';
+  $data = array ('json_data' => json_encode(array('function'=>'linkentry',
+                                                  'text'=>$text,
+                                                  'format'=>$format,
+                                                  'nolink'=>'false')));
   $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
   return $content;
 }
 
 // this function should be called when new articles are added (so, we need to implement the right hook for that)
 // Not immediately clear whether we need a different function to deal with the updating case?
-function nnexus_integration_add($title, $body, $objid, $author, $linkpolicy, $classes, $synonyms, $defines, $batchmode ) {
-  $data = 'function=addobject&title='.urlencode($title).
-          '&body='.urlencode($body).
-          '&objid='.urlencode($objid).
-          '&author='.urlencode($author).
-          '&linkpolicy='.urlencode($linkpolicy).
-          '&classes='.urlencode($classes).
-          '&synonyms='.urlencode($synonyms).
-          '&defines='.urlencode($defines).
-          '&batchmode='.urlencode($batchmode);
+//
+// TODO: how to update?  What's necessary, and what's purely optional?
+// We definitely need to add at insert time, so we should implement hook_node_insert
+function nnexus_integration_add($title, $body, $objid, $authorid, $linkpolicy, $classes, $synonyms, $defines, $batchmode ) {
+  $data = array ('json_data' => json_encode(array('function'=>'addobject',
+                                                  'title'=>$title,
+                                                  'body'=>$body,
+                                                  'objid'=>$objid,
+                                                  'authorid'=>$authorid,
+                                                  'linkpolicy'=>$linkpolicy,
+                                                  'classes'=>$classes,
+                                                  'synonyms'=>$synonyms,
+                                                  'defines'=>$defines,
+                                                  'batchmode'=>$batchmode,
+                                                  )));
+
   $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
   return $content;
 }
 
 function nnexus_integration_update($objid, $linkpolicy) {
-  $data = 'function=updatelinkpolicy' .
-          '&objid='.urlencode($objid).
-          '&linkpolicy='.urlencode($linkpolicy);
+  $data = array ('json_data' => json_encode(array('function'=>'updatelinkpolicy',
+                                                  'objid'=>$objid,
+                                                  'linkpolicy'=>$linkpolicy)));
   $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
   return $content;
 }
 
 function nnexus_integration_delete($objid) {
-  $data = 'function=deleteobject' .
-          '&objid='.urlencode($objid);
+  $data = array ('json_data' => json_encode(array('function'=>'deleteobject',
+                                                  'objid'=>$objid)));
   $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
   return $content;
 }
 
 function nnexus_integration_check($objid) {
-  $data = 'function=checkvalid' .
-          '&objid='.urlencode($objid);
+  $data = array ('json_data' => json_encode(array('function'=>'checkvalid',
+                                                  'objid'=>$objid)));
   $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
   return $content;
+}
+
+/*
+ * Standard hook implementations 
+ * 
+ * We want to push things into NNexus at appropriate times, e.g. when the node is
+ * first added, and whenever it is updated (???)
+ */
+
+function nnexus_integration_node_insert($node){
+  if($node->type=='article') {
+    nnexus_integration_add($node->title, 
+                           $node->body, 
+                           $node->nid, 
+                           $node->uid, 
+                           $node->linkpolicy,
+                           $node->classes,
+                           $node->synonyms,
+                           $node->defines,
+                           $node->batchmode);
+  }
+}
+
+function nnexus_integration_node_update($node){
+  if($node->type=='article') {
+    nnexus_integration_add($node->title, 
+                           $node->body, 
+                           $node->nid, 
+                           $node->uid, 
+                           $node->linkpolicy,
+                           $node->classes,
+                           $node->synonyms,
+                           $node->defines,
+                           $node->batchmode);
+  }
 }
