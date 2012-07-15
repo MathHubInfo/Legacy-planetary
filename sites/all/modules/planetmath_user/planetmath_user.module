@@ -170,10 +170,10 @@ function planetmath_user_view($account, $view_mode, $langcode) {
   $user = user_load($account->uid);
   // This should be a nid associated with a group, let's check...
   $buddies_list = $user->field_buddy_list['und'][0]['nid'];
-  dd('************** ');
-  dd($user->field_buddy_list);
-  dd("BUDDIES LIST (USER) IS...");
-  dd($user);
+  //dd('************** ');
+  //dd($user->field_buddy_list);
+  //dd("BUDDIES LIST (USER) IS...");
+  //dd($user);
 
   if (empty($buddies_list)) {
     $buddies_links = array(
@@ -203,12 +203,12 @@ function planetmath_user_view($account, $view_mode, $langcode) {
 
 
 function planetmath_user_createBuddyList($uid) {
-  dd('in the planetmath_user_createBuddyList()');
-  dd($uid);
+  //dd('in the planetmath_user_createBuddyList()');
+  //dd($uid);
   $user = user_load($uid);
   if ($user->uid) {
     // 
-    dd('in the block');
+    //dd('in the block');
     $gid = planetmath_user_insertBuddyList($user);
     if ($gid) {
       drupal_set_message("The Buddy List was successfully created");

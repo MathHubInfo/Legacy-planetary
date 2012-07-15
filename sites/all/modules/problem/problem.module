@@ -201,13 +201,13 @@ function problem_node_insert($node) {
     if ($node->type == 'problem') {
         //dest would be an array with a string in the form node/add/review/58579
         $dest = drupal_get_destination();
-        dd($dest);
+        //dd($dest);
         //we need to extract the numeric
         preg_match("/node\/add\/problem\/([0-9]*)/", $dest['destination'], $matches);
-        dd($matches);
+        //dd($matches);
         if (isset($matches[1])) {
 	  //dd('i am in the block');
-            dd($matches[1]);
+            //dd($matches[1]);
             $articleID = $matches[1];
             db_merge('article_has_problem')
                     ->key(array('aid' =>$articleID , 'pid' => $node->nid))

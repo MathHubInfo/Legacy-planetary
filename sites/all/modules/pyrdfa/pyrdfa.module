@@ -69,7 +69,7 @@ function upload_new_triples($virtuoso_location,$base_path,$path){
   $response = curl_exec($cup);
 
   //  drupal_set_message("INFO ABOUT CURL: <pre>".print_r(curl_getinfo($cup),true)."</pre>");
-  dd("CURL RESPONSE <pre>".print_r($response,true)."</pre>");
+  //dd("CURL RESPONSE <pre>".print_r($response,true)."</pre>");
   curl_close($cup);
 }
 

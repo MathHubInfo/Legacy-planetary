@@ -253,9 +253,9 @@ function latex_field_form_alter(&$form, &$form_state, $form_id){
     // some way to get the actual preamble inserted... but
     // that should now be done by the above.
     $path = drupal_get_path('theme','planetmath');
-    dd('i am theming the latex_field...'.$path);
+    //dd('i am theming the latex_field...'.$path);
     drupal_add_js("$path/js/theme_latex_field.js");   
-    dd('success');
+    //dd('success');
 
   }
 }

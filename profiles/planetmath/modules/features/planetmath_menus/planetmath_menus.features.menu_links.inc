@@ -36,7 +36,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Articles',
     'options' => array(
       'attributes' => array(
-        'title' => 'PlanetMath is known for its high-quality mathematics Encyclopedia.',
+        'title' => '',
       ),
     ),
     'module' => 'menu',
@@ -62,7 +62,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-49',
+    'weight' => '-50',
     'parent_path' => 'articles',
   );
   // Exported menu link: main-menu:forum
@@ -99,7 +99,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-50',
+    'weight' => '-49',
     'parent_path' => 'articles',
   );
   // Exported menu link: main-menu:groups
@@ -118,7 +118,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-50',
+    'weight' => '-49',
     'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:people
@@ -129,7 +129,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'People',
     'options' => array(
       'attributes' => array(
-        'title' => 'These are the people who do math for the people.',
+        'title' => 'Math for the people, by the people.',
       ),
     ),
     'module' => 'menu',
@@ -137,7 +137,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-49',
+    'weight' => '-50',
     'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:problems
@@ -465,21 +465,6 @@ function planetmath_menus_menu_default_menu_links() {
     'weight' => '0',
     'parent_path' => 'node/add',
   );
-  // Exported menu link: navigation:node/add/request
-  $menu_links['navigation:node/add/request'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'node/add/request',
-    'router_path' => 'node/add',
-    'link_title' => 'Request',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
-    'parent_path' => 'node/add',
-  );
   // Exported menu link: navigation:node/add/solution
   $menu_links['navigation:node/add/solution'] = array(
     'menu_name' => 'navigation',
@@ -639,7 +624,6 @@ function planetmath_menus_menu_default_menu_links() {
   t('Polls');
   t('Problem');
   t('Problems');
-  t('Request');
   t('Search');
   t('Solution');
   t('Solutions');
