@@ -24,7 +24,7 @@ function planetmath_menus_menu_default_menu_links() {
     'module' => 'menu',
     'hidden' => '0',
     'external' => '1',
-    'has_children' => '0',
+    'has_children' => '1',
     'expanded' => '0',
     'weight' => '-1',
   );
@@ -42,7 +42,7 @@ function planetmath_menus_menu_default_menu_links() {
     'module' => 'menu',
     'hidden' => '0',
     'external' => '0',
-    'has_children' => '0',
+    'has_children' => '1',
     'expanded' => '0',
     'weight' => '0',
   );
@@ -62,7 +62,8 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-49',
+    'parent_path' => 'articles',
   );
   // Exported menu link: main-menu:forum
   $menu_links['main-menu:forum'] = array(
@@ -98,7 +99,8 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-50',
+    'parent_path' => 'articles',
   );
   // Exported menu link: main-menu:groups
   $menu_links['main-menu:groups'] = array(
@@ -116,7 +118,8 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-50',
+    'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:people
   $menu_links['main-menu:people'] = array(
@@ -134,7 +137,8 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-49',
+    'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:problems
   $menu_links['main-menu:problems'] = array(
@@ -150,7 +154,7 @@ function planetmath_menus_menu_default_menu_links() {
     'module' => 'menu',
     'hidden' => '0',
     'external' => '0',
-    'has_children' => '0',
+    'has_children' => '1',
     'expanded' => '0',
     'weight' => '0',
   );
@@ -170,225 +174,9 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-50',
+    'parent_path' => 'problems',
   );
-
-  // We don't need this menu I don't think.
-
-  /* // Exported menu link: menu-main-menu:<front> */
-  /* $menu_links['menu-main-menu:<front>'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => '<front>', */
-  /*   'router_path' => '', */
-  /*   'link_title' => 'Feedback', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '1', */
-  /*   'has_children' => '0', */
-  /*   'expanded' => '0', */
-  /*   'weight' => '-38', */
-  /* ); */
-  // Exported menu link: menu-main-menu:aggregator
-  /* $menu_links['menu-main-menu:aggregator'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'aggregator', */
-  /*   'router_path' => 'aggregator', */
-  /*   'link_title' => 'Feed Aggregator', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '0', */
-  /*   'expanded' => '0', */
-  /*   'weight' => '-46', */
-  /* ); */
-  // Exported menu link: menu-main-menu:articles
-  /* $menu_links['menu-main-menu:articles'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'articles', */
-  /*   'router_path' => 'articles', */
-  /*   'link_title' => 'Encyclopedia', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '1', */
-  /*   'expanded' => '1', */
-  /*   'weight' => '-50', */
-  /* ); */
-  // Exported menu link: menu-main-menu:corrections
-  /* $menu_links['menu-main-menu:corrections'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'corrections', */
-  /*   'router_path' => 'corrections', */
-  /*   'link_title' => 'Corrections', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '0', */
-  /*   'expanded' => '0', */
-  /*   'weight' => '-41', */
-  /* ); */
-  // Exported menu link: menu-main-menu:forum
-  /* $menu_links['menu-main-menu:forum'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'forum', */
-  /*   'router_path' => 'forum', */
-  /*   'link_title' => 'Forums', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '0', */
-  /*   'expanded' => '0', */
-  /*   'weight' => '-39', */
-  /* ); */
-  /* // Exported menu link: menu-main-menu:gallery */
-  /* $menu_links['menu-main-menu:gallery'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'gallery', */
-  /*   'router_path' => 'gallery', */
-  /*   'link_title' => 'Gallery', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '1', */
-  /*   'expanded' => '1', */
-  /*   'weight' => '-48', */
-  /* ); */
-  /* // Exported menu link: menu-main-menu:node/add/article */
-  /* $menu_links['menu-main-menu:node/add/article'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'node/add/article', */
-  /*   'router_path' => 'node/add/article', */
-  /*   'link_title' => 'Add article', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '0', */
-  /*   'expanded' => '0', */
-  /*   'weight' => '0', */
-  /*   'parent_path' => 'articles', */
-  /* ); */
-  /* // Exported menu link: menu-main-menu:node/add/image */
-  /* $menu_links['menu-main-menu:node/add/image'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'node/add/image', */
-  /*   'router_path' => 'node/add/image', */
-  /*   'link_title' => 'Add image', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '0', */
-  /*   'expanded' => '1', */
-  /*   'weight' => '0', */
-  /*   'parent_path' => 'gallery', */
-  /* ); */
-  /* // Exported menu link: menu-main-menu:poll */
-  /* $menu_links['menu-main-menu:poll'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'poll', */
-  /*   'router_path' => 'poll', */
-  /*   'link_title' => 'Polls', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '0', */
-  /*   'expanded' => '0', */
-  /*   'weight' => '-40', */
-  /* ); */
-  /* // Exported menu link: menu-main-menu:squery */
-  /* $menu_links['menu-main-menu:squery'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'squery', */
-  /*   'router_path' => 'squery', */
-  /*   'link_title' => 'SPARQL queries', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '0', */
-  /*   'expanded' => '0', */
-  /*   'weight' => '-47', */
-  /* ); */
-  /* // Exported menu link: menu-main-menu:userpoints */
-  /* $menu_links['menu-main-menu:userpoints'] = array( */
-  /*   'menu_name' => 'menu-main-menu', */
-  /*   'link_path' => 'userpoints', */
-  /*   'router_path' => 'userpoints', */
-  /*   'link_title' => 'Userpoints', */
-  /*   'options' => array( */
-  /*     'attributes' => array( */
-  /*       'title' => '', */
-  /*     ), */
-  /*   ), */
-  /*   'module' => 'menu', */
-  /*   'hidden' => '0', */
-  /*   'external' => '0', */
-  /*   'has_children' => '0', */
-  /*   'expanded' => '0', */
-  /*   'weight' => '-44', */
-  /* ); */
-
-  // NB if it is desired, add this stuff in
-/* features[menu_links][] = "menu-main-menu:<front>" */
-/* features[menu_links][] = "menu-main-menu:aggregator" */
-/* features[menu_links][] = "menu-main-menu:articles" */
-/* features[menu_links][] = "menu-main-menu:corrections" */
-/* features[menu_links][] = "menu-main-menu:forum" */
-/* features[menu_links][] = "menu-main-menu:gallery" */
-/* features[menu_links][] = "menu-main-menu:node/add/article" */
-/* features[menu_links][] = "menu-main-menu:node/add/image" */
-/* features[menu_links][] = "menu-main-menu:poll" */
-/* features[menu_links][] = "menu-main-menu:squery" */
-/* features[menu_links][] = "menu-main-menu:userpoints" */
-
   // Exported menu link: management:admin
   $menu_links['management:admin'] = array(
     'menu_name' => 'management',
@@ -403,7 +191,6 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '9',
   );
-
   // Exported menu link: navigation:aggregator
   $menu_links['navigation:aggregator'] = array(
     'menu_name' => 'navigation',
@@ -417,49 +204,6 @@ function planetmath_menus_menu_default_menu_links() {
     'has_children' => '1',
     'expanded' => '0',
     'weight' => '5',
-  );
-  // Exported menu link: navigation:aggregator/categories
-  $menu_links['navigation:aggregator/categories'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'aggregator/categories',
-    'router_path' => 'aggregator/categories',
-    'link_title' => 'Categories',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '1',
-    'expanded' => '0',
-    'weight' => '0',
-    'parent_path' => 'aggregator',
-  );
-  // Exported menu link: navigation:aggregator/categories/1
-  $menu_links['navigation:aggregator/categories/1'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'aggregator/categories/1',
-    'router_path' => 'aggregator/categories/%',
-    'link_title' => 'New Forum Threads',
-    'options' => array(),
-    'module' => 'aggregator',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
-  );
-  // Exported menu link: navigation:aggregator/categories/2
-  $menu_links['navigation:aggregator/categories/2'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'aggregator/categories/2',
-    'router_path' => 'aggregator/categories/%',
-    'link_title' => 'General Aggregator',
-    'options' => array(),
-    'module' => 'aggregator',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
   );
   // Exported menu link: navigation:aggregator/sources
   $menu_links['navigation:aggregator/sources'] = array(
@@ -487,20 +231,6 @@ function planetmath_menus_menu_default_menu_links() {
         'title' => 'Broser TNTBase repository',
       ),
     ),
-    'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
-  );
-  // Exported menu link: navigation:corrections
-  $menu_links['navigation:corrections'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'corrections',
-    'router_path' => 'corrections',
-    'link_title' => 'Corrections',
-    'options' => array(),
     'module' => 'system',
     'hidden' => '0',
     'external' => '0',
@@ -572,7 +302,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Article',
     'options' => array(
       'attributes' => array(
-        'title' => 'Use <em>articles</em> for time-sensitive content like news, press releases or blog posts.',
+        'title' => 'Use <em>articles</em> for encyclopedia content.',
       ),
     ),
     'module' => 'system',
@@ -589,7 +319,11 @@ function planetmath_menus_menu_default_menu_links() {
     'link_path' => 'node/add/correction',
     'router_path' => 'node/add/correction',
     'link_title' => 'Correction',
-    'options' => array(),
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Content type to handle corrections.',
+      ),
+    ),
     'module' => 'system',
     'hidden' => '0',
     'external' => '0',
@@ -644,7 +378,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Image',
     'options' => array(
       'attributes' => array(
-        'title' => 'Use <em>images</em> for adding new entries to the gallery.',
+        'title' => 'Use <em>images</em> in the gallery.',
       ),
     ),
     'module' => 'system',
@@ -661,7 +395,11 @@ function planetmath_menus_menu_default_menu_links() {
     'link_path' => 'node/add/news',
     'router_path' => 'node/add/news',
     'link_title' => 'News',
-    'options' => array(),
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Use <em>news</em> for updates on site, organization, or community activity.',
+      ),
+    ),
     'module' => 'system',
     'hidden' => '0',
     'external' => '0',
@@ -678,7 +416,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Basic page',
     'options' => array(
       'attributes' => array(
-        'title' => 'Use <em>basic pages</em> for your static content, such as an \'About us\' page.',
+        'title' => 'Use <em>basic pages</em> for your static content, like the \'About us\' page.',
       ),
     ),
     'module' => 'system',
@@ -714,7 +452,11 @@ function planetmath_menus_menu_default_menu_links() {
     'link_path' => 'node/add/problem',
     'router_path' => 'node/add/problem',
     'link_title' => 'Problem',
-    'options' => array(),
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Exercises for learning purposes.',
+      ),
+    ),
     'module' => 'system',
     'hidden' => '0',
     'external' => '0',
@@ -727,7 +469,7 @@ function planetmath_menus_menu_default_menu_links() {
   $menu_links['navigation:node/add/request'] = array(
     'menu_name' => 'navigation',
     'link_path' => 'node/add/request',
-    'router_path' => 'node/add/request',
+    'router_path' => 'node/add',
     'link_title' => 'Request',
     'options' => array(),
     'module' => 'system',
@@ -781,20 +523,6 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '0',
   );
-  // Exported menu link: navigation:squery
-  $menu_links['navigation:squery'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'squery',
-    'router_path' => 'squery',
-    'link_title' => 'Issue queries and view results to a SPARQL endpoint',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
-  );
   // Exported menu link: navigation:userpoints
   $menu_links['navigation:userpoints'] = array(
     'menu_name' => 'navigation',
@@ -808,56 +536,6 @@ function planetmath_menus_menu_default_menu_links() {
     'has_children' => '0',
     'expanded' => '0',
     'weight' => '0',
-  );
-
-  // Exported menu link: user-menu:user
-  $menu_links['user-menu:user'] = array(
-    'menu_name' => 'user-menu',
-    'link_path' => 'user',
-    'router_path' => 'user',
-    'link_title' => 'User account',
-    // used to say   'alter' => TRUE,
-    // but I don't know what that means
-    'options' => array(
-		       'attributes' => array(
-					     'title' => 'Your profile.',
-					     ),
-		       ),
-    'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '1',
-    'expanded' => '0',
-    'weight' => '-10',
-  );
-  // Exported menu link: user-menu:user/logout
-  $menu_links['user-menu:user/logout'] = array(
-    'menu_name' => 'user-menu',
-    'link_path' => 'user/logout',
-    'router_path' => 'user/logout',
-    'link_title' => 'Log out',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '10',
-  );
-  // Exported menu link: user-menu:user/watcher
-  $menu_links['user-menu:user/watcher'] = array(
-    'menu_name' => 'user-menu',
-    'link_path' => 'user/watcher',
-    'router_path' => 'user/watcher',
-    'link_title' => 'Watches',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
-    'parent_path' => 'user',
   );
   // Exported menu link: user-menu:messages
   $menu_links['user-menu:messages'] = array(
@@ -887,40 +565,74 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '0',
   );
-
+  // Exported menu link: user-menu:user
+  $menu_links['user-menu:user'] = array(
+    'menu_name' => 'user-menu',
+    'link_path' => 'user',
+    'router_path' => 'user',
+    'link_title' => 'User account',
+    'options' => array(
+      'alter' => TRUE,
+    ),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '1',
+    'expanded' => '0',
+    'weight' => '-10',
+  );
+  // Exported menu link: user-menu:user/logout
+  $menu_links['user-menu:user/logout'] = array(
+    'menu_name' => 'user-menu',
+    'link_path' => 'user/logout',
+    'router_path' => 'user/logout',
+    'link_title' => 'Log out',
+    'options' => array(),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '10',
+  );
+  // Exported menu link: user-menu:user/watcher
+  $menu_links['user-menu:user/watcher'] = array(
+    'menu_name' => 'user-menu',
+    'link_path' => 'user/watcher',
+    'router_path' => 'user/watcher',
+    'link_title' => 'My Watched Posts',
+    'options' => array(),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+    'parent_path' => 'user',
+  );
   // Translatables
   // Included for use with string extractors like potx.
-  t('Log out');
-  t('Messages');
-  t('My !points');
-  t('User account');
-  t('Watches');
-  t('Add article');
   t('Add content');
-  t('Add image');
   t('Administration');
   t('Article');
   t('Articles');
   t('Basic page');
-  t('Categories');
   t('Compose tips');
   t('Correction');
   t('Corrections');
-  t('Encyclopedia');
-  t('Feed Aggregator');
   t('Feed aggregator');
-  t('Feedback');
   t('Forum topic');
   t('Forums');
   t('Gallery');
-  t('General Aggregator');
   t('Group');
   t('Groups');
   t('Home');
   t('Image');
-  t('Issue queries and view results to a SPARQL endpoint');
   t('LaTeX filter implemented via LaTeXML');
-  t('New Forum Threads');
+  t('Log out');
+  t('Messages');
+  t('My !points');
+  t('My Watched Posts');
   t('News');
   t('People');
   t('Poll');
@@ -928,13 +640,12 @@ function planetmath_menus_menu_default_menu_links() {
   t('Problem');
   t('Problems');
   t('Request');
-  t('SPARQL queries');
   t('Search');
   t('Solution');
   t('Solutions');
   t('Sources');
   t('TNTBase Browser');
-  t('Userpoints');
+  t('User account');
   t('Users by !points');
 
 

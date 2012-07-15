@@ -86,14 +86,14 @@ function collection_schema() {
               'not null' => true,
               'description' => 'Content node Id'
           ),
-        'order' => array(
-          'type' => 'int',
-          'unsigned' => true,
-              'not null' => true,
-              'description' => 'The order to display content in collection'
+	  'rank' => array(
+	    'type' => 'int',
+            'unsigned' => false,
+            'not null' => true,
+            'description' => 'The ordered rank in which to display this content in collection'
         )
       ),
-      'primary key' => array('cid', 'nid', 'order')
+      'primary key' => array('cid', 'nid', 'rank')
   );
 
   return $schema;

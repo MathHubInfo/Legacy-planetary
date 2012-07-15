@@ -69,6 +69,27 @@
  */
 ?>
 
+<script type="text/javascript">
+  	var $jq = jQuery.noConflict();  
+</script>
+<script type="text/javascript">
+$jq(document).ready(function () {
+	
+	$jq('.topmenu ul li').hover(
+		function () {
+			//show its submenu
+			$jq('ul', this).fadeIn(250);
+
+		}, 
+		function () {
+			//hide its submenu
+			$jq('ul', this).delay(200).fadeOut(250);
+		}
+	);
+
+});
+</script>
+
 <div id="page-wrapper"><div id="page">
 
   <div id="header"><div class="section clearfix">
@@ -146,22 +167,8 @@
     <?php } ?>
     <?php if ($page['navigation'] || $main_menu): ?>
       <div id="navigation"><div class="section clearfix">
-
-        <?php print theme('links__system_main_menu', array(
-          'links' => $main_menu,
-          'attributes' => array(
-            'id' => 'main-menu',
-            'class' => array('links', 'inline', 'clearfix'),
-          ),
-          'heading' => array(
-            'text' => t('Main menu'),
-            'level' => 'h2',
-            'class' => array('element-invisible'),
-          ),
-        )); ?>
-
+        <?php print render($main_menu_expanded);  ?>
         <?php print render($page['navigation']); ?>
-
       </div></div><!-- /.section, /#navigation -->
     <?php endif; ?>
 
