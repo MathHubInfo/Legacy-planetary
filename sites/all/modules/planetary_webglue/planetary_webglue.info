@@ -1,0 +1,4 @@
+name = Planetary Webglue
+description = Little bits for moving things around on the web
+core = 7.x
+package     = Planetary Modules
