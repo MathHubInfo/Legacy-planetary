@@ -1,6 +1,6 @@
 name = PlanetMath Search
 description = Performs search on MWS and returns results
-package = ZZZ
+package = PlanetMath Modules
 core = 7.x
 dependencies[] = block
 dependencies[] = search
