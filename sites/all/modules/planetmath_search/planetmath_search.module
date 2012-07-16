@@ -1,0 +1,412 @@
+<?php
+/**
+ * Creates a math search interface
+ * @authors: 
+ *     Daniel Hasegan <d.hasegan@jacobs-university.de> 
+ *     Catalin Perticas <c.perticas@jacobs-university.de>
+ * @supervisor: 
+ *     Deyan Ginev <d.ginev@jacobs-university.de>
+ */
+
+
+/**
+ * Implements hook_menu().
+ * 
+ * Create a search_form at link  .../mathsearch
+ * Create a results page at link .../mathsearch/results
+ */
+function planetmath_search_menu() {
+  $items = array();
+  $items['mathsearch'] = array(
+    'title' => t('Math Search'),
+    'page callback' => 'planetmath_search_form',
+    'access callback' => TRUE,
+    'description' => t('My search'),
+    'expanded' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['mathsearch/results'] = array(
+    'page callback' => 'planetmath_search_present_results',
+    'access arguments' => array('access arguments page'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['mathsearch/settings'] = array(
+    'title' => 'Search Settings',
+    'description' => 'Configuration for number of search results',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('planetmath_search_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'planetmath_search.admin.inc',
+  );
+    
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function planetmath_search_block_info() {
+  $blocks = array();
+  $blocks['Search PlanetMath'] = array(
+    'info' => t('Search Math form'),
+    'status' => TRUE,
+    'region' => 'header',
+    'visibility' => 'BLOCK_VISIBILITY_LISTED',
+    'weight' => 0,
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_permissions().
+ */ 
+function planetmath_search_permissions(){
+  return array(
+    'search content' => array(
+      'title' => t('Use search'),
+    ),
+  );
+
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function planetmath_search_block_view($delta = '') {
+  if (user_access('search content')) {
+    $block['content'] = drupal_get_form('planetmath_search_nameform');
+    return $block;
+  }
+}
+
+/**
+ * Implements hook_block_form().
+ */
+function planetmath_search_form() {
+	return drupal_get_form('planetmath_search_nameform');
+}
+
+/**
+ * Define the Search Form
+ *
+ * Make a search form with 'search_box' textfield input and a submit button
+ */
+function planetmath_search_nameform($form_state) {
+  $form['search_option'] = array(
+    '#type' => 'select',
+    '#title' => t('Search option'),
+    '#title_display' => 'invisible',
+    '#options' => array(
+      1 => t('Page search'),
+      2 => t('Math search'),
+    ),
+  );
+  $form['search_box'] = array(
+    '#title' => t('Search input box'),
+    '#title_display' => 'invisible',
+    '#type' => 'textfield',
+    '#size' => 20,
+    '#required' => FALSE
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Search',
+  );
+  return $form;
+}
+
+/** 
+ * Implements hook_theme().
+ */ 
+function planetmath_search_theme() {
+  return array(
+    'planetmath_search_nameform' => array(
+      'render element' => 'form',
+      'template' => 'planetmath_search-nameform',
+    ),
+  );
+}
+
+/**
+ * template_preprocess
+ */
+function template_preprocess_planetmath_search_nameform(&$variables) {
+  
+  $variables['planetmath_search_nameform'] = array();
+  $hidden = array();
+  foreach( element_children($variables['form']) as $key ) {
+    $type = $variables['form'][$key]['#type'];
+    if ($type == 'hidden' || $type == 'token') {
+      $hidden[] = drupal_render($variables['form'][$key]);
+    }
+    else {
+      $variables['planetmath_search_nameform'][$key] = drupal_render($variables['form'][$key]);
+    }
+  }
+  
+  $variables['planetmath_search_nameform']['hidden'] = implode($hidden);
+  $variables['planetmath_search_nameform_form'] = implode($variables['planetmath_search_nameform']);
+}
+
+/**
+ * Validate the form
+ */
+function planetmath_search_nameform_validate($form, &$form_state) {
+   if ($form_state['values']['search_box'] == '')
+      form_set_error('search_box',t('Please insert an input'));
+}
+
+/**
+ * Handle post-validation form submission.
+ * 
+ * $key gets the input from the search_box
+ * and redirect page to results page with $key as query
+ */
+function planetmath_search_nameform_submit($form, &$form_state) {
+  $key = $form_state['values']['search_box'];
+  if ($form_state['values']['search_option'] == 1) { // Do normal search
+     $form_state['redirect'] = array(
+      'search/node/' . $key );
+  }
+  if ($form_state['values']['search_option'] == 2) { // Do math search
+     $form_state['redirect'] = array(
+      'mathsearch/results',
+      array(
+        'query' => array(
+          'key' => $key,
+          'pg' => 1,
+        ),
+      ),
+     );
+    }
+}
+
+/**
+ * @functions: From here to the end there are functions needed to get results and to post them
+ *
+ * This file establishes a pipe between the LatexML and MWS.
+ * It does the same as: http://arxivdemo.mathweb.org/index.php?p=/article/MWS
+ * without the intermediate step of prompting the MathML code.
+ */
+
+/**
+ * Post $data on $host server and get results
+ */
+function do_post($host,$data)
+{
+   $session = curl_init($host); // open socket $session
+   curl_setopt($session, CURLOPT_POST, true);
+   curl_setopt($session, CURLOPT_POSTFIELDS, $data);
+   curl_setopt($session, CURLOPT_HEADER, false);
+   curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+   $response = curl_exec($session);
+   curl_close($session);
+   return $response;
+}
+/**
+ * Converts the LatexML to a query variable that can be sent to the LatexML converter
+ */
+function make_LatexML_query($LatexMLdata,$req)
+{
+	/** LatexML POST request needs a map 
+	 *	'profile' => $req // where $req can be 'mwsquert' or 'math'
+	 *	'tex' => $data
+	 */
+	$data['profile'] = $req;
+	$data['tex'] = $LatexMLdata;
+	return $data;
+}
+function parse($json)
+{
+	// decodes a $json code
+	$hash = json_decode($json);
+	return $hash->{'result'};
+}
+
+// Prepares query to help search for other publications
+
+function prepare_query($all_names, $more)
+{
+	$n = count($all_names);
+	if ($n == 0) {return "";}
+	if ($all_names[$n-1] == "")
+	{
+		unset($all_names[$n-1]);
+		return prepare_query($all_names, $more);
+	}	
+	if ($more == 1) 
+	{
+		$name = $all_names[$n-1];
+		unset($all_names[$n-1]);
+		return 	prepare_query($all_names, 1) . "+AND+" . $name;
+	}
+	else
+	{
+		if ($n == 1) {return "+" . $all_names[0];}
+		else
+		{
+			$n1 = $all_names[$n-2];
+			$n2 = $all_names[$n-1];
+			unset($all_names[$n-1]);
+			unset($all_names[$n-2]);
+			return prepare_query($all_names, 1) . "+AND+" . $n1 . "+" . $n2;
+		}
+	}
+}
+
+// Gets a list of authors and creates links to other publications on arxiv.org (by searching the site)
+
+function get_authors($author)
+{
+	$all_authors = "";
+	foreach($author as $cur_author)
+	{
+		$author_name = $cur_author->getAttribute('content');
+		$author_rename = $author_name;
+		// the following lines perform changes to the authors' names so that we can integrate them into a query
+		$author_rename = str_replace(".", " ", $author_rename);
+		$author_rename = str_replace("-", " ", $author_rename);
+		$author_rename = preg_replace("/\s[a-z]\w+/", " ", $author_rename);
+		$author_rename = preg_replace("/ ( )*/", " ", $author_rename);
+		$all_names = explode (" ", $author_rename);
+		if (count($all_names) > 6) array_splice($all_names, 3);
+		$send = prepare_query($all_names, 0);
+		$author_link = t('<a href = "http://arxiv.org/find/all/1/all:@send/0/1/0/all/0/1">@author_name</a>', array(
+			'@send' => $send,
+			'@author_name' => $author_name,		
+		));
+		$all_authors = $all_authors . " " . $author_link;
+	}
+	return $all_authors;
+}
+
+// Gets the title, the formula and the authors out of a search hit
+
+function get_title_and_formula($value)
+{
+	$page = file_get_contents($value->getAttribute('uri')); // loads the page at the given URL into a string
+	$xml = new domDocument;
+        $xml->loadXML($page); // makes the string into a domDocument
+        $xpath = new DOMXPath($xml); // creates an xpath that supports queries on the domDocument
+        // the following 3 lines register namespaces
+        $rootNamespace = $xml->lookupNamespaceUri($xml->namespaceURI);
+        $xpath->registerNamespace('html', $rootNamespace);
+        $xpath->registerNamespace('m', 'http://www.w3.org/1998/Math/MathML');
+   
+        $title = $xpath->query("//html:div[@property = 'dct:title']"); // searches for the title
+	
+	// new features
+	$author = $xpath->query("//html:div[@property = 'dct:creator']");	
+	$all_authors = get_authors($author);
+	
+        // the following 3 lines get the formula's id from the URL for later use
+        $sid = explode("#", $value->getAttribute('uri'));
+        $id = $sid['1'];
+        $id = "'" . $id . "'";
+	     
+        $formula = $xpath->query("//m:math[@id = " . $id ."]"); // searches for the formula by looking at the id
+        $formula = $formula->item(0);//->parentNode; (sets how much context we want to have for the formula)
+   
+	$print_formula = remove_namespaces($formula)->C14N();
+	$print_formula = preg_replace('/align="[a-z]*"/','align = "center"', $print_formula);
+
+        return t('<a href="@attribute">@title</a>',array(
+            '@attribute' => $value->getAttribute('uri'),
+            '@title' => $title->item(0)->getAttribute('content'),
+	    '@all_authors' => $all_authors)) . t('<div align = "center">') .
+             $print_formula . "<br/>" . $all_authors . "</div>";   
+}
+
+// Recursively removes the namespaces in a tree whose root is $node	
+
+function remove_namespaces($node)
+{
+    if ($node && $node->childNodes) {
+    foreach ($node->childNodes as $child)
+    {
+        if($child)
+        {
+            remove_namespaces($child);
+        }   
+    }}
+   
+    $node->prefix = NULL;      
+    return $node;
+}
+
+/**
+ * Prints a list of links to the other results pages
+ */ 
+function get_pages_links($N,$nr_links_on_page) {
+   $page = $_GET['pg']; // get page number
+
+   $pages_link = "";
+   for($j = 1; $j-1 < ($N/$nr_links_on_page) ; $j++)
+   if ($j != $page )
+      {
+         $url = $_SERVER["REQUEST_URI"]; // get the URL and modify it
+         $desired_page = "pg=" . $j;
+         $url = preg_replace('/pg=[0-9]*/',$desired_page,$url); 
+         $pages_link = $pages_link . ' <a href="' . $url . '"> ' . $j . ' </a>';
+      }
+   else
+     $pages_link = $pages_link . ' ' . $j ;
+   return $pages_link;
+}
+
+/**
+ * Prints results
+ *
+ * Gets MathML translate of $key from host_LatexML
+ * sends the MathML to host_MWS 
+ * gets XML, which is translated to a DOM document
+ * present results
+ */
+function planetmath_search_present_results()
+{
+  $key = $_GET['key'];
+
+$host_LatexML = "http://latexml.mathweb.org/convert"; // host for LatexML converter
+$host_MWS = "http://arxivdemo.mathweb.org:9090"; // host for MWS
+
+$q = make_LatexML_query($key,"mwsquery"); // create the query
+$json = do_post($host_LatexML,$q); // send the query to LatexML and receive a MathML code 
+$MathML = parse($json); // delete the extra stuff
+$res = do_post($host_MWS,$MathML); // send the POST request to MWS
+$doc = new DOMDocument(); // create DOM document
+$doc->loadXML($res); // import the XML got from MWS
+$answers = $doc->getElementsByTagName('answ'); // get the tags with 'answ'
+
+// send another query to LatexML host, now to receive a presentable form of LatexML
+$qmath = make_LatexML_query($key,"math"); 
+$xmlreq = parse(do_post($host_LatexML,$qmath)) ;
+
+// number the pages & present results with the page number that is in URL
+$pageNR = $_GET['pg'];
+$N = 0;
+         // TODO: configure this constant from the module configure from Drupal
+         $nr_links_on_page = variable_get('planetmath_search_results_per_page_number',5);
+foreach($answers as $value) 
+{
+   if ((int)($N / $nr_links_on_page) == $pageNR - 1) // if the item is on the current page
+      {
+         $list[] = get_title_and_formula($value);
+      }
+   $N ++;
+}
+
+  $pages_link = get_pages_links($N,$nr_links_on_page);
+
+  $render_array['page_example_arguments'] = array(
+    '#theme' => 'item_list',  // The theme function to apply to the #items
+    '#items' => $list,  // The list itself.
+    '#title' => 'Results for ' . $xmlreq . ': ',
+    //'#prefix' => drupal_get_form('planetmath_search_nameform'),
+    '#suffix' => 'Pages: ' . $pages_link,
+  );
+  return $render_array;
+}
+
+?>
