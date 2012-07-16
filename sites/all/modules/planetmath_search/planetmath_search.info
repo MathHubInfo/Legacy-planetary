@@ -1,0 +1,17 @@
+name = PlanetMath Search
+description = Performs search on MWS and returns results
+package = ZZZ
+core = 7.x
+dependencies[] = block
+dependencies[] = search
+files[] = planetmath_search.module
+files[] = planetmath_search.admin.inc
+files[] = planetmath_search-nameform.tpl.php
+
+<?php
+/**
+ * @file 
+ * Make a search form to search math on MWS. Creates a block in header with the search form
+ *
+ */
+?>
