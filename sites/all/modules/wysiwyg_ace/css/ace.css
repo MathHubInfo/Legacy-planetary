@@ -1,0 +1,7 @@
+textarea .ace_editor {
+	position:relative;
+}
+
+.cm-s-default span.cm-bracket {
+    color: blue;
+}

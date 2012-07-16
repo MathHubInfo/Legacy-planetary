@@ -1,0 +1,8 @@
+.CodeMirror {
+    max-width: 950px; 
+    font-size: 1.5em;
+}
+
+.cm-s-default span.cm-bracket {
+    color: blue;
+}
