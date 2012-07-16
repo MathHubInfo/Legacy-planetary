@@ -911,6 +911,11 @@ function planetmath_profile_configure_groups () {
   dd("Profile- In planetmath_profile_configure_groups");
   set_time_limit(0);
 
+  // It is important to set this or authenticated users won't be able
+  // to "create article content" (i.e. add articles to groups).
+  // I think that's the only "interesting" permission to change
+  og_role_grant_permissions(2, array("create article content"));
+
   // NOTE: these comments are irrelevant for latest versions of OG
 
   // The following code works when it is executed after the profile runs,
