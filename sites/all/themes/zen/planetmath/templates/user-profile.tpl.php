@@ -51,6 +51,9 @@
 </td>
 <td width="50%" >
   <?php
+     if(!empty($user_profile['buddy_list'])){
+         print render($user_profile['buddy_list']);
+     }
          print render($user_profile['planetmath_user_buddies']);
          print render($user_profile['og_group_ref']);
          print render($user_profile['og_user_group_ref']); ?>
@@ -58,6 +61,8 @@
 </tr>
 </table>
 
-  <?php
+<?php
+  //dd("USER_PROFILE");
+  //dd($user_profile);
          print render($user_profile); ?>
 </div>
