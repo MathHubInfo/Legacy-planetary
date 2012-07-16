@@ -424,7 +424,7 @@ function get_user_buddy_group_id($uid){
   $user = user_load($uid);
   dpm($user->field_buddy_list);
   if(isset($user->field_buddy_list)){
-    $gid=$user->field_buddy_list['und'][0]['value']
+    $gid=$user->field_buddy_list['und'][0]['value'];
   }
   return $gid;
 }
