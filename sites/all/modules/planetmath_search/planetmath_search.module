@@ -94,21 +94,21 @@ function planetmath_search_form() {
  * Make a search form with 'search_box' textfield input and a submit button
  */
 function planetmath_search_nameform($form_state) {
-  $form['search_option'] = array(
-    '#type' => 'select',
-    '#title' => t('Search option'),
-    '#title_display' => 'invisible',
-    '#options' => array(
-      1 => t('Page search'),
-      2 => t('Math search'),
-    ),
-  );
   $form['search_box'] = array(
     '#title' => t('Search input box'),
     '#title_display' => 'invisible',
     '#type' => 'textfield',
     '#size' => 20,
     '#required' => FALSE
+  );
+  $form['search_option'] = array(
+    '#type' => 'select',
+    '#title' => t('Search option'),
+    '#title_display' => 'invisible',
+    '#options' => array(
+      1 => t('Page'),
+      2 => t('Math'),
+    ),
   );
   $form['submit'] = array(
     '#type' => 'submit',
