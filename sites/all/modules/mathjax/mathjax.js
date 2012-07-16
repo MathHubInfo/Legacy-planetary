@@ -11,4 +11,8 @@ if (!jQuery.browser.mozilla) {
 			}
 		});
 	});
+
+        MathJax.Hub.Config({
+          mml2jax: {preview: ["[MathJaX is rendering MathML]"]}
+        });
 }
