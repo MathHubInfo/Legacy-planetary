@@ -19,17 +19,30 @@
  * Implements hook_drutexml_postprocess.
  * $text is xhtml that has been returned from LaTeXML
  */
-function nnexus_integration_drutexml_postprocess($text) { return nnexus_integration_autolink($text,'html'); }
+function nnexus_integration_drutexml_postprocess($text) {
+  dd("Running the hook");
+  return nnexus_integration_autolink($text,'html');
+}
 
 // $format should be one of: xhtml, html, and latex.
 // $text should be in the corresponding format!
 function nnexus_integration_autolink($text,$format) {
-  $data = array ('json_data' => json_encode(array('function'=>'linkentry',
-                                                  'body'=>$text,
-                                                  'domain'=>'planetmath',
-                                                  'format'=>$format,
-                                                  'nolink'=>'false')));
-  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  /* dd("MY TEXT IS"); */
+  /* dd($text); */
+  /* dd("MY FORMAT IS"); */
+  /* dd($format); */
+  $data = 'function=linkentry&body=' . urlencode($text) . '&format='.$format.'&domain=planetmath';
+
+  /* $data = array ('json_data' => json_encode(array('function'=>'linkentry', */
+  /*                                                 'body'=>$text, */
+  /*                                                 'format'=>$format, */
+  /*                                                 'domain'=>'planetmath'))); */
+
+  //  dd("MY DATA IS");
+  //  dd($data);
+  $content = planetary_webglue_do_post('http://127.0.0.1:3001/autolink',$data);
+  dd("MY CONTENT IS");
+  dd($content);
   return $content;
 }
 
@@ -50,8 +63,7 @@ function nnexus_integration_add($title, $body, $objid, $authorid, $linkpolicy, $
                                                   'defines'=>$defines,
                                                   'batchmode'=>$batchmode,
                                                   )));
-
-  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  $content = planetary_webglue_do_post('http://127.0.0.1:3001/autolink',$data);
   return $content;
 }
 
@@ -59,21 +71,21 @@ function nnexus_integration_update($objid, $linkpolicy) {
   $data = array ('json_data' => json_encode(array('function'=>'updatelinkpolicy',
                                                   'objid'=>$objid,
                                                   'linkpolicy'=>$linkpolicy)));
-  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  $content = planetary_webglue_do_post('http://127.0.0.1:3001/autolink',$data);
   return $content;
 }
 
 function nnexus_integration_delete($objid) {
   $data = array ('json_data' => json_encode(array('function'=>'deleteobject',
                                                   'objid'=>$objid)));
-  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  $content = planetary_webglue_do_post('http://127.0.0.1:3001/autolink',$data);
   return $content;
 }
 
 function nnexus_integration_check($objid) {
   $data = array ('json_data' => json_encode(array('function'=>'checkvalid',
                                                   'objid'=>$objid)));
-  $content = planetary_webglue_do_post('http://127.0.0.1:3000/autolink',$data);
+  $content = planetary_webglue_do_post('http://127.0.0.1:3001/autolink',$data);
   return $content;
 }
 

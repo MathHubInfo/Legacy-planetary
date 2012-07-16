@@ -123,7 +123,7 @@ function _drutexml_cache_read($md5) {
 }
 
 function _drutexml_cache_set($md5, $xhtml) {
-  dd("merging drutexml cache on ".$md5);
+  dd($md5." merging drutexml cache on ".$xhtml);
 	db_merge("drutexml_cache")
 	  ->key(array("cachemd5" => $md5))
 	  ->fields(array(
@@ -158,7 +158,6 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   	return $cache;
   }
   
-  //dd($text, "received text"); 
   $hasPreamble = '/^([\s\S]*)\\\\begin{document}([\s\S]*)\\\\end{document}([\s\S]*)$/';
   $m = preg_match($hasPreamble, $text, $matches);
   
@@ -190,6 +189,9 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
   
+  // $text = module_invoke_all('drutexml_preprocess',$text);  
+  // dd($text);
+  // $text=$text[0];
 
   $data = 'profile=planetmath&tex=' . urlencode($text);
   if ($preamble||$metadata) {
@@ -200,21 +202,27 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   }
   
   //dd("Newconfig article edit...".$preamble."\n%%Article metadata:\n".$metadata."\n%%Document content:\n".$text);
-
-  //dd("Data: ".$data);*
+  dd("Data: ".$data);
   $content = planetary_webglue_do_post($host,$data);
-
-  //dd("++++ ".$content);
-
   $res = json_decode($content);
-
-  //dd($res->{'log'});
-
   $res = trim($res->{'result'});
-  // Post-processing isn't necessary now that we get HTML5 output from LaTeXML
-  // (Plus Deyan says never to use a regexp for this sort of thing!)
-  // $res = str_replace('m:','',$res); 
-  // $res = str_replace('xml:','',$res); 
+  dd("LATEXML RESULT IS");
+  //dd($res);
+
+  /* $data = array ('json_data' => json_encode(array('function'=>'linkentry', */
+  /*                                                 'body'=>$res, */
+  /*                                                 'format'=>'html', */
+  /*                                                 'domain'=>'planetmath', */
+  /*                                                 'nolink'=>'false'))); */
+  /* $res = planetary_webglue_do_post('http://127.0.0.1:3001/autolink',$data); */
+
+  $res = module_invoke_all('drutexml_postprocess',$res);
+  $res= $res[0];
+
+  //dd("NNEXUS RESULT IS");
+  //dd($res);
+  $res = trim(json_decode($res)->{'result'});  
+
   _drutexml_cache_set($key, $res);
   return $res;
 }
@@ -285,3 +293,4 @@ function drutexml_process_node(&$vars) {
     drupal_set_title($node->textitle);
   }
 }
+
