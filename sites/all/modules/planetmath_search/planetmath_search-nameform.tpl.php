@@ -7,7 +7,7 @@
   
 ?>
 
-<div class="container-inline">
+<div class="container-inline" style="float: right;  text-align: right;">
   <?php if (empty($variables['form']['#block']->subject)): ?>
     <h2 class="element-invisible"><?php print t('Search form'); ?></h2>
   <?php endif; ?>
