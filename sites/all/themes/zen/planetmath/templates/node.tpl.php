@@ -119,12 +119,21 @@
    ?> <br />
    <?php
      print render($content['planetmath_group_content']);
+   ?> <br />
+   Type:
+   <?php
+     print render($content['field_group_subtype'][0]);
+     hide($content['field_group_subtype']);
+   ?> <br />
+   <?php
      // I don't know why, but this seems to be needed to get "subscribe" link
      // to show up for non-admin users (but we hide this for the World Writable group)
       if($content['group_group']['#object']->nid != 1){
         print render($content['group_group'][0]);
+        hide($content['group_group']);
       } else {
-        hide($content['group_group'][0]);
+        //hide($content['group_group'][0]);
+        hide($content['group_group']);
       }
    ?>
    </div>
