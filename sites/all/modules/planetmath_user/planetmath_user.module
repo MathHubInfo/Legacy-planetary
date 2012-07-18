@@ -139,7 +139,8 @@ function theme_planetmath_user_buddies($variables) {
 
 /*
  * Implements hook_user_view, which can modify $account by adding "content"
- * (This is the point of entry to this module.)
+ * (This is the typical point of entry to this module.)
+ *
  */
 
 function planetmath_user_view($account, $view_mode, $langcode) {
@@ -165,7 +166,7 @@ function planetmath_user_view($account, $view_mode, $langcode) {
     $buddies_list = $user->buddy_list['und'][0]['nid'];
   }
 
-  if (empty($buddies_list)) {
+  if (!$buddies_list) {
     $buddies_links = array(
       // We need a custom callback for creating the buddy list
       'buddy_list_add' => l('Create Buddy List', 'user/create-buddy-list/' . $account->uid),
@@ -204,8 +205,6 @@ function planetmath_user_createBuddyList($uid) {
   //dd($uid);
   $user = user_load($uid);
   if ($user->uid) {
-    // 
-    //dd('in the block');
     $gid = planetmath_user_insertBuddyList($user);
     if ($gid) {
       drupal_set_message("The Buddy List was successfully created");
@@ -275,7 +274,10 @@ function planetmath_user_group_selector_result($string = '') {
   drupal_json_output($matches); //Returns the data in JSON format
 }
 
-// Using the global user to prevent people from cancelling each others buddy lists
+// Using the global user to prevent people from cancelling each others buddy lists,
+// i.e. only the currently active user can cancel their own buddy list
+// This function is also only relevant when the buddy list is a Team 
+// (otherwise we delete the list instead of cancelling the arrangement)
 function planetmath_user_buddy_cancel () {
   global $user;
 
@@ -304,26 +306,35 @@ function planetmath_user_insertBuddyList($user) {
   $user->buddy_list['und'][0]['nid'] = $groupNode->nid;
   user_save($user);
 
-  // We don't need to record anything in the og_membership table, since the OG framework does this for us.
-  /* db_insert('og_membership')->fields(array( */
-  /*   'type' => 'og_membership_type_default', */
-  /*   'etid' => $user->uid, */
-  /*   'entity_type' => 'user', */
-  /*   'gid' => $groupNode->nid, */
-  /*   'group_type' => 'node', */
-  /*   'state' => 1, */
-  /*   'created' => REQUEST_TIME, */
-  /*   'field_name' => 'og_group_ref', */
-  /*   'language' => 'en' */
-  /* ))->execute(); */
+  // We don't need to record the creator's membership in the og_membership table,
+  // since the OG framework does this for us.
+  // However, we do need to do something to get all of the creator's old articles to be added
+  // to the buddy list.
+
+  $results = db_query("SELECT n.nid FROM node n WHERE n.`type` = 'article' AND n.uid=:uid", array(':uid'=>$user->uid));
+
+  foreach ($results as $result) {
+    db_insert('og_membership')->fields(array(
+                                             'type' => 'og_membership_type_default',
+                                             'etid' => $result->nid,
+                                             'entity_type' => 'node',
+                                             'gid' => $groupNode->nid,
+                                             'group_type' => 'node',
+                                             'state' => 1,
+                                             'created' => REQUEST_TIME,
+                                             'field_name' => 'og_group_ref',
+                                             'language' => 'en'
+                                             ))->execute();
+  }
 
   return $groupNode->nid;
 }
 
 // When the buddy list group node is deleted, we should delete the corresponding reference from the user object
-// We should also need to do field deletions when a Team
-// is deleted, otherwise we would just do something like
+// We need to do the same sort of field deletion when a Team is deleted
 // this:  $user=user_load($node->uid); $user->buddy_list = array(); user_save($user);
+// (which is roughly we do in "planetmath_user_buddy_cancel" (above).
+//
 function planetmath_user_node_delete($node) {
   if ($node->type=='group' && (  $node->field_group_subtype['und'][0]['value']=='Buddies'
                                || $node->field_group_subtype['und'][0]['value']=='Team') ) {
