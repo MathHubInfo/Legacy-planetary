@@ -44,25 +44,16 @@ function planetmath_user_menu() {
     'access arguments' => array('create group content'),
     'type' => MENU_CALLBACK
   );
+
+  // Will print the page...
+  $items['user/cancel-buddy-list'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'Cancel Buddy List',
+    'page callback' => 'planetmath_user_buddy_cancel',
+    'access arguments' => array('create group content')
+  );
+
   return $items;
-}
-
-/*
- * when the user buddy list is deleted we also need to set the user's
- * buddy_list field back to null
- */
-
-function planetmath_user_node_delete($node) {
-  if ($node->type == 'group') {
-    db_delete("field_data_field_buddy_list")
-        ->condition('field_buddy_list_nid', $node->nid, "=")
-        ->execute();
-    /* If we want to be more efficient, I think we can just clear these caches:
-     * entity_info:en
-     * entity_property_info:en
-     */
-    cache_clear_all();
-  }
 }
 
 // Query to get articles by user id "$uid"
@@ -136,7 +127,7 @@ function theme_planetmath_user_articles($variables) {
 function theme_planetmath_user_buddies($variables) {
   $html = '';
   $html .= '<div class="field field-type-entityreference field-label-above">';
-  $html .= '<div class="field-label">My buddies:&nbsp;</div>';
+  $html .= '<div class="field-label">Buddy list actions:&nbsp;</div>';
   foreach ($variables['links'] as $buddy) {
     $html .= '<div class="field-item">';
     $html .= '» ' . $buddy;
@@ -148,7 +139,8 @@ function theme_planetmath_user_buddies($variables) {
 
 /*
  * Implements hook_user_view, which can modify $account by adding "content"
- * (This is the point of entry to this module.)
+ * (This is the typical point of entry to this module.)
+ *
  */
 
 function planetmath_user_view($account, $view_mode, $langcode) {
@@ -167,15 +159,14 @@ function planetmath_user_view($account, $view_mode, $langcode) {
     '#links' => $mylinks
   );
 
+  $buddies_list = "";
   $user = user_load($account->uid);
   // This should be a nid associated with a group, let's check...
-  $buddies_list = $user->field_buddy_list['und'][0]['nid'];
-  //dd('************** ');
-  //dd($user->field_buddy_list);
-  //dd("BUDDIES LIST (USER) IS...");
-  //dd($user);
+  if(isset($user->buddy_list)) {
+    $buddies_list = $user->buddy_list['und'][0]['nid'];
+  }
 
-  if (empty($buddies_list)) {
+  if (!$buddies_list) {
     $buddies_links = array(
       // We need a custom callback for creating the buddy list
       'buddy_list_add' => l('Create Buddy List', 'user/create-buddy-list/' . $account->uid),
@@ -188,9 +179,17 @@ function planetmath_user_view($account, $view_mode, $langcode) {
     // Note: when the buddy list is a Team, the user might not actually have permission
     // to manage the team, even though they have designated it as their Buddy list...
     // So we have to think what to do in this case.
-    $buddies_links = array(
-      'the_buddy_list' => l("Manage Buddies List", 'node/' . $buddies_list . '/group')
-    );
+    $buddy_group = node_load($buddies_list);
+    if ($buddy_group->field_group_subtype['und'][0]['value'] == 'Buddies')
+      {
+        $buddies_links = array(
+                               'the_buddy_list' => l("Manage Buddies List", 'node/' . $buddies_list . '/group')
+                               );
+      } else {
+      $buddies_links = array(
+                             'cancel_buddies' => l("Cancel Buddies List", 'user/cancel-buddy-list')
+                             );
+    }
   }
 
   $account->content['planetmath_user_buddies'] = array(
@@ -201,14 +200,11 @@ function planetmath_user_view($account, $view_mode, $langcode) {
   );
 }
 
-
 function planetmath_user_createBuddyList($uid) {
   //dd('in the planetmath_user_createBuddyList()');
   //dd($uid);
   $user = user_load($uid);
   if ($user->uid) {
-    // 
-    //dd('in the block');
     $gid = planetmath_user_insertBuddyList($user);
     if ($gid) {
       drupal_set_message("The Buddy List was successfully created");
@@ -256,7 +252,7 @@ function planetmath_user_group_selector_submit($form, &$form_state) {
 		   array(':title' => $auto))->fetchObject();
 
   $user = user_load($uid);
-  $user->field_buddy_list['und'][0]['nid'] = $result->nid;
+  $user->buddy_list['und'][0]['nid'] = $result->nid;
   user_save($user);
   drupal_goto('user/'.$uid);
 }
@@ -278,11 +274,20 @@ function planetmath_user_group_selector_result($string = '') {
   drupal_json_output($matches); //Returns the data in JSON format
 }
 
+// Using the global user to prevent people from cancelling each others buddy lists,
+// i.e. only the currently active user can cancel their own buddy list
+// This function is also only relevant when the buddy list is a Team 
+// (otherwise we delete the list instead of cancelling the arrangement)
+function planetmath_user_buddy_cancel () {
+  global $user;
+
+  $user->buddy_list = array();
+  user_save($user);
+  drupal_goto('user/'.$user->uid);
+}
+
 // Need to check this...
 function planetmath_user_insertBuddyList($user) {
-  //dd('in the planetmath_user_insertBuddyList()');
-  //dd('user object is:');
-  //dd($user);
 
   $groupTitle = PLANETMATH_USER_BUDDY_LIST_PREFIX . $user->name;
 
@@ -297,29 +302,54 @@ function planetmath_user_insertBuddyList($user) {
         'language' => LANGUAGE_NONE
   );
   $groupNode->field_group_subtype['und'][0]['value'] = 'Buddies';
-
   node_save($groupNode);
-
-  $user->field_buddy_list['und'][0]['nid'] = $groupNode->nid;
+  $user->buddy_list['und'][0]['nid'] = $groupNode->nid;
   user_save($user);
 
+  // We don't need to record the creator's membership in the og_membership table,
+  // since the OG framework does this for us.
+  // However, we do need to do something to get all of the creator's old articles to be added
+  // to the buddy list.
 
-  // dd('The newly created (buddy) group node is:');
-  //dd($groupNode);
+  $results = db_query("SELECT n.nid FROM node n WHERE n.`type` = 'article' AND n.uid=:uid", array(':uid'=>$user->uid));
 
+  foreach ($results as $result) {
+    db_insert('og_membership')->fields(array(
+                                             'type' => 'og_membership_type_default',
+                                             'etid' => $result->nid,
+                                             'entity_type' => 'node',
+                                             'gid' => $groupNode->nid,
+                                             'group_type' => 'node',
+                                             'state' => 1,
+                                             'created' => REQUEST_TIME,
+                                             'field_name' => 'og_group_ref',
+                                             'language' => 'en'
+                                             ))->execute();
+  }
 
-  db_insert('og_membership')->fields(array(
-    'type' => 'og_membership_type_default',
-    'etid' => $user->uid,
-    'entity_type' => 'node',
-    'gid' => $groupNode->nid,
-    'group_type' => 'node',
-    'state' => 1,
-    'created' => REQUEST_TIME,
-    'field_name' => 'og_group_ref',
-    'language' => 'en'
-  ))->execute();
-
-  //
   return $groupNode->nid;
+}
+
+// When the buddy list group node is deleted, we should delete the corresponding reference from the user object
+// We need to do the same sort of field deletion when a Team is deleted
+// this:  $user=user_load($node->uid); $user->buddy_list = array(); user_save($user);
+// (which is roughly we do in "planetmath_user_buddy_cancel" (above).
+//
+function planetmath_user_node_delete($node) {
+  if ($node->type=='group' && (  $node->field_group_subtype['und'][0]['value']=='Buddies'
+                               || $node->field_group_subtype['und'][0]['value']=='Team') ) {
+
+    db_delete("field_data_buddy_list")
+      ->condition('buddy_list_nid', $node->nid, "=")
+      ->execute();
+
+    // Without clearing the cache, Drupal will give an error.
+    // Even when we run this it, I'm not 100% sure that it clears the cache properly...
+    cache_clear_all();
+
+    /* Note: If we wanted to be more efficient, I think we could just clear these caches:
+     * entity_info:en
+     * entity_property_info:en
+     */
+  }
 }

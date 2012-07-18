@@ -114,7 +114,9 @@
    <div id="planetmath_group">
    <h2> Group information </h2>
    <?php
-   dd($content);
+     // dd($content);
+     // Note: we found a module that could be modified to display group content in the sidebar, which would
+     // probably look better than what we have here.
      print render($content['planetmath_group_users']); 
    ?> <br />
    <?php
@@ -122,9 +124,22 @@
    ?> <br />
    Type:
    <?php
+     //dd($content['field_group_subtype'][0]);
+     //dd(array_keys($content));
      print render($content['field_group_subtype'][0]);
      hide($content['field_group_subtype']);
-   ?> <br />
+   ?> <br /> <br />
+   <?php
+     // You can't add more content to a Co-authors group, and all content by me.
+     // is supposed to go into the buddy list group.   For now, we just remove
+     // the "add stuff" link from the presentation for everyone but Teams,
+     // (later we can have a more robust solution).
+     if ($content['field_group_subtype'][0]['#markup'] == "Team") {
+       dd("Rendering 'add stuff'");
+       print render($content['add_stuff']);
+     }
+     hide($content['add_stuff']);
+     ?> <br />
    <?php
      // I don't know why, but this seems to be needed to get "subscribe" link
      // to show up for non-admin users (but we hide this for the World Writable group)
