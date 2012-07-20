@@ -82,6 +82,7 @@ function planetmath_menus_menu_default_menu_links() {
     'has_children' => '0',
     'expanded' => '0',
     'weight' => '0',
+    'parent_path' => '<front>',
   );
   // Exported menu link: main-menu:gallery
   $menu_links['main-menu:gallery'] = array(
