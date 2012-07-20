@@ -1,36 +1,36 @@
 <?php
-// $Id: wysiwyg_codemirror.module,v 1.1 2010/03/17 16:48:12 drifter Exp $
+// $Id: wysiwyg_ace.module,v 1.1 2010/03/17 16:48:12 drifter Exp $
 /**
 * @file
-* wysiwyg_codemirror is an plugin for adding syntax highlighting to the tinyMCE editor
+* wysiwyg_ace is an plugin for adding syntax highlighting to the tinyMCE editor
 * Zoltan Varady/FARM 2010
 */
 
 /**
 * Implementation of hook_editor().
 */
-function wysiwyg_codemirror_codemirror_editor() {
-	$editor['codemirror2'] = array(
-		'title' => 'Code Mirror 2 editor',
-		'vendor url' => 'http://codemirror.net/',
-		'download url' => 'http://codemirror.net/',
-		'library path' => wysiwyg_get_path('codemirror2'),
+function wysiwyg_ace_ace_editor() {
+	$editor['ace'] = array(
+		'title' => 'ACE Editor',
+		'vendor url' => 'http://ace.ajax.org/',
+		'download url' => 'https://github.com/ajaxorg/ace/',
+		'library path' => wysiwyg_get_path('ace'),
 		'libraries' => array(
 			'src' => array(
 				'title' => 'Source',
 				'files' => array(
-					'lib/codemirror.js',
+					'build/src-min-noconflict/ace.js',
 					),
 				),
 			),
-		'version callback' => 'wysiwyg_codemirror_codemirror_version',
-		'themes callback' => 'wysiwyg_codemirror_codemirror_themes',
-		'load callback' => 'wysiwyg_codemirror_codemirror_load',
-		'settings callback' => 'wysiwyg_codemirror_codemirror_settings',
-		'plugin callback' => 'wysiwyg_codemirror_codemirror_plugins',
+		'version callback' => 'wysiwyg_ace_ace_version',
+		'themes callback' => 'wysiwyg_ace_ace_themes',
+		'load callback' => 'wysiwyg_ace_ace_load',
+		'settings callback' => 'wysiwyg_ace_ace_settings',
+		'plugin callback' => 'wysiwyg_ace_ace_plugins',
 		'versions' => array(
-			'2.1.0' => array(
-				'js files' => array('codemirror2-1.js'),
+			'0.2' => array(
+				'js files' => array('ace0-2.js'),
 				),
 			),
 		);
@@ -46,15 +46,13 @@ function wysiwyg_codemirror_codemirror_editor() {
 * @return
 *   The installed editor version.
 */
-function wysiwyg_codemirror_codemirror_version($editor) {
-	$library = $editor['library path'] . '/lib/codemirror.js';
+function wysiwyg_ace_ace_version($editor) {
+	$library = $editor['library path'] . '/package.json';
 	if (!file_exists($library)) {
 		return;
 	}
-	/**
-	* TODO: No real way to do this so just returning something
-	*/ 
-	return "2.1.0";
+	// TODO: Return the version
+	return "0.2";
 }
 
 /**
@@ -69,20 +67,21 @@ function wysiwyg_codemirror_codemirror_version($editor) {
 *   An array of theme names. The first returned name should be the default
 *   theme name.
 */
-function wysiwyg_codemirror_codemirror_themes($editor, $profile) {
+function wysiwyg_ace_ace_themes($editor, $profile) {
 	/**
 	* TODO: just a STUB 
 	*/
 	$plugins = $profile->settings["buttons"]["default"];
-	drupal_add_css(drupal_get_path("module", "wysiwyg_codemirror")."/css/codemirror.css", 
+	drupal_add_css(drupal_get_path("module", "wysiwyg_ace")."/css/ace.css", 
 		array(
 			"type" => "internal"
 			));
-	foreach ($plugins as $plugin=>$p) {
-		drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
-		drupal_add_js($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.js');
-	}
-	
+	#foreach ($plugins as $plugin=>$p) {
+	#	drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
+	#	drupal_add_js($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.js');
+	#}
+	drupal_add_library('system', 'ui.button');
+
 	return array('default');
 }
 
@@ -94,8 +93,8 @@ function wysiwyg_codemirror_codemirror_themes($editor, $profile) {
 * @param $library
 *   The internal library name (array key) to use.
 */
-function wysiwyg_codemirror_codemirror_load($editor, $library) {
-	drupal_add_css($editor['library path'] . '/lib/codemirror.css');
+function wysiwyg_ace_ace_load($editor, $library) {
+	drupal_add_css($editor['library path'] . '/lib/ace.css');
 	drupal_add_css($editor['library path'] . '/theme/default.css');
 }
 
@@ -113,7 +112,7 @@ function wysiwyg_codemirror_codemirror_load($editor, $library) {
 *   A settings array to be populated in
 *   Drupal.settings.wysiwyg.configs.{editor}
 */
-function wysiwyg_codemirror_codemirror_settings($editor, $config, $theme) {
+function wysiwyg_ace_ace_settings($editor, $config, $theme) {
 	$settings = array();
 	if (isset($config) && isset($config["buttons"]) && isset($config["buttons"]["default"])) {
 		$result = array();
@@ -125,17 +124,27 @@ function wysiwyg_codemirror_codemirror_settings($editor, $config, $theme) {
 	return $settings;
 }
 
-function wysiwyg_codemirror_codemirror_plugins($editor) {
-	$library = $editor['library path'] . '/mode/';
+function ace_getMode($name) {
+	
+	if (!preg_match("/_highlight_rules|_test|_worker|xml_util|_outdent|behaviour/", $name) && preg_match("/(.*)\.js$/", $name, $matches))
+		return $matches[1];
+	else
+		return null;
+}
+
+function wysiwyg_ace_ace_plugins($editor) {
+	$library = $editor['library path'] . '/lib/ace/mode/';
 	$handler = opendir($library);
 	$plugins = array();
 	while ($file = readdir($handler)) {
 		// if file isn't this directory or its parent, add it to the results
-		if ($file != "." && $file != "..") {
-			$plugins[$file] = $file;
+		if ($file != "." && $file != ".." && $file) {
+			$mode = ace_getMode($file);
+			if ($mode!=null) {
+				$plugins[$mode] = $mode;
+			}
 		}	
 		
-		$plugins[$]
 	}
 	return array(
 		'default' => array(

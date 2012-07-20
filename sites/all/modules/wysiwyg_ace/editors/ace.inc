@@ -80,7 +80,8 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 	#	drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
 	#	drupal_add_js($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.js');
 	#}
-	
+	drupal_add_library('system', 'ui.button');
+
 	return array('default');
 }
 
@@ -135,16 +136,18 @@ function wysiwyg_ace_ace_plugins($editor) {
 	$library = $editor['library path'] . '/lib/ace/mode/';
 	$handler = opendir($library);
 	$plugins = array();
+	$plugins = array();
 	while ($file = readdir($handler)) {
 		// if file isn't this directory or its parent, add it to the results
 		if ($file != "." && $file != ".." && $file) {
 			$mode = ace_getMode($file);
 			if ($mode!=null) {
-				$plugins[$mode] = $mode;
+				$plugins["mode_".$mode] = $mode;
 			}
 		}	
 		
 	}
+	$plugins["ShareJS_true"] = "ShareJS Services";
 	return array(
 		'default' => array(
 			'buttons' => $plugins,

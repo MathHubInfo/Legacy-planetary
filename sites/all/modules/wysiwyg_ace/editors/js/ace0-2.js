@@ -7,18 +7,43 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
   // Attach editor.
   var editorID = "#"+params.field;
   var mode = "";
-  if (settings["enabled"]===undefined || settings["enabled"][0]===undefined)
-    mode = "latex";
-  else
-    mode = settings["enabled"][0];
+  var toolbardiv, editordiv, editorwrapper;
+  
+  cSettings = {
+  	"mode" : "latex",
+  	"ShareJS" : false,
+  };
+  
+  if (typeof settings["enabled"]!="undefined") {
+  	for (var i=0; i<settings["enabled"].length; ++i) {
+  	  t = settings["enabled"][i].split("_");
+  	  cSettings[t[0]]=t[1];
+  	}
+  }
+  
   $(editorID).each(function (c, obj) {
   	  jQuery(obj).hide();
-  	  t = jQuery("<div>").attr("id","ace_"+params.field).attr("style"," height:200px; position:relative");
-  	  jQuery(obj).after(t);
+  	  
+  	  toolbardiv = jQuery("<div>").attr("id","ace_toolbar_"+params.field).addClass("ui-widget-header ui-corner-all");
+  	  editordiv = jQuery("<div>").attr("id","ace_"+params.field).attr("style"," height:200px; position:relative");
+	  editorwrapper = jQuery("<div>").addClass("ace_wrapper").append(toolbardiv).append(editordiv);
+  	  
+  	  jQuery(obj).after(editorwrapper);
   	  var editor = ace.edit("ace_"+params.field);
   	  editor.getSession().setValue(obj.value);
 	  editor.setTheme("ace/theme/twilight");
-	  editor.getSession().setMode("ace/mode/"+mode);
+	  editor.getSession().setMode("ace/mode/"+cSettings["mode"]);
+	  if (cSettings["ShareJS"]) {
+	  	  async.waterfall([
+	  	  		  function (callback) {
+	  	  		  	  Drupal.ShareJS.connectServices("test-doc", "ace", editor, editor.getSession().getValue(), callback)
+	  	  		  },
+	  	  		  function (conn, callback) {	
+	  	  		  	  conn.initToolbar(toolbardiv);
+	  	  		  	  callback(null);
+	  	  		  }
+	  	  ]);
+	  }
 	  jQuery.data(obj, 'editor', editor);
   });
 };
@@ -40,7 +65,6 @@ Drupal.wysiwyg.editor.detach.ace = function(context, params) {
         }
     	jQuery(obj).show();
     });
-    
   }
 };
 
