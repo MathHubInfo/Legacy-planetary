@@ -291,7 +291,7 @@ a:hover{
 #block-search-form{
   float: right;
   margin-right: -390px;
-  margin-top: 50px;
+  margin-top: -18px;
   background: none;
   border: none;
 }
@@ -327,8 +327,8 @@ a:hover{
 }
 
 #navigation{
-  margin-top: -110px;
-  margin-left: 107px;
+  margin-top: -144px;
+  margin-left: 375px;
 }
 
 #navigation li{
