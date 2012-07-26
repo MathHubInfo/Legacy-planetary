@@ -144,12 +144,36 @@ function question_theme($existing, $type, $theme, $path){
   );
 }
 
+function question_authorlinks_assemble($node){
+  $newlinks = array();
+  if (isset($node->content['planetary_links'])) {
+    $oldlinks = $node->content['planetary_links']['#links'];
+    if (!empty($oldlinks)) {
+      $newlinks = array_merge($oldlinks, question_add_links($node));
+    } else {
+      $newlinks = question_add_links($node);
+    }
+  } else {
+    $newlinks = question_add_links($node);
+  }
+  return $newlinks;
+}
+
+function question_add_links($node){
+  $links = array(
+      'ask-question' => l('Ask question', 'node/ask/question/' . $node->nid)
+  );
+  return $links;
+}
+
 // Not a bad idea to keep using the planetary_links
 // mechanism introduced in other modules, since
 // when we have an "interact box", that will get
 // themed nicely...
 function question_node_view($node){
   if($node->type == 'article'){
+    $newlinks = question_authorlinks_assemble($node);
+
     $node->content['planetary_links'] = array(
         '#markup' => '',
         '#weight' => 10,
@@ -158,12 +182,3 @@ function question_node_view($node){
     );
   }
 }
-
-// From this page we can either add a new problem or attach an existing one
-function question_add_links($node) {
-    $links = array(
-        'attach-problem' => l('Attach a problem to this article', 'problems/' . $node->nid. '/attach')
-    );
-    return $links;
-}
-
