@@ -45,6 +45,27 @@ function planetmath_og_model_getNodeEditingGroup($nid) {
   return $group;
 }
 
+function planetmath_og_model_getCoauthors ($nid) {
+
+  $group=planetmath_og_model_getNodeEditingGroup($nid);
+
+  $results = db_query("SELECT users.name,users.uid FROM og_membership om INNER JOIN users ON om.etid = users.uid WHERE om.entity_type = 'user' AND om.gid= :gid", array(':gid' => $group->nid));
+
+  dd("GROUP");
+  dd($group->nid);
+
+  $coauthors = array();
+  foreach ($results as $result) {
+    dd("RESULT");
+    dd($result);
+    $coauthors[] = $result;
+  }
+
+  dd($coauthors);
+
+  return $coauthors;
+}
+
 function planetmath_og_model_getWWGroup() {
   return PLANETMATH_OG_WW_GID;
 }

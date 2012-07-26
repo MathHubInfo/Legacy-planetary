@@ -1,0 +1,6 @@
+name = PlanetMath Version Keeper
+description = This is a cheap way to store versions until we get a proper version tracker hooked up.
+package = "Planetary Modules"
+core = 7.x
+dependencies[] = planetmath_og
+files[] = planetmath_versions.module

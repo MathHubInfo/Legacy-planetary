@@ -1,0 +1,3 @@
+A cheap versioned history of edits will be stored in this
+directory until we get git or something else similar
+hooked up to managed versioning.

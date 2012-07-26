@@ -1,0 +1,141 @@
+<?php
+/*
+ * @file
+ *
+ * This module provides a cheap version-keeper for PlanetMath content,
+ * following the same style used in the legacy site (keep XML files
+ * with the appropriate data).
+ *
+ * The long-term solution will eventually be to use a proper version
+ * tracker to keep track of entries, but until we have that hooked up
+ * we don't want to be lossy!
+ *
+ * Note: for purposes of efficiency, we could presumably combine this
+ * code into the planetmath_edit_article module, which does similar
+ * things.
+ */
+
+function planetmath_versions_node_update($node) {
+
+   dpm($node);
+
+$xmlstr = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<record>
+</record>
+XML;
+
+  $record = new SimpleXMLElement($xmlstr);
+
+  // hopefully all the data we need is stored on the node...
+
+  // Question: is this number actually the right one?  I have my doubts,
+  // partly because of the bug whereby the drupal versions are presented
+  // super screwy in the blocks... how to get the real revision number?
+  $version = $node->revision;
+  $id = $node->nid;
+  $title = $node->title; 
+  $name = $node->field_canonicalname['und'][0]['value'];
+
+  // for compatibility with our old import script, ideally we would format dates like this
+  // : 2006-11-11 22:03:02 
+  // but we can presumably skip that unless it's easy...
+  $created = $node->created;
+  $modified = $node->modified;
+
+  $ownerid = $node->uid;
+  $ownername = user_load($ownerid)->name;
+
+  // it would be safe to assume that the current user is the modifier,
+  // but that information is already stored on the node
+  $modifierid = $node->revision_uid;
+  $modifiername = user_load($modifierid)->name;
+
+  if(isset($node->field_mathtype['und'][0])) {
+    $type = $node->field_mathtype['und'][0]['value'];
+  }
+
+  if(isset($node->field_parent['und'][0])) {
+    $parentid = $node->field_parent['und'][0]['value'];
+    $parent=node_load($parentid);
+    $parentname = $parent->field_canonicalname['und'][0]['value'];
+  }
+
+  if(isset($node->field_revisioncomment['und'][0])) {
+    $comment = $node->field_revisioncomment['und'][0]['value'];
+  }
+
+  // at this point in the process, every article should have
+  // a preamble, even if it is just a *copy* of the sitewide default
+  // (right?)
+  $preamble = $node->field_latex['und'][0]['preamble'];
+  $body = $node->field_latex['und'][0]['document'];
+
+  /* NOW WE FORMAT ALL OF THAT AS XML */
+
+  $record->addAttribute("version", $version);
+  $record->addAttribute("id", $id);
+  $record->addChild('title',$title);
+  $record->addChild('name',$name);
+  $record->addChild('created',$created);
+  $record->addChild('modified',$changed);
+  $record->addChild('type',$type);
+  $record->addChild('comment',$comment);
+  $record->addChild('preamble',$preamble);
+  $record->addChild('content',$body);
+
+  $record->addChild('parent',$parentname);
+  $record->parent->addAttribute('id',$parentid);
+
+  $record->addChild('creator');
+  $record->creator->addAttribute('id',$ownerid);
+  $record->creator->addAttribute('name',$ownername);
+
+  $record->addChild('modifier');
+  $record->modifier->addAttribute('id',$modifierid);
+  $record->modifier->addAttribute('name',$modifiername);
+
+  // these steps are a little trickier, since there will potentially be multiple authors and msc codes
+  // so we must add these bits a loop.  Let's check that out a little bit further...
+  // I guess we do something like this: echo $movies->movie[0]->plot
+  // Yeah, that seems fine.
+
+  // Need to get the article co-authors in order to format them properly
+
+  $coauthors = planetmath_og_model_getCoauthors($node->nid);
+
+  foreach($coauthors as $k=>$author) {
+    $record->addChild('author');
+    $record->author[$k]->addAttribute('id',$author->uid);
+    $record->author[$k]->addAttribute('name',$author->name);
+  }
+
+  // we can't assume that every article has an MSC class, I guess...
+  if(isset($node->field_msc)) {
+    $record->addChild('classification');
+
+    // Need to get the article MSC classes in order to format them properly
+
+    $mscclasses = explode(",",$node->field_msc['und'][0]['value']);
+
+    dd("MSCCLASSES");
+    dd($mscclasses);
+    foreach($mscclasses as $k=>$code) {
+      $record->classification->addChild('category');
+      $record->classification->category[$k]->addAttribute('scheme','msc');
+      $record->classification->category[$k]->addAttribute('code',trim($code));
+    }
+  }
+
+  // echo xml_pretty_printer($record);
+
+  // $base_path = "/home/joe/drupal_planetary/";
+  $base_path = "/Users/jac2349/drupal_planetary/";
+
+  $backup_contents = $record->asXML();
+  $backup_path = $base_path."sites/default/files/versions/".$name.'_'.$version.'.xml';
+
+  $file = fopen($backup_path, 'w') or die("Error: can't open file " . $backup_path);
+  fwrite($file, $backup_contents);
+  fclose($file);
+}
