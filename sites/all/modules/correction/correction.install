@@ -62,6 +62,14 @@ function _correction_installed_fields() {
       'cardinality' => 1,
       'type'        => 'user_reference',
       'settings'    => array(
+                             'referenceable_roles' => array(
+                                                            2 => '2',
+                                                            3 => '3',
+                                                            ),
+                             'referenceable_status' => array(
+                                                             0 => 0,
+                                                             1 => '1'
+                                                             ),
                              ),
     ),
     'field_correction_article' => array(
@@ -70,8 +78,8 @@ function _correction_installed_fields() {
       'cardinality' => 1,
       'type'        => 'node_reference',
       'settings'    => array(
-        'referenceable_types'  => array('article'),
-      ),
+                             'referenceable_types'  => array('article'),
+                             ),
     ),
     'field_correction_accepted' => array(
       'field_name'  => 'field_correction_accepted',
