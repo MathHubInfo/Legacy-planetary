@@ -102,7 +102,7 @@
   <?php if ($type === 'article'): ?>
       <p> Authors:
      <?php
-   dd($content['planetmath_og_display_coauthors']);
+            //dd($content['planetmath_og_display_coauthors']);
             print render($content['planetmath_og_display_coauthors']); 
       ?>
       </p>
@@ -157,6 +157,7 @@
   <div class="content"<?php print $content_attributes; ?>>
     <?php
     // We hide the comments and links now so that we can render them later.
+     //dd($content);
     hide($content['comments']);
     hide($content['links']);
     hide($content['field_msc']);
