@@ -61,6 +61,7 @@ body {
 
 #logo img {
   vertical-align: bottom;
+  margin-top: -12px;
 }
 
 #name-and-slogan /* Wrapper for website name and slogan */ {
@@ -86,6 +87,8 @@ div#site-name /* The name of the website */ {
 }
 
 #site-slogan /* The slogan (or tagline) of a website */ {
+ margin-top: 10px;
+ margin-left: 65px;
 }
 
 .region-header /* Wrapper for any blocks placed in the header region */ {
@@ -304,12 +307,18 @@ a:hover{
   width: 200px;
 }
 
+#site-name{
+  margin-top: 30px;
+  visibility:hidden;
+}
 
 /* LOGO AND SLOGAN */
 #name-and-slogan{
-  margin-top: 30px;  
-  margin-left: 20px;  
+  margin-top: -1px;  
+  margin-left: 30px;
+  visibility:hidden;  
 }
+
 #logo{
   margin-top: 10px;
   margin-bottom: -20px;
@@ -327,8 +336,8 @@ a:hover{
 }
 
 #navigation{
-  margin-top: -144px;
-  margin-left: 375px;
+  margin-top: -130px;
+  margin-left: 100px;
 }
 
 #navigation li{

@@ -28,7 +28,7 @@ li a.active {
 #navigation ul.links li, /* A simple method to get navigation links to appear in one line. */
 #navigation li {
   float: left; /* LTR */
-  padding: 0 7px 0 0; /* LTR */
+  padding: 0 17px 0 0; /* LTR */
   width: 80px;
 }
 
