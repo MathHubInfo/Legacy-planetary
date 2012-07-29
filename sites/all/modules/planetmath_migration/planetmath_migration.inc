@@ -136,9 +136,6 @@ class PMUserMigration extends PMMigration {
          ->defaultValue(0);
 
     // Rather than leaving these things unmapped, we'll try creating some new fields to hold them.
-    // Note that this doesn't seem to actually do anything -- should put in a support request I guess.
-
-
     $this->addFieldMapping('user_forename', 'forename');
     $this->addFieldMapping('user_surname', 'surname');
     $this->addFieldMapping('user_city', 'city');
@@ -150,8 +147,10 @@ class PMUserMigration extends PMMigration {
 
     $this->addFieldMapping(NULL, 'lastip')
          ->issueGroup(t('DNM'));
+
     $this->addFieldMapping(NULL, 'score')
          ->issueGroup(t('DNM'));
+
     $this->addFieldMapping(NULL, 'prefs')
          ->issueGroup(t('DNM'));
 
@@ -226,73 +225,7 @@ class PMForumOPMigration extends Migration {
 
     $this->addFieldMapping('body', 'body');
   }
-
 }
-
-// forum posts that are attached to already-existing threads
-/* class PMForumFirstCommentMigration extends Migration { */
-/*   public function __construct() { */
-/*     parent::__construct(); */
-
-/*     $this->dependencies = array('PMForumOP'); */
-
-/*     $this->map = new MigrateSQLMap( */
-/*       $this->machineName, */
-/*       array( */
-/*         'uid' => array( */
-/*           'type' => 'int', */
-/*           'unsigned' => TRUE, */
-/*           'not null' => TRUE, */
-/*         ), */
-/*       ), */
-/*       MigrateDestinationComment::getKeySchema() */
-/*     ); */
-
-/*     $query = db_select('planetmath_forum_first_comments', 'pmfic') */
-/*       ->fields('pmfic', array('uid', */
-/*                              'replyto', */
-/*                              'objectid', */
-/*                              'userid', */
-/*                              'username', */
-/*                              'subject', */
-/*                              'epoch_created', */
-/*                              'threadid', */
-/*                              'tbl', */
-/*                              'visible', */
-/*                              'body')) */
-/*       ->orderBy('epoch_created', 'ASC'); */
-
-/*     $this->source = new MigrateSourceSQL($query, array(), NULL, array('map_joinable' => FALSE)); */
-/*     $this->destination = new MigrateDestinationComment('comment_node_forum'); */
-
-/*     $this->addFieldMapping('status') */
-/*          ->defaultValue(COMMENT_PUBLISHED); */
-
-/*     // Note that the FIRST comment, the "reply to" is meaningful as a NID, */
-/*     //  so we save that. */
-
-/*     $this->addFieldMapping('nid', 'replyto') */
-/*          ->description(t('Preserve old objectid as nid in Drupal')); */
-/*     $this->addFieldMapping('pid') */
-/*          ->defaultValue(0); */
-/*     $this->addFieldMapping('subject', 'subject'); */
-/*     $this->addFieldMapping('created', 'epoch_created'); */
-/*     $this->addFieldMapping('changed', 'epoch_created'); */
-/*     $this->addFieldMapping('comment_body', 'body'); */
-/*     $this->addFieldMapping('name', 'username'); */
-/*     $this->addFieldMapping('uid', 'userid'); */
-/*     $this->addFieldMapping(NULL, 'visible'); */
-/*     $this->addFieldMapping(NULL, 'tbl'); */
-
-/*     $this->addUnmigratedDestinations(array('mail', */
-/*                                            'path', */
-/*                                            'homepage', */
-/*                                            'threadid', */
-/*                                            'language', */
-/*                                            'changed', */
-/*                                            'hostname')); */
-/*   } */
-/* } */
 
 // forum posts that are attached to already-existing threads
 class PMForumCommentMigration extends Migration {
@@ -363,13 +296,12 @@ class PMForumCommentMigration extends Migration {
 }
 
 // before this runs, update some counts in sql!
-// select * from migrate_map_pmforumop;
-// and look at the last value, VAL, then
+// select COUNT(*) from migrate_map_pmforumop;
 //
 // UPDATE planetmath_objects SET uid=uid+VAL;
 // UPDATE planetmath_object_comments SET objectid=objectid+VAL, replyto=replyto+VAL;
 //
-// Note: would be nicest to be able to run these commands
+// Note: would be nicest to be able to run those commands
 // from within this import script.
 
 class PMObjectMigration extends PMMigration {
@@ -406,6 +338,7 @@ class PMObjectMigration extends PMMigration {
                             'synonyms',
                             'defines',
                             'keywords',
+                            'msc_class'
                             'hits',
                             'self',
                             'pronounce',
@@ -423,34 +356,75 @@ class PMObjectMigration extends PMMigration {
 
     $this->addFieldMapping('uid', 'userid');
     $this->addFieldMapping('title', 'title');
-    $this->addFieldMapping('body', 'data');
     $this->addFieldMapping('created', 'epoch_created');
     $this->addFieldMapping('changed', 'epoch_modified');
     $this->addFieldMapping('access', 'epoch_last');
     $this->addFieldMapping('access', 'epoch_last');
 
     // Rather than leaving these things unmapped, we'll try creating some new fields to hold them.
+    // Hm... I thought I had this squared away in some version of the code, let's look around at
+    // the servers when we have a chance.
 
     // $this->addFieldMapping('field_preamble', 'preamble');
 
-    //    $this->addFieldMapping('planetmath_migrate_parentid', 'parentid');
-    //    $this->addFieldMapping('planetmath_migrate_name', 'name');
-    //    $this->addFieldMapping('planetmath_migrate_related', 'related');
-    //    $this->addFieldMapping('planetmath_migrate_synonyms', 'synonyms');
-    //    $this->addFieldMapping('planetmath_migrate_defines', 'defines');
-    //    $this->addFieldMapping('planetmath_migrate_keywords', 'keywords');
-    //    $this->addFieldMapping('planetmath_migrate_hits', 'hits');
-    //    $this->addFieldMapping('planetmath_migrate_selfproof', 'self');
-    //    $this->addFieldMapping('planetmath_migrate_version', 'version');
-    //    $this->addFieldMapping('planetmath_migrate_linkpolicy', 'linkpolicy');
-    //    $this->addFieldMapping('planetmath_migrate_type', 'type');
+    $this->addFieldMapping('field_canonicalname', 'name');
+    $this->addFieldMapping('field_canonicalname:source_type')
+      ->defaultValue('value');
+
+    // mapping in the legacy "parent" relationship this way, as opposed to some other sort of connection...
+    $this->addFieldMapping('field_parent', 'parentid');
+    $this->addFieldMapping('field_parent:source_type')
+      ->defaultValue('value');
+
+    $this->addFieldMapping('field_msc', 'msc_class');
+    $this->addFieldMapping('field_msc:source_type')
+      ->defaultValue('value');
+
+    $this->addFieldMapping('field_related', 'related');
+    $this->addFieldMapping('field_related:source_type')
+      ->defaultValue('value');
+
+    $this->addFieldMapping('field_synonym', 'synonyms');
+    $this->addFieldMapping('field_synonym:source_type')
+      ->defaultValue('value');
+
+    $this->addFieldMapping('field_defines', 'defines');
+    $this->addFieldMapping('field_defines:source_type')
+      ->defaultValue('value');
+
+    $this->addFieldMapping('field_keywords', 'keywords');
+    $this->addFieldMapping('field_keywords:source_type')
+      ->defaultValue('value');
+
+    $this->addFieldMapping('field_mathtype', 'type');
+    $this->addFieldMapping('field_mathtype:source_type')
+      ->defaultValue('value');
+
+    $this->addFieldMapping('field_latex', 'preamble');
+    $this->addFieldMapping('field_latex:source_type')
+      ->defaultValue('preamble');
+
+    $this->addFieldMapping('field_latex', 'data');
+    $this->addFieldMapping('field_latex:source_type')
+      ->defaultValue('document');
+
+    // We can deal with the "version" in our SQL-based cleanup
+    $this->addFieldMapping(NULL, 'version')
+         ->issueGroup(t('DNM'));
 
     $this->addFieldMapping(NULL, 'pronounce')
          ->issueGroup(t('DNM'));
 
+    $this->addFieldMapping(NULL, 'hits')
+         ->issueGroup(t('DNM'));
+
+    $this->addFieldMapping(NULL, 'self')
+         ->issueGroup(t('DNM'));
+
+    $this->addFieldMapping(NULL, 'linkpolicy')
+         ->issueGroup(t('DNM'));
+
     // Unmapped destination fields
-    // NOTE: it should be possible to infer "name" from forename+surname,
-    // just need to see how to compute during migration
     $this->addUnmigratedDestinations(array('vid',
                                            'type',
                                            'language',
@@ -527,7 +501,100 @@ class PMObjectCommentMigration extends PMMigration {
   }
 }
 
-// I think maybe we SHOULD migrate the "closedbyid" since corrections
+class PMCollabMigration extends PMMigration {
+  public function __construct() {
+    parent::__construct();
+    $this->description = t('PM Collab data');
+
+    // might as well run the object migrations first?
+    // Or should we run the collabs first, to tuck them in because there are fewer of them
+    $this->dependencies = array('PMObject');
+
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'uid' => array(
+          'type' => 'int',
+          'length' => 11,
+          'not null' => TRUE,
+          'description' => 'Collab ID.',
+          'alias' => 'mpcollab',
+        )
+      ),
+      MigrateDestinationNode::getKeySchema()
+    );
+
+    $query = db_select('planetmath_objects', 'mpcollab')
+      ->fields('mpcollab', array('uid',       // int(11)     
+                                 'userid',    // int(11)     
+                                 'title',     // varchar(255)
+                                 'abstract',  // text     
+                                 'data',      // text     
+                                 '_lock',     // int(11)   - ignore
+                                 'epoch_created',   // datetime 
+                                 'locktime',  // datetime  - ignore
+                                 'lockuser',  // int(11)   - ignore
+                                 'published', // tinyint(4)
+                                 'epoch_modified',  // datetime
+                                 'version',   // int(11)
+                                 'hits',      // int(11)
+                                 'sitedoc'    // int(11)
+                                 ));
+    $this->source = new MigrateSourceSQL($query);
+
+    // We will migrate these in as articles, just like the regular objects
+    $this->destination = new MigrateDestinationNode('article');
+
+    // Mapped fields
+    // If we're going to preserve this, then we need to check and provide the right offset so
+    // that we don't get collisions...
+    $this->addFieldMapping('nid', 'uid')
+         ->description(t('Preserve old uid as new nid in Drupal'));
+    
+    $this->addFieldMapping('is_new')
+         ->defaultValue(TRUE);
+
+    $this->addFieldMapping('uid', 'userid');
+    $this->addFieldMapping('title', 'title');
+    $this->addFieldMapping('body', 'data');
+    $this->addFieldMapping('created', 'epoch_created');
+    $this->addFieldMapping('changed', 'epoch_modified');
+
+    // We need to come up with some suitable destinations for these things.  
+    // Will they be additional fields for all articles?
+    $this->addFieldMapping('published', 'published');
+    // ... Note also that there was a whole discussion/debate about how to
+    // keep track of "versions".  Once we migrate the data in, we can presumably
+    // just keep it up to date in a straightforward way!
+    $this->addFieldMapping('version', 'version');
+    // ... Maybe the "sitedoc" will actually just be an example of one of 
+    // the "special sections", for which we need to general support
+    $this->addFieldMapping('sitedoc', 'sitedoc');
+
+    $this->addFieldMapping(NULL, '_lock')
+         ->issueGroup(t('DNM'));
+    $this->addFieldMapping(NULL, 'lockuser')
+         ->issueGroup(t('DNM'));
+    $this->addFieldMapping(NULL, 'locktime')
+         ->issueGroup(t('DNM'));
+    $this->addFieldMapping(NULL, 'hits')
+         ->issueGroup(t('DNM'));
+
+    // Unmapped destination fields
+    // NOTE: it should be possible to infer "name" from forename+surname,
+    // just need to see how to compute during migration
+    $this->addUnmigratedDestinations(array('vid',
+                                           'type',
+                                           'language',
+                                           'status',
+                                           'comment',
+                                           'promote',
+                                           'sticky',
+                                           'tnid',
+                                           'translate'));
+  }
+}
+
+// Note on the following: I think maybe we SHOULD migrate the "closedbyid" since corrections
 // might be closed by any co-author.  Also, we may as well map the
 // "comment" part as well, just creating an additional field for
 // "comment".  I guess I'll think a little more about this before
@@ -750,7 +817,8 @@ class PMRequestMigration extends PMMigration {
     $this->addFieldMapping('field_question_latex', 'data');
     $this->addFieldMapping('field_question_latex:source_type')
       ->defaultValue('document');
-    // ... continues...
+
+    // ... continues like this?
     //$this->addFieldMapping('field_question_latex')->defaultValue('tex_editor');
     //$this->addFieldMapping('field_question_latex:source_type')
     //  ->defaultValue('format');
