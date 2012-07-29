@@ -22,7 +22,7 @@ function latex_field_field_schema($field) {
     'preamble' => array('type' => 'text', 'size' => "big"),
     'metadata' => array('type' => 'text', 'size' => "big"),
     'document' => array('type' => 'text', 'size' => "big"),
-    'format' => array('type' => 'text', 'size' => "big")
+    'format' => array('type' => 'text', 'size' => "big", 'default' => 'tex_editor')
   );
   return array(
     'columns' => $columns,
