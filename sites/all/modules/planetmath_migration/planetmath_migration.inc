@@ -338,7 +338,7 @@ class PMObjectMigration extends PMMigration {
                             'synonyms',
                             'defines',
                             'keywords',
-                            'msc_class'
+                            'msc_class',
                             'hits',
                             'self',
                             'pronounce',
