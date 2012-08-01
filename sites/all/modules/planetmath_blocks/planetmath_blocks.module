@@ -184,6 +184,8 @@ function planetmath_blocks_countCorrectionsPerArticle($nid) {
                   WHERE fca.field_correction_article_nid = :nid", array(':nid' => $nid))->fetchObject()->cnt > 0) ? true : false;
 }
 
+// We could keep track of the "actual" version id on v.log, since it isn't managed anywhere else.
+// Getting all of this imported into the system is going to take some work.
 function planetmath_blocks_versions($nid) {
   $results = db_query("SELECT v.vid AS vid, n.nid AS nid, n.changed AS changed, n.title AS title, u.name AS username, u.uid AS uid 
     FROM node_revision v 
@@ -215,8 +217,8 @@ function planetmath_blocks_blockThemeResults($results) {
     if (!isset($result->vid)) {
       $title = l($result->title, 'node/' . $result->nid);
     } else {
-      $num = 1 + $result->vid - $result->nid;
-      $title = l(' (v' . $num  .')', 'node/' . $result->nid);
+      // $num = 1 + $result->vid - $result->nid;
+      $title = l(' (v' . $result->vid  .')', 'node/' . $result->nid);
     }
     if (!isset($result->changed)) {
       $changed = '';
