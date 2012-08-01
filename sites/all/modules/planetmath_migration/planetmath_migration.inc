@@ -561,14 +561,19 @@ class PMCollabMigration extends PMMigration {
 
     // We need to come up with some suitable destinations for these things.  
     // Will they be additional fields for all articles?
-    $this->addFieldMapping('published', 'published');
-    // ... Note also that there was a whole discussion/debate about how to
-    // keep track of "versions".  Once we migrate the data in, we can presumably
-    // just keep it up to date in a straightforward way!
-    $this->addFieldMapping('version', 'version');
+    $this->addFieldMapping('field_published', 'published');
+    $this->addFieldMapping('field_published:source_type')
+      ->defaultValue('value');
+
+    // Hopefully this will work...
+    $this->addFieldMapping('field_section')
+         ->defaultValue('Collaboration');
+
     // ... Maybe the "sitedoc" will actually just be an example of one of 
     // the "special sections", for which we need to general support
-    $this->addFieldMapping('sitedoc', 'sitedoc');
+    $this->addFieldMapping('field_sitedoc', 'sitedoc');
+    $this->addFieldMapping('field_sitedoc:source_type')
+      ->defaultValue('value');
 
     $this->addFieldMapping(NULL, '_lock')
          ->issueGroup(t('DNM'));
