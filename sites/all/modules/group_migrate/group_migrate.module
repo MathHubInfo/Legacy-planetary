@@ -34,8 +34,8 @@ function group_migrate_port_world_writable() {
   // we will create the WW group from the profile, so this function can assume
   // that Group 1 exists and is the World Writable group.
 
-  // planetmath_og_group_add_programmatic("World Writable", 1,
-     "World writable articles - everyone has permission to edit.");
+  /* planetmath_og_group_add_programmatic("World Writable", 1,
+     "World writable articles - everyone has permission to edit."); */
 
   $ww = db_query("SELECT gid FROM {og} where label = 'World Writable'")->fetchField();
 
