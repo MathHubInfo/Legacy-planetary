@@ -601,6 +601,70 @@ class PMCollabMigration extends PMMigration {
   }
 }
 
+class PMCollabCommentMigration extends PMMigration {
+  public function __construct() {
+    parent::__construct();
+    $this->description = t('PM Collab Comment data');
+
+    $this->dependencies = array('PMCollab');
+
+    $this->map = new MigrateSQLMap($this->machineName,
+      array(
+        'uid' => array(
+          'type' => 'int',
+          'length' => 11,
+          'not null' => TRUE,
+          'description' => 'Message ID.',
+          'alias' => 'pmcollabco',
+        )
+      ),
+       MigrateDestinationComment::getKeySchema()
+    );
+
+    // beer example suggests to do   ->orderBy('cid_parent', 'ASC');
+    // Maybe something similarly intelligent can be done here
+    $query = db_select('planetmath_collab_comments', 'pmcollabco')
+      ->fields('pmcollabco', array('uid',
+                             'replyto',
+                             'objectid',
+                             'userid',
+                             'username',
+                             'subject',
+                             'epoch_created',
+                             'threadid',
+                             'tbl',
+                             'visible',
+                             'body'))
+      ->orderBy('epoch_created', 'ASC');
+    $this->source = new MigrateSourceSQL($query);
+    $this->destination = new MigrateDestinationComment('comment_node_collab');
+
+    $this->addFieldMapping('status')
+         ->defaultValue(COMMENT_PUBLISHED);
+    $this->addFieldMapping('nid', 'objectid')
+         ->description(t('Preserve old objectid as nid in Drupal'));
+    $this->addFieldMapping('pid', 'replyto')
+         ->description(t('Preserve old replyto as pid in Drupal'));
+    $this->addFieldMapping('comment_body', 'body');
+    $this->addFieldMapping('name', 'username');
+    $this->addFieldMapping('uid', 'userid');
+    $this->addFieldMapping('subject', 'subject');
+    $this->addFieldMapping('created', 'epoch_created');
+    $this->addFieldMapping('changed', 'epoch_created');
+
+    $this->addFieldMapping(NULL, 'visible');
+    $this->addFieldMapping(NULL, 'tbl');
+
+    $this->addUnmigratedDestinations(array('mail',
+                                           'path',
+                                           'homepage',
+                                           'threadid',
+                                           'language',
+                                           'changed',
+                                           'hostname'));
+  }
+}
+
 // Note on the following: I think maybe we SHOULD migrate the "closedbyid" since corrections
 // might be closed by any co-author.  Also, we may as well map the
 // "comment" part as well, just creating an additional field for

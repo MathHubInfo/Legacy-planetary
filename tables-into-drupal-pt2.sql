@@ -58,6 +58,25 @@ UPDATE planetmath_requests SET epoch_created = UNIX_TIMESTAMP(created);
 ALTER TABLE planetmath_requests ADD epoch_closed int(11);
 UPDATE planetmath_requests SET epoch_closed = UNIX_TIMESTAMP(closed);
 
+-- collabs
+
+ALTER TABLE planetmath_collab ADD epoch_created int(11);
+UPDATE planetmath_collab SET epoch_created = UNIX_TIMESTAMP(created);
+
+ALTER TABLE planetmath_collab ADD epoch_modified int(11);
+UPDATE planetmath_collab SET epoch_modified = UNIX_TIMESTAMP(modified);
+
+-- corrections
+
+ALTER TABLE planetmath_corrections ADD epoch_filed int(11);
+UPDATE planetmath_corrections SET epoch_filed = UNIX_TIMESTAMP(filed);
+
+ALTER TABLE planetmath_corrections ADD epoch_closed int(11);
+UPDATE planetmath_corrections SET epoch_closed = UNIX_TIMESTAMP(closed);
+
+ALTER TABLE planetmath_corrections ADD was_closed int(11) DEFAULT 0;
+UPDATE planetmath_corrections SET was_closed = 1 WHERE IFNULL(closed,0) <> 0;
+
 -- comments
 
 UPDATE planetmath_messages SET subject = CONCAT(SUBSTR(subject,1,60), '...') WHERE LENGTH(subject) > 60;
@@ -135,6 +154,9 @@ INSERT INTO planetmath_object_comments SELECT * FROM planetmath_messages WHERE t
 CREATE TABLE planetmath_correction_comments LIKE planetmath_messages;
 INSERT INTO planetmath_correction_comments SELECT * FROM planetmath_messages WHERE tbl = 'corrections';
 
+CREATE TABLE planetmath_collab_comments LIKE planetmath_messages;
+INSERT INTO planetmath_collab_comments SELECT * FROM planetmath_messages WHERE tbl = 'collab';
+
 CREATE TABLE planetmath_request_comments LIKE planetmath_messages;
 INSERT INTO planetmath_request_comments SELECT * FROM planetmath_messages WHERE tbl = 'requests';
 
@@ -144,12 +166,15 @@ UPDATE planetmath_objects SET uid=uid+30000;
 UPDATE planetmath_object_comments SET objectid=objectid+30000, replyto=replyto+30000;
 UPDATE planetmath_acl SET objectid=objectid+30000 where tbl='objects';
 
--- deal with collabs in some sensible way 
 UPDATE planetmath_collab SET uid=uid+50000;
+UPDATE planetmath_collab_comments SET objectid=objectid+50000, replyto=replyto+50000;
 UPDATE planetmath_acl SET objectid=objectid+50000 where tbl='collab';
 
 UPDATE planetmath_requests SET uid=uid+60000;
 UPDATE planetmath_request_comments SET objectid=objectid+60000, replyto=replyto+60000;
+
+UPDATE planetmath_corrections SET uid=uid+70000;
+UPDATE planetmath_correction_comments SET objectid=objectid+70000, replyto=replyto+70000;
 
 -- See tables-into-drupal-pt3.sql for the next step
 
