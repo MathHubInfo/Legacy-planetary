@@ -554,8 +554,8 @@ function article_setup_field_default_fields() {
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(
-          0 => '',
-          1 => '',
+          0 => '0',
+          1 => '1',
         ),
         'allowed_values_function' => '',
       ),
@@ -623,8 +623,8 @@ function article_setup_field_default_fields() {
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(
-          0 => '',
-          1 => '',
+          0 => '0',
+          1 => '1',
         ),
         'allowed_values_function' => '',
       ),
@@ -639,7 +639,7 @@ function article_setup_field_default_fields() {
         ),
       ),
       'deleted' => '0',
-      'description' => 'Articles are public by default, which means they show up in public listings.  Articles that are not public show up in private listings.  They are, however, available to the world via a direct URL, so don\'t put confidential data here.',
+      'description' => 'Should this article be part of PlanetMath\'s documentation?',
       'display' => array(
         'default' => array(
           'label' => 'above',
