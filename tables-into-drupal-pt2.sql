@@ -30,6 +30,26 @@ UPDATE planetmath_objects SET msc_class = (select group_concat(planetmath_msc.id
 ALTER TABLE planetmath_objects add authors text;
 UPDATE planetmath_objects SET authors = (select group_concat(planetmath_authors.userid separator ', ') as authors_string from planetmath_authors where planetmath_authors.objectid=planetmath_objects.uid and planetmath_authors.tbl = 'objects');
 
+-- make the mathtype information transparent, so we can use something meaningful in our migration.
+
+ALTER TABLE planetmath_objects ADD type_string text(255);
+UPDATE planetmath_objects SET type_string = 'Theorem' WHERE planetmath_objects.type          = 1;
+UPDATE planetmath_objects SET type_string = 'Corollary' WHERE planetmath_objects.type        = 2;
+UPDATE planetmath_objects SET type_string = 'Definition' WHERE planetmath_objects.type       = 5;
+UPDATE planetmath_objects SET type_string = 'Result' WHERE planetmath_objects.type           = 6;
+UPDATE planetmath_objects SET type_string = 'Proof' WHERE planetmath_objects.type            = 3;
+UPDATE planetmath_objects SET type_string = 'Algorithm' WHERE planetmath_objects.type        = 17;
+UPDATE planetmath_objects SET type_string = 'Data Structure' WHERE planetmath_objects.type   = 19;
+UPDATE planetmath_objects SET type_string = 'Axiom' WHERE planetmath_objects.type            = 20;
+UPDATE planetmath_objects SET type_string = 'Topic' WHERE planetmath_objects.type            = 21;
+UPDATE planetmath_objects SET type_string = 'Biography' WHERE planetmath_objects.type        = 22;
+UPDATE planetmath_objects SET type_string = 'Example' WHERE planetmath_objects.type          = 7;
+UPDATE planetmath_objects SET type_string = 'Derivation' WHERE planetmath_objects.type       = 25;
+UPDATE planetmath_objects SET type_string = 'Conjecture' WHERE planetmath_objects.type       = 24;
+UPDATE planetmath_objects SET type_string = 'Application' WHERE planetmath_objects.type      = 26;
+UPDATE planetmath_objects SET type_string = 'Feature' WHERE planetmath_objects.type          = 27;
+UPDATE planetmath_objects SET type_string = 'Bibliography' WHERE planetmath_objects.type     = 28;
+
 -- comments
 
 UPDATE planetmath_messages SET subject = CONCAT(SUBSTR(subject,1,60), '...') WHERE LENGTH(subject) > 60;
@@ -38,32 +58,32 @@ ALTER TABLE planetmath_messages ADD epoch_created int(11);
 UPDATE planetmath_messages SET epoch_created = UNIX_TIMESTAMP(created);
 
 ALTER TABLE planetmath_messages ADD username varchar(32);
-UPDATE planetmath_messages, planetmath_users 
+UPDATE planetmath_messages, planetmath_users
   SET planetmath_messages.username = planetmath_users.username
   WHERE planetmath_messages.userid = planetmath_users.uid;
 
 -- do this once here so we don't have to do it several times below for the derived tables
 UPDATE planetmath_messages SET objectid = 1 WHERE objectid = 0;
-UPDATE planetmath_messages SET objectid = 3 WHERE objectid = 230;  
-UPDATE planetmath_messages SET objectid = 4 WHERE objectid = 232;  
-UPDATE planetmath_messages SET objectid = 5 WHERE objectid = 233;  
-UPDATE planetmath_messages SET objectid = 6 WHERE objectid = 234;  
-UPDATE planetmath_messages SET objectid = 7 WHERE objectid = 235;  
-UPDATE planetmath_messages SET objectid = 8 WHERE objectid = 236;  
-UPDATE planetmath_messages SET objectid = 9 WHERE objectid = 237;  
-UPDATE planetmath_messages SET objectid = 10 WHERE objectid = 238; 
-UPDATE planetmath_messages SET objectid = 11 WHERE objectid = 239; 
-UPDATE planetmath_messages SET objectid = 12 WHERE objectid = 240; 
-UPDATE planetmath_messages SET objectid = 13 WHERE objectid = 241; 
-UPDATE planetmath_messages SET objectid = 14 WHERE objectid = 242; 
-UPDATE planetmath_messages SET objectid = 15 WHERE objectid = 245; 
-UPDATE planetmath_messages SET objectid = 16 WHERE objectid = 246; 
+UPDATE planetmath_messages SET objectid = 3 WHERE objectid = 230;
+UPDATE planetmath_messages SET objectid = 4 WHERE objectid = 232;
+UPDATE planetmath_messages SET objectid = 5 WHERE objectid = 233;
+UPDATE planetmath_messages SET objectid = 6 WHERE objectid = 234;
+UPDATE planetmath_messages SET objectid = 7 WHERE objectid = 235;
+UPDATE planetmath_messages SET objectid = 8 WHERE objectid = 236;
+UPDATE planetmath_messages SET objectid = 9 WHERE objectid = 237;
+UPDATE planetmath_messages SET objectid = 10 WHERE objectid = 238;
+UPDATE planetmath_messages SET objectid = 11 WHERE objectid = 239;
+UPDATE planetmath_messages SET objectid = 12 WHERE objectid = 240;
+UPDATE planetmath_messages SET objectid = 13 WHERE objectid = 241;
+UPDATE planetmath_messages SET objectid = 14 WHERE objectid = 242;
+UPDATE planetmath_messages SET objectid = 15 WHERE objectid = 245;
+UPDATE planetmath_messages SET objectid = 16 WHERE objectid = 246;
 
-CREATE TABLE planetmath_forum_ops LIKE planetmath_messages; 
-INSERT INTO planetmath_forum_ops SELECT * FROM planetmath_messages WHERE tbl = 'forums' AND replyto = '-1'; 
+CREATE TABLE planetmath_forum_ops LIKE planetmath_messages;
+INSERT INTO planetmath_forum_ops SELECT * FROM planetmath_messages WHERE tbl = 'forums' AND replyto = '-1';
 
 CREATE TABLE planetmath_forum_comments LIKE planetmath_messages;
-INSERT INTO planetmath_forum_comments SELECT * FROM planetmath_messages WHERE tbl='forums' AND replyto <> '-1'; 
+INSERT INTO planetmath_forum_comments SELECT * FROM planetmath_messages WHERE tbl='forums' AND replyto <> '-1';
 
 ALTER TABLE planetmath_forum_comments ADD op int(11);
 
@@ -81,11 +101,11 @@ BEGIN
 
   DECLARE counter int DEFAULT 0;
 
-  WHILE counter < 26 DO 
+  WHILE counter < 26 DO
     INSERT INTO intermediate (uid, op) select uid, (select op from planetmath_forum_comments as a where a.uid = b.replyto) as OP from planetmath_forum_comments as b where IFNULL(op,0)=0;
     UPDATE planetmath_forum_comments, intermediate SET planetmath_forum_comments.op = intermediate.op WHERE planetmath_forum_comments.uid = intermediate.uid;
     TRUNCATE intermediate;
-    SET counter = counter + 1; 
+    SET counter = counter + 1;
   END WHILE;
 END$$
 
@@ -99,14 +119,14 @@ CALL findparents();
 -- DELETE FROM planetmath_forum_first_comments WHERE replyto NOT IN (SELECT uid FROM planetmath_forum_ops);
 -- DELETE FROM planetmath_forum_comments WHERE uid IN (SELECT uid FROM planetmath_forum_first_comments);
 
-CREATE TABLE planetmath_object_comments LIKE planetmath_messages; 
+CREATE TABLE planetmath_object_comments LIKE planetmath_messages;
 INSERT INTO planetmath_object_comments SELECT * FROM planetmath_messages WHERE tbl = 'objects';
 
-CREATE TABLE planetmath_correction_comments LIKE planetmath_messages; 
+CREATE TABLE planetmath_correction_comments LIKE planetmath_messages;
 INSERT INTO planetmath_correction_comments SELECT * FROM planetmath_messages WHERE tbl = 'corrections';
 
-CREATE TABLE planetmath_request_comments LIKE planetmath_messages; 
-INSERT INTO planetmath_request_comments SELECT * FROM planetmath_messages WHERE tbl = 'requests'; 
+CREATE TABLE planetmath_request_comments LIKE planetmath_messages;
+INSERT INTO planetmath_request_comments SELECT * FROM planetmath_messages WHERE tbl = 'requests';
 
 -- These commands adjust indexing of objects so that everything can be imported in one swoop
 
@@ -122,4 +142,4 @@ UPDATE planetmath_acl SET objectid=objectid+30000;
 -- DROP TABLE intermediate ;
 -- DROP TABLE planetmath_object_comments ;
 -- DROP TABLE planetmath_correction_comments ;
--- DROP TABLE planetmath_request_comments ;   
+-- DROP TABLE planetmath_request_comments ;

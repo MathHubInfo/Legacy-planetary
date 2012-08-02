@@ -344,7 +344,7 @@ class PMObjectMigration extends PMMigration {
                             'pronounce',
                             'version',
                             'linkpolicy',
-                            'type'));
+                            'type_string'));
     $this->source = new MigrateSourceSQL($query);
     $this->destination = new MigrateDestinationNode('article');
 
@@ -396,7 +396,7 @@ class PMObjectMigration extends PMMigration {
     $this->addFieldMapping('field_keywords:source_type')
       ->defaultValue('value');
 
-    $this->addFieldMapping('field_mathtype', 'type');
+    $this->addFieldMapping('field_mathtype', 'type_string');
     $this->addFieldMapping('field_mathtype:source_type')
       ->defaultValue('value');
 
