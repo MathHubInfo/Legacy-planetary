@@ -113,6 +113,8 @@ DELIMITER ;
 
 CALL findparents();
 
+-- Drupal considers comments with no parent to have pid 0.  This gets that info set up for import.
+UPDATE planetmath_forum_comments SET planetmath_forum_comments.replyto = 0 WHERE planetmath_forum_comments.op = planetmath_forum_comments.replyto.
 
 -- CREATE TABLE planetmath_forum_first_comments LIKE planetmath_messages;
 -- INSERT INTO planetmath_forum_first_comments SELECT * FROM planetmath_forum_comments;

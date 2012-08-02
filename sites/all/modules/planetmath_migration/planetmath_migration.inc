@@ -274,6 +274,8 @@ class PMForumCommentMigration extends Migration {
          ->description(t('Preserve old OP as nid in Drupal'));
 
     // All subsequent comments are replies to other comments
+    // Note: actually, when the pid would be equal to the nid, we should set the pid to 0 instead.
+    // That's now taken care of in tables-into-drupal-pt2.sql
     $this->addFieldMapping('pid', 'replyto')
          ->description(t('Preserve old replyto as pid in Drupal'));
     $this->addFieldMapping('subject', 'subject');
