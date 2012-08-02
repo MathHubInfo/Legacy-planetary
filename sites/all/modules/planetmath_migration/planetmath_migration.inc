@@ -525,7 +525,7 @@ class PMCollabMigration extends PMMigration {
       MigrateDestinationNode::getKeySchema()
     );
 
-    $query = db_select('planetmath_objects', 'mpcollab')
+    $query = db_select('planetmath_collab', 'mpcollab')
       ->fields('mpcollab', array('uid',       // int(11)     
                                  'userid',    // int(11)     
                                  'title',     // varchar(255)

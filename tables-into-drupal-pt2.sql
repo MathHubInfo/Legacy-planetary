@@ -144,9 +144,12 @@ UPDATE planetmath_objects SET uid=uid+30000;
 UPDATE planetmath_object_comments SET objectid=objectid+30000, replyto=replyto+30000;
 UPDATE planetmath_acl SET objectid=objectid+30000 where tbl='objects';
 
--- deal with collabs in some sensible way (first we need to copy them over here...)
+-- deal with collabs in some sensible way 
 UPDATE planetmath_collab SET uid=uid+50000;
 UPDATE planetmath_acl SET objectid=objectid+50000 where tbl='collab';
+
+UPDATE planetmath_requests SET uid=uid+60000;
+UPDATE planetmath_request_comments SET objectid=objectid+60000, replyto=replyto+60000;
 
 -- See tables-into-drupal-pt3.sql for the next step
 
