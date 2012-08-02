@@ -93,6 +93,10 @@ function process_metadata($node){
   // The following debugging message shows how to access the metadata field.
   //dd("Node defines metadata: ".$node->field_latex['und'][0]['metadata']);
 
+  /* Putting in this conditional to see if this makes the importing routine go better.
+     Metadata processing seems fine in normal use, but we get all kinds of warning messages
+     at import time... */
+  if(isset($node->field_latex)){
   $metadata = $node->field_latex['und'][0]['metadata'];
   $now = date('o-m-d G:i:s');
   $metadata =  "\\pmcanonicalname{".$node->field_canonicalname['und'][0]['value']."}\n";
@@ -188,6 +192,7 @@ function process_metadata($node){
     }
   }
   $node->field_latex['und'][0]['metadata'] = $metadata;
+  }
 }
 
 function canonicalize_name($node, $str, $count = 1) {
