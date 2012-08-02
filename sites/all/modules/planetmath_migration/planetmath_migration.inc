@@ -833,9 +833,14 @@ class PMRequestMigration extends PMMigration {
     $this->addFieldMapping('created', 'epoch_created');
     
     // For *questions*, closed is a datetime (whereas for corrections, it's a binary value)
-    $this->addFieldMapping('field_question_closed', 'closed');
+    $this->addFieldMapping('field_question_closed', 'epoch_closed');
     $this->addFieldMapping('field_question_closed:source_type')
       ->defaultValue('value');
+
+    // We can infer that the question has been fulfilled by examining the fulfiller's ID
+    // thought we may eventually want to add a "status" (like "fixed" or "duplicate")
+    $this->addFieldMapping(NULL, 'fulfilled')
+         ->issueGroup(t('DNM'));
 
     $this->addUnmigratedDestinations(array('field_question_article'));
   }

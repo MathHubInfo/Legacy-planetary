@@ -33,6 +33,9 @@ INSERT INTO demodb.planetmath_users SELECT * FROM planetary.users;
 CREATE TABLE demodb.planetmath_objects LIKE planetary.objects;
 INSERT INTO demodb.planetmath_objects SELECT * FROM planetary.objects;
 
+CREATE TABLE demodb.planetmath_collab LIKE planetary.collab;
+INSERT INTO demodb.planetmath_collab SELECT * FROM planetary.collab;
+
 CREATE TABLE demodb.planetmath_messages LIKE planetary.messages;
 INSERT INTO demodb.planetmath_messages SELECT * FROM planetary.messages;
 

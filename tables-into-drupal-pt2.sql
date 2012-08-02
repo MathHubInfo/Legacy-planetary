@@ -50,6 +50,14 @@ UPDATE planetmath_objects SET type_string = 'Application' WHERE planetmath_objec
 UPDATE planetmath_objects SET type_string = 'Feature' WHERE planetmath_objects.type          = 27;
 UPDATE planetmath_objects SET type_string = 'Bibliography' WHERE planetmath_objects.type     = 28;
 
+-- requests
+
+ALTER TABLE planetmath_requests ADD epoch_created int(11);
+UPDATE planetmath_requests SET epoch_created = UNIX_TIMESTAMP(created);
+
+ALTER TABLE planetmath_requests ADD epoch_closed int(11);
+UPDATE planetmath_requests SET epoch_closed = UNIX_TIMESTAMP(closed);
+
 -- comments
 
 UPDATE planetmath_messages SET subject = CONCAT(SUBSTR(subject,1,60), '...') WHERE LENGTH(subject) > 60;
@@ -134,7 +142,11 @@ INSERT INTO planetmath_request_comments SELECT * FROM planetmath_messages WHERE 
 
 UPDATE planetmath_objects SET uid=uid+30000;
 UPDATE planetmath_object_comments SET objectid=objectid+30000, replyto=replyto+30000;
-UPDATE planetmath_acl SET objectid=objectid+30000;
+UPDATE planetmath_acl SET objectid=objectid+30000 where tbl='objects';
+
+-- deal with collabs in some sensible way (first we need to copy them over here...)
+UPDATE planetmath_collab SET uid=uid+50000;
+UPDATE planetmath_acl SET objectid=objectid+50000 where tbl='collab';
 
 -- See tables-into-drupal-pt3.sql for the next step
 
