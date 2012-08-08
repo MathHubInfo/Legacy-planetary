@@ -336,8 +336,9 @@ a:hover{
 }
 
 #navigation{
-  margin-top: -130px;
-  margin-left: 100px;
+  margin-top: -146px;
+  margin-left: 103px;
+  width: 300px;
 }
 
 #navigation li{
@@ -549,6 +550,8 @@ h2.node-title{
 
 #block-user-login{
   border: 0;
+  padding: 4px;
+  z-index: 100;
 }
 
 div.node.view-mode-full div.content{
@@ -680,6 +683,8 @@ padding: 0 0 0 15px;
 }
 #block-search-form{
   z-index: 1;
+  margin-top: 3px;
+  margin-right: -485px;
 }
 
 .region-footer{
