@@ -139,7 +139,7 @@ $jq(document).ready(function () {
     <?php print render($page['header']); ?>
 
   </div></div><!-- /.section, /#header -->
-  <div class="hr-placeholder"></div>
+  <!-- <div class="hr-placeholder"></div> -->
   <div id="main-wrapper"><div id="main" class="clearfix<?php if ($main_menu || $page['navigation']) { print ' with-navigation'; } ?>">
     <?php if(!$is_front){ ?>
     <div id="content" class="column"><div class="section">
