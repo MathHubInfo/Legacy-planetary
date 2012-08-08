@@ -69,27 +69,23 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
 
 <script>
  jQuery(document).ready(function(){
-   var total_lines =0;
    var max_lines =0;
-   // looks inside each block
+   // look inside each block
    jQuery('.tab-contents').each( function(){
-      // looks inside each span
-	var num_lines =0;
+       // look inside each span
+       var num_lines =0;
        jQuery(this).find('span').each( function(){
-	 // counts number of lines in this span
-          num_lines += Math.ceil(jQuery(this).text().length/42);
-          total_lines += num_lines;
-          max_lines = Math.max(max_lines,num_lines);
+	   // count the number of lines in this span
+	   num_lines += Math.ceil(jQuery(this).text().length/42);
+	   max_lines = Math.max(max_lines,num_lines);
          });
-       // now that we know how many lines in this block, we can set the line height in this block accordingly
-       console.log("??"+(2800/num_lines));
-       // Not sure what number best to use here.  
+       // now that we know how many lines in THIS block
+       // we set the line height in this block accordingly
        jQuery(this).css('line-height',(2800/num_lines)+'%')
       });
-   // now that we know the total number of ALL lines, we can set the height of all blocks based on that value
-       console.log("++"+(max_lines*21));
-       //console.log("!!"+(total_lines));
-       jQuery('.tab-contents').parent().css('height',(max_lines*17)+'px');
-      });
+   // now that we know the total number of ALL lines
+   // we set the height of all blocks based on that value
+   jQuery('.tab-contents').parent().css('height',(max_lines*18)+'px');
+   });
 
 </script>
