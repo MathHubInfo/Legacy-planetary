@@ -174,6 +174,7 @@ UPDATE planetmath_requests SET uid=uid+60000;
 UPDATE planetmath_request_comments SET objectid=objectid+60000, replyto=replyto+60000;
 
 UPDATE planetmath_corrections SET uid=uid+70000;
+UPDATE planetmath_corrections SET objectid=objectid+30000;
 UPDATE planetmath_correction_comments SET objectid=objectid+70000, replyto=replyto+70000;
 
 -- See tables-into-drupal-pt3.sql for the next step
