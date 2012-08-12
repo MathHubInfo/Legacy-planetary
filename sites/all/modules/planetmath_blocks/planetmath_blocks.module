@@ -3,6 +3,12 @@
 /**
  * Adds useful blocks for the planetmath theme
  * @author Alex Dumitru <m.dumitru@jacobs-university.de> 
+ *
+ * Note regarding private articles:
+ * At present, there's a slight loophole in the "privacy" feature, since CORRECTIONS
+ * and COMMENTS can be posted on private articles, and these secondary objects will
+ * show up in the public feed.  In order to fix this, we need to make a suitable
+ * join (or filter)...
  */
 define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_NUMBER_OF_ITEMS_ON_BLOCK', 10);
 define('PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK', 7);
@@ -29,7 +35,10 @@ function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     INNER JOIN users u ON u.uid = n.uid
-    WHERE n.`type` = :type ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => $type));
+    INNER JOIN field_data_field_published f ON n.nid = f.entity_id
+    WHERE n.`type` = :type 
+    AND f.field_published_value = 1
+    ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => $type));
   $return = array();
   foreach ($results as $result) {
     $return[] = $result;

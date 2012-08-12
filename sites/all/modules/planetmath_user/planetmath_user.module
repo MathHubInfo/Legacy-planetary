@@ -57,10 +57,29 @@ function planetmath_user_menu() {
 }
 
 // Query to get articles by user id "$uid"
+// (Note: omit any articles marked as "private".)
 function planetmath_user_querymyarticles($uid, $sortBy = 'n.title') {
   $results = db_query("SELECT n.nid, n.title, n.uid, n.created, n.changed
-    FROM node n 
-    WHERE n.`type` = 'article' AND n.uid=$uid ORDER BY $sortBy DESC");
+    FROM node n INNER JOIN field_data_field_published f
+    ON n.nid = f.entity_id
+    WHERE n.`type` = 'article' AND n.uid=$uid
+    AND f.field_published_value = 1
+    ORDER BY $sortBy DESC");
+  $links = array();
+  foreach ($results as $result) {
+    $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));
+  }
+  return $links;
+}
+
+// Same as the function above, but now ONLY list the private articles
+function planetmath_user_queryprivatearticles($uid, $sortBy = 'n.title') {
+  $results = db_query("SELECT n.nid, n.title, n.uid, n.created, n.changed
+    FROM node n INNER JOIN field_data_field_published f
+    ON n.nid = f.entity_id
+    WHERE n.`type` = 'article' AND n.uid=$uid
+    AND f.field_published_value = 0
+    ORDER BY $sortBy DESC");
   $links = array();
   foreach ($results as $result) {
     $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));
@@ -82,18 +101,22 @@ function planetmath_user_add_links($title, $nid) {
 
 function planetmath_user_theme($existing, $type, $theme, $path) {
   $to_return = array(
-    // this identifier ends up being the index of the
-    // array that gets themed in the the template
-    'planetmath_user_articles' =>
-    // use standard theming elements here, like "links"
-    array('variables' => array(
-        'links' => array(),
-    )),
-    'planetmath_user_buddies' =>
-    array('variables' => array(
-        'links' => array(),
-    )),
-  );
+		     // this identifier ends up being the index of the
+		     // array that gets themed in the the template
+		     'planetmath_user_articles' =>
+		     // use standard theming elements here, like "links"
+		     array('variables' => array(
+						'links' => array(),
+						)),
+		     'planetmath_private_articles' =>
+		     array('variables' => array(
+						'links' => array(),
+						)),
+		     'planetmath_user_buddies' =>
+		     array('variables' => array(
+						'links' => array(),
+						)),
+		     );
   return $to_return;
 }
 
@@ -109,6 +132,22 @@ function theme_planetmath_user_articles($variables) {
     $html = '';
     $html .= '<div class="field field-type-entityreference field-label-above">';
     $html .= '<div class="field-label">My articles:&nbsp;</div>';
+    foreach ($variables['links'] as $link) {
+      $html .= '<div class="field-item">';
+      $html .= $link;
+      $html .= '</div>';
+    }
+    $html .= '</div>';
+    return $html;
+  } else
+    return;
+}
+
+function theme_planetmath_private_articles($variables) {
+  if (isset($variables['links'])) {
+    $html = '';
+    $html .= '<div class="field field-type-entityreference field-label-above">';
+    $html .= '<div class="field-label">My private articles:&nbsp;</div>';
     foreach ($variables['links'] as $link) {
       $html .= '<div class="field-item">';
       $html .= $link;
@@ -141,9 +180,18 @@ function theme_planetmath_user_buddies($variables) {
  * Implements hook_user_view, which can modify $account by adding "content"
  * (This is the typical point of entry to this module.)
  *
+ * The purpose of this module is to display information about the user.  Most
+ * of this information is public.  Some of it only displays for the user him/herself.
+ *
+ * TO IMPROVE: right now, it lists the users articles and private articles 
+ * when that user is the lead author/owner.  We should also list the articles
+ * where the user is a co-author.
  */
 
 function planetmath_user_view($account, $view_mode, $langcode) {
+
+  // We need to know who is viewing the page
+  global $user;
 
   // get items from the database to push into the page
   $mylinks = planetmath_user_querymyarticles($account->uid, 'n.title');
@@ -158,6 +206,20 @@ function planetmath_user_view($account, $view_mode, $langcode) {
     '#theme' => 'planetmath_user_articles',
     '#links' => $mylinks
   );
+
+  // If the user is viewing his/her own page, then they are allowed to see
+  // the private objects.  Other users are not allowed to see these articles,
+  // except for administrators who see everything.
+  if ($user->uid == $account->uid || in_array('administrator',
+					      array_values($user->roles))) {
+     $myprivatelinks = planetmath_user_queryprivatearticles($account->uid, 'n.title');
+     $account->content['planetmath_private_articles'] = array(
+     	 '#markup' => '',
+     	 '#weight' => 10,
+     	 '#theme' => 'planetmath_private_articles',
+     	 '#links' => $myprivatelinks
+     );
+  }
 
   $buddies_list = "";
   $user = user_load($account->uid);
