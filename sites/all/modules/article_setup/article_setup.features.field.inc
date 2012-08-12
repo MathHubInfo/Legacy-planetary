@@ -635,7 +635,7 @@ function article_setup_field_default_fields() {
       'bundle' => 'article',
       'default_value' => array(
         0 => array(
-          'value' => 1,
+          'value' => 0,
         ),
       ),
       'deleted' => '0',
