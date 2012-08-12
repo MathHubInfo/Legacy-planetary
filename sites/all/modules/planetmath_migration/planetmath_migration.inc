@@ -510,7 +510,7 @@ class PMCollabMigration extends PMMigration {
 
     // might as well run the object migrations first?
     // Or should we run the collabs first, to tuck them in because there are fewer of them
-    $this->dependencies = array('PMObject');
+    $this->dependencies = array('PMRequestComment');
 
     $this->map = new MigrateSQLMap($this->machineName,
       array(
@@ -676,7 +676,7 @@ class PMCorrectionMigration extends PMMigration {
     parent::__construct();
     $this->description = t('PM Corrections data');
 
-    $this->dependencies = array('PMObject');
+    $this->dependencies = array('PMCollab');
 
     $this->map = new MigrateSQLMap($this->machineName,
       array(
@@ -831,7 +831,7 @@ class PMRequestMigration extends PMMigration {
     parent::__construct();
     $this->description = t('PM Requests data');
 
-    $this->dependencies = array('PMObject');
+    $this->dependencies = array('PMObjectComment');
 
     $this->map = new MigrateSQLMap($this->machineName,
       array(
