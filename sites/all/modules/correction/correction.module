@@ -87,13 +87,6 @@ function correction_menu() {
       'page arguments' => array(1),
       'access arguments' => array('create correction content')
   );
-  
-  $items['correction/import'] = array(
-      'title' => 'Import Corrections',
-      'type' => MENU_CALLBACK,
-      'page callback' => 'correction_import_corrections',
-      'access arguments' => array('administer site configuration')
-  );
 
   return $items;
 }
@@ -221,4 +214,6 @@ function correction_node_view($node, $view_mode) {
   }
 }
 
+// This is a cheap trick... (is it actually the one we want to use?)
+// OK we don't use THAT cheap trick...
 
