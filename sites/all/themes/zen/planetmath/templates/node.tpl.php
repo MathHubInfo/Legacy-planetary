@@ -80,12 +80,12 @@
  * @see zen_preprocess_node()
  * @see template_process()
  */
-//print_r($content['field_latex']);
+//print_r(array_keys($content));
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
-
- <?php print render($title_prefix); ?>
+ <?php
+  print render($title_prefix); ?>
  <?php if ($node->textitle) : ?>
     <h1<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $node->textitle; ?></a></h1>
   <?php endif; ?>
@@ -110,7 +110,8 @@
     </div>
   <?php endif; ?>
 
-   <?php if ($type === 'group'): ?>
+  <?php /* Only for groups!*/
+   if ($type === 'group'): ?>
    <div id="planetmath_group">
    <h2> Group information </h2>
    <?php
@@ -125,7 +126,6 @@
    Type:
    <?php
      //dd($content['field_group_subtype'][0]);
-     //dd(array_keys($content));
      print render($content['field_group_subtype'][0]);
      hide($content['field_group_subtype']);
    ?> <br /> <br />
@@ -156,12 +156,16 @@
 
   <div class="content"<?php print $content_attributes; ?>>
     <?php
-    // We hide the comments and links now so that we can render them later.
+    // We hide the comments and links now so that we can render them later (if desired).
      //dd($content);
     hide($content['comments']);
     hide($content['links']);
     hide($content['field_msc']);
     hide($content['field_revisioncomment']);
+    // sitedoc and published status are really only relevant to the author/editor
+    // (readers can gather the relevant info from context)
+    hide($content['field_sitedoc']);
+    hide($content['field_published']);
     hide($content['planetary_links']);
     //HACK to get the latex field to work
 //    hide($content['field_latex']);
