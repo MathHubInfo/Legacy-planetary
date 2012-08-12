@@ -202,8 +202,9 @@ function correction_node_view($node, $view_mode) {
 
   if ($node->type == 'correction') {
     global $user;
-    $article = node_load($node->field_correction_article['und'][0]['nid']);
-    if ($article->uid == $user->uid && !$node->field_correction_closed['und']['0']['value']) {
+    $target_nid = $node->field_correction_article['und'][0]['nid'];
+    $article = node_load($target_nid);
+    if ($article->uid == $user->uid && !$node->field_correction_closed['und'][0]['value']) {
       $node->content['correction_links'] = array(
           '#markup' => '<h4 style="font-weight:bold">Manage Correction:</h4>' . l('Accept Correction', 'correction/' . $node->nid . '/accept', array('query' => drupal_get_destination())) . ' | ' . l('Reject Correction', 'correction/' . $node->nid . '/reject', array('query' => drupal_get_destination())),
           '#weight' => '-3'
@@ -220,64 +221,4 @@ function correction_node_view($node, $view_mode) {
   }
 }
 
-function correction_import_corrections() {
-  set_time_limit(0);
-  global $language;
-  $error = "";
-  $count = db_query("SELECT COUNT(uid) AS corr_count FROM planetmath_corrections")->fetchObject();
-  $error = "Here: " . $count->corr_count;
-  for ($i = 0; $i < $count->corr_count; $i += 50) {
-    $corrections = db_query("SELECT pc.*, mo.destid1 AS dest_id, mu.destid1 AS user_id FROM planetmath_corrections pc 
-            INNER JOIN migrate_map_pmobject mo ON pc.objectid = mo.sourceid1
-            INNER JOIN migrate_map_pmuser mu ON pc.userid = mu.sourceid1
-            ORDER BY pc.uid ASC
-            LIMIT $i, 50")->fetchAll();
-    print_r($corrections); exit(1);
-    foreach ($corrections as $correction) {
-      $node = new stdClass();
-      $node->type = 'correction';
-      $node->title = $correction->title;
-      $node->language = $language->language;
-      $node->uid = $correction->user_id;
-      node_object_prepare($node);
-      $node->body[$language->language][0]['format'] = 'tex_editor';
-      $node->body[$language->language][0]['value'] = $correction->data . '<br />' . $correction->comment;
-      $node->field_correction_article['und'][0]['nid'] = $correction->dest_id;
-      $node->field_correction_type['und'][0]['value'] = $correction->type;
-      $node->field_correction_accepted['und'][0]['value'] = $correction->accepted ? 1 : 0;
-      $node->field_correction_closed['und'][0]['value'] = $correction->closed ? 1 : 0;
-      $node->created = strtotime($correction->filed);
-      $node->changed = strtotime($correction->filed);
-      $node->status = NODE_PUBLISHED;
-      node_save($node);
-      db_insert("migrate_map_pmcorrections")->fields(array('sourceid1' => $correction->uid, 'destid1' => $node->nid, 'needs_update' => 0, 'last_imported' => $_SERVER['REQUEST_TIME']))->execute();
-      if ($node->nid) {
-        $comments = db_query("SELECT *, mu.destid1 as user_id FROM planetmath_correction_comments pcm INNER JOIN migrate_map_pmuser mu ON pcm.userid = mu.sourceid1 WHERE pcm.objectid = :oid", array(':oid' => $correction->uid))->fetchAll();
-        foreach ($comments as $comment) {
-          try {
-            $com = new stdClass();
-            $com->nid = $node->nid;
-            $com->cid = 0;
-            $com->uid = $comment->user_id;
-            $com->thread = '01/';
-            $com->hostname = '127.0.0.1';
-            $com->created = strtotime($comment->created);
-            $com->changed = strtotime($comment->created);
-            $com->status = COMMENT_PUBLISHED;
-            $com->is_anonymous = 0;
-            $com->language = $language->language;
-            $com->subject = $comment->subject;
-            $com->comment_body[LANGUAGE_NONE][0]['value'] = $comment->body;
-            $com->comment_body[LANGUAGE_NONE][0]['format'] = 'tex_editor';
-            comment_save($com);
-            unset($com);
-          } catch (\Exception $e) {
-            $error .= "Couldn't retrieve comments for " . $node->nid . "\n";
-          }
-        }
-      }
-      unset($node);
-    }
-  }
-  return $error;
-}
+
