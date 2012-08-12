@@ -222,11 +222,13 @@ function planetmath_user_view($account, $view_mode, $langcode) {
   }
 
   $buddies_list = "";
-  $user = user_load($account->uid);
+
   // This should be a nid associated with a group, let's check...
-  if(isset($user->buddy_list)) {
-    $buddies_list = $user->buddy_list['und'][0]['nid'];
+  $acctuser = user_load($account->uid);
+  if(isset($acctuser->buddy_list)) {
+    $buddies_list = $acctuser->buddy_list['und'][0]['nid'];
   }
+
 
   if (!$buddies_list) {
     $buddies_links = array(
