@@ -159,6 +159,43 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '0',
   );
+  // Exported menu link: main-menu:questions
+  $menu_links['main-menu:questions'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'questions',
+    'router_path' => 'questions',
+    'link_title' => 'Questions',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Ask \'em here.',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '1',
+    'expanded' => '0',
+    'weight' => '0',
+  );
+  // Exported menu link: main-menu:site-docs
+  $menu_links['main-menu:site-docs'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'site-docs',
+    'router_path' => 'site-docs',
+    'link_title' => 'Site docs',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'PlanetMath\'s core documentation',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-50',
+    'parent_path' => 'questions',
+  );
   // Exported menu link: main-menu:solutions
   $menu_links['main-menu:solutions'] = array(
     'menu_name' => 'main-menu',
