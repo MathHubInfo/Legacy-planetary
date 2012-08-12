@@ -6,6 +6,13 @@
  * @package Other
  * @version 7.x-1.0-alpha
  * @todo Themeing functionality
+ *
+ * This module provides a basic "bug reporting" functionality for use with the
+ * PlanetMath encyclopedia.  A more advanced bug tracking system would allow
+ * users to re-open closed corrections, assign them to other users, etc.
+ *
+ * One basic thing that should be fixed: *closed* corrections probably should
+ * not be editable (I'll make an issue for that).
  */
 define("CORRECTION_ATTACH_TYPES", serialize(array('article', 'image')));
 
@@ -102,6 +109,9 @@ function correction_accept_correction($nid) {
   if ($article->uid === $user->uid) {
     $correction->field_correction_accepted['und'][0]['value'] = 1;
     $correction->field_correction_closed['und'][0]['value'] = 1;
+
+    $correction->field_correction_closedby['und'][0]['uid'] = $user->uid;
+
     node_save($correction);
     drupal_set_message("The correction was accepted");
 
@@ -131,6 +141,9 @@ function correction_reject_correction($nid) {
   if ($article->uid === $user->uid) {
     $correction->field_correction_accepted['und'][0]['value'] = 0;
     $correction->field_correction_closed['und'][0]['value'] = 1;
+
+    $correction->field_correction_closedby['und'][0]['uid'] = $user->uid;
+
     node_save($correction);
     drupal_set_message("The correction was rejected");
   } else {
@@ -139,19 +152,6 @@ function correction_reject_correction($nid) {
   drupal_goto();
 }
 
-/**
- * Implementation of hook_form_FORM_ID_alter()
- * Disables the fields that are only used for internal usage.
- * @param array $form
- * @param array $form_state
- * @param array $form_id 
- */
-function correction_form_correction_node_form_alter(&$form, &$form_state, $form_id) {
-  global $user;
-  unset($form['field_correction_accepted']);
-  unset($form['field_correction_closed']);
-  $form['field_correction_article']['und']['#value'] = arg(3);
-}
 
 function correction_add_links($node) {
   $links = array(
@@ -214,6 +214,34 @@ function correction_node_view($node, $view_mode) {
   }
 }
 
-// This is a cheap trick... (is it actually the one we want to use?)
-// OK we don't use THAT cheap trick...
+// This is how we get the *form* to show the right stuff when the user
+// clicks through on an "Add a Correction" link.  (That's done.)
+
+function correction_form_correction_node_form_alter(&$form, &$form_state, $form_id) {
+  // We don't have to specially set a reference to the user who *submits*
+  // the correction, since that's recorded for us by normal drupal "insert"
+  // routine.  However, we *will* have to record a reference to the user
+  // who *closes* the correction.  That will have to follow a similar
+  // logic to what we do here (I think?), but done elsewhere (?).
+
+  // We will furthermore want to *hide* some fields that are only used "internally"
+  hide($form['field_correction_accepted']);
+  hide($form['field_correction_closed']);
+
+  if(isset($form['#node']->field_correction_article['und'][0]['nid'])) {
+    $val = $form['#node']->field_correction_article['und'][0]['nid'];
+  } else {
+    $val = arg(3); 
+    // We can hide these elements at insert time (and we know this is insert time)
+    // since otherwise the correction_article would be defined already.
+    hide($form['field_correction_closedby']);
+  }
+
+  // I don't think there's any good time in the workflow to enter this remark
+  // So, henceforth we will just hide this field and have any discussion in
+  // the comments
+  hide($form['field_correction_remark']);
+
+  $form['field_correction_article']['und'][0]['nid']['#default_value'] = $val;
+}
 
