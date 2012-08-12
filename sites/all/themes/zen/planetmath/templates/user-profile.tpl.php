@@ -42,6 +42,12 @@
 <tr border="0">
 <td width="50%">
   <?php
+     if(empty($user_profile['planetmath_private_articles']['#links'])) {
+         hide($user_profile['planetmath_private_articles']);
+     }
+     else {
+         print render($user_profile['planetmath_private_articles']);
+     }
      if(empty($user_profile['planetmath_user_articles']['#links'])) {
          hide($user_profile['planetmath_user_articles']);
      }
