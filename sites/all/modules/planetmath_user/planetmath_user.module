@@ -87,6 +87,50 @@ function planetmath_user_queryprivatearticles($uid, $sortBy = 'n.title') {
   return $links;
 }
 
+// get the articles where the user is designated as a co-author
+function planetmath_user_querycoauthoredarticles($uid, $sortBy = 'n.title') {
+/* The logic of this query is: 
+   - start by getting the groups that the user is a member of 
+   - ... and checking to see which of these have type 'coauthor group' 
+   - then obtain the nids and titles of the corresponding articles */
+  $results = db_query("SELECT n.title, n.nid FROM og_membership om INNER JOIN node n
+on n.nid = om.etid
+WHERE om.gid IN ( SELECT f.entity_id
+   FROM og_membership INNER JOIN node m
+   ON gid = m.nid
+   INNER JOIN field_data_field_group_subtype f
+   ON f.entity_id = m.nid
+   WHERE etid=$uid
+   AND og_membership.entity_type = 'user'
+   AND f.field_group_subtype_value = 'coauthors' )
+AND om.entity_type = 'node'
+ORDER BY $sortBy DESC");
+  $links = array();
+  foreach ($results as $result) {
+    $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));
+  }
+  return $links;
+}
+
+// Rather than displaying all the groups bunched together, we'll suppress that
+// and just display the teams
+function planetmath_user_queryteams($uid, $sortBy = 'n.title') {
+  $results = db_query("SELECT n.title, n.nid
+FROM og_membership INNER JOIN node n
+ON gid=n.nid
+INNER JOIN field_data_field_group_subtype f
+ON f.entity_id = n.nid
+WHERE etid=$uid
+AND og_membership.entity_type = 'user'
+AND f.field_group_subtype_value = 'team'
+ORDER BY $sortBy DESC");
+  $links = array();
+  foreach ($results as $result) {
+    $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));
+  }
+  return $links;
+}
+
 // Used in the above function to build the list of links
 function planetmath_user_add_links($title, $nid) {
   $links = array(
@@ -112,6 +156,14 @@ function planetmath_user_theme($existing, $type, $theme, $path) {
 		     array('variables' => array(
 						'links' => array(),
 						)),
+		     'planetmath_coauthored_articles' =>
+		     array('variables' => array(
+						'links' => array(),
+						)),
+		     'planetmath_my_teams' =>
+		     array('variables' => array(
+						'links' => array(),
+						)),
 		     'planetmath_user_buddies' =>
 		     array('variables' => array(
 						'links' => array(),
@@ -132,6 +184,38 @@ function theme_planetmath_user_articles($variables) {
     $html = '';
     $html .= '<div class="field field-type-entityreference field-label-above">';
     $html .= '<div class="field-label">My articles:&nbsp;</div>';
+    foreach ($variables['links'] as $link) {
+      $html .= '<div class="field-item">';
+      $html .= $link;
+      $html .= '</div>';
+    }
+    $html .= '</div>';
+    return $html;
+  } else
+    return;
+}
+
+function theme_planetmath_coauthored_articles($variables) {
+  if (isset($variables['links'])) {
+    $html = '';
+    $html .= '<div class="field field-type-entityreference field-label-above">';
+    $html .= '<div class="field-label">(As coauthor):&nbsp;</div>';
+    foreach ($variables['links'] as $link) {
+      $html .= '<div class="field-item">';
+      $html .= $link;
+      $html .= '</div>';
+    }
+    $html .= '</div>';
+    return $html;
+  } else
+    return;
+}
+
+function theme_planetmath_my_teams($variables) {
+  if (isset($variables['links'])) {
+    $html = '';
+    $html .= '<div class="field field-type-entityreference field-label-above">';
+    $html .= '<div class="field-label">Member of:&nbsp;</div>';
     foreach ($variables['links'] as $link) {
       $html .= '<div class="field-item">';
       $html .= $link;
@@ -205,6 +289,24 @@ function planetmath_user_view($account, $view_mode, $langcode) {
     '#weight' => 10,
     '#theme' => 'planetmath_user_articles',
     '#links' => $mylinks
+  );
+
+  $mycoauthorlinks = planetmath_user_querycoauthoredarticles($account->uid, 'n.title');
+
+  $account->content['planetmath_coauthored_articles'] = array(
+    '#markup' => '',
+    '#weight' => 10,
+    '#theme' => 'planetmath_coauthored_articles',
+    '#links' => $mycoauthorlinks
+  );
+
+  $myteamlinks = planetmath_user_queryteams($account->uid, 'n.title');
+
+  $account->content['planetmath_my_teams'] = array(
+    '#markup' => '',
+    '#weight' => 10,
+    '#theme' => 'planetmath_my_teams',
+    '#links' => $myteamlinks
   );
 
   // If the user is viewing his/her own page, then they are allowed to see

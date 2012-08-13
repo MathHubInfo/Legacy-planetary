@@ -48,12 +48,23 @@
      else {
          print render($user_profile['planetmath_private_articles']);
      }
+
      if(empty($user_profile['planetmath_user_articles']['#links'])) {
          hide($user_profile['planetmath_user_articles']);
      }
      else {
          print render($user_profile['planetmath_user_articles']);
-     } ?>
+     }
+
+     if(empty($user_profile['planetmath_coauthored_articles']['#links'])) {
+         hide($user_profile['planetmath_coauthored_articles']);
+     }
+     else {
+         print render($user_profile['planetmath_coauthored_articles']); 
+     }
+
+
+ ?>
 </td>
 <td width="50%" >
   <?php
@@ -61,8 +72,9 @@
          print render($user_profile['buddy_list']);
      }
          print render($user_profile['planetmath_user_buddies']);
-         print render($user_profile['og_group_ref']);
-         print render($user_profile['og_user_group_ref']); ?>
+         hide($user_profile['og_group_ref']);
+         hide($user_profile['og_user_group_ref']);
+         print render($user_profile['planetmath_my_teams']);?>
 </td>
 </tr>
 </table>
