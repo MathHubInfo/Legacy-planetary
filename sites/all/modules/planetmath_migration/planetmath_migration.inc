@@ -402,13 +402,14 @@ class PMObjectMigration extends PMMigration {
     $this->addFieldMapping('field_mathtype:source_type')
       ->defaultValue('value');
 
-    $this->addFieldMapping('field_latex', 'preamble');
-    $this->addFieldMapping('field_latex:source_type')
-      ->defaultValue('preamble');
-
-    $this->addFieldMapping('field_latex', 'data');
-    $this->addFieldMapping('field_latex:source_type')
-      ->defaultValue('document');
+///////// This stuff will be handled by tables-into-drupal-pt3.sql
+//     $this->addFieldMapping('field_latex', 'preamble');
+//     $this->addFieldMapping('field_latex:source_type')
+//       ->defaultValue('preamble');
+// 
+//     $this->addFieldMapping('field_latex', 'data');
+//     $this->addFieldMapping('field_latex:source_type')
+//       ->defaultValue('document');
 
     // We can deal with the "version" in our SQL-based cleanup
     $this->addFieldMapping(NULL, 'version')
@@ -884,15 +885,14 @@ class PMRequestMigration extends PMMigration {
 
     $this->addFieldMapping('title', 'title');
 
-    // this shows how to migrate data directly into a LaTeX field (I hope this works!)
-    $this->addFieldMapping('field_question_latex', 'data');
-    $this->addFieldMapping('field_question_latex:source_type')
-      ->defaultValue('document');
+    // this shows how to migrate data directly into a LaTeX (I hope this works!)
+    // Not so sure it does.
 
-    // ... continues like this?
-    //$this->addFieldMapping('field_question_latex')->defaultValue('tex_editor');
-    //$this->addFieldMapping('field_question_latex:source_type')
-    //  ->defaultValue('format');
+///////// This stuff will be handled by tables-into-drupal-pt3.sql
+//     $this->addFieldMapping('field_question_latex', 'data');
+//     $this->addFieldMapping('field_question_latex:source_type')
+//       ->defaultValue('document');
+
 
     $this->addFieldMapping('created', 'epoch_created');
     
