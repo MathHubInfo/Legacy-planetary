@@ -1937,7 +1937,9 @@ function planetmath_profile_setup_menus () {
   dd("Profile- In planetmath_profile_setup_menus");
   set_time_limit(0);
 
-  menu_link_delete('drutexml');
+  // syntactically, this should work, but it doesn't seem to for some reason.
+  // this is a small point so can investigate later
+  menu_link_delete(NULL,'drutexml');
 
   // Update the menu router information.
   menu_rebuild();
