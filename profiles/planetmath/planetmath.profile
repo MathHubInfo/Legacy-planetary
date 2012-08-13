@@ -173,15 +173,13 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_set_misc_variables',
                                         ),
-
-
-                 /* 'my_13th_task' => array( */
-                 /*                        'display_name' => st('Configure Menus'), */
-                 /*                        'display' => TRUE, */
-                 /*                        'type' => 'normal', */
-                 /*                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED, */
-                 /*                        'function' => 'planetmath_profile_setup_menus', */
-                 /*                        ), */
+                 'my_13th_task' => array(
+                                        'display_name' => st('Configure Menus'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'planetmath_profile_setup_menus',
+                                        ),
                  'my_14th_task' => array(
                                         'display_name' => st('Choose and install the theme'),
                                         'display' => TRUE,
@@ -1935,18 +1933,11 @@ function planetmath_profile_setup_permissions () {
   return NULL;
 }
 
-// Actually this function doesn't really seem useful or needed for anything
-// since we set up menus with a feature.
 function planetmath_profile_setup_menus () {
   dd("Profile- In planetmath_profile_setup_menus");
   set_time_limit(0);
-  // Create a Home link in the main menu.
-  /* $item = array( */
-  /*               'link_title' => st('Home'), */
-  /*               'link_path' => '<front>', */
-  /*               'menu_name' => 'main-menu', */
-  /*               ); */
-  /* menu_link_save($item); */
+
+  menu_link_delete('drutexml');
 
   // Update the menu router information.
   menu_rebuild();
