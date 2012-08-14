@@ -458,6 +458,26 @@ function planetmath_blocks_block_personalFeed() {
   );
 }
 
+function planetmath_blocks_block_welcome() {
+  return array(
+      'subject' => 'Welcome!',
+      'content' => t("PlanetMath is a virtual community which aims to help make mathematical knowledge more accessible. PlanetMath's content is created collaboratively: the main feature is the mathematics encyclopedia with entries written and reviewed by members. The entries are contributed under the terms of the !ccbysa in order to preserve the rights of authors, readers and other content creators in a sensible way.  We use !latex, the
+!linguafranca of the worldwide mathematical community.  You are 
+browsing a port of PlanetMath's content into Drupal, which was developed
+as part of the Planetary project.  Some release notes are !here.", 
+		     array('!ccbysa' =>
+			   l("Creative Commons By/Share-Alike License",
+			     "http://creativecommons.org/licenses/by-sa/2.0/"),
+			   '!latex' => 
+			   l("LaTeX", "http://en.wikibooks.org/wiki/LaTeX"),
+			   '!linguafranca' => '<em>lingua franca</em>',
+			   '!here' => 
+			   l("here", "http://metameso.org/q/node/44930")
+			   )
+		     )
+	       );
+}
+
 /**
  * Implementation of hook_block_view
  */
@@ -523,6 +543,10 @@ function planetmath_blocks_block_view($delta = '') {
 
   if ($delta == 'personal-feed') {
     $block = planetmath_blocks_block_personalFeed();
+  }
+
+  if ($delta == 'welcome') {
+    $block = planetmath_blocks_block_welcome();
   }
 
   return $block;

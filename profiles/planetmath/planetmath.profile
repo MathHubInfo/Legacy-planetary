@@ -1322,6 +1322,19 @@ function planetmath_profile_configure_blocks () {
                         'pages' => '<front>',
                         'cache' => 1,
                         ),
+		  // Try to get a little welcome message showing up
+                  array(
+                        'module' => 'planetmath_blocks',
+                        'delta' => 'welcome',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -32,
+                        'region' => 'frontpage_center',
+                        'custom' => 1,
+                        'visibility' => 1,
+                        'pages' => '<front>',
+                        'cache' => 1,
+                        ),
 		  // this is giving an error claiming that
 		  // `field_data_field_correction_article' doesn't exist
 		  // commenting out for now
@@ -1937,9 +1950,7 @@ function planetmath_profile_setup_menus () {
   dd("Profile- In planetmath_profile_setup_menus");
   set_time_limit(0);
 
-  // syntactically, this should work, but it doesn't seem to for some reason.
-  // this is a small point so can investigate later
-  menu_link_delete(NULL,'drutexml');
+  menu_link_delete('drutexml');
 
   // Update the menu router information.
   menu_rebuild();
