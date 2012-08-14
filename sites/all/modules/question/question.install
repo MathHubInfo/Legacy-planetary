@@ -131,7 +131,7 @@ function _question_installed_instances() {
   $instances = array(
     'field_question_article' => array(
       'field_name'  => 'field_question_article',
-      'label'       => $t('Reference to the article this question is about'),
+      'label'       => $t('Reference to the article this question is about (if known)'),
       'cardinality' => 1,
       'widget'      => array(
         'type'          => 'node_reference_autocomplete',

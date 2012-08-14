@@ -2,9 +2,15 @@
 
 /*
  * Question module
- *
- * Similar to StackExchange, a question can have multiple answers.
- * Still to do: provide a way to rate answers or select the best answer etc.
+ 
+ * By: Lucas & Joe
+   
+ * Still to do: 
+    - we should be able to mark garbagy questions as "Won't fix".
+    - Similar to StackExchange, a question should probably have multiple answers.
+    - we would then provide a way to rate answers or select the best answer etc.
+    - It would be nice to be able to save questions to a "dossier" of "things
+      I'm working on" (integration with collections module?)
  */
 
 function question_node_info() {
@@ -26,6 +32,14 @@ function question_node_info() {
 
 function question_menu() {
   $items = array();
+
+  $items['node/ask/question/%'] = array(
+      'title' => 'Ask a question about an article',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'question_attach_question',
+      'page arguments' => array(3),
+      'access arguments' => array('create correction content')
+  );
 
   $items['questions/%/attach'] = array(
       'title' => 'Attach answer',
@@ -53,13 +67,22 @@ function question_menu() {
   return $items;
 }
 
+// Once the article that contains the answer has been selected,
+// we need to do something sensible.  In this case, what we do is
+// add values to the relevant fields on the question node.
 function question_confirm_attachment($nid_of_question,$nid_of_answer){
-    db_merge('question_has_answer')
-            ->key(array('aid' => $nid_of_question, 'pid' => $nid_of_answer))
-            ->fields(array('aid' => $nid_of_question, 'pid' => $nid_of_answer))
-            ->execute();
-    drupal_set_message('Answer '.$nid_of_answer.' is now attached with this question');
-    drupal_goto('node/'.$nid_of_question);
+  global $user;
+  $question_node = node_load($nid_of_question);
+  // set the fulfiller id field to the current user id
+  $question_node->field_question_fulfiller['und'][0]['uid'] = $user->uid;
+  // set the relevant article field to the one indicated
+  $question_node->field_question_article['und'][0]['nid'] = $nid_of_answer;
+  // save our changes
+  node_save($question_node);
+
+  drupal_set_message('Article '.$nid_of_answer.' is now attached to this question as the answer');
+  drupal_goto('node/'.$nid_of_question);
+  dpm($question_node);
 }
 
 function question_decouple_connection($nid_of_question,$nid_of_answer){
@@ -84,6 +107,15 @@ function question_get_all_articles(){
   return $result;
 }
 
+// This just allows us to have a link like "node/ask/question/%" for asking questions
+// The actual processing of $nid is done by question_form_question_node_form_alter
+function question_attach_question($nid) {
+  drupal_goto('node/add/question/'.$nid);
+}
+
+// This implementation will allow us to select an article that answers the question.
+// It would be good to include an autocomplete field option so that people could just
+// select the article by name (if they know the name).
 function question_attach_answer($nid){
   global $base_url;
 
@@ -144,26 +176,49 @@ function question_theme($existing, $type, $theme, $path){
   );
 }
 
-function question_authorlinks_assemble($node){
+function question_authorlinks_assemble_article($node){
   $newlinks = array();
   if (isset($node->content['planetary_links'])) {
     $oldlinks = $node->content['planetary_links']['#links'];
     if (!empty($oldlinks)) {
-      $newlinks = array_merge($oldlinks, question_add_links($node));
+      $newlinks = array_merge($oldlinks, question_add_links_article($node));
     } else {
-      $newlinks = question_add_links($node);
+      $newlinks = question_add_links_article($node);
     }
   } else {
-    $newlinks = question_add_links($node);
+    $newlinks = question_add_links_article($node);
   }
   return $newlinks;
 }
 
-function question_add_links($node){
+function question_add_links_article($node){
   $links = array(
       'ask-question' => l('Ask question', 'node/ask/question/' . $node->nid)
   );
   return $links;
+}
+
+function question_authorlinks_assemble_question($node){
+  $newlinks = array();
+  if (isset($node->content['planetary_links'])) {
+    $oldlinks = $node->content['planetary_links']['#links'];
+    if (!empty($oldlinks)) {
+      $newlinks = array_merge($oldlinks, question_add_links_question($node));
+    } else {
+      $newlinks = question_add_links_question($node);
+    }
+  } else {
+    $newlinks = question_add_links_question($node);
+  }
+  return $newlinks;
+}
+
+function question_add_links_question($node) {
+    $links = array(
+		   'attach-answer' => l('Answer this question', 
+					'questions/'. $node->nid .'/attach/')
+		   );
+    return $links;
 }
 
 // Not a bad idea to keep using the planetary_links
@@ -171,14 +226,55 @@ function question_add_links($node){
 // when we have an "interact box", that will get
 // themed nicely...
 function question_node_view($node){
+
+  // For articles, we can ASK a question
   if($node->type == 'article'){
-    $newlinks = question_authorlinks_assemble($node);
+    $newlinks = question_authorlinks_assemble_article($node);
 
     $node->content['planetary_links'] = array(
-        '#markup' => '',
-        '#weight' => 10,
-        '#theme' => 'planetary_links',
-        '#links' => $newlinks
-    );
+					      '#markup' => '',
+					      '#weight' => 10,
+					      '#theme' => 'planetary_links',
+					      '#links' => $newlinks
+					      );
+  }
+  
+  // For questions, we can add an ANSWER...
+  if($node->type == 'question'){
+    // ... but that only makes sense if no answer has been given already
+    if(!isset($node->field_question_article)) {
+      $newlinks = question_authorlinks_assemble_question($node);
+
+      $node->content['planetary_links'] = array(
+						'#markup' => '',
+						'#weight' => 10,
+						'#theme' => 'planetary_links',
+						'#links' => $newlinks
+						);
+    }
+  }
+}
+
+function question_form_question_node_form_alter(&$form, &$form_state, $form_id) {
+  // We don't have to specially set a reference to the user who *submits*
+  // the question, since that's recorded for us by normal drupal "insert"
+  // routine.  However, we *will* have to record a reference to the user
+  // who *closes* the question.  That will have to follow a similar
+  // logic to what we do here (I think?), but done elsewhere (?).
+
+  if(isset($form['#node']->field_question_article['und'][0]['nid'])) {
+    $val = $form['#node']->field_question_article['und'][0]['nid'];
+  } else {
+    $val = arg(3); 
+  } 
+  $form['field_question_article']['und'][0]['nid']['#default_value'] = $val;
+
+  // If the article isn't closed, then we don't want to see these
+  // (Actually we might never want to see these on the form, since they
+  // should be filled in automatically when the question is answered, once
+  // we get that part sorted out)
+  if(!isset($form['#node']->field_question_closed['und'][0]['value'])) {
+    hide($form['field_question_fulfiller']);
+    hide($form['field_question_closed']);
   }
 }

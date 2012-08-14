@@ -208,7 +208,8 @@ function latex_field_form_alter(&$form, &$form_state, $form_id){
   if ($form_id == 'article_node_form' 
       || $form_id == 'problem_node_form'
       || $form_id == 'solution_node_form'
-      || $form_id == 'review_node_form' ){
+      || $form_id == 'review_node_form'
+      || $form_id == 'question_node_form' ){
 
     if($form_id == 'article_node_form') {
       $fieldname='field_latex';
