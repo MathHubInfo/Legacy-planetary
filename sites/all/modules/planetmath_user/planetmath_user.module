@@ -64,7 +64,7 @@ function planetmath_user_querymyarticles($uid, $sortBy = 'n.title') {
     ON n.nid = f.entity_id
     WHERE n.`type` = 'article' AND n.uid=$uid
     AND f.field_published_value = 1
-    ORDER BY $sortBy DESC");
+    ORDER BY $sortBy ASC");
   $links = array();
   foreach ($results as $result) {
     $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));
@@ -79,7 +79,7 @@ function planetmath_user_queryprivatearticles($uid, $sortBy = 'n.title') {
     ON n.nid = f.entity_id
     WHERE n.`type` = 'article' AND n.uid=$uid
     AND f.field_published_value = 0
-    ORDER BY $sortBy DESC");
+    ORDER BY $sortBy ASC");
   $links = array();
   foreach ($results as $result) {
     $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));
@@ -94,7 +94,7 @@ function planetmath_user_querycoauthoredarticles($uid, $sortBy = 'n.title') {
    - ... and checking to see which of these have type 'coauthor group' 
    - then obtain the nids and titles of the corresponding articles */
   $results = db_query("SELECT n.title, n.nid FROM og_membership om INNER JOIN node n
-on n.nid = om.etid
+ON n.nid = om.etid
 WHERE om.gid IN ( SELECT f.entity_id
    FROM og_membership INNER JOIN node m
    ON gid = m.nid
@@ -103,8 +103,9 @@ WHERE om.gid IN ( SELECT f.entity_id
    WHERE etid=$uid
    AND og_membership.entity_type = 'user'
    AND f.field_group_subtype_value = 'coauthors' )
+AND n.uid <> $uid 
 AND om.entity_type = 'node'
-ORDER BY $sortBy DESC");
+ORDER BY $sortBy ASC");
   $links = array();
   foreach ($results as $result) {
     $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));
@@ -123,7 +124,7 @@ ON f.entity_id = n.nid
 WHERE etid=$uid
 AND og_membership.entity_type = 'user'
 AND f.field_group_subtype_value = 'team'
-ORDER BY $sortBy DESC");
+ORDER BY $sortBy ASC");
   $links = array();
   foreach ($results as $result) {
     $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));
