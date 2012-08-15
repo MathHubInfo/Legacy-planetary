@@ -225,14 +225,16 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   /* $res = planetary_webglue_do_post('http://127.0.0.1:3001/autolink',$data); */
 
   $nexres = module_invoke_all('drutexml_postprocess',$res);
-  $nexres= $nexres[0];
-  $nexres = trim(json_decode($nexres)->{'result'});  
-  //dd("NNEXUS RESULT IS");
-  //dd($nexres);
-
-  if (strlen($nexres)>strlen($res)) {
-  $res = $nexres;
+  if (!empty($nexres)) {
+    $nexres= $nexres[0];
+    $nexres = trim(json_decode($nexres)->{'result'});  
+    //dd("NNEXUS RESULT IS");
+    //dd($nexres);
+    if (strlen($nexres)>strlen($res)) {
+      $res = $nexres;
+    }
   }
+
 
   _drutexml_cache_set($key, $res);
   return $res;
