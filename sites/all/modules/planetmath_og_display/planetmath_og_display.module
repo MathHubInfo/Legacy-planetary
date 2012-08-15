@@ -5,23 +5,26 @@ function planetmath_og_display_querycoauthors($nid, $sortBy = 'users.name') {
 
   $node = node_load($nid);
   $owner=user_load($node->uid);
-  // Get the coauthor group for this node, if any
-  $group=planetmath_og_model_getNodeEditingGroup($nid);
-  
-  // This query needs to be fixed
-  $results = db_query("SELECT users.name,users.uid
-    FROM og_membership om INNER JOIN users
-    ON om.etid = users.uid 
-    WHERE om.entity_type = 'user' AND om.gid= :gid ORDER BY $sortBy DESC",
-		      array(':gid' => $group->nid));
 
   $links = array(
 		 "$owner->name" => l($owner->name, 'user/' . $owner->uid),
 		 );
 
-  foreach ($results as $result) {
-    $new = planetmath_og_display_add_links($result->name, $result->uid);
-    $links = array_merge($links,$new );
+  // Get the coauthor group for this node, if any
+  $group=planetmath_og_model_getNodeEditingGroup($nid);
+
+  if(isset($group->nid)) {
+    // This query needs to be fixed
+    $results = db_query("SELECT users.name,users.uid
+    FROM og_membership om INNER JOIN users
+    ON om.etid = users.uid 
+    WHERE om.entity_type = 'user' AND om.gid= :gid ORDER BY $sortBy DESC",
+			array(':gid' => $group->nid));
+
+    foreach ($results as $result) {
+      $new = planetmath_og_display_add_links($result->name, $result->uid);
+      $links = array_merge($links,$new );
+    }
   }
 
   return $links;
