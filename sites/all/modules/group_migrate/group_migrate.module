@@ -65,7 +65,19 @@ function group_migrate_port_world_writable() {
 // This one will deal with buddy lists (238 items expected)...
 function group_migrate_port_planetmath_default_groups_to_og() {
 
-  $res = db_query("SELECT t.groupid, planetmath_groups.userid, planetmath_groups.groupname, planetmath_groups.description  FROM planetmath_groups, ( SELECT COUNT( planetmath_group_members.userid ) AS cnt, planetmath_group_members.groupid FROM planetmath_group_members GROUP BY planetmath_group_members.groupid ) as t WHERE t.cnt > 1 AND planetmath_groups.groupid = t.groupid AND planetmath_groups.description LIKE 'This is the default group for user%'");
+  // we need to filter this list according to which users actually EXIST
+  // on the new system, otherwise we run into ERRORS.
+  //  $res = db_query("SELECT t.groupid, planetmath_groups.userid, planetmath_groups.groupname, planetmath_groups.description  FROM planetmath_groups, ( SELECT COUNT( planetmath_group_members.userid ) AS cnt, planetmath_group_members.groupid FROM planetmath_group_members GROUP BY planetmath_group_members.groupid ) as t WHERE t.cnt > 1 AND planetmath_groups.groupid = t.groupid AND planetmath_groups.description LIKE 'This is the default group for user%'");
+  $res = db_query("SELECT t.groupid, pg.userid, pg.groupname, pg.description
+FROM planetmath_groups pg, 
+     ( SELECT COUNT( pgm.userid ) AS cnt, pgm.groupid
+       FROM planetmath_group_members pgm
+       GROUP BY pgm.groupid ) AS t,
+      users 
+WHERE t.cnt > 1
+AND pg.userid = users.uid
+AND pg.groupid = t.groupid
+AND pg.description LIKE 'This is the default group for user%'");
      
   // OUTER LOOP: create og groups corresponding to legacy PM groups
   // (These will be "teams" by default.)
@@ -99,7 +111,16 @@ function group_migrate_port_planetmath_default_groups_to_og() {
 // ... and this one will deal with public teams (51 items expected)
 function group_migrate_port_planetmath_custom_groups_to_og() {
      
-  $res = db_query("SELECT t.groupid, planetmath_groups.userid, planetmath_groups.groupname, planetmath_groups.description  FROM planetmath_groups, ( SELECT COUNT( planetmath_group_members.userid ) AS cnt, planetmath_group_members.groupid FROM planetmath_group_members GROUP BY planetmath_group_members.groupid ) as t WHERE t.cnt > 1 AND planetmath_groups.groupid = t.groupid AND planetmath_groups.description NOT LIKE 'This is the default group for user%'");
+  $res = db_query("SELECT t.groupid, pg.userid, pg.groupname, pg.description
+FROM planetmath_groups pg, 
+     ( SELECT COUNT( pgm.userid ) AS cnt, pgm.groupid
+       FROM planetmath_group_members pgm
+       GROUP BY pgm.groupid ) AS t,
+      users 
+WHERE t.cnt > 1
+AND pg.userid = users.uid
+AND pg.groupid = t.groupid
+AND pg.description NOT LIKE 'This is the default group for user%'");
      
   // OUTER LOOP: create og groups corresponding to legacy PM groups
   // (These will be "teams" by default.)
@@ -132,7 +153,7 @@ function group_migrate_port_planetmath_custom_groups_to_og() {
 // - Create a new group for each object managed in this way, and add the users.
 function group_migrate_port_coauthors () {
   // get the objects that are shared
-  $objects = db_query("SELECT DISTINCT {planetmath_acl}.objectid, {planetmath_objects}.name, {planetmath_objects}.title, {planetmath_objects}.userid FROM {planetmath_acl}, {planetmath_objects} WHERE {planetmath_acl}.user_or_group = 'u' AND {planetmath_acl}.default_or_normal = 'n' AND {planetmath_objects}.uid = {planetmath_acl}.objectid");
+  $objects = db_query("SELECT DISTINCT {planetmath_acl}.objectid, {planetmath_objects}.name, {planetmath_objects}.title, {planetmath_objects}.userid FROM {planetmath_acl}, {planetmath_objects}, users WHERE planetmath_objects.userid = users.uid AND {planetmath_acl}.user_or_group = 'u' AND {planetmath_acl}.default_or_normal = 'n' AND {planetmath_objects}.uid = {planetmath_acl}.objectid");
 	
   // OUTER LOOP: create og groups corresponding to co-author groups for articles
   foreach ($objects as $object) {
