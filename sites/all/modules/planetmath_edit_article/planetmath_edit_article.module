@@ -30,46 +30,28 @@
 
 
 /* 
- *  Implements hook_node_insert
- */
-
-function planetmath_edit_article_node_insert($node){
-        $now = date('o-m-d G:i:s');
-	$node->field_timecreated['und'][0]['value'] = $now;
-}
-
-/* 
- *  Implements hook_node_presave
+ * Implements hook_node_presave
+ *
+ * There's a problem with this code - it uses the node's NID
+ * but NID isn't defined for new nodes during presave.  Sticking
+ * the NID-using part into a hook_node_insert implementation
  */
 
 function planetmath_edit_article_node_presave($node) {
   // ||$node->type==='problem'
+
+}
+
+function planetmath_edit_article_node_insert($node) {
   if ($node->type==='article'){
+    $now = date('o-m-d G:i:s');
+    $node->field_timecreated['und'][0]['value'] = $now;
 
-    // 1 - we will create or update the canonical name
+    // 1 - we will create the canonical name
+    $newname = planetmath_edit_article_canonicalize_name($node, $node->title);
+    $node->field_canonicalname['und'][0]['value'] = $newname;
 
-    // check to see if the title has changed... we know it has if
-    // the canonicalized version of the title is not the same as the
-    // old canonical name...
-    $newname = canonicalize_name($node, $node->title);
-
-    //dd("NEW NAME");
-    //dd($newname);
-
-    // if the canonical name is set...
-    if ( $node->field_canonicalname['und'][0]['value'] ) {
-      // AND the newname is different
-      if (!($newname === $node->field_canonicalname['und'][0]['value'])) {
-	// assign the newname
-	$node->field_canonicalname['und'][0]['value'] = $newname;
-      }}
-    // otherwise, the canonical name is not set, and we assign the brand new newname
-    else {
-	$node->field_canonicalname['und'][0]['value'] = $newname;
-      }
-
-    //dd("ASSIGNING PATH");
-    //dd($node->field_canonicalname['und'][0]['value']);
+    // 2 - we set the path
 
     //NOTE: it is important to set 'language' here, otherwise, your aliases
     //come back with an extra "-0" attached to them -- which is rather confusing!
@@ -79,23 +61,54 @@ function planetmath_edit_article_node_presave($node) {
 
     path_save($path);
 
-    // 2 - we will update the metadata depending on what we know about the article
-    //     Note: we should maybe use planetmath_edit_article_node_insert for the
-    //           time when the article is created...
-
-    process_metadata($node);
+    // 3 - we update the metadata depending on what we know about the article
+    planetmath_edit_article_process_metadata($node);
 
     //dpm($node);
   }
 }
 
-function process_metadata($node){
-  // The following debugging message shows how to access the metadata field.
-  //dd("Node defines metadata: ".$node->field_latex['und'][0]['metadata']);
+// Do we need both?
+function planetmath_edit_article_node_update($node) {
+  if ($node->type==='article'){
 
-  /* Putting in this conditional to see if this makes the importing routine go better.
-     Metadata processing seems fine in normal use, but we get all kinds of warning messages
-     at import time... */
+    // 1 - we UPDATE the canonical name
+    $newname = planetmath_edit_article_canonicalize_name($node, $node->title);
+    // if the canonical name is set...
+    if ( $node->field_canonicalname['und'][0]['value'] ) {
+      // AND the newname is different
+      if (!($newname === $node->field_canonicalname['und'][0]['value'])) {
+	// assign the newname
+	$node->field_canonicalname['und'][0]['value'] = $newname;
+      }}
+    // otherwise, the canonical name is not set for some reason,
+    // and we assign the brand new newname
+    else {
+	$node->field_canonicalname['und'][0]['value'] = $newname;
+      }
+
+    // 2 - reset the path
+
+    //NOTE: it is important to set 'language' here, otherwise, your aliases
+    //come back with an extra "-0" attached to them -- which is rather confusing!
+    $path= array('source' => 'node/'.$node->nid,
+		 'alias' => $node->field_canonicalname['und'][0]['value'],
+		 'language' => '');
+
+    path_save($path);
+
+    // 3 - we will update the metadata depending on what we know about the article
+    planetmath_edit_article_process_metadata($node);
+  }
+}
+
+function planetmath_edit_article_process_metadata($node){
+  // The following debugging message shows how to access the metadata field.
+  // dd("Node defines metadata: ".$node->field_latex['und'][0]['metadata']);
+
+  /* Putting in this conditional to see if this makes the importing
+     routine go better.  Metadata processing seems fine in normal use,
+     but we get all kinds of warning messages at import time... */
   if(isset($node->field_latex)){
   $metadata = $node->field_latex['und'][0]['metadata'];
   $now = date('o-m-d G:i:s');
@@ -195,7 +208,7 @@ function process_metadata($node){
   }
 }
 
-function canonicalize_name($node, $str, $count = 1) {
+function planetmath_edit_article_canonicalize_name($node, $str, $count = 1) {
   //dd('Canonicalizing: ' . $str);
   $words = explode(" ", $str);
   $name = "";
