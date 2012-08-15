@@ -70,7 +70,7 @@ function group_migrate_port_planetmath_default_groups_to_og() {
   // OUTER LOOP: create og groups corresponding to legacy PM groups
   // (These will be "teams" by default.)
   foreach ($res as $record) {
-    $group = planetmath_og_group_add_programmatic($record->groupname, $record->userid, $record->description,'Buddies');
+    $group = planetmath_og_group_add_programmatic("Buddy list for " . $record->groupname, $record->userid, $record->description,'Buddies');
 
     // IMPORTANT: Set the buddy list *field* on the user object so that the
     // user can find their group!
