@@ -157,6 +157,22 @@ function planetmath_og_model_addUserToGroup($gid, $uid, $isAdmin = false) {
   ))->execute();
 }
 
+function planetmath_og_model_addContentToGroup($gid, $nid) {
+  db_insert('og_membership')->fields(array(
+      'type' => 'og_membership_type_default',
+      'etid' => $nid,
+      'entity_type' => 'node',
+      'gid' => $gid,
+      // THIS NEXT LINE IS IMPORTANT FOR THE 7.x-2.x-dev VERSION OF OG! 
+      'group_type' => 'node',
+      'state' => 1,
+      'created' => REQUEST_TIME,
+      // THIS NEXT LINE IS IMPORTANT FOR THE 7.x-2.x-dev VERSION OF OG! 
+      'field_name' => 'og_group_ref',
+      'language' => 'en'
+  ))->execute();
+}
+
 // We should extend this with the ability to create an arbitrary group
 function planetmath_og_menu() {
   $items = array();
