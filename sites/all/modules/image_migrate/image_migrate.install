@@ -14,12 +14,12 @@ function image_migrate_schema(){
                   'not null' => TRUE,
                   'default' => 0
               ),
-              'cannonical' => array(
+              'canonical' => array(
                   'type' => 'varchar',
                   'length' => 255,
               )
           ),
-          'primary_key' => array('name', 'cannonical')
+          'primary_key' => array('name', 'canonical')
       )  
     );
 }
