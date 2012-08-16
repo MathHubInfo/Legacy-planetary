@@ -14,9 +14,9 @@
  * @param $fname: the name of the file
  */
 function image_migrate_checkDuplicate($fname){
-    $query = db_query("SELECT cannonical FROM imageMigrate WHERE name=:name", array('name' => $fname));
+    $query = db_query("SELECT canonical FROM imageMigrate WHERE name=:name", array('name' => $fname));
     foreach($query as $row){
-        if($row->cannonical){
+        if($row->canonical){
             return false;
         }
     }
@@ -34,12 +34,15 @@ function image_migrate_im_buildShell(){
             $dirs[$key] = substr($dirs[$key], 1);
         }
     }
-    $query = db_query("SELECT userid, name FROM planetmath_objects");
+    $query = db_query("SELECT userid, name, uid FROM planetmath_objects");
     foreach($query as $row){
-        //if there is a directory named name
-        if(in_array($row->name, $dirs)){
+        //if there is a directory corresponding to the uid
+        //(keeping in mind that the uids will have been augmented by 30000,
+        // so we have to subtract that off...)
+        $dirname = $row->uid - 30000;
+        if(in_array($dirname, $dirs)){
             //take all the png names and save them together with the uid and canonical name
-            $files = shell_exec('cd ../pm-fileboxes/'.$row->name.'; ls -l');
+            $files = shell_exec('cd ../pm-fileboxes/'.$dirname.'; ls -l');
             $fnames = explode(' ', $files);
             foreach($fnames as $name){
                 if(strstr($name,'.png')){
@@ -49,10 +52,10 @@ function image_migrate_im_buildShell(){
                         db_insert('imageMigrate')->fields(array(
                                 'uid' => $row->userid,
                                 'name' => $name,
-                                'cannonical' => $row->name)
+                                'canonical' => $row->name)
                         )->execute();
                         //  add the shell command to copy the file
-                        $shell = 'cp ../pm-fileboxes/'.$row->name.'/*.png sites/default/files/pictures';
+                        $shell = 'cp ../pm-fileboxes/'.$dirname.'/*.png sites/default/files/pictures';
 			dd($shell);
                         shell_exec($shell);
                     }
@@ -134,7 +137,7 @@ function image_migrate_createNode($imgName, $uid, $canName){
 function image_migrate_createAllNodes(){
     $query = db_query("SELECT * FROM imageMigrate");
     foreach($query as $row){
-        image_migrate_createNode($row->name, $row->uid, $row->cannonical);
+        image_migrate_createNode($row->name, $row->uid, $row->canonical);
     }
     db_query("TRUNCATE TABLE imageMigrate");
     return 'Nodes created!';
