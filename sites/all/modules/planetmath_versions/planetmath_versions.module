@@ -17,7 +17,7 @@
 
 function planetmath_versions_node_update($node) {
 
-   dpm($node);
+  if($node->type == 'article') {
 
 $xmlstr = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -32,7 +32,7 @@ XML;
   // Question: is this number actually the right one?  I have my doubts,
   // partly because of the bug whereby the drupal versions are presented
   // super screwy in the blocks... how to get the real revision number?
-  $version = $node->revision;
+  $version = $node->log;
   $id = $node->nid;
   $title = $node->title; 
   $name = $node->field_canonicalname['und'][0]['value'];
@@ -138,4 +138,13 @@ XML;
   $file = fopen($backup_path, 'w') or die("Error: can't open file " . $backup_path);
   fwrite($file, $backup_contents);
   fclose($file);
+
+  // increment the version number stored in the log
+  if(is_numeric($node->log)) {
+    $node->log = $node->log+1;
+  } else {
+    $node->log = 1;
+  }
+  node_save($node);
+  }
 }

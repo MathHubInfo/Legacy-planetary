@@ -8,6 +8,10 @@ UPDATE userpoints SET points = (SELECT score FROM planetmath_users WHERE planetm
 
 UPDATE userpoints_total SET points = (SELECT score FROM planetmath_users WHERE planetmath_users.uid = userpoints_total.uid), max_points=points;
 
+-- adding version info for articles
+
+UPDATE node_revision nr SET log = (SELECT version FROM planetmath_objects po where po.uid = nr.nid );
+
 -- Copy the article latex over
 
 INSERT INTO field_data_field_latex

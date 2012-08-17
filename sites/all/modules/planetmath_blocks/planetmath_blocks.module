@@ -196,13 +196,16 @@ function planetmath_blocks_countCorrectionsPerArticle($nid) {
 // We could keep track of the "actual" version id on v.log, since it isn't managed anywhere else.
 // Getting all of this imported into the system is going to take some work.
 function planetmath_blocks_versions($nid) {
-  $results = db_query("SELECT v.vid AS vid, n.nid AS nid, n.changed AS changed, n.title AS title, u.name AS username, u.uid AS uid 
+  $results = db_query("SELECT v.log AS version, n.nid AS nid, n.changed AS changed, n.title AS title, u.name AS username, u.uid AS uid 
     FROM node_revision v 
     INNER JOIN node n ON v.nid = n.nid 
     INNER JOIN users u ON u.uid = v.uid
     WHERE n.nid = :nid ORDER BY n.created DESC LIMIT 0,7", array(':nid' => $nid));
   $return = array();
   foreach ($results as $result) {
+    if(!is_numeric($result->version)){
+      $result->version = 1;
+    }
     $return[] = $result;
   }
   return $return;
@@ -223,11 +226,11 @@ function planetmath_blocks_blockThemeResults($results) {
   }
   $html = "";
   foreach (array_reverse($results) as $result) {
-    if (!isset($result->vid)) {
+    if (!isset($result->version)) {
       $title = l($result->title, 'node/' . $result->nid);
     } else {
-      // $num = 1 + $result->vid - $result->nid;
-      $title = l(' (v' . $result->vid  .')', 'node/' . $result->nid);
+      // $num = 1 + $result->version - $result->nid;
+      $title = l(' (v' . $result->version .')', 'node/' . $result->nid);
     }
     if (!isset($result->changed)) {
       $changed = '';
@@ -253,8 +256,8 @@ function planetmath_blocks_blockThemeResultsWithDate($results, $sortBy = 'create
 
   $html = "";// '<div style="padding-left:7%;padding-right:10%;padding-bottom:10%;"><br />';
   foreach ($results as $result) {
-    if (!isset($result->vid)) {
-      $result->vid = "";
+    if (!isset($result->version)) {
+      $result->version = "";
     }
 
     if ((count($dates) === 0) || 
@@ -264,7 +267,7 @@ function planetmath_blocks_blockThemeResultsWithDate($results, $sortBy = 'create
 	$html .= '<span class="block-day-date">'.date('Y-m-d',$result->$sortBy).'</span><br />';
       }
 
-    $html .= '<span >' . l($result->title . ' ' . $result->vid, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
+    $html .= '<span >' . l($result->title . ' ' . $result->version, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
   }
   //dd("THEME RESULT WITH DATE:");
   //dd($html);
@@ -280,8 +283,8 @@ function planetmath_blocks_blockThemeEverythingElseWithDate($results, $sortBy = 
 
   $html = "";// '<div style="padding-left:7%;padding-right:10%;padding-bottom:10%;"><br />';
   foreach ($results as $result) {
-    if (!isset($result->vid)) {
-      $result->vid = "";
+    if (!isset($result->version)) {
+      $result->version = "";
     }
 
     if ((count($dates) === 0) || 
@@ -295,7 +298,7 @@ function planetmath_blocks_blockThemeEverythingElseWithDate($results, $sortBy = 
     // new solution XX to problem YY.
 
     $html .= '<span>' . 'new '. $result->type . ': '
-              . l($result->title . ' ' . $result->vid, 'node/' . $result->nid) 
+              . l($result->title . ' ' . $result->version, 'node/' . $result->nid) 
               . ' by ' . l($result->username, 'user/' . $result->uid) 
               . '</span><br />';
   }
@@ -472,7 +475,7 @@ as part of the Planetary project.  Some release notes are !here.",
 			   l("LaTeX", "http://en.wikibooks.org/wiki/LaTeX"),
 			   '!linguafranca' => '<em>lingua franca</em>',
 			   '!here' => 
-			   l("here", "http://metameso.org/q/node/44930")
+			   l("here", "node/86402")
 			   )
 		     )
 	       );
