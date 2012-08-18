@@ -3,6 +3,11 @@ function drutexml_schema() {
 	$schema['drutexml_cache'] = array(
     'description' => t('DruTeXML Cache'),
     'fields' => array(
+     'etid' => array(
+       'type' => 'int',
+       'length' => 11,
+       'not null' => false,
+	),
      'cachemd5' => array(
        'type' => 'varchar',
        'length' => 32,

@@ -56,7 +56,7 @@ function latex_field_theme($existing, $type, $theme, $path) {
 function latex_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   
 	$element = array();
-
+	
 	switch ($display['type']) {
 		// This formatter simply outputs the field as text and with a color.
 		case 'latex_formatter':
@@ -65,9 +65,10 @@ function latex_field_field_formatter_view($entity_type, $entity, $field, $instan
 				$filter = $item['format'];
 				global $latex_preamble;
 				global $latex_metadata;
+				global $latex_etid;
 				$latex_preamble = $item['preamble']; 
 				$latex_metadata = $item['metadata']; 
-				//dd($filter, "sending stuff to filter");
+				$latex_etid = $entity->nid;
 				$fobj = check_markup($item['document'], $filter, $entity->language, true);
 				//dd($fobj, "response from filter is");
 				$element[$delta]['#markup'] = theme("localedit",

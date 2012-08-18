@@ -122,13 +122,14 @@ function _drutexml_cache_read($md5) {
 	return $cache[0]->xhtml;
 }
 
-function _drutexml_cache_set($md5, $xhtml) {
-  dd($md5." merging drutexml cache on ".$xhtml);
+function _drutexml_cache_set($md5, $xhtml, $etid = NULL) {
+  dd($md5." merging drutexml cache on ".$xhtml." with etid " .$etid);
 	db_merge("drutexml_cache")
 	  ->key(array("cachemd5" => $md5))
 	  ->fields(array(
 		"cachemd5" => $md5,
-		"xhtml" => $xhtml	
+		"xhtml" => $xhtml,
+                "etid" => $etid
 			 )
 		   )
 	  ->execute();
@@ -163,8 +164,10 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   
   global $latex_preamble;
   global $latex_metadata;
+  global $latex_etid;
 
-  //dd($latex_preamble,"received preamble");
+  dd($latex_preamble,"received preamble");
+  dd($latex_etid,"received etid");
   //dd($latex_metadata, "received metadata");
 
   // so it receives the right data
@@ -204,18 +207,18 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
 
   }
 
-  dd("LATEXML HOST IS");
-  dd($host);
+  //dd("LATEXML HOST IS");
+  //dd($host);
 
-  dd("LATEXML DATA IS");
-  dd($data);
+  //dd("LATEXML DATA IS");
+  //dd($data);
   
   $content = planetary_webglue_do_post($host,$data);
   $res = json_decode($content);
   $res = trim($res->{'result'});
   
-  dd("LATEXML RESULT IS");
-  dd($res);
+  //dd("LATEXML RESULT IS");
+  //dd($res);
 
   /* $data = array ('json_data' => json_encode(array('function'=>'linkentry', */
   /*                                                 'body'=>$res, */
@@ -235,8 +238,12 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
     }
   }
 
+  if(isset($latex_etid)) {
+    _drutexml_cache_set($key, $res, $latex_etid);
+  } else {
+    _drutexml_cache_set($key, $res);
+  }
 
-  _drutexml_cache_set($key, $res);
   return $res;
 }
 
