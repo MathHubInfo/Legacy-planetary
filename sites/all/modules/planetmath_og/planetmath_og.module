@@ -435,14 +435,14 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   // find the 'buddy' group of this user (if one exists)
   // TODO: need to sort things out so that the value is set properly, otherwise
   // there are problems when trying to save the article
-  $buddy_group_id = get_user_buddy_group_id($user->uid);
+  $buddy_group_id = planetmath_og_get_user_buddy_group_id($user->uid);
 
-  if (!isset($form['og_group_ref']['und']['#default_value'][0]) || $buddy_group_id==0){
+  if (!isset($form['og_group_ref']['und']['#default_value'][0]) || $buddy_group_id==NULL){
     $form['og_group_ref']['und']['#default_value'] = $buddy_group_id;
   }
 
   //dd($form);
-  $filtered_group_list[0]='none';
+  // $filtered_group_list[0]='none';
 
   foreach ($form['og_group_ref']['und']['#options'] as $gid=>$group_title){
     $group = node_load($gid);
@@ -455,9 +455,28 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   $form['og_group_ref']['und']['#options'] = $filtered_group_list;
 }
 
+function planetmath_og_form_article_node_form_validate($form,&$form_state) {
+  dd($form_state['values']);
+  printr($form_state['values']);
+  if ($form_state['values']['og_group_ref'] == NULL) {
+    unset($form_state['values']['og_group_ref']);
+  }
+}
+
+function printr($data, $exit = TRUE) {
+  if ($data) {
+    print '<pre>';
+    print_r($data);
+    print '</pre>';
+  }
+  if ($exit) {
+    exit;
+  }
+}
+
 // TODO: This needs to be implemented properly.
-function get_user_buddy_group_id($uid){
-  $gid = 0;
+function planetmath_og_get_user_buddy_group_id($uid){
+  $gid = NULL;
   $user = user_load($uid);
   if(isset($user->buddy_list) && !empty($user->buddy_list)){
     $gid=$user->buddy_list['und'][0]['value'];
