@@ -82,22 +82,37 @@ CodeMirror.defineMode("stex", function(cmCfg, modeCfg)
     }
 
     function normal(source, state) {
-	if (source.match(/^\\[a-z]+/)) {
+	if (source.match(/^\\[a-zA-Z@]+/)) {
 	    var cmdName = source.current();
 	    cmdName = cmdName.substr(1, cmdName.length-1);
-	    var plug = plugins[cmdName];
-	    if (typeof(plug) == 'undefined') {
-		plug = plugins["DEFAULT"];
-	    }
+            var plug;
+            if (plugins.hasOwnProperty(cmdName)) {
+	      plug = plugins[cmdName];
+            } else {
+              plug = plugins["DEFAULT"];
+            }
 	    plug = new plug();
 	    pushCommand(state, plug);
 	    setState(state, beginParams);
 	    return plug.style;
 	}
 
+        // escape characters 
+        if (source.match(/^\\[$&%#{}_]/)) {
+          return "tag";
+        }
+
+        // white space control characters
+        if (source.match(/^\\[,;!\/]/)) {
+          return "tag";
+        }
+
 	var ch = source.next();
 	if (ch == "%") {
-	    setState(state, inCComment);
+            // special case: % at end of its own line; stay in same state
+            if (!source.eol()) {
+              setState(state, inCComment);
+            }
 	    return "comment";
 	} 
 	else if (ch=='}' || ch==']') {

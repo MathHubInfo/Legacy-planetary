@@ -69,7 +69,7 @@ function tntbase_import_page($form, &$form_status) {
 					'#type' => 'select', 
 					'#title'=>'Please select the format to be imported',
 					'#default_value' => 'latex',
-					'#options' => array("latex", "xhtml"),
+					'#options' => array("latex"=>"latex", "xhtml"=>"xhtml"),
 	);
 	
 	$form["ImportField"] = array(

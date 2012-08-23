@@ -1,0 +1,14 @@
+<?php
+// $Id: wysiwyg_codemirror.module,v 1.1 2010/03/17 16:48:12 drifter Exp $
+/**
+ * @file
+ * wysiwyg_codemirror is an plugin for adding syntax highlighting to the tinyMCE editor
+ * Zoltan Varady/FARM 2010
+ */
+
+function wysiwyg_codemirror_wysiwyg_include_directory($type) {
+	switch ($type) {
+		case 'editors':
+		return $type;
+	}
+}
