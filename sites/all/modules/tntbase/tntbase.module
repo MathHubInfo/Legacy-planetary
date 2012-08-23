@@ -497,6 +497,7 @@ function tntbase_commit_files($Files) {
       //TODO: return something more meaningful
       return false;
     }
+    $File['Content'] = addcslashes($File['Content'], "\\");
     $Request[] = $File;
 
     //TODO: CD -- fix this
@@ -522,7 +523,6 @@ function tntbase_commit_files($Files) {
   }
 
   $Response = tntbase_putmpf($Request, variable_get('tntbase_commit_files_url'));
-
   $Document = new DOMDocument();
   $Document->loadXML($Response);
 
@@ -543,9 +543,8 @@ function tntbase_commit_files($Files) {
  * @return the revision number of the file just commited or <b>false</b> if the commit failed
  */
 function tntbase_commit_xml($Content, $FilePath) {
-  $Response = tntbase_put($Content, variable_get('tntbase_commit_url').$FilePath);
+  $Response = tntbase_put($Content, variable_get('tntbase_commit_xml_url').$FilePath);
   $Message = tntbase_strip_tntbase_results($Response, false);
-
   // check message
   if(! $Message) {
     return false;
@@ -554,6 +553,27 @@ function tntbase_commit_xml($Content, $FilePath) {
   $Revision = tntbase_get_result_revision($Message);
 
   // It is either false or the number
+  return $Revision;
+}
+
+/**
+ * Method to be used for committing a specific article into TNTBase
+ * May be used to either add a new file or update an existing one
+ * @param string $Content the content to try to commit
+ * @param string $FilePath the FilePath into TNTBase under which to save the content
+ * @return the revision number of the file just commited or <b>false</b> if the commit failed
+ */
+function tntbase_commit_file($Content, $FilePath) {
+  $Revision = tntbase_commit_files(
+  	array(
+  		array(
+  			"Content-Type"=>"text/plain", 
+  			"Path" => $FilePath,
+  			"Content" => $Content
+  			 )
+  		 )
+   );
+
   return $Revision;
 }
 
@@ -673,6 +693,8 @@ function tntbase_get_document($FilePath) {
           'Revision' => $Revision,
           'Path' => $FilePath
   );
+  
+  dpm($Document, "Got ".$FilePath." ");
 
   if(false == $Source ||
   false == $Presentation ||
