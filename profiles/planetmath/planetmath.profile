@@ -82,20 +82,21 @@
  * Implements hook_install_tasks
  */
 function planetmath_install_tasks($install_state) {
-  $tasks = array('my_0th_task' => array(
+  $tasks = array(
+		 'my_0th_task' => array(
                                         'display_name' => st('Create Full Html format.'),
                                         'display' => TRUE,
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_create_full_html_format',
                                         ),
-		 'my_1st_task' => array(
-                                        'display_name' => st('Patch the core.'),
-                                        'display' => TRUE,
-                                        'type' => 'normal',
-                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'planetmath_profile_patch_core',
-                                        ),
+		 /* 'my_1st_task' => array( */
+                 /*                        'display_name' => st('Patch the core.'), */
+                 /*                        'display' => TRUE, */
+                 /*                        'type' => 'normal', */
+                 /*                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED, */
+                 /*                        'function' => 'planetmath_profile_patch_core', */
+                 /*                        ), */
                  'my_2nd_task' => array(
                                         'display_name' => st('Create 17 forums.'),
                                         'display' => TRUE,
@@ -117,26 +118,12 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_drutexml_configuration',
                                         ),
-                 /* 'my_11th_task' => array( */
-                 /*                        'display_name' => st('Add and configure an "image" field'), */
-                 /*                        'display' => TRUE, */
-                 /*                        'type' => 'normal', */
-                 /*                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED, */
-                 /*                        'function' => 'planetmath_profile_setup_image_field', */
-                 /*                        ), */
                  'my_mth_task' => array(
                                         'display_name' => st('Add extra fields to user entities'),
                                         'display' => TRUE,
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_setup_user_entities',
-                                        ),
-                 'my_10th_task' => array(
-                                        'display_name' => st('Set up tagging facilities'),
-                                        'display' => TRUE,
-                                        'type' => 'normal',
-                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'planetmath_profile_set_up_tags',
                                         ),
                  'my_5Ath_task' => array(
                                         'display_name' => st('Configure Email Rerouting'),
@@ -152,6 +139,7 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_configure_groups',
                                         ),
+
                  'my_8th_task' => array(
                                         'display_name' => st('Configure RDF mappings'),
                                         'display' => TRUE,
@@ -201,13 +189,6 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_setup_permissions',
                                         ),
-                 /* 'my_3rd_task' => array( */
-                 /*                        'display_name' => st('Run the migrations to import legacy data.'), */
-                 /*                        'display' => TRUE, */
-                 /*                        'type' => 'normal', */
-                 /*                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED, */
-                 /*                        'function' => 'planetmath_profile_migration_runner', */
-                 /*                        ), */
                  );
   return $tasks;
 }
@@ -917,35 +898,27 @@ function planetmath_profile_configure_groups () {
                                      "update any article content",
                                      "delete own article content"));
 
-  // NOTE: these comments are irrelevant for latest versions of OG
+  /*??*/
+  $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+  $og_field['field']['settings']['target_type'] = 'node';
+  $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
+    'status' => TRUE,
+    'action' => 'none',
+    'fallback' => 'none',
+    'skip_perm' => FALSE,
+  );
+  og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
 
-  // The following code works when it is executed after the profile runs,
-  // However it does not work well when run within the profile (for now,
-  // just run it through devel/php immediately after this process completes).
-
-  // An interesting point: it is possible to add a group programmatically
-  // even without running this (see just below), but if you try to add groups
-  // interactively without running this, that causes an error.
-
-  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
-  /* $og_field['field']['settings']['target_type'] = 'node'; */
-  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
-  /*   'status' => TRUE, */
-  /*   'action' => 'none', */
-  /*   'fallback' => 'none', */
-  /*   'skip_perm' => FALSE, */
-  /* ); */
-  /* og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field); */
-
-  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
-  /* $og_field['field']['settings']['target_type'] = 'node'; */
-  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
-  /*   'status' => TRUE, */
-  /*   'action' => 'none', */
-  /*   'fallback' => 'none', */
-  /*   'skip_perm' => FALSE, */
-  /* ); */
-  /* og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field); */
+  $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+  $og_field['field']['settings']['target_type'] = 'node';
+  $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
+    'status' => TRUE,
+    'action' => 'none',
+    'fallback' => 'none',
+    'skip_perm' => FALSE,
+  );
+  og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field);
+  /*??*/
 
   planetmath_og_group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
 
