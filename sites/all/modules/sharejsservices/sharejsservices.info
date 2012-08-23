@@ -1,0 +1,8 @@
+name = ShareJS based semantic services
+description = Allows adding ShareJS based semantic services to Drupal
+core = 7.x
+package     = Planetary Modules
+scripts[] = async.js
+scripts[] = sharejsservices.js
+scripts[] = sharejsservices.js
+stylesheets[all][] = sharejsservices.css
