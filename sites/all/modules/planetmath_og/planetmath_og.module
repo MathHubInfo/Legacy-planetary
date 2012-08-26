@@ -252,7 +252,7 @@ function planetmath_og_view_coAuthorsGroupPage($group,$nid) {
 
 function planetmath_og_view_coAuthorsNoGroupPage($node) {
   $html = "<p>Currently, there is no co-author group associated to this one.</p>" .
-          "<p>".l("Transfer owenrship","node/".$node->nid."/transfer")."</p>".
+          "<p>".l("Transfer ownership","node/".$node->nid."/transfer")."</p>".
           "<p>".l("Create co-author group", 'planetmath_og/create-coauth-group/' . $node->nid)."</p>";
   return $html;
 }
