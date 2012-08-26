@@ -17,7 +17,13 @@
 
 // Actually not good to use this hook, because it runs every time the node is
 // saved.  We need to use the hook for the article form being saved.
-function planetmath_versions_node_update($node) {
+
+/* Implements hook_node_postsave
+ *
+ * note that we need to use this instead of hook_node_update
+ * if we're going to record a copy of version #1 of a node
+ */
+function planetmath_versions_node_postsave($node) {
   if($node->type == 'article') {
 
 $xmlstr = <<<XML
@@ -49,8 +55,13 @@ XML;
 
   // it would be safe to assume that the current user is the modifier,
   // but that information is already stored on the node
-  $modifierid = $node->revision_uid;
-  $modifiername = user_load($modifierid)->name;
+  if(isset($node->revision_uid)) {
+    $modifierid = $node->revision_uid;
+    $modifiername = user_load($modifierid)->name;
+  } else {
+    $modifierid = $ownerid;
+    $modifiername = $ownername;
+  }
 
   if(isset($node->field_mathtype['und'][0])) {
     $type = $node->field_mathtype['und'][0]['value'];
@@ -143,6 +154,6 @@ XML;
 
   // increment the version number stored in the log
   // saving the article should give us the new log value?
-  dpm($node);
+  // dpm($node);
   }
 }

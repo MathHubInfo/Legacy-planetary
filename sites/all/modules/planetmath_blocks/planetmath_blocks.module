@@ -203,7 +203,6 @@ function planetmath_blocks_versions($nid) {
     WHERE n.nid = :nid ORDER BY v.timestamp DESC LIMIT 0,7", array(':nid' => $nid));
   $return = array();
   foreach ($results as $result) {
-    dd("Hey: ".$result->title ." ". $result->version);
     if(!is_numeric($result->version)){
       $result->version = 1;
     }

@@ -38,8 +38,7 @@
  */
 
 function planetmath_edit_article_node_presave($node) {
-  dd("PRIORNODELOG->".$node->original->log."<-PRIORNODELOG");
-  if(is_numeric($node->original->log)) {
+  if(isset($node->original) && is_numeric($node->original->log)) {
     $node->log = $node->original->log+1;
   } else {
     $node->log = 1;
