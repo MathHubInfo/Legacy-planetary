@@ -48,14 +48,6 @@
             return callback(null);
           });
         }, function(callback) {
-          return jQuery.getScript(Drupal.settings.ShareJSConfig.url + "share/AttributePool.js", function(success, textStatus, jqXHR) {
-            return callback(null);
-          });
-        }, function(callback) {
-          return jQuery.getScript(Drupal.settings.ShareJSConfig.url + "share/Changeset.js", function(success, textStatus, jqXHR) {
-            return callback(null);
-          });
-        }, function(callback) {
           return jQuery.getScript(Drupal.settings.ShareJSConfig.url + "share/share.uncompressed.js", function(success, textStatus, jqXHR) {
             return callback(null);
           });
