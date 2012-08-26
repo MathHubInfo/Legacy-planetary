@@ -12,6 +12,11 @@
  * @param unknown_type $arg
  *  Array that holds the current path as returned from the arg() function
  */
+
+global $debug_drutexml; 
+
+$debug_drutexml = 0;
+
 function drutexml_help($path, $arg) {
   switch ($path) {
     case "admin/help#drutexml":
@@ -123,7 +128,11 @@ function _drutexml_cache_read($md5) {
 }
 
 function _drutexml_cache_set($md5, $xhtml, $etid = NULL) {
-  dd($md5." merging drutexml cache on ".$xhtml." with etid " .$etid);
+  global $debug_drutexml;
+  if ($debug_drutexml)
+    {
+      dd($md5." merging drutexml cache on ".$xhtml." with etid " .$etid);
+    }
 	db_merge("drutexml_cache")
 	  ->key(array("cachemd5" => $md5))
 	  ->fields(array(
@@ -153,6 +162,8 @@ function _drutexml_filter_reset_cache($form, &$form_state) {
  * @param unknown_type $format
  */
 function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  global $debug_drutexml;
+
   $key = md5($text);
   $cache = _drutexml_cache_read($key);
   if (isset($cache)) {
@@ -166,8 +177,11 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   global $latex_metadata;
   global $latex_etid;
 
-  dd($latex_preamble,"received preamble");
-  dd($latex_etid,"received etid");
+  if ($debug_drutexml)
+    {
+      dd($latex_preamble,"received preamble");
+      dd($latex_etid,"received etid");
+    }
   //dd($latex_metadata, "received metadata");
 
   // so it receives the right data
