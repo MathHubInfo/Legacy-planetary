@@ -200,15 +200,16 @@ function planetmath_blocks_versions($nid) {
     FROM node_revision v 
     INNER JOIN node n ON v.nid = n.nid 
     INNER JOIN users u ON u.uid = v.uid
-    WHERE n.nid = :nid ORDER BY n.created DESC LIMIT 0,7", array(':nid' => $nid));
+    WHERE n.nid = :nid ORDER BY v.timestamp DESC LIMIT 0,7", array(':nid' => $nid));
   $return = array();
   foreach ($results as $result) {
+    dd("Hey: ".$result->title ." ". $result->version);
     if(!is_numeric($result->version)){
       $result->version = 1;
     }
     $return[] = $result;
   }
-  return $return;
+  return array_reverse($return);
 }
 
 function planetmath_blocks_countVersionsPerArticle($nid) {
