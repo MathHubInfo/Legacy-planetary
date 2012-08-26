@@ -268,6 +268,11 @@ function planetmath_profile_forum_creator() {
   /* $forum = forum_form_forum($forum_topic_fields); */
   /* forum_form_submit($forum,$forum_topic_fields); */
 
+  // Introducing this because otherwise we get messages complaining
+  // that we don't provide it, even though the reason seems 
+  // particularly silly, since the argument isn't used in the
+  // function that requires it, see discussion at http://drupal.org/node/1748044
+  $form_state_req = array();
 
   dd("creating Forum 2");
 
@@ -277,8 +282,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 3");
@@ -289,8 +295,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 4");
@@ -301,8 +308,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 5");
@@ -313,8 +321,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 6");
@@ -325,8 +334,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
 
@@ -338,8 +348,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
 
@@ -351,8 +362,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
 
@@ -364,8 +376,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
 
@@ -377,8 +390,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
 
@@ -390,8 +404,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
 
@@ -403,8 +418,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
 
@@ -416,8 +432,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 14");
@@ -428,8 +445,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
 
@@ -441,8 +459,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 16");
@@ -453,8 +472,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
   dd("creating Forum 17");
@@ -465,8 +485,9 @@ function planetmath_profile_forum_creator() {
   $forum_topic_fields['values']['parent'][0] = array(0);
   $forum_topic_fields['values']['weight'] = 0;
   $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
 
-  $forum = forum_form_forum($forum_topic_fields);
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
   forum_form_submit($forum,$forum_topic_fields);
 
 
