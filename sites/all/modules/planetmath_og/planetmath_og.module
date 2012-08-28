@@ -429,34 +429,66 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   global $user;
   $filtered_group_list = array();
 
+  // we'll switch the presentation to checkboxes... the dropdown list 
+  // is annoying to work with.  This list could also be annoying to work
+  // with, but it's a start to something better.
+
+  $form['og_group_ref']['und']['#type'] = 'checkboxes';
+
+  /* This doesn't work right, but it's a sorta nice idea... see
+     planetmath_og_disable_element for details.  The idea is from here:
+     http://drupal.stackexchange.com/questions/832/how-can-i-disable-a-single-checkbox-in-a-checkboxes-fapi-element */
+
+  //   $form['og_group_ref']['und']['#process'][] = 'planetmath_og_disable_element';
+
   // find the 'buddy' group of this user (if one exists)
   // TODO: need to sort things out so that the value is set properly, otherwise
   // there are problems when trying to save the article
+
+  // dd("form['og_group_ref']...");
+  // dd($form['og_group_ref']);
+  // dd($form['og_group_ref']['und']['#default_value']);
+
   $buddy_group_id = planetmath_og_get_user_buddy_group_id($user->uid);
 
-  if (!isset($form['og_group_ref']['und']['#default_value'][0]) || $buddy_group_id==NULL){
-    $form['og_group_ref']['und']['#default_value'] = $buddy_group_id;
+  // set the buddy group as one of the default values
+  // NOTE: we could be more sophisticated about this, and only *add* it as
+  // a default value when the article is new.
+  if (!is_null($buddy_group_id)){
+    $form['og_group_ref']['und']['#default_value'][] = $buddy_group_id;
   }
 
-  //dd($form);
-  // $filtered_group_list[0]='none';
-
+  // We will filter out all irrelevant options.
+  // Specifically: we preserve the "none" option...
+  $filtered_group_list['_none']="- None -";
   foreach ($form['og_group_ref']['und']['#options'] as $gid=>$group_title){
     $group = node_load($gid);
+    // ... and all Teams (that they are only presented here b/c the user is a member)
     if (isset($group->field_group_subtype['und'][0]) && 
-	$group->field_group_subtype['und'][0]['value'] == 'Team'){
+	$group->field_group_subtype['und'][0]['value'] == 'Team' ||
+	// ... and we preserve anything that was marked as a "default value" already
+	// which, in particular, includes anything that the item aleady belongs to
+	in_array($gid, $form['og_group_ref']['und']['#default_value'] )){
       $filtered_group_list[$gid]=$group_title;
     }
   }
 
+  // Note that selecting "none" AND something else just causes the other
+  // things to be preserved
   $form['og_group_ref']['und']['#options'] = $filtered_group_list;
 }
 
-function planetmath_og_form_article_node_form_validate($form,&$form_state) {
-  dd($form_state['values']);
-  printr($form_state['values']);
-  if ($form_state['values']['og_group_ref'] == NULL) {
-    unset($form_state['values']['og_group_ref']);
+// This didn't work, but actually it would be more
+// interesting to completely *hide* any options that we're not interested in showing
+// using a rewritten version of form_process_checkboxes
+// see http://api.drupal.org/api/drupal/includes!form.inc/function/form_process_checkboxes/7
+
+function planetmath_og_disable_element($element) {
+  foreach (element_children($element) as $key) {
+    if ($key == '1') {
+      $element[$key]['#disabled'] = TRUE;
+      return;
+    }
   }
 }
 
@@ -481,6 +513,9 @@ function planetmath_og_get_user_buddy_group_id($uid){
   return $gid;
 }
 
+/* implements hook_form_FORM_ID_alter
+ */
+
 function planetmath_og_form_group_node_form_alter(&$form, &$form_state, $form_id) {
   //dd($form);
   // This gets rid of some "options" that are actually confusing (particularly since the user
@@ -489,6 +524,9 @@ function planetmath_og_form_group_node_form_alter(&$form, &$form_state, $form_id
   $form['group_group']['#access'] = FALSE;
   $form['og_views']['#access'] = FALSE;
 }
+
+/* implements hook_form_FORM_ID_alter
+ */
 
 function planetmath_og_form_og_ui_add_users_alter(&$form, &$form_state, $form_id) {
   //dpm($form);
