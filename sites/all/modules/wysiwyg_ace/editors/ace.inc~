@@ -20,6 +20,7 @@ function wysiwyg_ace_ace_editor() {
 				'title' => 'Source',
 				'files' => array(
 					'build/src-min-noconflict/ace.js',
+					'build/src-min-noconflict/keybinding-emacs.js',
 					),
 				),
 			),
@@ -30,7 +31,7 @@ function wysiwyg_ace_ace_editor() {
 		'plugin callback' => 'wysiwyg_ace_ace_plugins',
 		'versions' => array(
 			'0.2' => array(
-				'js files' => array('ace0-2.js'),
+				'js files' => array('ace_toolbar.js', 'ace0-2.js'),
 				),
 			),
 		);
@@ -136,16 +137,18 @@ function wysiwyg_ace_ace_plugins($editor) {
 	$library = $editor['library path'] . '/lib/ace/mode/';
 	$handler = opendir($library);
 	$plugins = array();
+	$plugins = array();
 	while ($file = readdir($handler)) {
 		// if file isn't this directory or its parent, add it to the results
 		if ($file != "." && $file != ".." && $file) {
 			$mode = ace_getMode($file);
 			if ($mode!=null) {
-				$plugins[$mode] = $mode;
+				$plugins["mode_".$mode] = $mode;
 			}
 		}	
 		
 	}
+	$plugins["ShareJS_true"] = "ShareJS Services";
 	return array(
 		'default' => array(
 			'buttons' => $plugins,

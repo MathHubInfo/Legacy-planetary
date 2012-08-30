@@ -4,4 +4,24 @@ textarea .ace_editor {
 
 .cm-s-default span.cm-bracket {
     color: blue;
+}.linedWidgets .content {
+	float: left;
+	width: 200px;
+}
+
+.ui-button .envInsertIcon {
+	background-image: url(../images/addEnvironment.png);
+}
+
+.linedWidgets .content li {
+	list-style-type : none;
+}
+
+
+.linedWidgets .exhibit-facet {
+	float: left;
+}
+
+.clearCount .exhibit-facet-value-count {
+	display: none;
 }
