@@ -26,8 +26,6 @@ Drupal.ShareJS = {
 
 	  async.waterfall([
 	  	(callback) -> jQuery.getScript(Drupal.settings.ShareJSConfig.url+"channel/bcsocket.js",(success, textStatus, jqXHR) -> callback(null)),
-	  	(callback) -> jQuery.getScript(Drupal.settings.ShareJSConfig.url+"share/AttributePool.js", (success, textStatus, jqXHR) -> callback(null)),
-	  	(callback) -> jQuery.getScript(Drupal.settings.ShareJSConfig.url+"share/Changeset.js", (success, textStatus, jqXHR) -> callback(null)),
 	  	(callback) -> jQuery.getScript(Drupal.settings.ShareJSConfig.url+"share/share.uncompressed.js", (success, textStatus, jqXHR) -> callback(null)),
 	  ], (err)->
 	  	callback()
