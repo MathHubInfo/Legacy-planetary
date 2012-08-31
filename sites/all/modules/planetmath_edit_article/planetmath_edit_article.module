@@ -34,12 +34,15 @@
  *
  * There's a problem with this code - it uses the node's NID
  * but NID isn't defined for new nodes during presave.  Sticking
- * the NID-using part into a hook_node_insert implementation
+ * the NID-using part into a hook_node_insert implementation instead
  */
 
 function planetmath_edit_article_node_presave($node) {
-  // ||$node->type==='problem'
-
+  if(isset($node->original) && is_numeric($node->original->log)) {
+    $node->log = $node->original->log+1;
+  } else {
+    $node->log = 1;
+  }
 }
 
 function planetmath_edit_article_node_insert($node) {

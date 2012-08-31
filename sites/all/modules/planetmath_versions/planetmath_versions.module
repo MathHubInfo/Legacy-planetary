@@ -15,8 +15,15 @@
  * things.
  */
 
-function planetmath_versions_node_update($node) {
+// Actually not good to use this hook, because it runs every time the node is
+// saved.  We need to use the hook for the article form being saved.
 
+/* Implements hook_node_postsave
+ *
+ * note that we need to use this instead of hook_node_update
+ * if we're going to record a copy of version #1 of a node
+ */
+function planetmath_versions_node_postsave($node) {
   if($node->type == 'article') {
 
 $xmlstr = <<<XML
@@ -41,37 +48,46 @@ XML;
   // : 2006-11-11 22:03:02 
   // but we can presumably skip that unless it's easy...
   $created = $node->created;
-  $modified = $node->modified;
+  $changed = $node->changed;
 
   $ownerid = $node->uid;
   $ownername = user_load($ownerid)->name;
 
   // it would be safe to assume that the current user is the modifier,
   // but that information is already stored on the node
-  $modifierid = $node->revision_uid;
-  $modifiername = user_load($modifierid)->name;
+  if(isset($node->revision_uid)) {
+    $modifierid = $node->revision_uid;
+    $modifiername = user_load($modifierid)->name;
+  } else {
+    $modifierid = $ownerid;
+    $modifiername = $ownername;
+  }
 
   if(isset($node->field_mathtype['und'][0])) {
     $type = $node->field_mathtype['und'][0]['value'];
-  }
+
+    $record->addChild('type',$type);
+  } 
 
   if(isset($node->field_parent['und'][0])) {
     $parentid = $node->field_parent['und'][0]['value'];
-    $parent=node_load($parentid);
+    $parent= node_load($parentid);
     $parentname = $parent->field_canonicalname['und'][0]['value'];
+
+    $record->addChild('parent',$parentname);
+    $record->parent->addAttribute('id',$parentid);
   }
 
   if(isset($node->field_revisioncomment['und'][0])) {
     $comment = $node->field_revisioncomment['und'][0]['value'];
+
+    $record->addChild('comment',$comment);
   }
 
   // at this point in the process, every article should have
   // a preamble, even if it is just a *copy* of the sitewide default
-  // (right?)
   $preamble = $node->field_latex['und'][0]['preamble'];
   $body = $node->field_latex['und'][0]['document'];
-
-  /* NOW WE FORMAT ALL OF THAT AS XML */
 
   $record->addAttribute("version", $version);
   $record->addAttribute("id", $id);
@@ -79,13 +95,10 @@ XML;
   $record->addChild('name',$name);
   $record->addChild('created',$created);
   $record->addChild('modified',$changed);
-  $record->addChild('type',$type);
-  $record->addChild('comment',$comment);
   $record->addChild('preamble',$preamble);
-  $record->addChild('content',$body);
 
-  $record->addChild('parent',$parentname);
-  $record->parent->addAttribute('id',$parentid);
+  // Do it this way to escape ampersands etc
+  $record->content = $body;
 
   $record->addChild('creator');
   $record->creator->addAttribute('id',$ownerid);
@@ -111,7 +124,7 @@ XML;
   }
 
   // we can't assume that every article has an MSC class, I guess...
-  if(isset($node->field_msc)) {
+  if(isset($node->field_msc['und'][0]['value'])) {
     $record->addChild('classification');
 
     // Need to get the article MSC classes in order to format them properly
@@ -130,7 +143,7 @@ XML;
   // echo xml_pretty_printer($record);
 
   // $base_path = "/home/joe/drupal_planetary/";
-  $base_path = "/Users/jac2349/drupal_planetary/";
+  $base_path = "/home/joe/switch/drupal_planetary/";
 
   $backup_contents = $record->asXML();
   $backup_path = $base_path."sites/default/files/versions/".$name.'_'.$version.'.xml';
@@ -140,11 +153,7 @@ XML;
   fclose($file);
 
   // increment the version number stored in the log
-  if(is_numeric($node->log)) {
-    $node->log = $node->log+1;
-  } else {
-    $node->log = 1;
-  }
-  node_save($node);
+  // saving the article should give us the new log value?
+  // dpm($node);
   }
 }
