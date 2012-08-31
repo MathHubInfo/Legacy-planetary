@@ -5,9 +5,9 @@
 			if (!loaded) {
 				jQuery.get(Drupal.settings.basePath+"sites/all/modules/wysiwyg_ace/editors/dialogs.xml", function(data) {
 						jQuery("body").append(data);
-				    if (typeof exhibit != "undefined") {
-					exhibit.configureFromDOM();
-				    }
+						if (typeof exhibit != "undefined") {
+							exhibit.configureFromDOM();
+						}
 				}, "text");
 		 	}
 			var emacs = window.ace.require("ace/keyboard/emacs").handler;
@@ -17,7 +17,7 @@
 						$("#ace_cmd_dialog").dialog({
 								width: "450px",
 								close: function() {
-									editor.focus();
+									Exhibit.jQuery("#ace_cmd_dialog").unbind("onEnter");
 								}
 						});
 						Exhibit.jQuery("#ace_cmd_dialog").bind("onEnter", function(evt, data) {
@@ -49,11 +49,14 @@
 											}
 									});
 									setTimeout(function() {
-										$("#ace_properties").dialog();
+											$("#ace_properties").dialog();
 									}, 200);
-
+									
 								} else {
 									editor.insert(_.template(template, {}));
+									setTimeout(function() {
+											editor.focus();
+									}, 100);
 								}
 								
 						});
@@ -63,7 +66,7 @@
 			editor.setKeyboardHandler(emacs);
 			
 			editor.addToolbarButton("add environment", "http://www.freefavicon.com/freefavicons/network/environment_add.gif", function(evt, btn) {
-				emacs.commands.addEnvironment.exec(editor);		
+					emacs.commands.addEnvironment.exec(editor);		
   			}, {"addevent":1})
   		}
 })(jQuery);
