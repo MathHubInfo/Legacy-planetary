@@ -31,7 +31,8 @@ function wysiwyg_ace_ace_editor() {
 		'plugin callback' => 'wysiwyg_ace_ace_plugins',
 		'versions' => array(
 			'0.2' => array(
-				'js files' => array('ace_toolbar.js', 'emacs.js', 'ace0-2.js', 'exhibit/exhibit-api.js'),
+				'js files' => array('ace_toolbar.js', 'emacs.js', 'ace0-2.js', 'exhibit/exhibit-api.js', 
+				  					'text-prefix-complete.js', 'underscore.js', 'jsonform.js'),
 				),
 			),
 		);
@@ -84,10 +85,12 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 	drupal_add_library('system', 'ui.button');
 	drupal_add_library('system', 'ui.dialog');
 
+	dd(url("", array("absolute"=>true)));
+	
 	drupal_add_html_head_link(array(
       'rel' => 'exhibit-data',
       'type' => 'application/json',
-      'href' => url(drupal_get_path("module", "wysiwyg_ace")."/editors/js/environments.js", array('absolute' => TRUE)),
+      'href' => url("", array("absolute"=>true)).drupal_get_path("module", "wysiwyg_ace")."/editors/js/environments.js",
     ));
 
 

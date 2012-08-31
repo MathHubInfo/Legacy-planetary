@@ -1,5 +1,5 @@
 (function($) {
-		
+			
 /**
  * Attach this editor to a target element.
  */

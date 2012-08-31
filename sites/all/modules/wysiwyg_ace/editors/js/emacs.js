@@ -1,14 +1,16 @@
 (function ($) {
 		window.aceEmacs = {};
-		 jQuery.get("dialogs.xml", function(data) {
-		 		 jQuery("body").append(data);
- 		 }, "text");
- 		
+ 		var loaded = false;
 		window.aceEmacs.prepareEmacsMode = function (editor) {
+			if (!loaded) {
+				jQuery.get(Drupal.settings.basePath+"sites/all/modules/wysiwyg_ace/editors/dialogs.xml", function(data) {
+						jQuery("body").append(data);
+				}, "text");
+		 	}
 			var emacs = window.ace.require("ace/keyboard/emacs").handler;
 			emacs.addCommands({
-					addEnvironment : function (editor) {
-						
+					addEnvironment : function (_editor) {
+						var editor = _editor;
 						$("#ace_cmd_dialog").dialog({
 								width: "450px",
 								close: function() {
@@ -18,28 +20,39 @@
 						Exhibit.jQuery("#ace_cmd_dialog").bind("onEnter", function(evt, data) {
 								db = data.db;
 								item = data.item;
-								template = db.getObject(item, "template");
+								var template = db.getObject(item, "template");
 								params = db.getObject(item, "params");
 								$("#ace_cmd_dialog").dialog("close");
 								$("#ace_properties_cmd_name").text(item);
 								$("#ace_properties_form").empty();
-								$("#ace_properties_form").jsonForm({
-										"schema" : params,
-										"onSubmit" : function (errors, values) {
-											if (errors) {
-												return ;
+								
+								if (params) {
+									var form = $("#ace_properties_form").jsonForm({
+											schema : params,
+											onSubmit : function (errors, values) {
+												if (errors) {
+													return false;
+												}
+												$("#ace_properties").dialog("close");
+												try {
+													editor.insert(_.template(template, values));
+												} catch (e) {
+													console.log(e);
+												}
+												setTimeout(function() {
+														editor.focus();
+												}, 100);
+												return false;
 											}
-											$("#ace_properties_form").close();
-											editor.insert(_.template(template, values));
-										}
-								});
-								$("#ace_properties_form button").submit(function (evt) {
-										evt.preventDefault();
-								});
-								$("#ace_properties").dialog();
-								$("#ace_properties").find("input, textarea, select").first().each(function(idx, obj) {
-										$(obj).focus();
-								});
+									});
+									setTimeout(function() {
+										$("#ace_properties").dialog();
+									}, 200);
+
+								} else {
+									editor.insert(_.template(template, {}));
+								}
+								
 						});
 					}
 			});
