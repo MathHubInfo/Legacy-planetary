@@ -1,0 +1,28 @@
+<script>
+(function ($) {
+window.emacs_dialog_select = function (self) {
+	console.log(self);
+	console.log($(self).text());
+	$("#ace_cmd_dialog").trigger("onEnter", { item : $(self).text()});
+}
+
+})(jQuery);
+</script>
+
+<div id="ace_cmd_dialog" style="display:none" xmlns:ex="http://simile.mit.edu/2006/11/exhibit#">
+	<div ex:role='facet' ex:expression ='.label' ex:facetClass='PrefixComplete' ex:facetLabel="Name filter"  ex:onEnter="#ace_cmd_dialog"> </div> 
+	<div class='linedWidgets'>
+		<div ex:role='view' ex:showHeader='false' ex:paginate='true' ex:pageSize='10' ex:width="200px" class="content"> 
+			<div ex:role='exhibit-lens' style='display: none;'>
+				<div>
+					<a ex:href-content=".label"><span ex:content='.label'></span></a>
+				</div>
+			</div>
+		</div>
+		<div ex:role='facet' ex:expression='.category' ex:facetLabel="Category" style="width:200px"></div> 
+	</div>
+</div>
+<div id="ace_properties" style="display:none">
+Options for environment <span id="ace_properties_cmd_name"></span>
+<form id="ace_properties_form"></form>
+</div>
