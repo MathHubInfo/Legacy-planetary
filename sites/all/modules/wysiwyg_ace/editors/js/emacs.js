@@ -5,6 +5,9 @@
 			if (!loaded) {
 				jQuery.get(Drupal.settings.basePath+"sites/all/modules/wysiwyg_ace/editors/dialogs.xml", function(data) {
 						jQuery("body").append(data);
+				    if (typeof exhibit != "undefined") {
+					exhibit.configureFromDOM();
+				    }
 				}, "text");
 		 	}
 			var emacs = window.ace.require("ace/keyboard/emacs").handler;

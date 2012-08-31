@@ -4,16 +4,23 @@ textarea .ace_editor {
 
 .cm-s-default span.cm-bracket {
     color: blue;
-}.linedWidgets .content {
-	float: left;
-	width: 200px;
 }
 
 .ui-button .envInsertIcon {
 	background-image: url(../images/addEnvironment.png);
 }
 
-.linedWidgets .content li {
+.linedWidgets .cmd_list {
+	float: left;
+	width: 200px;
+}
+
+.linedWidgets .cmd_category {
+	float: left;
+	width: 200px;
+}
+
+.linedWidgets .cmd_list li {
 	list-style-type : none;
 }
 
