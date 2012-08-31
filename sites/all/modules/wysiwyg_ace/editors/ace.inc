@@ -85,8 +85,6 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 	drupal_add_library('system', 'ui.button');
 	drupal_add_library('system', 'ui.dialog');
 
-	dd(url("", array("absolute"=>true)));
-	
 	drupal_add_html_head_link(array(
       'rel' => 'exhibit-data',
       'type' => 'application/json',
