@@ -551,7 +551,7 @@ function planetmath_menus_menu_default_menu_links() {
     'menu_name' => 'navigation',
     'link_path' => 'userpoints',
     'router_path' => 'userpoints',
-    'link_title' => 'Users by !points',
+    'link_title' => 'Recent activity',
     'options' => array(),
     'module' => 'system',
     'hidden' => '0',
