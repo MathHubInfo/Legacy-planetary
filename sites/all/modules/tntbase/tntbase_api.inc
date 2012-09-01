@@ -172,7 +172,6 @@ function tntbase_node_update($node) {
 	))
 	->where('e.nid = (:nid)', array(':nid' => $node->nid))
 		->execute()->fetchField();
-	dpm($path);
 	if ($path) {
 	// node has been rated before.
 		db_update('tntbase_url')
@@ -189,7 +188,13 @@ function tntbase_node_update($node) {
 	$language = $node->language;
 	$original = $node->original;
 	if (strlen($node->tnt_path)>0 && $node->body[$language][0]["value"]!=$original->body[$language][0]["value"]) {
-		tntbase_commit_file($node->body[$language][0]["value"], $node->tnt_path);
+		$new_rev = tntbase_commit_file($node->body[$language][0]["value"], $node->tnt_path);
+		dpm($new_rev);
+		db_update('tntbase_url')
+			->fields(array('tnt_path' => $node->tnt_path,
+						   'tnt_rev' => $new_rev))
+			->condition('nid', $node->nid)
+			->execute();
 	}
 }
 ?>
