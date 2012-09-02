@@ -694,8 +694,6 @@ function tntbase_get_document($FilePath) {
           'Path' => $FilePath
   );
   
-  dpm($Document, "Got ".$FilePath." ");
-
   if(false == $Source ||
   false == $Presentation ||
   false == $Title ||

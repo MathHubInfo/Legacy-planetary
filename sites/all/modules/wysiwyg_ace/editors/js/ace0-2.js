@@ -1,5 +1,5 @@
 (function($) {
-
+			
 /**
  * Attach this editor to a target element.
  */
@@ -20,19 +20,20 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
   	  cSettings[t[0]]=t[1];
   	}
   }
-  
+
   $(editorID).each(function (c, obj) {
   	  jQuery(obj).hide();
   	  
-  	  toolbardiv = jQuery("<div>").attr("id","ace_toolbar_"+params.field).addClass("ui-widget-header ui-corner-all");
   	  editordiv = jQuery("<div>").attr("id","ace_"+params.field).attr("style"," height:200px; position:relative");
-	  editorwrapper = jQuery("<div>").addClass("ace_wrapper").append(toolbardiv).append(editordiv);
-  	  
-  	  jQuery(obj).after(editorwrapper);
+	  
+  	  jQuery(obj).after(editordiv);
   	  var editor = ace.edit("ace_"+params.field);
+	  window.ace_toolbar.initToolbar(editor);
   	  editor.getSession().setValue(obj.value);
 	  editor.setTheme("ace/theme/twilight");
 	  editor.getSession().setMode("ace/mode/"+cSettings["mode"]);
+
+	  window.aceEmacs.prepareEmacsMode(editor);
 	  if (cSettings["ShareJS"]) {
 	  	  async.waterfall([
 	  	  		  function (callback) {

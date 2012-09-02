@@ -8,9 +8,18 @@ function latex_field_field_info() {
 			'description' => 'LaTeX Field.',
 			'default_widget' => 'latex_widget',
 			'default_formatter' => 'latex_formatter',
-			'settings' => array("filter" => "latex")
-		),
-	);
+			'settings' => array("filter" => "latex"),
+			'instance_settings' => 
+			 array('widget' => array(
+						 'active' => 1,
+						 'module' => 'latex_field',
+						 'settings' => 
+  						   array('filter' => 'tex_editor'),
+						 'type' => 'latex_widget',
+						 'weight' => '0',
+						 ))
+				   )
+		     );
 }
 
 /**
