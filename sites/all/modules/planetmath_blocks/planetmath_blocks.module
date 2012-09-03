@@ -455,7 +455,7 @@ function planetmath_blocks_block_userList() {
 
 function planetmath_blocks_block_everythingElse() {
   return array(
-      'subject' => 'Everything Else',
+      'subject' => 'Other Recent Activity',
       'content' => planetmath_blocks_blockThemeEverythingElseWithDate(planetmath_blocks_queryEverythingElse(),'created')
   );
 }
