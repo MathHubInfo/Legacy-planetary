@@ -21,8 +21,9 @@ define('PLANETMATH_BLOCKS_NUMBER_OF_REVIEWS_ON_BLOCK', 5);
 
 define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES',
        serialize(array('correction', 
-		       'request',
+		       'question',
 		       'image',
+		       'group',
 		       'problem',
 		       'solution',
 		       'review')));
@@ -66,8 +67,16 @@ function planetmath_blocks_queryEverythingElse($sortBy = 'n.changed') {
     INNER JOIN users u ON u.uid = n.uid
     WHERE n.`type` IN (:type) ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_EVERYTHING_ELSE_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => unserialize(PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES)));
   $return = array();
+  // We will filter out the groups that are not of subtype "Team".
   foreach ($results as $result) {
-    $return[] = $result;
+    if ($result->type == 'group') {
+      $subtype = node_load($result->nid)->field_group_subtype['und'][0]['value'];
+      if ($subtype == "Team") {
+	$return[] = $result;
+      }
+    } else {
+      $return[] = $result;
+    }
   }
   return $return;
 }
@@ -308,7 +317,7 @@ function planetmath_blocks_blockThemeEverythingElseWithDate($results, $sortBy = 
               . '</span><br />';
   }
 
-  //$html .= "</div>";
+  $html .= '<div style="text-align:right;">' . l('more', 'latest') . '</div>';
   return $html;
 }
 
