@@ -18,7 +18,7 @@ function planetmath_messages_menu() {
       'type' => MENU_CALLBACK,
       'page callback' => 'planetmath_messages_show',
       'page arguments' => array(1),
-      'access arguments' => array('create correction content')
+      'access arguments' => array('access comments')
   );
 
   return $items;
@@ -40,8 +40,6 @@ function planetmath_messages_get_all_messages(){
   $firstQuery->addField('n', 'type', 'my_type');
   $firstQuery->addField('fcb', 'comment_body_value', 'body');
 
-  // Note that the *order* in which these fields are added
-  // matters in terms of what we get back from the database.
   $secondQuery = db_select('node','n');
   $secondQuery->addField('n', 'nid', 'my_id');
   $secondQuery->addField('n', 'title', 'title');
@@ -55,20 +53,53 @@ function planetmath_messages_get_all_messages(){
   $secondQuery->addField('n', 'nid', 'nid');
   $secondQuery->addField('n', 'type', 'my_type');
   $secondQuery->addField('fdb', 'body_value', 'body');
-  $secondQuery->extend('PagerDefault')->limit(20);
-  $secondQuery->extend('TableSort');
 
-  // union to the first query here, order everything, and set the fancy UI stuff
- $result = $secondQuery->union($firstQuery, 'UNION ALL')
-   ->execute();
+  $mergedQuery = $secondQuery->union($firstQuery, 'UNION ALL');
+
+  //dd("WITHOUT COUNT QUERY AND PAGER");
+  //dd($mergedQuery);
+
+  $firstCounter = db_select('comment','c');
+  $firstCounter->addField('c', 'cid', 'my_id');
+  $firstCounter->join('node','n','n.nid = c.nid');
+  $firstCounter->leftJoin('field_data_comment_body','fcb','c.cid = fcb.entity_id');
+  $firstCounter->join('users','u','u.uid = c.uid');
+
+  $secondCounter = db_select('node','n');
+  $secondCounter->addField('n', 'nid', 'my_id');
+  $secondCounter->condition('type','forum', '=');
+  $secondCounter->leftJoin('field_data_body','fdb','n.nid = fdb.entity_id');
+  $secondCounter->join('users','u','u.uid = n.uid');
+
+  $innercountQuery = $secondCounter->union($firstCounter, 'UNION ALL');
+  $countQuery = db_select($innercountQuery);
+  $countQuery->addExpression('COUNT(*)','count');
+
+  // sorting is broken, among other aspects of this: http://drupal.org/node/1770742
+  /* $result = $mergedQuery->orderBy('created','DESC')->extend('PagerDefault')->limit(20); */
+  // so instead we use this for now, which still has problems but this *code* is correct
+  $result = $mergedQuery->extend('PagerDefault')->limit(20);
+
+  //dd("WITH PAGER BUT NO COUNT QUERY");
+  //dd($result);
+
+  $tmp = &$result;
+  $tmp->setCountQuery($countQuery);
+
+  dsm($result->__toString()); 
+  dsm($countQuery->__toString()); 
+
+  //dd("WITH COUNT QUERY AND PAGER");
+  //dd($result);
+
+  $result->execute();
 
   return $result;
 }
 
 function planetmath_messages_show($nid){
   global $base_url;
-  //dd('in the show messages function');
-  //dd($nid);
+
   $count1=db_query("SELECT COUNT(nid) as count FROM comment")->fetchObject();
   $count2=db_query("SELECT COUNT(nid) as count FROM node WHERE type = 'forum'")->fetchObject();
   if($count1->count > 0 || $count2->count > 0) {
