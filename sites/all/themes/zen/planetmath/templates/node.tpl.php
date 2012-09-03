@@ -119,10 +119,14 @@
      // Note: we found a module that could be modified to display group content in the sidebar, which would
      // probably look better than what we have here.
      print render($content['planetmath_group_users']); 
-   ?> <br />
+     print l("(see full roster)", "members/".$node->nid, array('attributes' => array('style' => 'font-style:italic;')));
+   ?> 
+<br />
+<br />
    <?php
      print render($content['planetmath_group_content']);
-   ?> <br />
+     print l("(see full list)", "group-content/".$node->nid, array('attributes' => array('style' => 'font-style:italic;')));
+   ?> <br /><br />
    Type:
    <?php
      //dd($content['field_group_subtype'][0]);
