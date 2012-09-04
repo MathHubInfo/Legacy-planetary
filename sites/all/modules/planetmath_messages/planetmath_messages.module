@@ -25,19 +25,19 @@ function planetmath_messages_menu() {
 }
 
 function planetmath_messages_get_all_messages_workaround(){
-$results = db_query("SELECT n.nid AS my_id, n.title AS title, n.uid AS uid, n.changed AS changed, n.created AS created, u.name AS username, n.nid AS nid, n.type AS my_type, fdb.body_value AS body
+$results = db_query("(SELECT n.nid AS my_id, n.title AS title, n.uid AS uid, n.changed AS changed, n.created AS created, u.name AS username, n.nid AS nid, n.type AS my_type, fdb.body_value AS body
 FROM node n
 LEFT OUTER JOIN field_data_body fdb ON n.nid = fdb.entity_id
 INNER JOIN users u ON u.uid = n.uid
 WHERE (type = 'forum')
-LIMIT 20 OFFSET 0
+ORDER BY created DESC LIMIT 20 OFFSET 0)
 UNION ALL
-SELECT c.cid AS my_id, c.subject AS title, c.uid AS uid, c.changed AS changed, c.created AS created, c.name AS username, n.nid AS nid, n.type AS my_type, fcb.comment_body_value AS body
+(SELECT c.cid AS my_id, c.subject AS title, c.uid AS uid, c.changed AS changed, c.created AS created, c.name AS username, n.nid AS nid, n.type AS my_type, fcb.comment_body_value AS body
 FROM comment c
 INNER JOIN node n ON n.nid = c.nid
 LEFT OUTER JOIN field_data_comment_body fcb ON c.cid = fcb.entity_id
 INNER JOIN users u ON u.uid = c.uid
-LIMIT 20 OFFSET 0");
+ORDER BY created DESC LIMIT 20 OFFSET 0)");
   $return = array();
   foreach ($results as $result) {
     $return[] = $result;
