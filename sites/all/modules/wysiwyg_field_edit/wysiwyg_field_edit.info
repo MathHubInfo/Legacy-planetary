@@ -1,0 +1,12 @@
+name = "Wysiwyg Local Editing"
+description = "Allows editing only the text part of a content type"
+dependencies[] = wysiwyg
+package = "User interface"
+core = 7.x
+
+
+; Information added by drupal.org packaging script on 2010-03-17
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "wysiwyg_field_edit"
+datestamp = "1308544260"
