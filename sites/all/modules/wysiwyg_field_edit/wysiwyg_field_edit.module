@@ -1,0 +1,89 @@
+<?php
+// $Id: wysiwyg_codemirror.module,v 1.1 2010/03/17 16:48:12 drifter Exp $
+/**
+ * @file
+ * wysiwyg_codemirror is an plugin for adding syntax highlighting to the tinyMCE editor
+ * Zoltan Varady/FARM 2010
+ */
+
+function wysiwyg_field_edit_field_formatter_info() {
+	return array('localedit' => array(
+		'label'=>t('Local Editable'),
+		'field types' => array('text', 'text_long', 'text_with_summary'),
+	));
+}
+
+
+function wysiwyg_field_edit_menu() {
+	$items['localedit/%node/%'] = array(
+	    'page callback' => 'drupal_get_form',
+	    'page arguments' => array('local_edit_form'),
+	    'access callback' => array('node_access'),
+	    'access arguments' => array('update', 1),
+	    'type' => MENU_NORMAL_ITEM,
+	);
+	return $items;
+}
+
+function local_edit_form($form, &$form_state) {
+	$nid = arg(1); 
+	$field = arg(2);
+	$node = entity_load("node", array($nid));
+	$node = $node[$nid];
+	$form1 = array();
+	field_attach_form("node", $node, $form1, $form_state);
+	$form[$field] = $form1[$field];
+	$form["#node"] = $node;
+	$form["#field"] = $field;
+	
+	$form["submit"] = array(
+		"#type"=>"submit", 
+		"#value" => "Save",
+		"#callback"=>array("local_edit_form_submit")
+	);
+	return $form;
+}
+
+function local_edit_form_submit($form, &$form_state) {
+	$field = $form["#field"];
+	$lang = $form["#node"]->language;
+	$node = &$form["#node"];
+	$fld = &$node->$field;
+	$fld[$lang]["0"]["value"]=$form_state["values"][$field][$lang]["0"]["value"];
+	node_save($node);
+}
+
+function wysiwyg_field_edit_theme($existing, $type, $theme, $path) {
+	return array(
+		"wysiwyg_field_local" => array(
+ 			'render element' => 'element', 
+      		'template' => 'wysiwyg_field_local',		
+      	)
+	);
+}
+
+function wysiwyg_field_edit_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+	$update = node_access("update", entity);
+	
+	switch ($display['type']) {
+		// This formatter simply outputs the field as text and with a color.
+		case 'localedit':
+			$display['type']="text_default";
+			$elem = text_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display);
+			foreach ($items as $delta => $item) {
+				if ($update) {
+				$element[$delta]['#markup'] = theme("wysiwyg_field_local", 
+					array(
+						"content" => $elem[$delta]["#markup"], 
+						"link" => url('<front>')."localedit/".$entity->nid."/".$field["field_name"]));
+				} else 
+				{
+					$element[$delta]['#markup'] = $elem[$delta]["#markup"];			
+				}
+			}
+			break;
+	}
+	
+	return $element;
+}
