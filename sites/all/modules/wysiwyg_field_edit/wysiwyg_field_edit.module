@@ -64,7 +64,7 @@ function wysiwyg_field_edit_theme($existing, $type, $theme, $path) {
 
 function wysiwyg_field_edit_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
 	$element = array();
-	$update = node_access("update", entity);
+	$update = node_access("update", $entity);
 	
 	switch ($display['type']) {
 		// This formatter simply outputs the field as text and with a color.
