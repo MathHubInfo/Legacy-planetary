@@ -1,12 +1,6 @@
 <?php
 
 function collection_menu() {
-  //$items['collections']
-  //$items['collection/%']
-  //$items['collection/%/attach/%']
-  //$items['collection/%/detach/%']
-  //$items['user/%/collections']
-
   $items = array();
 
   $items['collection/%/reorder'] = array(
@@ -47,6 +41,13 @@ function collection_menu() {
   return $items;
 }
 
+/* This function allows the user to attach articles and problems to a collection.
+   - TODO: it would be good to improve this presentation so that the *selection*
+     could be filtered in a reasonable way, e.g. filtering by "my articles"
+     or MSC or some other criteria.  Right now, the user has to choose from
+     the entire collection of articles, which isn't particularly elegant or feasible.
+     Compare issue #144 on Github.
+ */
 function collection_attach_content($nid) {
   global $base_url;
 
@@ -138,8 +139,7 @@ function collection_confirm_attachment($collection_id, $content_id) {
       ->execute();
 
   $content = node_load($content_id);
-
-  drupal_set_message($content->type . ' has successfully attached to collection');
+  drupal_set_message('The ' . $content->type . ' has been added to this collection');
   drupal_goto('node/' . $collection_id);
 }
 
@@ -185,7 +185,7 @@ function collection_node_view($node) {
     $header = array(
 		    array('data' => 'Title', 'field' => 'n.nid'),
 		    array('data' => "Author", 'field' => 'n.title'),
-		    array('data' => "Paradata", 'field' => 'paradata'),
+		    array('data' => "My info", 'field' => 'paradata'),
 		    );
 
     // iterate over this content and construct the rows of the table
@@ -197,7 +197,9 @@ function collection_node_view($node) {
 
       $paradataColumn = "";
       if ($user->uid){
-	// content can either be a problem or an article
+	/* content can either be a problem or an article,
+           for problems, we will record whether or not the USER has
+	   submitted a solution. */
 	if ($content_item->type=='problem') {
 	  // we will find out if the current user has
 	  // submitted a solution to this problem
@@ -220,7 +222,10 @@ function collection_node_view($node) {
 	    $paradataColumn .= l("Submit a solution",'node/add/solution/'.$sol->pid);
 	  }        
 	} 
-	/* we deal with articles in a slightly different way... */
+	/* we deal with articles by showing whether the article in question
+	   has been read... NB. to work properly, this requires a patch to the
+	   userpoints module, need to get that sorted out -- and ideally make the
+           corresponding logging "opt-in". */
 	else if ($content_item->type=='article') {
 	  $sql = "select count(*) AS count from userpoints_txn ".
 	    "WHERE uid=:uid AND entity_id=:nid AND points=0";
@@ -234,6 +239,8 @@ function collection_node_view($node) {
 	    $paradataColumn .= "not yet read";
 	  }
 	}
+      } else {
+	$paradataColumn = "User not logged in";
       }
       
       $rows[] = array(
