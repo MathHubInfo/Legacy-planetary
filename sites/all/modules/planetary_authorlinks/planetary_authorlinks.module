@@ -53,13 +53,14 @@ function planetary_authorlinks_countLinks($nid){
   $node = node_load($nid);
   // We *should* actually be able to interact with quite a few more types
   // of nodes, but we can come back to that.
-  if ($node->type == 'article' 
-      || $node->type == 'problem'
-      || $node->type == 'solution') {
-    return TRUE;
-  } else {
-    return FALSE;
+  if($node){
+    if ($node->type == 'article' 
+	|| $node->type == 'problem'
+	|| $node->type == 'solution') {
+      return TRUE;
+    }
   }
+  return FALSE;
 }
 
 /* Implements hook_page_build
@@ -67,8 +68,8 @@ function planetary_authorlinks_countLinks($nid){
  */
 function planetary_authorlinks_page_build(&$page){
   $node = menu_get_object();
-  if($node && $node->type == 'article' || $node->type == 'problem') {
-    $catted_links = implode(' <br> ', $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links']);
+  if(is_object($node) && ($node->type == 'article' || $node->type == 'problem')) {
+    $catted_links = '<ul><li>'.implode(' <br><li> ', $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links']).'</ul>';
     $page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
     unset($page['content']['system_main']['nodes'][$node->nid]['planetary_links']);
   }
