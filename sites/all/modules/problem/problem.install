@@ -82,29 +82,6 @@ function _problem_installed_instances() {
 					    ),
 			'type' => 'latex_widget',
 			),
-      // hoping this is the right way to make the label hidden
-      'display' => array(
-			 'default' => array(
-					    'label' => 'hidden',
-					    'module' => 'latex_field',
-					    'settings' => array(),
-					    'type' => 'latex_formatter',
-					    'weight' => '6',
-					    ),
-			 'full' => array(
-					 'label' => 'hidden',
-					 'module' => 'latex_field',
-					 'settings' => array(),
-					 'type' => 'latex_formatter',
-					 'weight' => '0',
-					 ),
-			 'teaser' => array(
-					   'label' => 'above',
-					   'settings' => array(),
-					   'type' => 'hidden',
-					   'weight' => 0,
-					   ),
-			 )
     ),
   );
   return $instances;

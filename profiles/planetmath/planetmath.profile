@@ -1391,6 +1391,25 @@ return false;
                         ),
                   array(
                         'module' => 'planetmath_blocks',
+                        'delta' => 'reverseproblem',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -32,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return planetmath_blocks_countReverseProblems(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'planetmath_blocks',
                         'delta' => 'solution',
                         'theme' => $theme_default,
                         'status' => 1,

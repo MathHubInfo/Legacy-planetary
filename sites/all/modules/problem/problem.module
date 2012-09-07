@@ -38,7 +38,6 @@ function problem_menu() {
       'page arguments' => array(1),
       'access arguments' => array('create correction content')
   );
-
   
   $items['problems/confirm/%/%'] = array(
       'title' => 'Confirm attachment',
@@ -54,7 +53,14 @@ function problem_menu() {
       'page callback' => 'problem_decouple_article_problem_connection',
       'page arguments' => array(2,3),//'nid_of_article','nid_of_problem'),
       'access arguments' => array('create correction content'));
-   
+
+  $items['solutions/%'] = array(
+      'title' => 'List of solutions',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'problem_list_solutions',
+      'page arguments' => array(1),
+      'access arguments' => array('create correction content')
+  );   
   
   return $items;
 }
@@ -88,13 +94,11 @@ function problem_get_all_problems(){
   return $result;
 }
 
+// TODO - enhancement, don't let the same problem be attached twice
 function problem_attach_problem($nid){
   global $base_url;
-  //dd('in the attach prob func');
-  //dd($nid);
 
   $count=db_query("SELECT COUNT(nid) as count FROM node WHERE type = 'problem'")->fetchObject();
-
 
   if($count->count > 0) {
     $problems = problem_get_all_problems();
@@ -115,6 +119,7 @@ function problem_attach_problem($nid){
 						                  .$problem->nid)))
 		      );
     }
+    // TODO - Actually should connect the new problem to the article
     return l('Add a new problem', 'node/add/problem') 
            . theme('table', array(
 				  'header' => $header,
@@ -131,8 +136,6 @@ function problem_attach_problem($nid){
 }
 
 function theme_attach_icon($variables){
-  //dd('vars');
-  //dd($variables);
   $output = l(
 	      t('Attach problem'),
 	      $variables['url'],
@@ -179,22 +182,6 @@ function problem_view_getLinks($node) {
       'similar-problem' => l('Add a similar Problem', 'node/add/problem')
   );
   return $links;
-}
-
-// not clear we really want to do this, instead we could just put them in a block
-function problem_view_renderSolutions($problem){
-  $solutions = problem_mode_getSolutions($problem);
-  if (!empty($solutions)) {
-    $return = array();
-    foreach($solutions as $solution){
-      $return[] = l($solution->title, 'node/'.$solution->nid);
-    }
-    $out = "<h3>Solutions</h3>";
-    $out .= theme('item_list', array('items' => $return));
-    return $out;
-  } else {
-    return;
-  }
 }
 
 function problem_node_insert($node) {
@@ -264,7 +251,7 @@ function problem_node_view($node){
 // From this page we can either add a new problem or attach an existing one
 function problem_add_links($node) {
     $links = array(
-        'attach-problem' => l('Attach a problem to this article', 'problems/' . $node->nid. '/attach')
+        'attach-problem' => l('Attach a problem', 'problems/' . $node->nid. '/attach')
     );
     return $links;
 }
