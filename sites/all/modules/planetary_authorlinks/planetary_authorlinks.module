@@ -1,5 +1,9 @@
 <?php
 
+/* The original version of this module just imploded the list of links
+   and stuck it into the theme as-is.  A rewrite would change this so
+   that the links show up in a block instead.  Let's see if we can,
+   for now, just define a block, and get it to show up at all... */
 
 function planetary_authorlinks_theme($existing, $type, $theme, $path) {
   return array(
@@ -10,5 +14,51 @@ function planetary_authorlinks_theme($existing, $type, $theme, $path) {
 }
 
 function theme_planetary_links($variables) {
-  return implode(' | ', $variables['links']);
+  return implode(' <br> ', $variables['links']);
+}
+
+// This function sets up the contents of the author interaction block.
+// Looks pretty good for demo content at the moment, but it's still tricky
+// to see how we're going to get the links in there...
+function planetary_authorlinks_block($nid) {
+  $node = node_load($nid);
+  return array(
+      'subject' => 'Interact',
+      'content' => "Somehow we have to get the links to show up here.  We currently have the node, but not rendered content... " . '``' . $node->textitle . "''"
+  );
+}
+
+/* Implements hook_block_view 
+ * This works in combination with the block defined in planetary_authorlinks.install
+ * and the contents defined just above in planetary_authorlinks_block
+ * However, for better functioning, we need to sue hook_page_build, see below
+ */
+function planetary_authorlinks_block_view($delta = '') {
+  $block = array();
+
+  if ($delta == 'authorlinks') {
+    $block = planetary_authorlinks_block(arg(1));
+  }
+
+  return $block;
+}
+
+// Somehow this is going to reach inside the node and get the # of links back out
+// presumably they are just stored in a field, so that should be
+// pretty straightforward.
+function planetary_authorlinks_countLinks($nid){
+  // in fact, we should only return TRUE if there's more than one link
+  return TRUE;
+}
+
+/* Implements hook_page_build
+ * See comments at http://drupal.stackexchange.com/questions/31488/using-hook-page-alter-to-move-node-render-items-into-blocks
+ */
+function planetary_authorlinks_page_build(&$page){
+  $node = menu_get_object();
+  if($node && $node->type == 'article' || $node->type == 'problem') {
+    $catted_links = implode(' <br> ', $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links']);
+    $page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
+    unset($page['content']['system_main']['nodes'][$node->nid]['planetary_links']);
+  }
 }
