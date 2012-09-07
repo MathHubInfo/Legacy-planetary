@@ -920,25 +920,25 @@ function planetmath_profile_configure_groups () {
                                      "delete own article content"));
 
   /*??*/
-  $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-  $og_field['field']['settings']['target_type'] = 'node';
-  $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
-    'status' => TRUE,
-    'action' => 'none',
-    'fallback' => 'none',
-    'skip_perm' => FALSE,
-  );
-  og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
+  /* $og_field['field']['settings']['target_type'] = 'node'; */
+  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
+  /*   'status' => TRUE, */
+  /*   'action' => 'none', */
+  /*   'fallback' => 'none', */
+  /*   'skip_perm' => FALSE, */
+  /* ); */
+  /* og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field); */
 
-  $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-  $og_field['field']['settings']['target_type'] = 'node';
-  $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
-    'status' => TRUE,
-    'action' => 'none',
-    'fallback' => 'none',
-    'skip_perm' => FALSE,
-  );
-  og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field);
+  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
+  /* $og_field['field']['settings']['target_type'] = 'node'; */
+  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
+  /*   'status' => TRUE, */
+  /*   'action' => 'none', */
+  /*   'fallback' => 'none', */
+  /*   'skip_perm' => FALSE, */
+  /* ); */
+  /* og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field); */
   /*??*/
 
   planetmath_og_group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
