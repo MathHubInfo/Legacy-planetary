@@ -47,8 +47,19 @@ function planetary_authorlinks_block_view($delta = '') {
 // presumably they are just stored in a field, so that should be
 // pretty straightforward.
 function planetary_authorlinks_countLinks($nid){
-  // in fact, we should only return TRUE if there's more than one link
-  return TRUE;
+  // in fact, we should only return TRUE if there's more than one link..
+  // and I don't know a good way to do that starting with only the $nid.
+  // So instead, we fake it.
+  $node = node_load($nid);
+  // We *should* actually be able to interact with quite a few more types
+  // of nodes, but we can come back to that.
+  if ($node->type == 'article' 
+      || $node->type == 'problem'
+      || $node->type == 'solution') {
+    return TRUE;
+  } else {
+    return FALSE;
+  }
 }
 
 /* Implements hook_page_build
