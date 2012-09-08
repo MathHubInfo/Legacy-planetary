@@ -94,5 +94,8 @@ function planetary_authorlinks_page_build(&$page){
   }
   // ditch the representation on the node (we do this without
   // compunction if the user isn't logged in!)
-  unset($page['content']['system_main']['nodes'][$node->nid]['planetary_links']);
+  if (isset($node->nid) &&
+      isset($page['content']['system_main']['nodes'][$node->nid]['planetary_links'])) {
+    unset($page['content']['system_main']['nodes'][$node->nid]['planetary_links']);
+  }
 }
