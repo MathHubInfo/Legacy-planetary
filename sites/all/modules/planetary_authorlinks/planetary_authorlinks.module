@@ -43,13 +43,17 @@ function planetary_authorlinks_block_view($delta = '') {
   return $block;
 }
 
-// Somehow this is going to reach inside the node and get the # of links back out
-// presumably they are just stored in a field, so that should be
-// pretty straightforward.
+// This should reach inside the node and get the # of links back out
+// in particular, the function should return TRUE iff there's more than zero links...
+// however, since the list of links is currently constructed at node view time,
+// I don't know a good way to do that starting with only the $nid!
+// So instead, we fake it.
+//
+// Further note: the "interact" box should display different contents for authors/owners
+// and for casual users.  (In general this will be determined by the links, of course,
+// but note that if there are zero links, then the box will not show up at all.  I guess
+// maybe there will always an "add to a collection" link, for logged in users...)
 function planetary_authorlinks_countLinks($nid){
-  // in fact, we should only return TRUE if there's more than one link..
-  // and I don't know a good way to do that starting with only the $nid.
-  // So instead, we fake it.
   $node = node_load($nid);
   // We *should* actually be able to interact with quite a few more types
   // of nodes, but we can come back to that.
@@ -66,6 +70,10 @@ function planetary_authorlinks_countLinks($nid){
 
 /* Implements hook_page_build
  * See comments at http://drupal.stackexchange.com/questions/31488/using-hook-page-alter-to-move-node-render-items-into-blocks
+ *
+ * NOTE: the operation of "sticking contents into the block" is only meaningful if
+ * the block exists.  Currently, it always exists for the given node types, but in
+ * the future it may not.  See comments on function above.
  */
 function planetary_authorlinks_page_build(&$page){
   $node = menu_get_object();
@@ -73,8 +81,13 @@ function planetary_authorlinks_page_build(&$page){
                          || $node->type == 'problem'
                          || $node->type == 'solution'
                          || $node->type == 'collection')) {
-    $catted_links = '<ul><li>'.implode(' <br><li> ', $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links']).'</ul>';
+    // grab the original set of links from the node object
+    $links = $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links']
+    // concatenate them
+    $catted_links = '<ul><li>' . implode(' <br><li> ', $links) . '</ul>';
+    // stick that into the block
     $page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
+    // ditch the representation on the node
     unset($page['content']['system_main']['nodes'][$node->nid]['planetary_links']);
   }
 }
