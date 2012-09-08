@@ -54,6 +54,7 @@ function planetary_authorlinks_block_view($delta = '') {
 // but note that if there are zero links, then the box will not show up at all.  I guess
 // maybe there will always an "add to a collection" link, for logged in users...)
 function planetary_authorlinks_countLinks($nid){
+  if (user_is_logged_in()) {
   $node = node_load($nid);
   // We *should* actually be able to interact with quite a few more types
   // of nodes, but we can come back to that.
@@ -64,6 +65,7 @@ function planetary_authorlinks_countLinks($nid){
         || $node->type == 'collection') {
       return TRUE;
     }
+  }
   }
   return FALSE;
 }
@@ -76,18 +78,21 @@ function planetary_authorlinks_countLinks($nid){
  * the future it may not.  See comments on function above.
  */
 function planetary_authorlinks_page_build(&$page){
-  $node = menu_get_object();
-  if(is_object($node) && ($node->type == 'article' 
-                         || $node->type == 'problem'
-                         || $node->type == 'solution'
-                         || $node->type == 'collection')) {
-    // grab the original set of links from the node object
-    $links = $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links']
-    // concatenate them
-    $catted_links = '<ul><li>' . implode(' <br><li> ', $links) . '</ul>';
-    // stick that into the block
-    $page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
-    // ditch the representation on the node
-    unset($page['content']['system_main']['nodes'][$node->nid]['planetary_links']);
+  if (user_is_logged_in()) {
+    $node = menu_get_object();
+    if(is_object($node) && ($node->type == 'article' 
+			    || $node->type == 'problem'
+			    || $node->type == 'solution'
+			    || $node->type == 'collection')) {
+      // grab the original set of links from the node object
+      $links = $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links'];
+      // concatenate them
+      $catted_links = '<ul><li>' . implode(' <br><li> ', $links) . '</ul>';
+      // stick that into the block
+      $page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
+    }
   }
+  // ditch the representation on the node (we do this without
+  // compunction if the user isn't logged in!)
+  unset($page['content']['system_main']['nodes'][$node->nid]['planetary_links']);
 }
