@@ -56,7 +56,8 @@ function planetary_authorlinks_countLinks($nid){
   if($node){
     if ($node->type == 'article' 
 	|| $node->type == 'problem'
-	|| $node->type == 'solution') {
+	|| $node->type == 'solution'
+        || $node->type == 'collection') {
       return TRUE;
     }
   }
@@ -68,7 +69,10 @@ function planetary_authorlinks_countLinks($nid){
  */
 function planetary_authorlinks_page_build(&$page){
   $node = menu_get_object();
-  if(is_object($node) && ($node->type == 'article' || $node->type == 'problem')) {
+  if(is_object($node) && ($node->type == 'article' 
+                         || $node->type == 'problem'
+                         || $node->type == 'solution'
+                         || $node->type == 'collection')) {
     $catted_links = '<ul><li>'.implode(' <br><li> ', $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links']).'</ul>';
     $page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
     unset($page['content']['system_main']['nodes'][$node->nid]['planetary_links']);
