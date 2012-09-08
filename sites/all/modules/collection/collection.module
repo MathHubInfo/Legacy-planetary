@@ -1,5 +1,27 @@
 <?php
 
+/* collections functionality (by Joe and Lucas)
+ *
+ * Collections are like "playlists" for math content
+ * You can add ARTICLES, PROBLEMS, and other COLLECTIONS to a given collection
+ * So, in this way they also provide a sort of ad hoc "books" functionality.
+ * But the original intention is to create problem sets.
+ *  - To this end, collections are displayed along with "personal metadata"
+ *    or "paradata" which show the user's previous interaction with the content.
+ *
+ *  This module implements page view tracking, which adds "zero
+ *  points" to a user's history when they view an article.  This NEEDS
+ *  A PATCH TO THE USERPOINTS MODULE.  It should probably also be made
+ *  "opt in", and maybe moved into a different module to make it more
+ *  clear what's going on.
+ *
+ * TODO: 
+ *  - Collections should be co-authorable or at least transferable to other users.
+ *  - Allow other types of content to be included?  (E.g. images? solutions?)
+ *  - Build a nice LaTeXML/LaTeX tool that pulls all of the content from a collection
+ *    into one page or a printable PDF that can then be downloaded and used offline.
+ */
+
 function collection_menu() {
   $items = array();
 
@@ -22,7 +44,6 @@ function collection_menu() {
     'access arguments' => array('create correction content')
   );
 
-
   $items['collection/confirm/%/%'] = array(
     'title' => 'Confirm attachment',
     'type' => MENU_CALLBACK,
@@ -38,6 +59,14 @@ function collection_menu() {
     'page arguments' => array(2, 3), //'nid_of_article','nid_of_collection'),
     'access arguments' => array('create correction content'));
 
+  $items['collection/%/insert'] = array(
+    'title' => 'Insert into a collection',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'collection_insert_content',
+    'page arguments' => array(1),
+    'access arguments' => array('create correction content')
+  );
+
   return $items;
 }
 
@@ -51,7 +80,7 @@ function collection_menu() {
 function collection_attach_content($nid) {
   global $base_url;
 
-  $count = db_query("SELECT COUNT(nid) as count FROM node WHERE type IN ('article','problem')")->fetchObject();
+  $count = db_query("SELECT COUNT(nid) as count FROM node WHERE type IN ('article','problem','collection')")->fetchObject();
 
 //if we have articles or problems
   if ($count->count > 0) {
@@ -99,6 +128,77 @@ function collection_attach_content($nid) {
   }
 }
 
+// very similar to collection_attach_content, above
+// but for this function, we start with an item and have to select
+// a collection to add it to
+//
+// TODO/IMPROVEMENTS:
+// - If there's only ONE viable collection, I suppose we could just insert into it
+//   automatically.
+// - Or, to generalize that, we could set a "default collection" so that people insert
+//   things into their default collection directly, skipping the
+//   "insert into a collection" menu.
+
+function collection_insert_content($nid) {
+  global $base_url;
+  global $user;
+
+  // if there is some collection available for us to use?
+  // ... we won't allow people to insert the collection into itself, sorry Mr Russell
+  // TODO -  we really shouldn't allow people to insert into collections
+  // that already *include* the item once (in my opinion)... we can deal with that
+  // via a subquery.  However, maybe we'll come back to that after we have the ability
+  // to add content to collections directly.
+  $count = db_query("SELECT COUNT(nid) as count FROM node ".
+		    "WHERE type = 'collection' ".
+		    "AND uid = :uid ".
+		    "AND nid <> :nid", array(':uid'=>$user->uid,
+					     ':nid'=>$nid))->fetchObject();
+  if ($count->count > 0) {
+    // get all possible collections that the user might have in mind.
+    // we filter out the $nid (which is safe to do even if the $nid
+    // does not correspond to a collection, because of course in that case
+    // it is filtered out anyway)
+    $all_collections = _collection_getAllCollections($nid);
+
+    //construct the header of the table
+    $header = array(array('data' => 'Title', 'field' => 'n.nid'),
+                    array('data' => 'Attach', 'field' => 'Insert into')
+		    );
+
+    // iterate over the content and construct the rows of the table 
+    $rows = array();
+    foreach ($all_collections as $content_item) {
+      $rows[] = array(
+        array('data' => l($content_item->title, 'node/' . $content_item->nid),
+	      'field' => 'n.title'),
+        array('data' => 
+	      theme_insert_content_icon(
+					// NEED TO FIX THIS LINK!...
+					// Or maybe not, I guess it works directly...
+					// OH I see, it just needs to be reversed...
+					array('type' => $content_item->type, 
+					      'url' => $base_url . '/collection/confirm/'
+                                                                 . $content_item->nid
+					                         . '/'
+                                                                 . $nid)))
+		      );
+    }
+
+    return l('Add a new collection', 'node/add/collection')//on top of the table
+        . theme('table', array(
+			       'header' => $header,
+			       'rows' => $rows
+			       ))
+        . theme('pager'); //adds the pagination element in the bottom of the table
+  }
+  else {
+    //in the (even possible?) occasion we do not have any content to list
+    drupal_set_message("Sorry there is no valid collection to add to!");
+    drupal_goto('node/'.$nid);
+  }
+}
+
 /*
  * helper function to return all articles and problems of the site
  * to be displayed in attach to collection list
@@ -115,6 +215,23 @@ function _collection_getAllContent() {
   return $result;
 }
 
+/*
+ * helper function to return all articles and problems of the site
+ * to be displayed in attach to collection list
+ */
+
+function _collection_getAllCollections($nid) {
+  $query = db_select('node', 'n')
+      ->fields('n')
+      ->condition('type', 'collection', '=')
+      ->condition('nid', $nid, '<>')
+      ->extend('PagerDefault')
+      ->extend('TableSort')
+      ->limit(20);
+  $result = $query->execute();
+  return $result;
+}
+
 //the way markup is created for attach link in the table
 function theme_attach_content_icon($variables) {
   $output = l(
@@ -122,6 +239,18 @@ function theme_attach_content_icon($variables) {
     'attributes' => array(
       'class' => "attach_content_icon",
       'title' => t('Attach this ' . $variables['type'] . ' to this collection'),
+      ))
+  );
+  return $output;
+}
+
+//the way markup is created for attach link in the table
+function theme_insert_content_icon($variables) {
+  $output = l(
+      t('Add to'), $variables['url'], array(
+    'attributes' => array(
+      'class' => "insert_content_icon",
+      'title' => t('Insert this into to this collection'),
       ))
   );
   return $output;
@@ -143,39 +272,69 @@ function collection_confirm_attachment($collection_id, $content_id) {
   drupal_goto('node/' . $collection_id);
 }
 
-/* Add some links for the collection owner.  
-* - Note: actually, these will probably be showing up for
-*         everyone, and it would really be better
-*         for them to go into an "interact box".
-*
-* - Also: It would be good to have a "remove item" link, or make
-*         the existing link into "add/remove" and provide that functionality
-*
-* NB: we only show the "reorder" link if there's more than one entry. */
+/* Add some links FOR THE COLLECTION OWNER.
+ *
+ * - Also: It would be good to have a "remove item" link, or make
+ *         the existing link into "add/remove" and provide that functionality
+ *
+ * NB: we only show the "reorder" link if there's more than one entry. */
 
 function collection_add_links($node, $rows){
+  global $user;
+
   $links = array(
-		 'add-to-collection' => l("Attach item", 
+		 'add-to-collection' => l("Add to this collection", 
 					  'collection/' . $node->nid . '/attach')
 		 );
   if (count($rows) > 1) {
-    $links[] = l("Reorder this list", 
+    $links[] = l("Reorder this collection", 
 		 'collection/' . $node->nid . '/reorder');
   }
+
+  return $links;
+}
+
+function collection_user_add_links($node, $rows){
+  global $user;
+
+  $links = array();
+
+  // The link to add the collection to another collection
+  // should really only appear IF THERE IS SOME OTHER VALID COLLECTION to add to!
+  // Luckily, we can just figure that out.
+  $countOtherCollections = db_query("SELECT COUNT(nid) as count FROM node ".
+		    "WHERE type = 'collection' ".
+		    "AND uid = :uid ".
+		    "AND nid <> :nid", array(':uid'=>$user->uid,
+					     ':nid'=>$node->nid))->fetchObject();
+  if ($countOtherCollections->count > 0) {
+    $str = '';
+    if($node->type=='collection'){
+      $str = "Add this collection to another collection";
+    } else {
+      $str = "Add to collection";
+    }
+    $links[] = l($str, 
+      'collection/' . $node->nid . '/insert');
+  }
+
   return $links;
 }
 
 /* implements hook_node_view
+ *  Ceiling cat is watching you read math articles
+ *
  * - Deals with presenting collections
  * - Also deals with tracking user reading behavior, assuming we want to do that
+ * - Also provides links for the "Interact" block for various kinds of nodes
+ *   (including collections of course!)
  */
 function collection_node_view($node) {
   global $user;
  
+  // assuming we're looking at a *collection*
   if ($node->type == 'collection') {
-
     // First build the table, which is the main thing...
-
     $contents_of_this_collection = db_query("SELECT n.* from node n ".
 					    "INNER JOIN collection_has_content chc ".
 					    "ON (n.nid = chc.nid) WHERE chc.cid=:col_id",
@@ -189,47 +348,43 @@ function collection_node_view($node) {
 		    );
 
     // iterate over this content and construct the rows of the table
+    // "Paradata" is only meaningful if the user is logged in
+    // so we check that before we do anything else
     $rows = array();
     foreach ($contents_of_this_collection as $content_item) {
-
-      // Paradata is only meaningful if the user is logged in
-      // so we check that before we create it
-
       $paradataColumn = "";
-      if ($user->uid){
-	/* content can either be a problem or an article,
-           for problems, we will record whether or not the USER has
-	   submitted a solution. */
+      if (user_is_logged_in()){
+	/* items in the collection can either a PROBLEM or an ARTICLE,
+           for problems, we will record whether or not the user has
+	   submitted a solution... */
 	if ($content_item->type=='problem') {
 	  // we will find out if the current user has
-	  // submitted a solution to this problem
-	  $sql = "select * from problem_has_solution phs ".
-	    "INNER JOIN node n ON (phs.sid=n.nid) ".
-            "WHERE pid=:pid AND n.uid=:uid";
-	  $solutions = db_query($sql,array(':pid'=>$content_item->nid,
-					   ':uid'=>$user->uid));
-	  //dd($solutions);        
-	  $counter =0;
-	  $submittedSolutionsLinks = "";
-	  foreach ($solutions as $sol){
-            $counter++;
-            $submittedSolutionsLinks .= " (".l($counter,'node/'.$sol->sid).") ";
-          }
-        
-	  if ($counter>0){
-	    $paradataColumn .= "Submitted".$submittedSolutionsLinks;
-	  }else {
-	    $paradataColumn .= l("Submit a solution",'node/add/solution/'.$sol->pid);
-	  }        
-	} 
-	/* we deal with articles by showing whether the article in question
-	   has been read... NB. to work properly, this requires a patch to the
-	   userpoints module, need to get that sorted out -- and ideally make the
+	  // submitted any solutions to this problem
+          $countSql = "select COUNT(*) as count from problem_has_solution phs ".
+                      "INNER JOIN node n ON (phs.sid=n.nid) ".
+                      "WHERE pid=:pid AND n.uid=:uid";
+          $numSoln = db_query($countSql,array(':pid'=>$content_item->nid,
+                                              ':uid'=>$user->uid))->fetchObject();
+	    if ($numSoln->count>0){
+	      // just include a count of the number submitted for now
+	      // we could e.g. link to the most recent as well, and even
+	      // more interestingly, some information about the mark(s)
+	      // that these solutions received...
+	      $paradataColumn .= "Submitted (".$numSoln->count.")";
+	    } else {
+	      $paradataColumn .= l("Submit a solution",
+				   'node/add/solution/'.$content_item->nid);
+	    }
+	} /* end of element-is-problem case */
+
+	/* we get paradata for articles by showing whether the article in question
+	   has been read... NB. to work properly, THIS REQUIRES A PATCH TO THE
+	   USERPOINTS MODULE, need to get that sorted out -- and ideally make the
            corresponding logging "opt-in". */
+
 	else if ($content_item->type=='article') {
 	  $sql = "select count(*) AS count from userpoints_txn ".
 	    "WHERE uid=:uid AND entity_id=:nid AND points=0";
-
 	  $article_read = db_query($sql,array(':nid'=>$content_item->nid,
 					      ':uid'=>$user->uid))->fetchObject();
 
@@ -238,11 +393,28 @@ function collection_node_view($node) {
 	  } else {
 	    $paradataColumn .= "not yet read";
 	  }
+	}  /* end of element-is-article case */
+
+	// This isn't real "para-"data, but we could later move proper paradata
+	// in, e.g. by finding the "percentage complete" for a given list of problems.
+	// TODO: deal with this later!
+	else if ($content_item->type=='collection') {
+          $countSql = "SELECT COUNT(*) as count from node n ".
+	              "INNER JOIN collection_has_content chc ".
+	              "ON (n.nid = chc.nid) WHERE chc.cid=:col_id";
+          $numElements = db_query($countSql,
+				  array(':col_id'=>$content_item->nid))->fetchObject();
+
+	  $paradataColumn .= $numElements->count." elements";
+
+	} /* end of element-is-collection case */
+      } /* End of "user logged in" case*/ 
+      else 
+	{
+	  $paradataColumn = "User not logged in";
 	}
-      } else {
-	$paradataColumn = "User not logged in";
-      }
       
+      // Put all of that together...
       $rows[] = array(
 		      array('data' => l($content_item->title, 
 					'node/' . $content_item->nid),
@@ -254,9 +426,8 @@ function collection_node_view($node) {
 			    'field' => 'paradata'),
 		      );
     }
-
-    // Now we theme the table.
-    // (However, this only makes sense when there's more than zero rows.)
+    // Now we theme the table we built.
+    // (Note: this only makes sense when there's more than zero rows.)
     if (count($rows) > 0) {
       // We will add a pagination element at the bottom of the table,
       // Which is only useful if there's a lot of content of course!
@@ -270,10 +441,9 @@ function collection_node_view($node) {
       $node->content['collection_contents_table'] = array(
 							  '#markup' => $html,
 							  );
-    }
+    } /* Done building the table*/
    
-
-    // Now add some links for the OWNER (only) to interact with the collection.
+    // Now add some links for the OWNER (only) to interact with this collection.
     // (Some additional interactions could be added for other people later.)
     if ($user->uid == $node->uid) {
       if (isset($node->content['planetary_links'])) {
@@ -297,24 +467,45 @@ function collection_node_view($node) {
     }
   }  /* End of "view a collection" case */
 
-  // This is code to add "zero points" for viewing an article.  
-  // Making this work properly is going to require some work
-  // (including a small patch to the userpoints module). 
-  // It should probably also be made "opt in".
-
-  if ($user->uid) {
-    if($node->type=='article'){
-      $points_params = array('uid' => $user->uid,
-			     'points' => 0,
-			     // there must be a way to make this show up as a link...?
-			     // look in the userpoints.pages.inc
-			     'description' => $node->title.' viewed',
-			     'entity_id' => $node->nid,
-			     'entity_type' => 'node'
-			     );
-      userpoints_userpointsapi($points_params);
-    }
+  /* tweaks for other kinds of nodes follow... */
+  
+  /* implement page view tracking using the userpoints API */
+  if(user_is_logged_in() && $node->type=='article'){
+    $points_params = array('uid' => $user->uid,
+			   'points' => 0,
+			   // there must be a way to make this show up as a link...?
+			   // look in the userpoints.pages.inc
+			   'description' => $node->title.' viewed',
+			   'entity_id' => $node->nid,
+			   'entity_type' => 'node'
+			   );
+    userpoints_userpointsapi($points_params);
   }
+
+  /* Code to add links for non-owner logged in users (on various types of nodes) */
+  if(user_is_logged_in() && ($node->type=='article'
+			     || $node->type=='problem'
+			     || $node->type=='collection')){
+
+    if (isset($node->content['planetary_links'])) {
+      $oldlinks = $node->content['planetary_links']['#links'];
+      if (!empty($oldlinks)) {
+	$newlinks = array_merge($oldlinks, collection_user_add_links($node, $rows));
+      } else {
+	$newlinks = collection_user_add_links($node, $rows);
+	//  dd($newlinks,"NEW - inner ");
+      }
+    } else {
+	$newlinks = collection_user_add_links($node, $rows);
+    }
+      $node->content['planetary_links'] = array(
+						'#markup' => '',
+						'#weight' => 10,
+						'#theme' => 'planetary_links',
+						'#links' => $newlinks
+						);
+    }
+
 }
 
 function collection_theme($existing, $type, $theme, $path) {
@@ -341,7 +532,5 @@ function theme_collection_contents($variables) {
 }
 
 
-/* implements node_view 
-   Ceiling cat is watching you read math articles
-*/
+
 
