@@ -365,7 +365,7 @@ function article_setup_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_mathtype',
-      'label' => 'Type of Math Ojbect',
+      'label' => 'Type of Math Object',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
