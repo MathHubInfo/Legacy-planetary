@@ -86,10 +86,14 @@ function planetary_authorlinks_page_build(&$page){
 			    || $node->type == 'collection')) {
       // grab the original set of links from the node object
       $links = $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links'];
-      // concatenate them
-      $catted_links = '<ul><li>' . implode(' <br><li> ', $links) . '</ul>';
-      // stick that into the block
-      $page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
+      if(!empty($links)) {
+	// concatenate them
+	$catted_links = '<ul><li>' . implode(' <br><li> ', $links) . '</ul>';
+	// stick that into the block
+	$page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
+      } else {
+	unset($page['sidebar_second']['planetary_authorlinks_authorlinks']);
+      }
     }
   }
   // ditch the representation on the node (we do this without
