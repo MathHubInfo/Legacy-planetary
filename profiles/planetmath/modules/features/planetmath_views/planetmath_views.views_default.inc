@@ -1480,6 +1480,12 @@ return FALSE;
   $handler->display->display_options['filters']['uid']['expose']['label'] = 'Username';
   $handler->display->display_options['filters']['uid']['expose']['operator'] = 'uid_op';
   $handler->display->display_options['filters']['uid']['expose']['identifier'] = 'uid';
+  /* Filter criterion: Userpoints Transactions: Points */
+  $handler->display->display_options['filters']['points']['id'] = 'points';
+  $handler->display->display_options['filters']['points']['table'] = 'userpoints_txn';
+  $handler->display->display_options['filters']['points']['field'] = 'points';
+  $handler->display->display_options['filters']['points']['operator'] = '!=';
+  $handler->display->display_options['filters']['points']['value']['value'] = '0';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
