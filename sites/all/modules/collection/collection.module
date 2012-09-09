@@ -20,6 +20,10 @@
  *  - Allow other types of content to be included?  (E.g. images? solutions?)
  *  - Build a nice LaTeXML/LaTeX tool that pulls all of the content from a collection
  *    into one page or a printable PDF that can then be downloaded and used offline.
+ *  - It would be convenient to be able to attach a PROBLEM SET, not just a problem,
+ *    to an article.  (Add this to collection_user_add_links...)  (Indeed, maybe we
+ *    should have one unified "Attach" mechanism that would deal with all of these
+ *    different kinds of connections?
  */
 
 function collection_menu() {
@@ -52,11 +56,19 @@ function collection_menu() {
     'access arguments' => array('create correction content')
   );
 
-  $items['collection/detach/%/%'] = array(
+  $items['collection/remove/%/%'] = array(
+    'title' => 'Confirm UNattachment',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'collection_remove_attachment',
+    'page arguments' => array(2, 3), //'nid_of_article','nid_of_collection'),
+    'access arguments' => array('create correction content')
+  );
+
+  $items['collection/%/detach'] = array(
     'title' => 'Detach content from collection',
     'type' => MENU_CALLBACK,
     'page callback' => 'collection_detach_content',
-    'page arguments' => array(2, 3), //'nid_of_article','nid_of_collection'),
+    'page arguments' => array(1), //'nid_of_article','nid_of_collection'),
     'access arguments' => array('create correction content'));
 
   $items['collection/%/insert'] = array(
@@ -71,18 +83,18 @@ function collection_menu() {
 }
 
 /* This function allows the user to attach articles and problems to a collection.
-   - TODO: it would be good to improve this presentation so that the *selection*
-     could be filtered in a reasonable way, e.g. filtering by "my articles"
-     or MSC or some other criteria.  Right now, the user has to choose from
-     the entire collection of articles, which isn't particularly elegant or feasible.
-     Compare issue #144 on Github.
+ *  - TODO: it would be good to improve this presentation so that the *selection*
+ *    could be filtered in a reasonable way, e.g. filtering by "my articles"
+ *    or MSC or some other criteria.  Right now, the user has to choose from
+ *    the entire collection of articles, which isn't particularly elegant or feasible.
+ *    Compare issue #144 on Github.
  */
 function collection_attach_content($nid) {
   global $base_url;
 
   $count = db_query("SELECT COUNT(nid) as count FROM node WHERE type IN ('article','problem','collection')")->fetchObject();
 
-//if we have articles or problems
+  //if we have items we could add...
   if ($count->count > 0) {
 
     //get all posible content that can be attached to this collection
@@ -128,13 +140,66 @@ function collection_attach_content($nid) {
   }
 }
 
+function collection_detach_content($cid) {
+  global $base_url;
+
+  $count = db_query("SELECT COUNT(n.nid) as count ".
+		    "FROM node n INNER JOIN collection_has_content chc ".
+                    "ON (n.nid=chc.nid) ".
+		    "WHERE chc.cid=:cid",
+		    array(':cid'=>$cid))->fetchObject();
+
+  // if we have items to remove
+  if ($count->count > 0) {
+
+    //get all content currently in this collection
+    $my_articles_and_problems = _collection_getMyContent($cid);
+
+    //construct the header of the table
+    $header = array(array('data' => 'Title', 'field' => 'n.nid'),
+      array('data' => "Author", 'field' => 'n.title'),
+      array('data' => 'Unattach', 'field' => 'Unattach')
+    );
+
+    // iterate over the content and construct the rows of the table 
+    $rows = array();
+    foreach ($my_articles_and_problems as $content_item) {
+      $rows[] = array(
+        array('data' => l($content_item->title, 'node/' . $content_item->nid),
+	      'field' => 'n.title'),
+        array('data' => l(user_load($content_item->uid)->name, 
+                          'user/' . $content_item->uid), 
+	      'field' => 'n.author'),
+        array('data' => 
+	      theme_detach_content_icon(
+					array('type' => $content_item->type, 
+					      'url' => $base_url . '/collection/remove/'
+                                                                 . $cid . '/'
+                                                                 . $content_item->nid)))
+		      );
+    }
+
+    return theme('table', array(
+          'header' => $header,
+          'rows' => $rows
+        ))
+        . theme('pager'); //adds the pagination element in the bottom of the table
+  }
+  else {
+    //in the (even possible?) occasion we do not have any content to list
+    drupal_set_message("Sorry there is currently not a single element of content in this collection!");
+  }
+}
+
+
+
 // very similar to collection_attach_content, above
 // but for this function, we start with an item and have to select
 // a collection to add it to
 //
 // TODO/IMPROVEMENTS:
 // - If there's only ONE viable collection, I suppose we could just insert into it
-//   automatically.
+//   automatically?
 // - Or, to generalize that, we could set a "default collection" so that people insert
 //   things into their default collection directly, skipping the
 //   "insert into a collection" menu.
@@ -215,6 +280,18 @@ function _collection_getAllContent() {
   return $result;
 }
 
+function _collection_getMyContent ($cid) {
+  $result=array();
+  $contents = db_query('SELECT n.nid as nid, n.title as title, n.type as type, n.uid, rank as weight '.
+      'FROM node n INNER JOIN collection_has_content chc ON (n.nid=chc.nid) '.
+      'WHERE chc.cid=:cid ORDER BY rank ASC',
+      array(':cid'=>$cid));
+  foreach ($contents as $content) {
+    $result[] = $content;
+  }
+  return $result;
+}
+
 /*
  * helper function to return all articles and problems of the site
  * to be displayed in attach to collection list
@@ -239,6 +316,17 @@ function theme_attach_content_icon($variables) {
     'attributes' => array(
       'class' => "attach_content_icon",
       'title' => t('Attach this ' . $variables['type'] . ' to this collection'),
+      ))
+  );
+  return $output;
+}
+
+function theme_detach_content_icon($variables) {
+  $output = l(
+      t('remove'), $variables['url'], array(
+    'attributes' => array(
+      'class' => "remove_content_icon",
+      'title' => t('remove this ' . $variables['type'] . ' from this collection'),
       ))
   );
   return $output;
@@ -272,6 +360,22 @@ function collection_confirm_attachment($collection_id, $content_id) {
   drupal_goto('node/' . $collection_id);
 }
 
+/* Similar to collection_confirm_attachment above, 
+ * except it does the reverse operation!
+ */
+function collection_remove_attachment($collection_id, $content_id) {
+
+  db_delete('collection_has_content')
+    ->condition('cid', $collection_id)
+    ->condition('nid', $content_id)
+    ->execute();
+
+  $content = node_load($content_id);
+  drupal_set_message('That ' . $content->type . 
+		     ' has been removed from this collection');
+  drupal_goto('node/' . $collection_id);
+}
+
 /* Add some links FOR THE COLLECTION OWNER.
  *
  * - Also: It would be good to have a "remove item" link, or make
@@ -284,7 +388,9 @@ function collection_add_links($node, $rows){
 
   $links = array(
 		 'add-to-collection' => l("Add to this collection", 
-					  'collection/' . $node->nid . '/attach')
+					  'collection/' . $node->nid . '/attach'),
+		 'drop-from-collection' => l("Drop from this collection", 
+					  'collection/' . $node->nid . '/detach')
 		 );
   if (count($rows) > 1) {
     $links[] = l("Reorder this collection", 
@@ -294,7 +400,7 @@ function collection_add_links($node, $rows){
   return $links;
 }
 
-function collection_user_add_links($node, $rows){
+function collection_user_add_links($node){
   global $user;
 
   $links = array();
@@ -337,7 +443,9 @@ function collection_node_view($node) {
     // First build the table, which is the main thing...
     $contents_of_this_collection = db_query("SELECT n.* from node n ".
 					    "INNER JOIN collection_has_content chc ".
-					    "ON (n.nid = chc.nid) WHERE chc.cid=:col_id",
+					    "ON (n.nid = chc.nid) ".
+					    "WHERE chc.cid=:col_id ".
+					    "ORDER BY rank ASC",
 					    array(':col_id' => $node->nid));
 
     //construct the header of the table
@@ -471,8 +579,12 @@ function collection_node_view($node) {
   
   /* implement page view tracking using the userpoints API */
   if(user_is_logged_in() && $node->type=='article'){
+    dd("ABOUT TO ADD POINTS");
     $points_params = array('uid' => $user->uid,
 			   'points' => 0,
+			   'moderate' => FALSE,
+			   'operation' => 'viewed',
+			   'display' => TRUE,
 			   // there must be a way to make this show up as a link...?
 			   // look in the userpoints.pages.inc
 			   'description' => $node->title.' viewed',
@@ -490,13 +602,13 @@ function collection_node_view($node) {
     if (isset($node->content['planetary_links'])) {
       $oldlinks = $node->content['planetary_links']['#links'];
       if (!empty($oldlinks)) {
-	$newlinks = array_merge($oldlinks, collection_user_add_links($node, $rows));
+	$newlinks = array_merge($oldlinks, collection_user_add_links($node));
       } else {
-	$newlinks = collection_user_add_links($node, $rows);
+	$newlinks = collection_user_add_links($node);
 	//  dd($newlinks,"NEW - inner ");
       }
     } else {
-	$newlinks = collection_user_add_links($node, $rows);
+	$newlinks = collection_user_add_links($node);
     }
       $node->content['planetary_links'] = array(
 						'#markup' => '',
