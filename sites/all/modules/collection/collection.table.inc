@@ -1,34 +1,5 @@
 <?php
 
-// make sure the "id" attribute is set
-
-/* $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'collection-table'))); */
-/* return $output; */
-
-// In the theme function for the form, a special class must be added to
-// each form element within the same column, "grouping" them together.
-// ==> we use a single "weight" column to sort the table
-
-/* $form['my_elements'][$delta]['weight']['#attributes']['class'] = array('my-elements-weight'); */
-
-// give each row of the table the class "draggable" to enable the drag handles 
-
-/* $row = array(...); */
-/* $rows[] = array( */
-/*   'data' => $row, */
-/*   'class' => array('draggable'), */
-/* ); */
-
-//Rows with the 'tabledrag-leaf' class cannot have child rows.
-
-// call this function
-// args: $table_id, $action, $relationship, $group, $subgroup, $source, $hidden
-
-/* drupal_add_tabledrag('collection-table', 'order', 'sibling', 'my-elements-weight',NULL,NULL,FALSE); */
-
-
-////////////////////////////////////////////////////////////////////////////////////////
-
 /**
  * Build the tabledrag_simple_example_form form
  *
@@ -36,26 +7,20 @@
  *   A form array set for theming by theme_collection_simple_form()
  */
 function collection_form($form, &$form_state,$cid) {
-  
-  dd($form_state);
-  
-  
+  // dd($form_state);
   $form['cid'] = array('#type'=>'value','#value'=>$cid);
   
   // Identify that the elements in 'example_items' are a collection, to
   // prevent Form API from flattening the array when submitted.
   $form['example_items']['#tree'] = TRUE;
 
-  // This needs to be improved to become dynamic with a replacement for "3"
   $result = db_query('SELECT n.nid as id, n.title as name, n.uid, rank as weight '.
       'FROM node n INNER JOIN collection_has_content chc ON (n.nid=chc.nid) '.
       'WHERE chc.cid=:cid ORDER BY rank ASC',
       array(':cid'=>$cid));
 
   // Iterate through each database result
-  foreach ($result as $item) {
-
-    
+  foreach ($result as $item) {    
     $user = user_load($item->uid);
     
     // Create a form entry for this item.
@@ -68,20 +33,9 @@ function collection_form($form, &$form_state,$cid) {
       'name' => array(
         '#markup' => check_plain($item->name),
       ),
-
-      // We'll use a form element of type '#textfield' to display the item
-      // description, which will allow the value to be changed via the form.
-      // We limit the input to 255 characters, which is the limit we set on
-      // the database field.
-      
-      
       
       'author' => array(
         '#markup' => l($user->name,'user/'.$item->uid),
-//        '#type' => 'textfield',
-//        '#default_value' => check_plain($item->uid),
-//        '#size' => 20,
-//        '#maxlength' => 255,
       ),
 
       // The 'weight' field will be manipulated as we move the items around in
