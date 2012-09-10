@@ -47,6 +47,26 @@ function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
   return $return;
 }
 
+/**
+ * Queries for the block views 
+ */
+function planetmath_blocks_queryRevisions($type, $sortBy = 'n.created') {
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
+    FROM node n 
+    LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
+    INNER JOIN node_revision nr ON n.vid = nr.vid
+    INNER JOIN users u ON u.uid = nr.uid
+    INNER JOIN field_data_field_published f ON n.nid = f.entity_id
+    WHERE n.`type` = :type 
+    AND f.field_published_value = 1
+    ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => $type));
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
 function planetmath_blocks_queryPersonalResponses($uid) {
   $results = db_query("SELECT c.cid, n.nid, n.type, n.title, c.subject, c.uid, c.changed, u.name AS username FROM comment c
       INNER JOIN node n ON n.nid = c.nid      
@@ -498,7 +518,7 @@ function planetmath_blocks_block_messages() {
 function planetmath_blocks_block_revisions() {
   return array(
       'subject' => 'Latest Revisions',
-      'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryGeneral('article', 'n.changed'),'changed')
+      'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryRevisions('article', 'n.changed'),'changed')
   );
 }
 
