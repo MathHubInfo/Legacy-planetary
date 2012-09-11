@@ -197,10 +197,10 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
     }
 
   if (isset($latex_metadata) && strlen($latex_metadata) > 0) {
-  		$metadata = $latex_metadata;
+    $metadata = $latex_metadata;
   } else
     {
-     	$metadata = "%BEGIN METADATA BLOCK
+      $metadata = "%BEGIN METADATA BLOCK
 %END METADATA BLOCK";
     }
   
@@ -214,11 +214,8 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   // $text=$text[0];
 
   $data = 'profile=planetmath&tex=' . urlencode($text);
-  if ($preamble||$metadata) {
-  if ($preamble) {
-    // $data .= "&preload=" . urlencode($preamble . "\n") . urlencode($metadata);
-    $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); }
-
+  if ($preamble && $metadata) {
+    $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
   }
 
   //dd("LATEXML HOST IS");
