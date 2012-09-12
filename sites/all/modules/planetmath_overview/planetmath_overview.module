@@ -1,0 +1,36 @@
+<?php
+
+/*
+ * An initial module for building some "system stats" right into the
+ * "navigation menu" (which will make it more navigation-like, though
+ * that still might not be the best title).
+ * 
+ * Problem to solve: Drupal doesn't like dynamic link text in menus!
+ * So if we want to adjust it, we have to create some sort of hack.
+ */
+
+// See install function...
+
+// as an abuse of this function and the user's time?
+function planetmath_overview_node_postsave ($node,$view_mode,$langcode) {
+
+  $users = db_query("SELECT 'users', COUNT(*) as count FROM users")->fetchObject();
+
+  db_merge('menu_links')
+    ->key(array('menu_name'=> 'navigation', 'link_path'=> 'people'))
+    ->fields(array('link_title' => "Users: (" . $users->count . ")",
+		   ))
+    ->execute();
+
+  $result = db_query("SELECT type, COUNT(*) as count FROM node GROUP BY type");
+
+  foreach ($result as $obj) {
+    db_merge('menu_links')
+      ->key(array('menu_name'=> 'navigation', 'link_path'=> $obj->type . "s"))
+      ->fields(array('link_title' => ucfirst($obj->type) . "s: (" . $obj->count . ")",
+		   ))
+      ->execute();
+  }
+
+  menu_rebuild();
+}
