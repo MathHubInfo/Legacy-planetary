@@ -7,7 +7,7 @@ function planetmath_overview_install() {
        'menu_name'  => 'navigation',
        'weight'     => -10,
        'link_title' => "Site Content",
-       'link_path'  => 'scores',
+       'link_path'  => 'sysstats',
        'module'     => 'planetmath_overview',
        'mlid'       => NULL,
      ),
