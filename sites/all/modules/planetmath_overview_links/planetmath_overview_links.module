@@ -1,0 +1,30 @@
+<?php
+
+/* Implements hook_node_insert
+ */
+function planetmath_overview_links_node_insert ($node) {
+
+  $users = db_query("SELECT COUNT(*) as count FROM users")->fetchObject();
+
+  db_merge('menu_links')
+    ->key(array('menu_name'=> 'navigation', 'link_path'=> 'people'))
+    ->fields(array('link_title' => "Users: (" . $users->count . ")",
+		   ))
+    ->execute();
+
+ $result = db_query("SELECT type, COUNT(*) as count FROM node GROUP BY type");
+
+ foreach ($result as $obj) {
+   // This won't work for the "forum" type because there is no "forums" path...
+   // And # forums threads is sort of a different category anyway.  Let's just elide it.
+   if($obj->type != 'forum') {
+     db_merge('menu_links')
+       ->key(array('menu_name'=> 'navigation', 'link_path'=> $obj->type . "s"))
+       ->fields(array('link_title' => ucfirst($obj->type) . "s: (" . $obj->count . ")",
+		      ))
+       ->execute();
+   }
+ }
+
+  menu_cache_clear_all();
+}

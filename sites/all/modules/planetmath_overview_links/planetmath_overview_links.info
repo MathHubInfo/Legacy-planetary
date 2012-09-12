@@ -1,0 +1,7 @@
+name = planetmath_overview_links
+description = "Adds interesting overview items to the navigation menu (second part)"
+version = 7.x-1.0
+package = PlanetMath
+core = 7.x
+
+dependencies[] = planetmath_overview

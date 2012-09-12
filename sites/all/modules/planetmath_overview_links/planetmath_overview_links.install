@@ -1,6 +1,8 @@
 <?php
 
-function planetmath_overview_install() {
+function planetmath_overview_links_install() {
+
+  module_load_include('inc', 'menu', 'menu.admin');
 
   $form_state = array(
      'values' => array(
@@ -26,7 +28,7 @@ function planetmath_overview_install() {
        'weight'     => -1,
        'link_title' => "Users: (" . $users->count . ")",
        'link_path'  => 'people',
-       'module'     => 'planetmath_overview',
+       'module'     => 'planetmath_overview_links',
        'plid'       => $toplid,
        'mlid'       => NULL,
      ),
@@ -46,7 +48,7 @@ function planetmath_overview_install() {
 	 'weight'     => 1,
 	 'link_title' => ucfirst($obj->type) . "s: (" . $obj->count . ")",
 	 'link_path'  => $obj->type . "s",
-	 'module'     => 'planetmath_overview',
+	 'module'     => 'planetmath_overview_links',
 	 'plid'       => $toplid,
 	 'mlid'       => NULL,
        ),
@@ -55,4 +57,10 @@ function planetmath_overview_install() {
     menu_edit_item_validate(array(), $form_state);
     menu_link_save($form_state['values']);
   }
+}
+
+function planetmath_overview_links_uninstall() {
+  db_delete('menu_links')
+    ->condition('module','planetmath_overview_links')
+    ->execute();
 }

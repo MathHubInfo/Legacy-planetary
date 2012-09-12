@@ -7,34 +7,8 @@
  * 
  * Problem to solve: Drupal doesn't like dynamic link text in menus!
  * So if we want to adjust it, we have to create some sort of hack.
+ * We use rely on planetmath_overview_links for some help.
  */
-
-// See install function...
-
-/* Implements hook_node_insert
- */
-function planetmath_overview_node_insert ($node) {
-
-  $users = db_query("SELECT COUNT(*) as count FROM users")->fetchObject();
-
-  db_merge('menu_links')
-    ->key(array('menu_name'=> 'navigation', 'link_path'=> 'people'))
-    ->fields(array('link_title' => "Users: (" . $users->count . ")",
-		   ))
-    ->execute();
-
- $result = db_query("SELECT type, COUNT(*) as count FROM node GROUP BY type");
-
-  foreach ($result as $obj) {
-    db_merge('menu_links')
-      ->key(array('menu_name'=> 'navigation', 'link_path'=> $obj->type . "s"))
-      ->fields(array('link_title' => ucfirst($obj->type) . "s: (" . $obj->count . ")",
-		   ))
-      ->execute();
-  }
-
-  menu_cache_clear_all();
-}
 
 function planetmath_overview_menu() {
   $items = array();
@@ -50,7 +24,14 @@ function planetmath_overview_menu() {
   return $items;
 }
 
+
 function planetmath_overview_show($nid){
+
+  $midnight = strtotime('midnight today');
+  $yesterday = strtotime('midnight yesterday');
+  $weekago = strtotime('previous week');
+  $monthago = strtotime('previous month');
+  $yearstart = strtotime('first day of January 2012');
 
   $html = '<table>';
   $html .= '<tr>';
@@ -64,7 +45,7 @@ function planetmath_overview_show($nid){
   $html .= '<b>articles</b>';
   $html .= '</td>';
   $html .= '<td>';
-  $html .= '<b>users</b>';
+  $html .= '<b>users</b><sup>*</sup>';
   $html .= '</td>';
   $html .= '<td>';
   $html .= '<b>corrections</b>';
@@ -77,27 +58,51 @@ function planetmath_overview_show($nid){
   $html .= '</td>';
   $html .= '</tr>';
 
+
   $html .= '<tr>';
   $html .= '<td>';
   $html .= '<i>total</i>';
   $html .= '</td>';
+
+  $comments = db_query("select COUNT(*) as count from comment")->fetchObject();
+  $ops = db_query("select COUNT(*) from node where type = 'forum'")->fetchObject();
+
   $html .= '<td>';
-  $html .= '26406';
+  $html .= $comments->count + $ops->count;
   $html .= '</td>';
+
+  $art = db_query("select COUNT(*) as count from node where type = 'article'")->fetchObject();
+
   $html .= '<td>';
-  $html .= '9133';
+  $html .= $art->count;
   $html .= '</td>';
+
+  $users = db_query("select COUNT(*) as count from users")->fetchObject();
+
   $html .= '<td>';
-  $html .= '2824<sup>*</sup>';
+  $html .= $users->count;
   $html .= '</td>';
+
+  $corrs = db_query("select COUNT(*) as count from node where type = 'correction'")->fetchObject();
+
   $html .= '<td>';
-  $html .= '14131';
+  $html .= $corrs->count;
   $html .= '</td>';
+
+  $probs = db_query("select COUNT(*) as count from node where type = 'problem'")->fetchObject();
+
+  $solns = db_query("select COUNT(*) as count from node where type = 'solution'")->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $probs->count . '/' . $solns->count;
   $html .= '</td>';
+
+  $qs = db_query("select COUNT(*) as count from node where type = 'question'")->fetchObject();
+
+  $as = db_query("select COUNT(*) as count from node INNER JOIN field_data_field_question_closed fq ON node.nid = fq.entity_id WHERE type = 'question' and fq.field_question_closed_value <> NULL")->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $qs->count . '/' . $as->count;
   $html .= '</td>';
   $html .= '</tr>';
 
@@ -105,119 +110,285 @@ function planetmath_overview_show($nid){
   $html .= '<td>';
   $html .= '<i>today</i>';
   $html .= '</td>';
+
+  $comments = db_query("select COUNT(*) as count from comment where created > :start", 
+	   array(':start' => $midnight))->fetchObject();
+  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+		  array(':start' => $midnight))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $comments->count + $ops->count;
   $html .= '</td>';
+
+  $art = db_query("select COUNT(*) as count from node where type = 'article' and created > :start", 
+		  array(':start' => $midnight))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $art->count;
   $html .= '</td>';
+
+  $users = db_query("select COUNT(*) as count from users where created > :start", 
+		  array(':start' => $midnight))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $users->count;
   $html .= '</td>';
+
+  $corrs = db_query("select COUNT(*) as count from node where type = 'correction' and created > :start", 
+		  array(':start' => $midnight))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $corrs->count;
   $html .= '</td>';
+
+  $probs = db_query("select COUNT(*) as count from node where type = 'problem' and created > :start", 
+		  array(':start' => $midnight))->fetchObject();
+
+  $solns = db_query("select COUNT(*) as count from node where type = 'solution' and created > :start", 
+		  array(':start' => $midnight))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $probs->count . '/' . $solns->count;
   $html .= '</td>';
+
+  $qs = db_query("select COUNT(*) as count from node where type = 'question' and created > :start", 
+		  array(':start' => $midnight))->fetchObject();
+
+  $as = db_query("select COUNT(*) as count from node INNER JOIN field_data_field_question_closed fq ON node.nid = fq.entity_id WHERE type = 'question' and fq.field_question_closed_value > :start", 
+		  array(':start' => $midnight))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $qs->count . '/' . $as->count;
   $html .= '</td>';
   $html .= '</tr>';
+
 
   $html .= '<tr>';
   $html .= '<td>';
   $html .= '<i>yesterday</i>';
   $html .= '</td>';
+
+  $comments = db_query("select COUNT(*) as count from comment where created > :start", 
+	   array(':start' => $yesterday))->fetchObject();
+  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+		  array(':start' => $yesterday))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $comments->count + $ops->count;
   $html .= '</td>';
+
+  $art = db_query("select COUNT(*) as count from node where type = 'article' and created > :start", 
+		  array(':start' => $yesterday))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $art->count;
   $html .= '</td>';
+
+  $users = db_query("select COUNT(*) as count from users where created > :start", 
+		  array(':start' => $yesterday))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $users->count;
   $html .= '</td>';
+
+  $corrs = db_query("select COUNT(*) as count from node where type = 'correction' and created > :start", 
+		  array(':start' => $yesterday))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $corrs->count;
   $html .= '</td>';
+
+  $probs = db_query("select COUNT(*) as count from node where type = 'problem' and created > :start", 
+		  array(':start' => $yesterday))->fetchObject();
+
+  $solns = db_query("select COUNT(*) as count from node where type = 'solution' and created > :start", 
+		  array(':start' => $yesterday))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $probs->count . '/' . $solns->count;
   $html .= '</td>';
+
+  $qs = db_query("select COUNT(*) as count from node where type = 'question' and created > :start", 
+		  array(':start' => $yesterday))->fetchObject();
+
+  $as = db_query("select COUNT(*) as count from node INNER JOIN field_data_field_question_closed fq ON node.nid = fq.entity_id WHERE type = 'question' and fq.field_question_closed_value > :start", 
+		  array(':start' => $yesterday))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $qs->count . '/' . $as->count;
   $html .= '</td>';
   $html .= '</tr>';
+
 
   $html .= '<tr>';
   $html .= '<td>';
   $html .= '<i>last week</i>';
   $html .= '</td>';
+
+  $comments = db_query("select COUNT(*) as count from comment where created > :start", 
+	   array(':start' => $weekago))->fetchObject();
+  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+		  array(':start' => $weekago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $comments->count + $ops->count;
   $html .= '</td>';
+
+  $art = db_query("select COUNT(*) as count from node where type = 'article' and created > :start", 
+		  array(':start' => $weekago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $art->count;
   $html .= '</td>';
+
+  $users = db_query("select COUNT(*) as count from users where created > :start", 
+		  array(':start' => $weekago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $users->count;
   $html .= '</td>';
+
+  $corrs = db_query("select COUNT(*) as count from node where type = 'correction' and created > :start", 
+		  array(':start' => $weekago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $corrs->count;
   $html .= '</td>';
+
+  $probs = db_query("select COUNT(*) as count from node where type = 'problem' and created > :start", 
+		  array(':start' => $weekago))->fetchObject();
+
+  $solns = db_query("select COUNT(*) as count from node where type = 'solution' and created > :start", 
+		  array(':start' => $weekago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $probs->count . '/' . $solns->count;
   $html .= '</td>';
+
+  $qs = db_query("select COUNT(*) as count from node where type = 'question' and created > :start", 
+		  array(':start' => $weekago))->fetchObject();
+
+  $as = db_query("select COUNT(*) as count from node INNER JOIN field_data_field_question_closed fq ON node.nid = fq.entity_id WHERE type = 'question' and fq.field_question_closed_value > :start", 
+		  array(':start' => $weekago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $qs->count . '/' . $as->count;
   $html .= '</td>';
   $html .= '</tr>';
+
 
   $html .= '<tr>';
   $html .= '<td>';
   $html .= '<i>last month</i>';
   $html .= '</td>';
+
+  $comments = db_query("select COUNT(*) as count from comment where created > :start", 
+	   array(':start' => $monthago))->fetchObject();
+  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+		  array(':start' => $monthago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $comments->count + $ops->count;
   $html .= '</td>';
+
+  $art = db_query("select COUNT(*) as count from node where type = 'article' and created > :start", 
+		  array(':start' => $monthago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $art->count;
   $html .= '</td>';
+
+  $users = db_query("select COUNT(*) as count from users where created > :start", 
+		  array(':start' => $monthago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $users->count;
   $html .= '</td>';
+
+  $corrs = db_query("select COUNT(*) as count from node where type = 'correction' and created > :start", 
+		  array(':start' => $monthago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $corrs->count;
   $html .= '</td>';
+
+  $probs = db_query("select COUNT(*) as count from node where type = 'problem' and created > :start", 
+		  array(':start' => $monthago))->fetchObject();
+
+  $solns = db_query("select COUNT(*) as count from node where type = 'solution' and created > :start", 
+		  array(':start' => $monthago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $probs->count . '/' . $solns->count;
   $html .= '</td>';
+
+  $qs = db_query("select COUNT(*) as count from node where type = 'question' and created > :start", 
+		  array(':start' => $monthago))->fetchObject();
+
+  $as = db_query("select COUNT(*) as count from node INNER JOIN field_data_field_question_closed fq ON node.nid = fq.entity_id WHERE type = 'question' and fq.field_question_closed_value > :start", 
+		  array(':start' => $monthago))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $qs->count . '/' . $as->count;
+
   $html .= '</td>';
   $html .= '</tr>';
+
+
 
   $html .= '<tr>';
   $html .= '<td>';
   $html .= '<i>year to date</i>';
   $html .= '</td>';
+
+  $comments = db_query("select COUNT(*) as count from comment where created > :start", 
+	   array(':start' => $yearstart))->fetchObject();
+  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+		  array(':start' => $yearstart))->fetchObject();
+
   $html .= '<td>';
-  $html .= '223'; 
+  $html .= $comments->count + $ops->count;
   $html .= '</td>';
+
+  $art = db_query("select COUNT(*) as count from node where type = 'article' and created > :start", 
+		  array(':start' => $yearstart))->fetchObject();
+
   $html .= '<td>';
-  $html .= '153';
+  $html .= $art->count;
   $html .= '</td>';
+
+  $users = db_query("select COUNT(*) as count from users where created > :start", 
+		  array(':start' => $yearstart))->fetchObject();
+
   $html .= '<td>';
-  $html .= '56';
+  $html .= $users->count;
   $html .= '</td>';
+
+  $corrs = db_query("select COUNT(*) as count from node where type = 'correction' and created > :start", 
+		  array(':start' => $yearstart))->fetchObject();
+
   $html .= '<td>';
-  $html .= '31';
+  $html .= $corrs->count;
   $html .= '</td>';
+
+  $probs = db_query("select COUNT(*) as count from node where type = 'problem' and created > :start", 
+		  array(':start' => $yearstart))->fetchObject();
+
+  $solns = db_query("select COUNT(*) as count from node where type = 'solution' and created > :start", 
+		  array(':start' => $yearstart))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $probs->count . '/' . $solns->count;
   $html .= '</td>';
+
+  $qs = db_query("select COUNT(*) as count from node where type = 'question' and created > :start", 
+		  array(':start' => $yearstart))->fetchObject();
+
+  $as = db_query("select COUNT(*) as count from node INNER JOIN field_data_field_question_closed fq ON node.nid = fq.entity_id WHERE type = 'question' and fq.field_question_closed_value > :start", 
+		  array(':start' => $yearstart))->fetchObject();
+
   $html .= '<td>';
-  $html .= 'xxx';
+  $html .= $qs->count . '/' . $as->count;
   $html .= '</td>';
   $html .= '</tr>';
 
@@ -497,5 +668,6 @@ also took the opportunity to drop users who had never contributed.";
     drupal_set_message("Um...?");
   }
 }
+
 
 

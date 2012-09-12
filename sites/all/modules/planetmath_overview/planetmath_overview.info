@@ -3,3 +3,5 @@ description = "Adds interesting overview items to the navigation menu"
 version = 7.x-1.0
 package = PlanetMath
 core = 7.x
+
+dependencies[] = menu
