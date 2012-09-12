@@ -65,7 +65,7 @@ function planetmath_overview_show($nid){
   $html .= '</td>';
 
   $comments = db_query("select COUNT(*) as count from comment")->fetchObject();
-  $ops = db_query("select COUNT(*) from node where type = 'forum'")->fetchObject();
+  $ops = db_query("select COUNT(*) as count from node where type = 'forum'")->fetchObject();
 
   $html .= '<td>';
   $html .= $comments->count + $ops->count;
@@ -113,7 +113,7 @@ function planetmath_overview_show($nid){
 
   $comments = db_query("select COUNT(*) as count from comment where created > :start", 
 	   array(':start' => $midnight))->fetchObject();
-  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+  $ops = db_query("select COUNT(*) as count from node where type = 'forum' and created > :start", 
 		  array(':start' => $midnight))->fetchObject();
 
   $html .= '<td>';
@@ -170,7 +170,7 @@ function planetmath_overview_show($nid){
 
   $comments = db_query("select COUNT(*) as count from comment where created > :start", 
 	   array(':start' => $yesterday))->fetchObject();
-  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+  $ops = db_query("select COUNT(*) as count from node where type = 'forum' and created > :start", 
 		  array(':start' => $yesterday))->fetchObject();
 
   $html .= '<td>';
@@ -227,7 +227,7 @@ function planetmath_overview_show($nid){
 
   $comments = db_query("select COUNT(*) as count from comment where created > :start", 
 	   array(':start' => $weekago))->fetchObject();
-  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+  $ops = db_query("select COUNT(*) as count from node where type = 'forum' and created > :start", 
 		  array(':start' => $weekago))->fetchObject();
 
   $html .= '<td>';
@@ -284,7 +284,7 @@ function planetmath_overview_show($nid){
 
   $comments = db_query("select COUNT(*) as count from comment where created > :start", 
 	   array(':start' => $monthago))->fetchObject();
-  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+  $ops = db_query("select COUNT(*) as count from node where type = 'forum' and created > :start", 
 		  array(':start' => $monthago))->fetchObject();
 
   $html .= '<td>';
@@ -343,7 +343,7 @@ function planetmath_overview_show($nid){
 
   $comments = db_query("select COUNT(*) as count from comment where created > :start", 
 	   array(':start' => $yearstart))->fetchObject();
-  $ops = db_query("select COUNT(*) from node where type = 'forum' and created > :start", 
+  $ops = db_query("select COUNT(*) as count from node where type = 'forum' and created > :start", 
 		  array(':start' => $yearstart))->fetchObject();
 
   $html .= '<td>';
