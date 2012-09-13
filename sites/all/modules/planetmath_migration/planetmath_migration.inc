@@ -376,7 +376,7 @@ class PMObjectMigration extends PMMigration {
     // mapping in the legacy "parent" relationship this way, as opposed to some other sort of connection...
     $this->addFieldMapping('field_parent', 'parentid');
     $this->addFieldMapping('field_parent:source_type')
-      ->defaultValue('value');
+      ->defaultValue('nid');
 
     $this->addFieldMapping('field_msc', 'msc_class');
     $this->addFieldMapping('field_msc:source_type')
