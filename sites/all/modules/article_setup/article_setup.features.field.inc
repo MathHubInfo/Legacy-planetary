@@ -84,7 +84,7 @@ function article_setup_field_default_fields() {
           'size' => '255',
         ),
         'type' => 'text_textfield',
-        'weight' => '5',
+        'weight' => '2',
       ),
     ),
   );
@@ -160,7 +160,7 @@ function article_setup_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '10',
+        'weight' => '7',
       ),
     ),
   );
@@ -236,7 +236,7 @@ function article_setup_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '11',
+        'weight' => '8',
       ),
     ),
   );
@@ -293,6 +293,15 @@ function article_setup_field_default_fields() {
       'required' => 0,
       'settings' => array(
         'user_register_form' => FALSE,
+        'widget' => array(
+          'active' => 1,
+          'module' => 'latex_field',
+          'settings' => array(
+            'filter' => 'tex_editor',
+          ),
+          'type' => 'latex_widget',
+          'weight' => '0',
+        ),
       ),
       'widget' => array(
         'active' => 1,
@@ -301,7 +310,7 @@ function article_setup_field_default_fields() {
           'filter' => 'tex_editor',
         ),
         'type' => 'latex_widget',
-        'weight' => '0',
+        'weight' => '1',
       ),
     ),
   );
@@ -378,7 +387,7 @@ function article_setup_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '9',
+        'weight' => '6',
       ),
     ),
   );
@@ -455,7 +464,7 @@ function article_setup_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '8',
+        'weight' => '5',
       ),
     ),
   );
@@ -469,26 +478,44 @@ function article_setup_field_default_fields() {
       'entity_types' => array(),
       'field_name' => 'field_parent',
       'foreign keys' => array(
-        'format' => array(
+        'nid' => array(
           'columns' => array(
-            'format' => 'format',
+            'nid' => 'nid',
           ),
-          'table' => 'filter_format',
+          'table' => 'node',
         ),
       ),
       'indexes' => array(
-        'format' => array(
-          0 => 'format',
+        'nid' => array(
+          0 => 'nid',
         ),
       ),
       'locked' => '0',
-      'module' => 'text',
+      'module' => 'node_reference',
       'settings' => array(
-        'max_length' => '255',
-        'profile2_private' => FALSE,
+        'referenceable_types' => array(
+          'article' => 'article',
+          'collection' => 0,
+          'correction' => 0,
+          'forum' => 0,
+          'group' => 0,
+          'image' => 0,
+          'news' => 0,
+          'page' => 0,
+          'poll' => 0,
+          'problem' => 0,
+          'question' => 0,
+          'review' => 0,
+          'solution' => 0,
+        ),
+        'view' => array(
+          'args' => array(),
+          'display_name' => '',
+          'view_name' => '',
+        ),
       ),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'node_reference',
     ),
     'field_instance' => array(
       'bundle' => 'article',
@@ -498,16 +525,10 @@ function article_setup_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'text',
+          'module' => 'node_reference',
           'settings' => array(),
-          'type' => 'text_default',
-          'weight' => '9',
-        ),
-        'full' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
+          'type' => 'node_reference_default',
+          'weight' => 17,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -521,17 +542,18 @@ function article_setup_field_default_fields() {
       'label' => 'Parent',
       'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'text',
+        'module' => 'node_reference',
         'settings' => array(
+          'autocomplete_match' => 'contains',
+          'autocomplete_path' => 'node_reference/autocomplete',
           'size' => '60',
         ),
-        'type' => 'text_textfield',
-        'weight' => '12',
+        'type' => 'node_reference_autocomplete',
+        'weight' => '4',
       ),
     ),
   );
@@ -600,76 +622,7 @@ function article_setup_field_default_fields() {
           'display_label' => 1,
         ),
         'type' => 'options_onoff',
-        'weight' => '32',
-      ),
-    ),
-  );
-
-  // Exported field: 'node-article-field_sitedoc'.
-  $fields['node-article-field_sitedoc'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_sitedoc',
-      'foreign keys' => array(),
-      'indexes' => array(
-        'value' => array(
-          0 => 'value',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'list',
-      'settings' => array(
-        'allowed_values' => array(
-          0 => '0',
-          1 => '1',
-        ),
-        'allowed_values_function' => '',
-      ),
-      'translatable' => '0',
-      'type' => 'list_boolean',
-    ),
-    'field_instance' => array(
-      'bundle' => 'article',
-      'default_value' => array(
-        0 => array(
-          'value' => 0,
-        ),
-      ),
-      'deleted' => '0',
-      'description' => 'Should this article be part of PlanetMath\'s documentation?',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'list',
-          'settings' => array(),
-          'type' => 'list_default',
-          'weight' => 15,
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_sitedoc',
-      'label' => 'Is this article part of PlanetMath\'s documentation?',
-      'required' => 0,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'options',
-        'settings' => array(
-          'display_label' => 1,
-        ),
-        'type' => 'options_onoff',
-        'weight' => '32',
+        'weight' => '15',
       ),
     ),
   );
@@ -745,7 +698,7 @@ function article_setup_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '13',
+        'weight' => '9',
       ),
     ),
   );
@@ -822,7 +775,7 @@ function article_setup_field_default_fields() {
           'size' => '80',
         ),
         'type' => 'text_textfield',
-        'weight' => '6',
+        'weight' => '3',
       ),
     ),
   );
@@ -892,7 +845,76 @@ function article_setup_field_default_fields() {
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_select',
-        'weight' => '31',
+        'weight' => '13',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-article-field_sitedoc'.
+  $fields['node-article-field_sitedoc'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_sitedoc',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'value' => array(
+          0 => 'value',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+          0 => '0',
+          1 => '1',
+        ),
+        'allowed_values_function' => '',
+      ),
+      'translatable' => '0',
+      'type' => 'list_boolean',
+    ),
+    'field_instance' => array(
+      'bundle' => 'article',
+      'default_value' => array(
+        0 => array(
+          'value' => 0,
+        ),
+      ),
+      'deleted' => '0',
+      'description' => 'Should this article be part of PlanetMath\'s documentation?',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_default',
+          'weight' => 15,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_sitedoc',
+      'label' => 'Is this article part of PlanetMath\'s documentation?',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(
+          'display_label' => 1,
+        ),
+        'type' => 'options_onoff',
+        'weight' => '14',
       ),
     ),
   );
@@ -966,7 +988,7 @@ function article_setup_field_default_fields() {
           'size' => 60,
         ),
         'type' => 'text_textfield',
-        'weight' => '15',
+        'weight' => '11',
       ),
     ),
   );
@@ -1041,7 +1063,7 @@ function article_setup_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '14',
+        'weight' => '10',
       ),
     ),
   );
@@ -1054,6 +1076,7 @@ function article_setup_field_default_fields() {
   t('CanonicalName');
   t('Defines');
   t('Every article belongs to one major section.  "Reference" is the default, but we also have Collaborations, Research, Recreation, and Education sections.');
+  t('Is this article part of PlanetMath\'s documentation?');
   t('Keywords');
   t('LaTeX');
   t('MSC');
@@ -1063,9 +1086,10 @@ function article_setup_field_default_fields() {
   t('Public');
   t('Related');
   t('Revision Comment');
+  t('Should this article be part of PlanetMath\'s documentation?');
   t('Synonym');
   t('Time Created');
-  t('Type of Math Ojbect');
+  t('Type of Math Object');
   t('Use the msc_browser to select a good MSC code.  You can have more than one classification - comma separate your entries here!');
 
   return $fields;
