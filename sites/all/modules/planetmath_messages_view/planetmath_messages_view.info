@@ -1,5 +1,0 @@
-name = planetmath_messages_view
-description = "Provide and alter a view that shows all messages in one table"
-version = 7.x-1.0
-package = Other
-core = 7.x
