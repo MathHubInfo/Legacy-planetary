@@ -53,14 +53,6 @@ function problem_menu() {
       'page callback' => 'problem_decouple_article_problem_connection',
       'page arguments' => array(2,3),//'nid_of_article','nid_of_problem'),
       'access arguments' => array('create correction content'));
-
-  $items['solutions/%'] = array(
-      'title' => 'List of solutions',
-      'type' => MENU_CALLBACK,
-      'page callback' => 'problem_list_solutions',
-      'page arguments' => array(1),
-      'access arguments' => array('create correction content')
-  );   
   
   return $items;
 }
