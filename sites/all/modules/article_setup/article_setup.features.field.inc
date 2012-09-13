@@ -772,7 +772,7 @@ function article_setup_field_default_fields() {
         'active' => 1,
         'module' => 'text',
         'settings' => array(
-          'size' => '80',
+          'size' => '60',
         ),
         'type' => 'text_textfield',
         'weight' => '3',
