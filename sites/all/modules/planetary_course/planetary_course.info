@@ -1,0 +1,5 @@
+name = Planetary Course
+description = Allows creation of courses
+core = 7.x
+package     = Planetary Modules
+dependencies[] = curli
