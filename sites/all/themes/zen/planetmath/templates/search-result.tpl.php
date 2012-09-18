@@ -63,13 +63,13 @@
  */
 ?>
 <li class="<?php print $classes; ?>"<?php print $attributes; ?>> 
- <?php print render($title_prefix); ?>
+ <?php print render($title_prefix);  ?>
   <h3 class="title"<?php print $title_attributes; ?>>
   <a href="<?php print $url; ?>"><?php 
    if (!$title=='') 
      print $title;
    else 
-     print "Title should go here";
+     print $url;
      ?></a>
   </h3>
   <?php print render($title_suffix); ?>
