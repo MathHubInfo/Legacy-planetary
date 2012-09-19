@@ -40,7 +40,8 @@ function planetmath_view_source_access ($nid){
   $node = node_load($nid);
   //TEMPORARY: for hacking purposes, we can show the link if they DO have access
   //  if (node_access('update', $node, $user))
-  if (!node_access('update', $node, $user))
+  if (!node_access('update', $node, $user) 
+      || (is_array($user->roles) && in_array('administrator', $user->roles)))
     {
       if ($node->type == 'article') {
 	return TRUE;
@@ -52,12 +53,13 @@ function planetmath_view_source_access ($nid){
 function planetmath_view_source_show_listing($nid) {
   $page = "";
   $node = node_load($nid);
-  dpm($node);
+  //dpm($node);
   if (isset($node->field_latex)) {
     // actually it would be nice to pull in the preamble too
     $page .= '<pre>'
              . "\documentclass{article}
 "
+             . $node->field_latex['und'][0]['metadata']
              . $node->field_latex['und'][0]['preamble']
              . "
 \begin{document}
