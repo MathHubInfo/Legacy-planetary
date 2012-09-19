@@ -57,7 +57,14 @@ function planetmath_view_source_show_listing($nid) {
   if (isset($node->field_latex)) {
     // actually it would be nice to pull in the preamble too
     $page .= '<pre>'
-             . "\documentclass{article}
+          . planetmath_view_source_build($node)
+          . ' </pre>';
+  }
+  return $page;
+}
+
+function planetmath_view_source_build($node){
+return "\documentclass{article}
 "
              . $node->field_latex['und'][0]['metadata']
              . $node->field_latex['und'][0]['preamble']
@@ -66,10 +73,7 @@ function planetmath_view_source_show_listing($nid) {
 "
              . $node->field_latex['und'][0]['document'] 
              . "
-\end{document}"
-             . ' </pre>';
-  }
-  return $page;
+\end{document}";
 }
 
 // EOF
