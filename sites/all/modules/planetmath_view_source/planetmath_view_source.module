@@ -18,7 +18,7 @@ function planetmath_view_source_menu() {
   $items = array();
   $items['node/%/source'] = array(
       'type' => MENU_LOCAL_TASK,
-      'title' => 'View source',
+      'title' => 'Source',
       'page callback' => 'planetmath_view_source_show_listing',
       'page arguments' => array(1),
       'access callback' => 'planetmath_view_source_access',
@@ -57,23 +57,62 @@ function planetmath_view_source_show_listing($nid) {
   if (isset($node->field_latex)) {
     // actually it would be nice to pull in the preamble too
     $page .= '<pre>'
-          . planetmath_view_source_build($node)
+          . planetmath_view_source_build_short($node)
           . ' </pre>';
   }
   return $page;
 }
 
-function planetmath_view_source_build($node){
-return "\documentclass{article}
-"
-             . $node->field_latex['und'][0]['metadata']
-             . $node->field_latex['und'][0]['preamble']
+function planetmath_view_source_build_short($node){
+return '\documentclass{article}
+'            . $node->field_latex['und'][0]['preamble']
              . "
 \begin{document}
 "
              . $node->field_latex['und'][0]['document'] 
              . "
-\end{document}";
+\end{document}
+";
+}
+
+function planetmath_view_source_build_full($node){
+return '\documentclass{article}
+\usepackage{xstring}
+% Maintain a nice little history block to add things into
+\edef\history{ }
+\makeatletter
+\newcommand{\historyAdd}[1]{\protected@edef\history{\history{}#1 }}
+\makeatother
+\newcommand{\historyAddEcho}[1]{#1\historyAdd{#1}}
+% use these to build the actual "title" stuff
+% (though, note, we could do a better job grabbing
+% the "author" information out of Drupal)
+\newcommand{\pmtitle}[1]{\title{{\bf #1}\marginpar{\history}}}
+\newcommand{\pmmodified}[1]{\date{{\it #1}}}
+\newcommand{\pmmodifier}[2]{\author{{\it #1}\thanks{This text is available under the Creative Commons Attribution/Share-Alike License 3.0. You can reuse this document or portions thereof only if you do so under terms that are compatible with the CC-BY-SA license.}}}
+% And this stuff will go into our little history thing, to display
+% in the righthand margin
+\def\pmcanonicalname#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
+\def\pmcreated#1{\historyAdd{added on: $\langle${\it \protect\StrGobbleRight{#1}{9}}$\rangle$\\  }}
+\def\pmowner#1#2{\historyAdd{by: $\langle${\it #1}$\rangle$\\ }}
+\def\pmrecord#1#2{\historyAdd{version: $\langle${\it #2}$\rangle$}}
+%\pmauthor seems like a dumb command -- get rid of it.
+%\def\pmauthor#1#2{\historyAdd{$\langle${\it #1}$\rangle$}}
+\def\pmauthor#1#2{}
+'
+. $node->field_latex['und'][0]['preamble']
+. '
+\usepackage{hyperref}
+\begin{document}
+'
+             . $node->field_latex['und'][0]['metadata']
+             . "
+\maketitle
+"
+             . $node->field_latex['und'][0]['document'] 
+             . "
+\end{document}
+";
 }
 
 // EOF

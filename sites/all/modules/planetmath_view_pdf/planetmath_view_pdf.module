@@ -1,0 +1,50 @@
+<?php
+
+/* Requires a new directory, sites/default/files/texpdf/
+*/
+
+function planetmath_view_pdf_menu() {
+  $items = array();
+  $items['node/%/pdf'] = array(
+      'type' => MENU_LOCAL_TASK,
+      'title' => 'PDF',
+      'page callback' => 'planetmath_view_pdf_show',
+      'page arguments' => array(1),
+      'access callback' => TRUE
+  );
+  return $items;
+}
+
+function planetmath_view_pdf_show($nid) {
+  $page = "";
+  $node = node_load($nid);
+  // serve up the PDF in some suitable way, maybe embedded in a frame somehow?
+  // Hm... let's first just try visiting the relevant page and see if we get
+  // it that way.
+  drupal_goto("sites/default/files/texpdf/".$nid.'.pdf');
+  return $page;
+}
+
+/* Implements hook_node_update
+ *
+ * This function will build the PDF that we will show 
+ * with planetmath_view_pdf_show.
+ */
+function planetmath_view_pdf_node_update($node){
+  // get content
+  $content=planetmath_view_source_build_full($node);
+  // write latex file
+  $base_path = "/home/joe/staging/drupal_planetary";
+  $sourcefile_path = $base_path."/sites/default/files/texpdf/"
+                     .$node->nid.'.tex';
+  dpm($sourcefile_path);
+  $sourcefile = fopen($sourcefile_path, 'w');
+  fwrite($sourcefile, $content);
+  fclose($sourcefile);
+  // run PDFLaTeX command
+  $command = "/usr/bin/pdflatex --output-directory " 
+            .$base_path."/sites/default/files/texpdf/ ";
+  system($command . $sourcefile_path);
+}
+
+// EOF

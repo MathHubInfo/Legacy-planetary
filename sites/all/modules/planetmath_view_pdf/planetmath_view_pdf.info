@@ -1,0 +1,7 @@
+name = "PlanetMath View PDF"
+description = "Add a 'view PDF' link to article pages"
+package = PlanetMath
+core = 7.x
+files[] = planetmath_view_pdf.module
+
+dependencies[] = planetmath_view_source
