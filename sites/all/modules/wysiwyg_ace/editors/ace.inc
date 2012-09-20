@@ -31,7 +31,7 @@ function wysiwyg_ace_ace_editor() {
 		'plugin callback' => 'wysiwyg_ace_ace_plugins',
 		'versions' => array(
 			'0.2' => array(
-				'js files' => array('ace_toolbar.js', 'emacs.js', 'ace0-2.js', 'exhibit/exhibit-api.js', 
+				'js files' => array('async.js', 'ace_toolbar.js', 'emacs.js', 'ace0-2.js', 'exhibit/exhibit-api.js', 
 				  					'text-prefix-complete.js', 'underscore.js', 'jsonform.js'),
 				),
 			),
