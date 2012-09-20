@@ -37,7 +37,7 @@ function planetmath_view_pdf_node_update($node){
   $base_path = "/home/joe/staging/drupal_planetary";
   $sourcefile_path = $base_path."/sites/default/files/texpdf/"
                      .$node->nid.'.tex';
-  dpm($sourcefile_path);
+  //dpm($sourcefile_path);
   $sourcefile = fopen($sourcefile_path, 'w');
   fwrite($sourcefile, $content);
   fclose($sourcefile);

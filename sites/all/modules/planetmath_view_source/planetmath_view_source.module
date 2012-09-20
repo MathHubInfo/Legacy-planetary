@@ -76,6 +76,7 @@ return '\documentclass{article}
 }
 
 function planetmath_view_source_build_full($node){
+  //  dpm($node);
 return '\documentclass{article}
 \usepackage{xstring}
 % Maintain a nice little history block to add things into
@@ -93,7 +94,7 @@ return '\documentclass{article}
 % And this stuff will go into our little history thing, to display
 % in the righthand margin
 \def\pmcanonicalname#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
-\def\pmcreated#1{\historyAdd{added on: $\langle${\it \protect\StrGobbleRight{#1}{9}}$\rangle$\\  }}
+\def\pmcreated#1{\historyAdd{created: $\langle${\it \protect\StrGobbleRight{#1}{9}}$\rangle$\\  }}
 \def\pmowner#1#2{\historyAdd{by: $\langle${\it #1}$\rangle$\\ }}
 \def\pmrecord#1#2{\historyAdd{version: $\langle${\it #2}$\rangle$}}
 %\pmauthor seems like a dumb command -- get rid of it.
