@@ -1,0 +1,13 @@
+diff --git a/userpoints.module b/userpoints.module
+index 0f51b96..d6bf006 100644
+--- a/userpoints.module
++++ b/userpoints.module
+@@ -853,7 +853,7 @@ function userpoints_userpointsapi($params) {
+     }
+ 
+     // Anonymous users do not get points, and there have to be points to process.
+-    if (empty($params['uid']) || empty($params['points'])) {
++    if (empty($params['uid']) || (empty($params['points']) && !is_numeric($params['points']))) {
+       return array(
+           'status' => FALSE,
+           'reason' => 'uid or points not given. Anonymous users do not get points and there must be points to process.',

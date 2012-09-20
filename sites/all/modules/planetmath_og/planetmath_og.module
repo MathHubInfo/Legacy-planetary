@@ -55,8 +55,6 @@ function planetmath_og_model_getCoauthors ($nid) {
     $results = db_query("SELECT users.name,users.uid FROM og_membership om INNER JOIN users ON om.etid = users.uid WHERE om.entity_type = 'user' AND om.gid= :gid", array(':gid' => $group->nid));
 
     foreach ($results as $result) {
-      dd("RESULT");
-      dd($result);
       $coauthors[] = $result;
     }
   }
@@ -338,24 +336,20 @@ function planetmath_og_theme($existing, $type, $theme, $path) {
   return $to_return;
 }
 
+// shall we pass in an extra variable as a "see more" field?
 function theme_planetmath_group_users($variables) {
   $return = "Members: ";
   foreach ($variables['links'] as $link) {
     $return = $return . l($link->name, 'user/' . $link->uid) . " ";
     }
-    
-    dd($return);
   return $return;
 }
 
 function theme_planetmath_group_content($variables) {
- dd($variables);
  $return = "Content: ";
  foreach ($variables['links'] as $link) {
    $return = $return . l($link->title, 'node/' . $link->nid) . " ";
    }
-   
- dd($return);
  return $return;
 }
 
@@ -366,7 +360,9 @@ function planetmath_og_node_view($node) {
   // first select relevant information about group members (given an nid)
   // this can be made into a separate function
 
-    $user_info = db_query("SELECT u.name, u.uid FROM users u INNER JOIN og_membership ON og_membership.etid = u.uid WHERE og_membership.gid = :nid AND og_membership.group_type='node' AND og_membership.entity_type = 'user' LIMIT 20;", array(':nid' => $node->nid));
+    $user_info = db_query("SELECT u.name, u.uid FROM users u INNER JOIN og_membership ON og_membership.etid = u.uid WHERE og_membership.gid = :nid AND og_membership.group_type='node' AND og_membership.entity_type = 'user' ORDER BY u.access LIMIT 20;", array(':nid' => $node->nid));
+
+    // It might be interesting to do a count of the number of users, and only include a link to the full roster if there are more than 20, but I think I found a cheaper solution
 
     $links = array();
     foreach ($user_info as $result) {
@@ -383,7 +379,7 @@ function planetmath_og_node_view($node) {
     // then select relevant information about group content (nodes) 
     // maybe we also want this as a separate function
 
-    $content_info = db_query("SELECT n.title,n.nid FROM node n INNER JOIN og_membership WHERE og_membership.gid =:nid AND og_membership.entity_type='node' AND og_membership.entity_type = 'node' AND og_membership.etid = n.nid LIMIT 20", array(':nid' => $node->nid));
+    $content_info = db_query("SELECT n.title,n.nid FROM node n INNER JOIN og_membership WHERE og_membership.gid =:nid AND og_membership.entity_type='node' AND og_membership.entity_type = 'node' AND og_membership.etid = n.nid ORDER BY n.changed LIMIT 20", array(':nid' => $node->nid));
 
    $links = array();
    foreach ($content_info as $result) {
@@ -445,9 +441,7 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   // TODO: need to sort things out so that the value is set properly, otherwise
   // there are problems when trying to save the article
 
-  // dd("form['og_group_ref']...");
   // dd($form['og_group_ref']);
-  // dd($form['og_group_ref']['und']['#default_value']);
 
   $buddy_group_id = planetmath_og_get_user_buddy_group_id($user->uid);
 
@@ -531,6 +525,7 @@ function planetmath_og_form_group_node_form_alter(&$form, &$form_state, $form_id
 function planetmath_og_form_og_ui_add_users_alter(&$form, &$form_state, $form_id) {
   //dpm($form);
   $form['og_user']['state']['#access'] = FALSE;
+  $form['og_user']['state']['#default_value'] = OG_STATE_ACTIVE;
   $form['og_user']['field_name']['#access'] = FALSE;
   $form['membership_fields']['og_membership_request']['und'][0]['value']['#description'] = "Send a note to the new group member (optional).";
   //dd($form);

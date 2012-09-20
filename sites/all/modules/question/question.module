@@ -193,7 +193,7 @@ function question_authorlinks_assemble_article($node){
 
 function question_add_links_article($node){
   $links = array(
-      'ask-question' => l('Ask question', 'node/ask/question/' . $node->nid)
+      'ask-question' => l('Ask a question', 'node/ask/question/' . $node->nid)
   );
   return $links;
 }

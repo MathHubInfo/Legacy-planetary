@@ -110,6 +110,7 @@
     </div>
   <?php endif; ?>
 
+  
   <?php /* Only for groups!*/
    if ($type === 'group'): ?>
    <div id="planetmath_group">
@@ -119,10 +120,14 @@
      // Note: we found a module that could be modified to display group content in the sidebar, which would
      // probably look better than what we have here.
      print render($content['planetmath_group_users']); 
-   ?> <br />
+     print l("(see full roster)", "members/".$node->nid, array('attributes' => array('style' => 'font-style:italic;')));
+   ?> 
+<br />
+<br />
    <?php
      print render($content['planetmath_group_content']);
-   ?> <br />
+     print l("(see full list)", "group-content/".$node->nid, array('attributes' => array('style' => 'font-style:italic;')));
+   ?> <br /><br />
    Type:
    <?php
      //dd($content['field_group_subtype'][0]);
@@ -143,6 +148,7 @@
    <?php
      // I don't know why, but this seems to be needed to get "subscribe" link
      // to show up for non-admin users (but we hide this for the World Writable group)
+   if(isset($content['group_group'])) {
       if($content['group_group']['#object']->nid != 1){
         print render($content['group_group'][0]);
         hide($content['group_group']);
@@ -150,12 +156,24 @@
         //hide($content['group_group'][0]);
         hide($content['group_group']);
       }
+   }
    ?>
    </div>
    <?php endif; ?>
 
+  <?php /* Only for collections!*/
+   if ($type === 'collection'):  
+    print render($content['body']); 
+    if(isset($content['collection_contents_table'])): ?>
+      <div id="collection_content">
+      <h2> Collection content </h2>
+	 <?php print render($content['collection_contents_table']); ?>
+      </div>
+   <?php endif; ?>
+   <?php endif; ?>
+
   <div class="content"<?php print $content_attributes; ?>>
-    <?php
+    <?php   /* Generic stuff for all nodes goes here */
     // We hide the comments and links now so that we can render them later (if desired).
      //dd($content);
     hide($content['comments']);
@@ -171,7 +189,9 @@
 //    hide($content['field_latex']);
     //END-HACK
     print render($content);
-?> <?php if(isset($node->field_msc['und'][0]['value'])): ?>
+?> 
+
+<?php if(isset($node->field_msc['und'][0]['value'])): ?>
   
 <h2>Mathematics Subject Classification</h2>
 

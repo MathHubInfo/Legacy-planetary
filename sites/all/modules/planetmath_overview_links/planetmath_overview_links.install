@@ -1,0 +1,66 @@
+<?php
+
+function planetmath_overview_links_install() {
+
+  module_load_include('inc', 'menu', 'menu.admin');
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -10,
+       'link_title' => "Site Content",
+       'link_path'  => 'sysstats',
+       'module'     => 'planetmath_overview',
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  // Users aren't really "content" so we might want to not put this here!
+
+  $users = db_query("SELECT 'users', COUNT(*) as count FROM users")->fetchObject();
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -1,
+       'link_title' => "Users: (" . $users->count . ")",
+       'link_path'  => 'people',
+       'module'     => 'planetmath_overview_links',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  // now add similar menu items for each of the content types!
+
+  $result = db_query("SELECT type, COUNT(*) as count FROM node GROUP BY type");
+
+  foreach ($result as $obj) {
+    $form_state = array(
+       'values' => array(
+	 'menu_name'  => 'navigation',
+	 'weight'     => 1,
+	 'link_title' => ucfirst($obj->type) . "s: (" . $obj->count . ")",
+	 'link_path'  => $obj->type . "s",
+	 'module'     => 'planetmath_overview_links',
+	 'plid'       => $toplid,
+	 'mlid'       => NULL,
+       ),
+     );
+
+    menu_edit_item_validate(array(), $form_state);
+    menu_link_save($form_state['values']);
+  }
+}
+
+function planetmath_overview_links_uninstall() {
+  db_delete('menu_links')
+    ->condition('module','planetmath_overview_links')
+    ->execute();
+}

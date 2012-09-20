@@ -25,7 +25,7 @@ function collection_install() {
   $content_type = node_type_set_defaults($collection);
 
   // add the body field to the content type - actually we don't want this here
-  // node_add_body_field($content_type, 'Body');
+  node_add_body_field($content_type, 'Description (content will be added separately)');
 
   // create the content type
   node_type_save($content_type);

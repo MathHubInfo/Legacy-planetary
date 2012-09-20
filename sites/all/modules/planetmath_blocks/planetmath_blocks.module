@@ -21,8 +21,9 @@ define('PLANETMATH_BLOCKS_NUMBER_OF_REVIEWS_ON_BLOCK', 5);
 
 define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES',
        serialize(array('correction', 
-		       'request',
+		       'question',
 		       'image',
+		       'group',
 		       'problem',
 		       'solution',
 		       'review')));
@@ -35,6 +36,26 @@ function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     INNER JOIN users u ON u.uid = n.uid
+    INNER JOIN field_data_field_published f ON n.nid = f.entity_id
+    WHERE n.`type` = :type 
+    AND f.field_published_value = 1
+    ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => $type));
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
+/**
+ * Queries for the block views 
+ */
+function planetmath_blocks_queryRevisions($type, $sortBy = 'n.created') {
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
+    FROM node n 
+    LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
+    INNER JOIN node_revision nr ON n.vid = nr.vid
+    INNER JOIN users u ON u.uid = nr.uid
     INNER JOIN field_data_field_published f ON n.nid = f.entity_id
     WHERE n.`type` = :type 
     AND f.field_published_value = 1
@@ -66,8 +87,16 @@ function planetmath_blocks_queryEverythingElse($sortBy = 'n.changed') {
     INNER JOIN users u ON u.uid = n.uid
     WHERE n.`type` IN (:type) ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_EVERYTHING_ELSE_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => unserialize(PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES)));
   $return = array();
+  // We will filter out the groups that are not of subtype "Team".
   foreach ($results as $result) {
-    $return[] = $result;
+    if ($result->type == 'group') {
+      $subtype = node_load($result->nid)->field_group_subtype['und'][0]['value'];
+      if ($subtype == "Team") {
+	$return[] = $result;
+      }
+    } else {
+      $return[] = $result;
+    }
   }
   return $return;
 }
@@ -106,9 +135,12 @@ function planetmath_blocks_queryMessages() {
 }
 
 function planetmath_blocks_queryUserList() {
+  // jac - for some reason, we were getting a user 0 with no name
+  // so I've added an extra line that gets rid of that
   $results = db_query("SELECT u.uid, u.`name`, ut.points
     FROM users u
     LEFT JOIN userpoints_total ut ON ut.uid = u.uid
+    WHERE u.name <> ''
     ORDER BY ut.points DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_USERS_ON_BLOCK);
 
   $return = array();
@@ -132,6 +164,12 @@ function planetmath_blocks_queryCorrections($nid) {
   return $return;
 }
 
+function planetmath_blocks_countCorrectionsPerArticle($nid) {
+  return (db_query("SELECT COUNT(n.nid) AS cnt FROM node n
+                  INNER JOIN field_data_field_correction_article fca ON fca.entity_id = n.nid
+                  WHERE fca.field_correction_article_nid = :nid", array(':nid' => $nid))->fetchObject()->cnt > 0) ? true : false;
+}
+
 function planetmath_blocks_queryProblems($nid) {
   $results = db_query("SELECT n.nid AS nid, n.title AS title, u.`name` AS username, n.created, u.uid AS uid
     FROM node n INNER JOIN article_has_problem AS ahp ON (n.nid=ahp.pid) 
@@ -148,6 +186,25 @@ function planetmath_blocks_countProblems($aid) {
   return (db_query("SELECT COUNT(ahp.pid) AS cnt
     FROM article_has_problem AS ahp
     WHERE ahp.aid=:nid LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_PROBLEMS_ON_BLOCK, array(':nid' => $aid))->fetchObject()->cnt > 0) ? true : false;
+}
+
+// This function will find the articles that mention this problem
+function planetmath_blocks_queryReverseProblems($nid) {
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, u.`name` AS username, n.created, u.uid AS uid
+    FROM node n INNER JOIN article_has_problem AS ahp ON (n.nid=ahp.aid) 
+    INNER JOIN users u ON u.uid = n.uid 
+    WHERE ahp.pid=:nid ORDER BY n.created DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_PROBLEMS_ON_BLOCK, array(':nid' => $nid));
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
+function planetmath_blocks_countReverseProblems($pid) {
+  return (db_query("SELECT COUNT(ahp.aid) AS cnt
+    FROM article_has_problem AS ahp
+    WHERE ahp.pid=:nid LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_PROBLEMS_ON_BLOCK, array(':nid' => $pid))->fetchObject()->cnt > 0) ? true : false;
 }
 
 
@@ -187,12 +244,6 @@ function planetmath_blocks_countReviews($sid) {
     WHERE shr.sid=:nid LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_REVIEWS_ON_BLOCK, array(':nid' => $sid))->fetchObject()->cnt > 0) ? true : false;
 }
 
-function planetmath_blocks_countCorrectionsPerArticle($nid) {
-  return (db_query("SELECT COUNT(n.nid) AS cnt FROM node n
-                  INNER JOIN field_data_field_correction_article fca ON fca.entity_id = n.nid
-                  WHERE fca.field_correction_article_nid = :nid", array(':nid' => $nid))->fetchObject()->cnt > 0) ? true : false;
-}
-
 // We could keep track of the "actual" version id on v.log, since it isn't managed anywhere else.
 // Getting all of this imported into the system is going to take some work.
 function planetmath_blocks_versions($nid) {
@@ -220,10 +271,14 @@ function planetmath_blocks_countVersionsPerArticle($nid) {
 // Since this function is used in a lot of different cases,
 // the conditional steps inside are important (in order to
 // make everything look good)!
-function planetmath_blocks_blockThemeResults($results) {
+//
+// It seems sensible to add a 'delta' parameter, so that we can easily decide what
+// to do with different kinds of blocks
+function planetmath_blocks_blockThemeResults($results, $nid, $delta = NULL) {
   if (empty($results)) {
     return '<h4>No results found</h4>';
   }
+  $count = count($results);
   $html = "";
   foreach (array_reverse($results) as $result) {
     if (!isset($result->version)) {
@@ -244,7 +299,26 @@ function planetmath_blocks_blockThemeResults($results) {
 	              . $changed
                       . '</span><br />';
   }
-  //$html .= "</div>";
+ 
+  // we need different kinds of "more" links depending on different circumstances
+  // put a link to the view of problems, filtered to problems about this node
+  // NOTE: we use customized views for this, see planetmath_blocks.views.inc
+
+  // 'versions' will be dealt with in a different way
+
+if ($delta == 'corrections' && $count == PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK) {
+    $html .= '<div style="text-align:right;">' . l('see all',
+						   'corrections/'.$nid) . '</div>';
+  } else if ($delta == 'problems' && $count == PLANETMATH_BLOCKS_NUMBER_OF_PROBLEMS_ON_BLOCK) {
+    $html .= '<div style="text-align:right;">' . l('see all',
+						   'problems/'.$nid) . '</div>';
+  } else if ($delta == 'solutions' && $count == PLANETMATH_BLOCKS_NUMBER_OF_SOLUTIONS_ON_BLOCK) {
+    $html .= '<div style="text-align:right;">' . l('see all',
+						   'solutions/'.$nid) . '</div>';
+  } else if ($delta == 'reviews' && $count == PLANETMATH_BLOCKS_NUMBER_OF_REVIEWS_ON_BLOCK) {
+    $html .= '<div style="text-align:right;">' . l('see all',
+						   'reviews/'.$nid) . '</div>';
+  } 
   return $html;
 }
 
@@ -269,9 +343,11 @@ function planetmath_blocks_blockThemeResultsWithDate($results, $sortBy = 'create
 
     $html .= '<span >' . l($result->title . ' ' . $result->version, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
   }
-  //dd("THEME RESULT WITH DATE:");
-  //dd($html);
-  //$html .= "</div>";
+  if ($sortBy == 'created') {
+    $html .= '<div style="text-align:right;">' . l('more', 'articles') . '</div>';
+  } else if ($sortBy == 'changed') {
+    $html .= '<div style="text-align:right;">' . l('more', 'revisions') . '</div>';
+  }
   return $html;
 }
 
@@ -303,7 +379,7 @@ function planetmath_blocks_blockThemeEverythingElseWithDate($results, $sortBy = 
               . '</span><br />';
   }
 
-  //$html .= "</div>";
+  $html .= '<div style="text-align:right;">' . l('more', 'latest') . '</div>';
   return $html;
 }
 
@@ -312,11 +388,12 @@ function planetmath_blocks_blockThemeUserListResults($results) {
     return '<h4>No results found</h4>';
   }
   // jac - got the right-justified numbers working
-  $html = "";//'<div style="padding-left:10%;padding-right:10%;padding-bottom:10%;"><br />';
+  $html = "";
   foreach ($results as $result) {
     $html .= '<span>' . l($result->name, 'user/' . $result->uid) . '</span><span class="block-day-date">' . intval($result->points) . ' </span><br />';
   }
-  //$html .= '</div >';
+  // jac - link to see more
+  $html .= '<div style="text-align:right;">' . l('more', 'scores') . '</div>';
   return $html;
 }
 
@@ -341,7 +418,8 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
       $html .= '<span class="block-day-date">'. date('Y-m-d', $result->changed) . '</span>' . '<br /><span class="message-block-item">' . l($result->title, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
     }
   }
-  //$html .= "</div>";
+  // jac - link to see more
+  $html .= '<div style="text-align:right;">' . l('more', 'talk') . '</div>';
   return $html;
 }
 
@@ -391,28 +469,35 @@ function planetmath_blocks_crossRefMockBlock() {
 function planetmath_blocks_block_versions($nid) {
   return array(
       'subject' => 'Versions',
-      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_versions($nid))
+      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_versions($nid),$nid,'versions')
   );
 }
 
 function planetmath_blocks_block_corrections($nid) {
   return array(
       'subject' => 'Corrections',
-      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryCorrections($nid))
+      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryCorrections($nid),$nid,'corrections')
   );
 }
 
 function planetmath_blocks_block_problems($nid) {
   return array(
       'subject' => 'Problems',
-      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryProblems($nid))
+      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryProblems($nid),$nid,'problems')
+  );
+}
+
+function planetmath_blocks_block_reverseproblems($nid) {
+  return array(
+      'subject' => 'Related Articles',
+      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryReverseProblems($nid),$nid,'reverseproblems')
   );
 }
 
 function planetmath_blocks_block_solutions($nid) {
   return array(
       'subject' => 'Solutions',
-      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_querySolutions($nid))
+      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_querySolutions($nid),$nid,'solutions')
   );
 }
 
@@ -421,7 +506,7 @@ function planetmath_blocks_block_solutions($nid) {
 function planetmath_blocks_block_reviews($nid) {
   return array(
       'subject' => 'Reviews',
-      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryReviews($nid))
+      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryReviews($nid),$nid,'reviews')
   );
 }
 
@@ -435,7 +520,7 @@ function planetmath_blocks_block_messages() {
 function planetmath_blocks_block_revisions() {
   return array(
       'subject' => 'Latest Revisions',
-      'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryGeneral('article', 'n.changed'),'changed')
+      'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryRevisions('article', 'n.changed'),'changed')
   );
 }
 
@@ -448,7 +533,7 @@ function planetmath_blocks_block_userList() {
 
 function planetmath_blocks_block_everythingElse() {
   return array(
-      'subject' => 'Everything Else',
+      'subject' => 'Other Recent Activity',
       'content' => planetmath_blocks_blockThemeEverythingElseWithDate(planetmath_blocks_queryEverythingElse(),'created')
   );
 }
@@ -516,6 +601,10 @@ function planetmath_blocks_block_view($delta = '') {
     $block = planetmath_blocks_block_problems(arg(1));
   }
 
+  if ($delta == 'reverseproblem') {
+    $block = planetmath_blocks_block_reverseproblems(arg(1));
+  }
+
   if ($delta == 'review') {
     $block = planetmath_blocks_block_reviews(arg(1));
   }
@@ -555,3 +644,13 @@ function planetmath_blocks_block_view($delta = '') {
   return $block;
 }
 
+/* Implements hook_views_api
+ * This is needed to get our implementation of hook_views_query_alter working
+ * See planetmath_blocks.views.inc for details
+ */
+function planetmath_blocks_views_api() {
+  return array(
+    'api' => 3, 
+    'path' => drupal_get_path('module', 'planetmath_blocks'), 
+	       );
+}

@@ -1,0 +1,73 @@
+<?php
+/*
+ * @file
+ *
+ * Add a 'view source' tab to article pages for people who don't have
+ * permission to edit.
+ *
+ * This can be achieved straightforwardly enough, with a menu that
+ * provides the link, a suitable access control (show link on articles
+ * iff the user has not got editing permission), and a function that
+ * pulls out and minimally formats the source code listing.
+ *
+ * ENHANCEMENT: It would of course be nice to do some syntax
+ * highlighting for the source code.
+ */
+
+function planetmath_view_source_menu() {
+  $items = array();
+  $items['node/%/source'] = array(
+      'type' => MENU_LOCAL_TASK,
+      'title' => 'View source',
+      'page callback' => 'planetmath_view_source_show_listing',
+      'page arguments' => array(1),
+      'access callback' => 'planetmath_view_source_access',
+      'access arguments' => array(1)
+  );
+  return $items;
+}
+
+/* We need to check whether the current user has edit permission for this node.
+ * We only show the view source tab if they DO NOT have edit permission. 
+ *
+ * For users who do have edit permission, it would be ideal to give
+ * access to the page, but still not see the TAB, but I guess that can
+ * be sorted out later.
+ */
+
+function planetmath_view_source_access ($nid){
+  global $user;  
+  $node = node_load($nid);
+  //TEMPORARY: for hacking purposes, we can show the link if they DO have access
+  //  if (node_access('update', $node, $user))
+  if (!node_access('update', $node, $user))
+    {
+      if ($node->type == 'article') {
+	return TRUE;
+      }
+    }
+  return FALSE;
+}
+
+function planetmath_view_source_show_listing($nid) {
+  $page = "";
+  $node = node_load($nid);
+  dpm($node);
+  if (isset($node->field_latex)) {
+    // actually it would be nice to pull in the preamble too
+    $page .= '<pre>'
+             . "\documentclass{article}
+"
+             . $node->field_latex['und'][0]['preamble']
+             . "
+\begin{document}
+"
+             . $node->field_latex['und'][0]['document'] 
+             . "
+\end{document}"
+             . ' </pre>';
+  }
+  return $page;
+}
+
+// EOF

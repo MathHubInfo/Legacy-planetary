@@ -582,6 +582,13 @@ h1#page-title{
   margin-bottom: 1px
 }
 
+/* Copy the article view stuff so that the revisions view is similar*/
+.view-articlerevisions .views-row h2{
+  font-size: 13.5px;
+  font-weight: normal;
+  margin-bottom: 1px
+}
+
 ul.node-images-list{
   list-style: none;
   display: inline;

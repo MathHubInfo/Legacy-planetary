@@ -920,25 +920,25 @@ function planetmath_profile_configure_groups () {
                                      "delete own article content"));
 
   /*??*/
-  $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-  $og_field['field']['settings']['target_type'] = 'node';
-  $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
-    'status' => TRUE,
-    'action' => 'none',
-    'fallback' => 'none',
-    'skip_perm' => FALSE,
-  );
-  og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
+  /* $og_field['field']['settings']['target_type'] = 'node'; */
+  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
+  /*   'status' => TRUE, */
+  /*   'action' => 'none', */
+  /*   'fallback' => 'none', */
+  /*   'skip_perm' => FALSE, */
+  /* ); */
+  /* og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field); */
 
-  $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-  $og_field['field']['settings']['target_type'] = 'node';
-  $og_field['instance']['settings']['behaviors']['prepopulate'] = array(
-    'status' => TRUE,
-    'action' => 'none',
-    'fallback' => 'none',
-    'skip_perm' => FALSE,
-  );
-  og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field);
+  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
+  /* $og_field['field']['settings']['target_type'] = 'node'; */
+  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
+  /*   'status' => TRUE, */
+  /*   'action' => 'none', */
+  /*   'fallback' => 'none', */
+  /*   'skip_perm' => FALSE, */
+  /* ); */
+  /* og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field); */
   /*??*/
 
   planetmath_og_group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
@@ -1384,6 +1384,25 @@ if(drupal_is_front_page()){
 }
 if(arg(0) == "node"){
  return planetmath_blocks_countProblems(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'planetmath_blocks',
+                        'delta' => 'reverseproblem',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -32,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return planetmath_blocks_countReverseProblems(arg(1));
 }
 return false;
 ?>',

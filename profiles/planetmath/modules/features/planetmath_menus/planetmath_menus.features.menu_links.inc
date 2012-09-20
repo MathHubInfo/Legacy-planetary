@@ -46,6 +46,25 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '0',
   );
+  // Exported menu link: main-menu:collections
+  $menu_links['main-menu:collections'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'collections',
+    'router_path' => 'collections',
+    'link_title' => 'Collections',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'Like playlists for math content.',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-49',
+    'parent_path' => 'articles',
+  );
   // Exported menu link: main-menu:corrections
   $menu_links['main-menu:corrections'] = array(
     'menu_name' => 'main-menu',
@@ -551,7 +570,7 @@ function planetmath_menus_menu_default_menu_links() {
     'menu_name' => 'navigation',
     'link_path' => 'userpoints',
     'router_path' => 'userpoints',
-    'link_title' => 'Users by !points',
+    'link_title' => 'Recent activity',
     'options' => array(),
     'module' => 'system',
     'hidden' => '0',

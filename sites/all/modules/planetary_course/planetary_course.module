@@ -1,0 +1,146 @@
+<?php
+
+/**
+ * creates a group having a certain title
+ */ 
+function planetary_course_create_group($title, $language, $uid) {
+   $grnode = (object) array(
+      "type" => "group",
+      "title" => $title,
+      "language" => $language,
+      "uid" => $uid,
+    );
+    node_save($grnode);
+    $groupnid = $grnode->nid;
+    $gid = og_get_group("node", $groupnid)->gid;
+    return $gid;
+}
+
+function planetary_course_rename_group($gid, $newTitle) {
+  foreach (entity_load("group", array($gid)) as $group) {
+    $group->label = $newTitle;
+    entity_save("group", $group);
+    $group_nodes = entity_load("node", array($group->etid));
+    $group_node = $group_nodes[$group->etid]; 
+    $group_node->title = $newTitle;
+    entity_save("node", $group_node);
+  }
+}
+
+/**
+ * creates or renames the name of a group
+ * return the group nid 
+ */
+function planetary_course_check_group($node) {
+  $groups = og_get_entity_groups("node", $node);
+  // the course is associated to a group
+  if ($groups && count($groups)==1) {
+    foreach (entity_load("group", $groups) as $group) {
+      if ($group->label != $node->title) {
+        planetary_course_rename_group($group->gid, $node->title);
+      }
+      return $group->gid;
+    }
+  } else {
+    $gid = planetary_course_create_group($node->title, $node->language, $node->uid);
+    dpm($gid, "gid");
+    $node->{OG_AUDIENCE_FIELD}["und"] = array(
+        array(
+            "gid" => $gid,
+            "state" => 1,
+          )
+      );
+    return $gid;
+  }
+}
+
+/**
+ * Make sure that a certain list of users has the right role and deletes the 
+ * roles for people not being in that list
+ */
+function planetary_course_enforce_role($user_ref_list, $gid, $role) {
+// og_role_revoke($gid, $entity->uid, $rid);
+  $rid = null;
+  // searching for the $rid (role id inside the group) of the $role
+  foreach (og_roles($gid) as $_rid => $rolename) {
+    if ($rolename == $role) {
+      $rid = $_rid;
+      break;
+    }
+  }
+  // if $rid cannot be identified -> cannot continue   
+  if ($rid == null) {
+    watchdog(WATCHDOG_NOTICE, "Role name".$role." not found so cannot enforce it");
+    return;
+  }
+  $allowed = array();
+  // take each user in turn
+  foreach ($user_ref_list as $user_ref) {
+    $uid = $user_ref["entity_id"];
+    $allowed[$uid]=1;
+    $user =  user_load($uid);
+    if (!og_is_member($gid, 'user', $user)) {
+      og_group($gid, array(
+           "entity type" => "user",
+           "entity" =>  $user,
+        ));
+    }
+   og_role_grant($gid, $uid, $rid);
+  }
+  foreach (og_get_users_by_roles($gid, array($rid)) as $user) {
+    $uid = $user->uid;
+      if (!$allowed[$uid]) {
+        og_role_revoke($gid, $uid, $rid);
+      }
+  }
+}
+
+function planetary_course_get_forum_containers() {
+  return variable_get('forum_containers', array());
+}
+
+function planetary_course_get_forum_container($gid) {
+  $cid = null;
+  foreach (variable_get('forum_containers', array()) as $id) {
+    $entity = entity_load("taxonomy_term", array($id));
+    $groups = og_get_entity_groups("taxonomy_term", $entity[$id]);
+    if (count($groups)==1 && $groups[$gid]) {
+      $cid = $id;
+      break;
+    }      
+  }
+  return $cid;
+}
+
+function planetary_course_enforce_container($gid, $name) {
+  $cid = planetary_course_get_forum_container($gid);
+  if ($cid == null) {
+    module_load_include("inc", "forum", "forum.admin");
+    $edit = forum_form_main('container', array());
+    $form_state = array("values"=>array());
+    form_set_value($edit["name"], $name, $form_state);
+    form_set_value($edit["parent"][0], 0, $form_state);
+    form_set_value($edit["vid"], variable_get('forum_nav_vocabulary', ''), $form_state);
+    forum_form_submit($edit, $form_state);
+    $containers = variable_get('forum_containers');
+    $cid = array_pop($containers);
+    $t = entity_load("taxonomy_term", array($cid));
+    og_group($gid, array(
+        "entity type" => "taxonomy_term",
+        "entity" => $t[$cid],
+      ));
+  }
+  return $cid;
+}
+
+function planetary_course_enforce_container($gid, $cid, $forums) {
+  dpm($forums["und"]);
+}
+
+function planetary_course_node_presave($node) {
+  if ($node->type != "course")
+    return;
+  $gid = planetary_course_check_group($node);
+  $cid = planetary_course_enforce_container($gid, $node->title);
+  planetary_course_enforce_forums($gid, $cid, $node->field_forums);
+}

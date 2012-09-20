@@ -155,7 +155,7 @@ function correction_reject_correction($nid) {
 
 function correction_add_links($node) {
   $links = array(
-      'add-correction' => l('Add correction', 'node/add/correction/' . $node->nid)
+      'add-correction' => l('Add a correction', 'node/add/correction/' . $node->nid)
   );
   return $links;
 }

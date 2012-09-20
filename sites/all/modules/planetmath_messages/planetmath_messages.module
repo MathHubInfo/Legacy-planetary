@@ -1,0 +1,168 @@
+<?php
+
+// call to hook_views_pre_execute to override the query for the groups browser
+function planetmath_messages_view_views_pre_execute(&$view) {
+   dd($view->name);
+   if($view->name=="messages") {
+     // This is a way to display the query, but I don't have a particularly
+     // clear sense of how to *modify* the query
+     dsm($view->build_info['query']->__toString()); 
+      }
+}
+
+function planetmath_messages_menu() {
+  $items = array();
+
+  $items['talk'] = array(
+      'title' => 'Talk',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'planetmath_messages_show',
+      'page arguments' => array(1),
+      'access arguments' => array('access comments')
+  );
+
+  return $items;
+}
+
+function planetmath_messages_get_all_messages_workaround(){
+$results = db_query("(SELECT n.nid AS my_id, n.title AS title, n.uid AS uid, n.changed AS changed, n.created AS created, u.name AS username, n.nid AS nid, n.type AS my_type, fdb.body_value AS body
+FROM node n
+LEFT OUTER JOIN field_data_body fdb ON n.nid = fdb.entity_id
+INNER JOIN users u ON u.uid = n.uid
+WHERE (type = 'forum')
+ORDER BY created DESC LIMIT 20 OFFSET 0)
+UNION ALL
+(SELECT c.cid AS my_id, c.subject AS title, c.uid AS uid, c.changed AS changed, c.created AS created, c.name AS username, n.nid AS nid, n.type AS my_type, fcb.comment_body_value AS body
+FROM comment c
+INNER JOIN node n ON n.nid = c.nid
+LEFT OUTER JOIN field_data_comment_body fcb ON c.cid = fcb.entity_id
+INNER JOIN users u ON u.uid = c.uid
+ORDER BY created DESC LIMIT 20 OFFSET 0)");
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
+function planetmath_messages_get_all_messages(){
+
+  $firstQuery = db_select('comment','c');
+  $firstQuery->addField('c', 'cid', 'my_id');
+  $firstQuery->addField('c', 'subject', 'title');
+  $firstQuery->addField('c', 'uid', 'uid');
+  $firstQuery->addField('c', 'changed', 'changed');
+  $firstQuery->addField('c', 'created', 'created');
+  $firstQuery->addField('c', 'name', 'username');
+  $firstQuery->join('node','n','n.nid = c.nid');
+  $firstQuery->leftJoin('field_data_comment_body','fcb','c.cid = fcb.entity_id');
+  $firstQuery->join('users','u','u.uid = c.uid');
+  $firstQuery->addField('n', 'nid', 'nid');
+  $firstQuery->addField('n', 'type', 'my_type');
+  $firstQuery->addField('fcb', 'comment_body_value', 'body');
+
+  $secondQuery = db_select('node','n');
+  $secondQuery->addField('n', 'nid', 'my_id');
+  $secondQuery->addField('n', 'title', 'title');
+  $secondQuery->addField('n', 'uid', 'uid');
+  $secondQuery->addField('n', 'changed', 'changed');
+  $secondQuery->addField('n', 'created', 'created');
+  $secondQuery->condition('type','forum', '=');
+  $secondQuery->leftJoin('field_data_body','fdb','n.nid = fdb.entity_id');
+  $secondQuery->join('users','u','u.uid = n.uid');
+  $secondQuery->addField('u', 'name', 'username');
+  $secondQuery->addField('n', 'nid', 'nid');
+  $secondQuery->addField('n', 'type', 'my_type');
+  $secondQuery->addField('fdb', 'body_value', 'body');
+
+  $mergedQuery = $secondQuery->union($firstQuery, 'UNION ALL');
+
+  //dd("WITHOUT COUNT QUERY AND PAGER");
+  //dd($mergedQuery);
+
+  $firstCounter = db_select('comment','c');
+  $firstCounter->addField('c', 'cid', 'my_id');
+  $firstCounter->join('node','n','n.nid = c.nid');
+  $firstCounter->leftJoin('field_data_comment_body','fcb','c.cid = fcb.entity_id');
+  $firstCounter->join('users','u','u.uid = c.uid');
+
+  $secondCounter = db_select('node','n');
+  $secondCounter->addField('n', 'nid', 'my_id');
+  $secondCounter->condition('type','forum', '=');
+  $secondCounter->leftJoin('field_data_body','fdb','n.nid = fdb.entity_id');
+  $secondCounter->join('users','u','u.uid = n.uid');
+
+  $innercountQuery = $secondCounter->union($firstCounter, 'UNION ALL');
+  $countQuery = db_select($innercountQuery);
+  $countQuery->addExpression('COUNT(*)','count');
+
+  // sorting is broken, among other aspects of this: http://drupal.org/node/1770742
+  /* $result = $mergedQuery->orderBy('created','DESC')->extend('PagerDefault')->limit(20); */
+  // so instead we use this for now, which still has problems but this *code* is correct
+  $result = $mergedQuery->extend('PagerDefault')->limit(20);
+
+  //dd("WITH PAGER BUT NO COUNT QUERY");
+  //dd($result);
+
+  $tmp = &$result;
+  $tmp->setCountQuery($countQuery);
+
+  dsm($result->__toString()); 
+  dsm($countQuery->__toString()); 
+
+  //dd("WITH COUNT QUERY AND PAGER");
+  //dd($result);
+
+  $result->execute();
+
+  return $result;
+}
+
+function planetmath_messages_show($nid){
+  global $base_url;
+
+  $count1=db_query("SELECT COUNT(nid) as count FROM comment")->fetchObject();
+  $count2=db_query("SELECT COUNT(nid) as count FROM node WHERE type = 'forum'")->fetchObject();
+  if($count1->count > 0 || $count2->count > 0) {
+    $messages = planetmath_messages_get_all_messages_workaround();
+
+    // start with a couple columns for now
+    $header = array(array('data' => 'Title', 
+			  'field' => 'nid'),
+		    array('data' => "Author", 
+			  'field' => 'username'),
+		    array('data' => "Date", 
+			  'field' => 'created'),
+		    );
+
+    $rows = array();
+
+    foreach ($messages as $message) {
+      dd("MESSAGE");
+      dd($message);
+
+      $rows[] = array(
+		      array('data' => l($message->title, 'node/' . $message->nid), 
+			    'field' => 'title'),
+		      array('data' => l($message->username, 'user/' . $message->uid), 
+			    'field' => 'username'),
+		      array('data' => format_date($message->created), 
+			    'field' => 'created'),
+		      );
+    }
+
+    dd("ROWS");
+    dd($rows);
+
+    return theme('table', array(
+				'header' => $header,
+				'rows' => $rows
+				)) 
+           . theme('pager');
+  } else {
+    drupal_set_message("Go ahead and create some messages.  They will show up in the listing in due course!");
+    drupal_goto('forum');
+  }
+}
+
+

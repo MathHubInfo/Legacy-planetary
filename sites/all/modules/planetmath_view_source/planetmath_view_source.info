@@ -1,0 +1,5 @@
+name = "PlanetMath View Source"
+description = "Add a 'view source' tab to article pages for people who don't have permission to edit"
+package = PlanetMath
+core = 7.x
+files[] = planetmath_view_source.module
