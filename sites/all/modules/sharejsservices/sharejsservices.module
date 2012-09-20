@@ -16,7 +16,7 @@ function sharejsservices_menu() {
 		    'access callback' => array('node_access'),
 	    	'access arguments' => array('update', 2),
 	);
-	$items["admin/config/content/etherpad-lite"] = array (
+	$items["admin/config/content/sharejs"] = array (
 		'title' => 'ShareJS configurations',
     	'description' => 'Default configuration to be used by all ShareJSServices',
 	    'page callback' => 'drupal_get_form',
@@ -41,14 +41,6 @@ function sharejs_config_form($form, &$form_state) {
 		"#title" => "ShareJS URL",
     	'#default_value' =>   variable_get('sharejs_base_url' , 'http://localhost:8000/'),
 	);
-	$form["test"] = array(
-			"#type" => "button",
-		    '#default_value' => "Test",
-			'#ajax' => array(
-	      		'callback' => 'sharejs_test_connection',
-	      		'wrapper' => 'result_div',
-	),
-	);
 	$form['test_result'] = array(
 	    '#prefix' => '<div id="result_div">',
 	    '#suffix' => '</div>',
@@ -57,16 +49,5 @@ function sharejs_config_form($form, &$form_state) {
 	return system_settings_form($form);
 }
 
-
-function sharejs_test_connection($form, $form_state) {
-	$values = $form_state["values"];
-	$client = new EtherpadLiteClient($values["etherpad_api_key"], $values["etherpad_base_url"]."/api");
-	$group = $client->createGroup();
-	if ($group->groupID) {
-		$form["test_result"]["#markup"] = "<h1 style='color:green'>Success!</h1>";
-		$client->deleteGroup($group->groupID);
-	}
-	return $form["test_result"];
-}
 
 ?>
