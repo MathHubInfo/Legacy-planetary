@@ -48,6 +48,14 @@
             return callback(null);
           });
         }, function(callback) {
+          return jQuery.getScript(Drupal.settings.ShareJSConfig.url + "share/AttributePool.js", function(success, textStatus, jqXHR) {
+            return callback(null);
+          });
+        }, function(callback) {
+          return jQuery.getScript(Drupal.settings.ShareJSConfig.url + "share/Changeset.js", function(success, textStatus, jqXHR) {
+            return callback(null);
+          });
+        }, function(callback) {
           return jQuery.getScript(Drupal.settings.ShareJSConfig.url + "share/share.uncompressed.js", function(success, textStatus, jqXHR) {
             return callback(null);
           });
@@ -76,16 +84,15 @@
           }, function(callback) {
             return sharejs.open(docName, 'etherpad', Drupal.settings.ShareJSConfig.url + "channel", callback);
           }, function(doc, callback) {
-            doc["attach_" + editorType](editor);
-            if (doc.created === false) {
-              async.waterfall([
-                function(callback) {
-                  return doc.del(0, doc.snapshot.text.length, callback);
-                }, function(callback) {
-                  return doc.insert(0, initText);
-                }
-              ]);
-            }
+            sharetext = doc.type.api.getText.apply(doc);
+            if (sharetext != initText) {
+              choice = confirm("Somebody else is editing this document. Would you like to collaborate on it?");
+              if (choice)
+                doc["attach_" + editorType](editor, false);
+              else
+                doc["attach_" + editorType](editor, true);
+            } else
+              doc["attach_" + editorType](editor, true);
             return callback(null, doc);
           }, function(doc, callback) {
             return callback(null, new ShareJSConnection(doc, editor));
