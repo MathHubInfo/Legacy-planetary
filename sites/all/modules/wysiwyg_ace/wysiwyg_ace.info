@@ -1,4 +1,4 @@
-name = "Wysiwyg CodeMirror2 Plugin"
+name = "Wysiwyg Ace Plugin"
 description = "Wysiwyg editor plugin that integrates source view syntax highlighting"
 dependencies[] = wysiwyg
 package = "User interface"
