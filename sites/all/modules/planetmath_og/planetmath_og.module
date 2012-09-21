@@ -173,7 +173,7 @@ function planetmath_og_menu() {
   $items = array();
   $items['node/%/pmgroup'] = array(
       'type' => MENU_LOCAL_TASK,
-      'title' => 'Co-Authors',
+      'title' => 'Coauthors',
       'page callback' => 'planetmath_og_view_coAuthorsPage',
       'page arguments' => array(1),
       'access callback' => 'planetmath_og_access_coAuthorsPage',
@@ -429,7 +429,11 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   // is annoying to work with.  This list could also be annoying to work
   // with, but it's a start to something better.
 
-  $form['og_group_ref']['und']['#type'] = 'checkboxes';
+  dpm($form['og_group_ref']);
+
+  $form['og_group_ref']['und'][0]['default']['#type'] = 'checkboxes';
+
+  $form['og_group_ref']['und'][0]['admin']['#access'] =FALSE;
 
   /* This doesn't work right, but it's a sorta nice idea... see
      planetmath_og_disable_element for details.  The idea is from here:
@@ -449,20 +453,20 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   // NOTE: we could be more sophisticated about this, and only *add* it as
   // a default value when the article is new.
   if (!is_null($buddy_group_id)){
-    $form['og_group_ref']['und']['#default_value'][] = $buddy_group_id;
+    $form['og_group_ref']['und'][0]['default']['#default_value'][] = $buddy_group_id;
   }
 
   // We will filter out all irrelevant options.
   // Specifically: we preserve the "none" option...
   $filtered_group_list['_none']="- None -";
-  foreach ($form['og_group_ref']['und']['#options'] as $gid=>$group_title){
+  foreach ($form['og_group_ref']['und'][0]['default']['#options'] as $gid=>$group_title){
     $group = node_load($gid);
     // ... and all Teams (that they are only presented here b/c the user is a member)
     if (isset($group->field_group_subtype['und'][0]) && 
 	$group->field_group_subtype['und'][0]['value'] == 'Team' ||
 	// ... and we preserve anything that was marked as a "default value" already
 	// which, in particular, includes anything that the item aleady belongs to
-	in_array($gid, $form['og_group_ref']['und']['#default_value'] )){
+	in_array($gid, $form['og_group_ref']['und'][0]['default']['#default_value'] )){
       $filtered_group_list[$gid]=$group_title;
     }
   }
