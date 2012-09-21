@@ -113,17 +113,28 @@ function correction_accept_correction($nid) {
     $correction->field_correction_closedby['und'][0]['uid'] = $user->uid;
 
     node_save($correction);
-    drupal_set_message("The correction was accepted");
 
+    // award a different number of points depending on the type of correction
+    $value = 0;
+    switch ($correction->field_correction_type['und'][0]['value']) {
+    case 'err':
+      $value = 30;
+      break;
+    case 'add':
+      $value = 20;
+      break;
+    case 'met':
+      $value = 10;
+      break;
+    }
     $points_params = array('uid' => $user->uid,
-        'points' => 10,
+        'points' => $value,
         'description' => 'Correction has been accepted',
         'entity_id' => $nid,
         'entity_type' => 'node'
     );
     userpoints_userpointsapi($points_params);
-
-    drupal_set_message("added 10 points");
+    drupal_set_message("The correction was accepted: added $value points");
   } else {
     drupal_set_message("You can't accept the correction!");
   }
