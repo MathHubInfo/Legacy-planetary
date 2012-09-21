@@ -87,14 +87,18 @@
             sharetext = doc.type.api.getText.apply(doc);
             if (sharetext != initText) {
               choice = confirm("Somebody else is editing this document. Would you like to collaborate on it?");
-              if (choice)
-                doc["attach_" + editorType](editor, false);
-              else
-                doc["attach_" + editorType](editor, true);
-            } else
+              if (!choice) {
+                docName += Math.random();
+                sharejs.open(docName, 'etherpad', Drupal.settings.ShareJSConfig.url + "channel", callback);
+              } else
+              callback(null, doc, false);
+            } else 
+            callback(null, doc, false);
+          }, function(doc, keep, callback) {
+            if (keep)
               doc["attach_" + editorType](editor, true);
-            return callback(null, doc);
-          }, function(doc, callback) {
+            else
+              doc["attach_" + editorType](editor, false);
             return callback(null, new ShareJSConnection(doc, editor));
           }
         ], function(err, sharejsconn) {
