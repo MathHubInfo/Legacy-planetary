@@ -429,7 +429,7 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   // is annoying to work with.  This list could also be annoying to work
   // with, but it's a start to something better.
 
-  dpm($form['og_group_ref']);
+  //dpm($form['og_group_ref']);
 
   $form['og_group_ref']['und'][0]['default']['#type'] = 'checkboxes';
 
