@@ -6,9 +6,27 @@ textarea .ace_editor {
     color: blue;
 }
 
+.ui-button span.ui-icon {
+  left: -2px;
+  top: -2px;
+  width: 32px;
+  height: 32px;
+  margin-left: 0px;
+  margin-top: 0px;
+}
+
 .ui-button .envInsertIcon {
 	background-image: url(../images/addEnvironment.png);
 }
+
+.ui-button .bold {
+	background-image: url(../images/bold.png);
+}
+
+.ui-button .italic {
+	background-image: url(../images/italic.png);
+}
+
 
 .linedWidgets .cmd_list {
 	float: left;
@@ -32,3 +50,5 @@ textarea .ace_editor {
 .clearCount .exhibit-facet-value-count {
 	display: none;
 }
+
+

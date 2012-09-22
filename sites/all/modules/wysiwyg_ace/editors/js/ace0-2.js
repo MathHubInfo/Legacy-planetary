@@ -9,7 +9,10 @@ function getDocumentID() {
 }
 
 function generateDocName(id, params) {
-    return "doc"+id+params.field;
+  if (params.field.match("edit-field-"))
+    return "doc"+id+params.field; 
+  else
+    return "doc"+id+Math.random();
 }
 
 /**
@@ -33,29 +36,35 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
   }
 
   $(editorID).each(function (c, obj) {
-  	  jQuery(obj).hide();
+  	jQuery(obj).hide();
   	  
-  	  editordiv = jQuery("<div>").attr("id","ace_"+params.field).attr("style"," height:200px; position:relative");
+  	editordiv = jQuery("<div>").attr("id","ace_"+params.field).attr("style"," height:400px; position:relative");
 	  
-  	  jQuery(obj).after(editordiv);
-  	  var editor = ace.edit("ace_"+params.field);
+  	jQuery(obj).after(editordiv);
+  	var editor = ace.edit("ace_"+params.field);
 	  window.ace_toolbar.initToolbar(editor);
-  	  editor.getSession().setValue(obj.value);
-	  editor.setTheme("ace/theme/twilight");
+	  editor.getSession().setValue(obj.value);
+	  editor.setTheme("ace/theme/textmate");
 	  editor.getSession().setMode("ace/mode/"+cSettings["mode"]);
 
+	  editor.addToolbarButton("Bold", "bold", function(data) {
+	      var range = editor.getSelectionRange();
+	      var rDoc = editor.getSession().getDocument();
+	      rDoc.insert(range.end, "}")
+	      rDoc.insert(range.start, "\\bf{")
+	  }, {});
+
+	  editor.addToolbarButton("Italic", "italic", function(data) {
+	      var range = editor.getSelectionRange();
+	      var rDoc = editor.getSession().getDocument();
+	      rDoc.insert(range.end, "}")
+	      rDoc.insert(range.start, "\\em{")
+	  }, {});
+	  
 	  window.aceEmacs.prepareEmacsMode(editor);
 	  if (cSettings["ShareJS"]) {
-	  	  async.waterfall([
-	  	  		  function (callback) {
-	  	  		      var docName = generateDocName(getDocumentID(), params);
-	  	  		  	  Drupal.ShareJS.connectServices(docName, "ace", editor, editor.getSession().getValue(), callback)
-	  	  		  },
-	  	  		  function (conn, callback) {	
-	  	  		  	  //conn.initToolbar(toolbardiv);
-	  	  		  	  callback(null);
-	  	  		  }
-	  	  ]);
+	    var docName = generateDocName(getDocumentID(), params);
+	    Drupal.ShareJS.connectServices(docName, "ace", editor, editor.getSession().getValue(), function() {} );
 	  }
 	  jQuery.data(obj, 'editor', editor);
   });
