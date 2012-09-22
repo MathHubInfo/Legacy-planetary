@@ -31,8 +31,8 @@ function wysiwyg_ace_ace_editor() {
 		'plugin callback' => 'wysiwyg_ace_ace_plugins',
 		'versions' => array(
 			'0.2' => array(
-				'js files' => array('async.js', 'ace_toolbar.js', 'emacs.js', 'ace0-2.js', 'exhibit/exhibit-api.js', 
-				  					'text-prefix-complete.js', 'underscore.js', 'jsonform.js'),
+				'js files' => array('async.js', 'ace_toolbar.js', 'ace0-2.js', 
+				  					'underscore.js', 'jsonform.js'),
 				),
 			),
 		);
@@ -82,13 +82,16 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 	#	drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
 	#	drupal_add_js($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.js');
 	#}
+	$cpath = url("", array("absolute"=>true)).drupal_get_path("module", "wysiwyg_ace")."/editors/js/";
 	drupal_add_library('system', 'ui.button');
 	drupal_add_library('system', 'ui.dialog');
-
+	drupal_add_js($cpath."/exhibit/exhibit-api.js?autoCreate=false", array("external"=>true));
+	drupal_add_js($cpath."/text-prefix-complete.js", array("external"=>true));
+	drupal_add_js($cpath."/emacs.js", array("external"=>true));
 	drupal_add_html_head_link(array(
       'rel' => 'exhibit-data',
       'type' => 'application/json',
-      'href' => url("", array("absolute"=>true)).drupal_get_path("module", "wysiwyg_ace")."/editors/js/environments.js",
+      'href' => $cpath."/environments.js",
     ));
 
 

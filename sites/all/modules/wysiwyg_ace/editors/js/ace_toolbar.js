@@ -12,9 +12,9 @@
 		
 		$("#wrapper_"+container_id).prepend(toolbardiv);
 
-		editor.addToolbarButton = function(shortName, imageUrl, callback, data) {
+		editor.addToolbarButton = function(shortName, css, callback, data) {
   	  	  btn = $("<button>").append(shortName);
-  	  	  $(btn).button({icons: {primary : "envInsertIcon"}, text : false } );
+  	  	  $(btn).button({icons: {primary : css}, text : false } );
   	  	  $(btn).click(data, function(evt) {
   	  	  		  evt.preventDefault();
   	  	  		  callback(evt);
