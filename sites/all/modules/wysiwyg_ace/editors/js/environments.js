@@ -32,6 +32,13 @@
             "template": "\\begin{center}\n\\end{center}"
         },
         {
+            "type": "Environment",
+            "description": "The center environment allows you to create a paragraph consisting of lines that are centered within the left and right margins on the current page. Each line must be terminated with the string.",
+            "label": "itemize",
+            "category": "Positioning",
+            "template": "\\begin{itemize}\n\\item\n\\end{itemize}"
+        },
+        {
         	"type" : "Environment",
         	"category" : "Semantic",
         	"label" : "importmodule",
