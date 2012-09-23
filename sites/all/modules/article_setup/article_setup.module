@@ -35,14 +35,7 @@ function article_setup_menu() {
  * Modifies the article edit form to include an autocomplete field.
  */
 function article_setup_form_article_node_form_alter(&$form, &$form_state,$form_id) {
-  dpm($form);
-  //  $form['field_msc']['und'][0]['value']['#type'] = 'textfield';
   $form['field_msc']['und'][0]['value']['#autocomplete_path'] = 'msc/autocomplete';
-  //  $form['field_msc']['und'][0]['value']['#title'] = 'Mathematics Subject Classification code(s)';
-  //  $form['field_msc']['und'][0]['value']['#description'] = 'Use a keyword search to select a good classification.  If using more than one code, comma-separate your selections.';
-
-  dpm($form);
-
   return $form;
 }
 
