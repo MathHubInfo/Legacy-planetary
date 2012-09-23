@@ -455,7 +455,7 @@ function article_setup_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_msc',
-      'label' => 'MSC',
+      'label' => 'Mathematics Subject Classification code(s)',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -1008,7 +1008,7 @@ function article_setup_field_default_fields() {
   t('Is this article part of PlanetMath\'s documentation?');
   t('Keywords');
   t('LaTeX');
-  t('MSC');
+  t('Mathematics Subject Classification code(s)');
   t('Major Section');
   t('One of: Theorem, Theorem, Proof, etc.');
   t('Parent');
