@@ -12,3 +12,84 @@ function article_setup_theme($existing, $type, $theme, $path) {
         )
     );
 }
+
+/* Implements hook_menu
+ *
+ * I think we need these paths to get autolinking going, but I'm not
+ * entirely sure... Will need to check out a drupal tutorial on autocompleting.
+ */
+function article_setup_menu() {
+  $items = array();
+  // get the autocomplete result
+  $items['msc/autocomplete'] = array(
+    'title' => 'MSC selector (result)',
+    'page callback' => 'article_setup_msc_selector',
+    'access arguments' => array('create article content'),
+    'type' => MENU_CALLBACK
+  );
+  return $items;
+}
+
+/* Implements hook_form_FORMID_alter
+ *
+ * Modifies the article edit form to include an autocomplete field.
+ */
+function article_setup_form_article_node_form_alter(&$form, &$form_state,$form_id) {
+  
+  $form['field_msc']['#type'] = 'textfield';
+  $form['field_msc']['#autocomplete_path'] = 'msc/autocomplete';
+  $form['field_msc']['#title'] = 'Mathematics Subject Classification code(s)';
+  $form['field_msc']['#description'] = 'Use a keyword search to select a good classification.  If using more than one code, comma-separate your selections.';
+
+  return $form;
+}
+
+/* Do the actual autocompletion and return matches.
+ *
+ * NOTE: Instead of using a mysql query via the API, we're going to 
+ * do this with SPARQL queries against the SPARQL endpoint.
+ *
+ * Also, because we're asking for codes to be comma separated, we had better
+ * be careful to actually use the CODES here, and not the titles (since the
+ * titles well have commas in them!) - that makes things a little easier.
+ */
+function article_setup_msc_selector($string = '') {
+  $elements = drupal_explode_tags($string);
+  $search = trim(array_pop($elements));
+  $matches = array();
+  if ($search !='') {
+    $result = article_setup_get_labels($search);
+    foreach ($result as $match) {
+      $prefix = count($elements) ? implode(", ",$elements). ", " : '';
+      $key = $prefix . $match['code'];
+      $matches[$key] = check_plain($match['code'] ." - ". $match['label']);
+    }
+  }
+  // TODO: should probably remove duplicates...
+  drupal_json_output($matches); //Returns the data in JSON format
+}
+
+function article_setup_get_labels($search) {
+  include_once('sites/all/libraries/ARC2/arc/ARC2.php');
+  $endpoint = (object) array('uri' => "http://li311-58.members.linode.com:8890/sparql");
+  $graph="http://localhost:8890/DAV/home/dba/rdf_sink/";
+
+  $query = "PREFIX msc: <http://msc2010.org/resources/MSC/2010/> ".
+           "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ".
+           "PREFIX dct: <http://purl.org/dc/terms/> ".
+           "PREFIX local: <http://local.virt/> ".
+           "SELECT ?code ?label WHERE { ".
+           "GRAPH <".$graph."> { ".
+              "?code skos:prefLabel ?label ".
+              "FILTER langMatches( lang(?label), \"en\" ) ".
+              "FILTER regex( str(?label), \"".$search."\", \"i\" ) ".
+           "}} LIMIT 10";
+    $result = sparql_request($query, $endpoint);
+    $return = array();
+    // obviously using the "substr" here is taboo, the query should be cleaned up.
+    foreach ($result['result']['rows'] as $match) {
+      $return[] = array('code' => substr($match['code'],38),
+			'label' => $match['label']);
+    }
+    return $return;
+}

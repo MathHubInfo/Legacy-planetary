@@ -430,7 +430,7 @@ function article_setup_field_default_fields() {
       'bundle' => 'article',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Use the msc_browser to select a good MSC code.  You can have more than one classification - comma separate your entries here!',
+      'description' => 'Use a keyword search to select a good classification.  If using more than one code, comma-separate your selections.',
       'display' => array(
         'default' => array(
           'label' => 'above',
