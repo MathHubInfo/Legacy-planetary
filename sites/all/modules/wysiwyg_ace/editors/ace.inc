@@ -85,9 +85,9 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 	$cpath = url("", array("absolute"=>true)).drupal_get_path("module", "wysiwyg_ace")."/editors/js/";
 	drupal_add_library('system', 'ui.button');
 	drupal_add_library('system', 'ui.dialog');
-	drupal_add_js($cpath."/exhibit/exhibit-api.js?autoCreate=false", array("external"=>true));
-	drupal_add_js($cpath."/text-prefix-complete.js", array("external"=>true));
-	drupal_add_js($cpath."/emacs.js", array("external"=>true));
+	drupal_add_js($cpath."exhibit/exhibit-api.js?autoCreate=false", array("external"=>true));
+	drupal_add_js($cpath."text-prefix-complete.js", array("external"=>true));
+	drupal_add_js($cpath."emacs.js", array("external"=>true));
 	drupal_add_html_head_link(array(
       'rel' => 'exhibit-data',
       'type' => 'application/json',

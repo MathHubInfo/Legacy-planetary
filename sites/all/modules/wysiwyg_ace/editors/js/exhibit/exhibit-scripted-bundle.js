@@ -3010,7 +3010,7 @@ Exhibit._ = function() {
     if (args.length > 0) {
         key = args.shift();
         s = Exhibit.Localization.lookup(key);
-        if (typeof s !== "undefined") {
+        if (typeof s !== "undefined" &&  typeof s !== "object") {
             return vsprintf(s, args);
         } else {
             return s;
@@ -3193,12 +3193,33 @@ Exhibit.Localization.importExtensionLocale = function(locale, hash) {
 };
 
 /**
+ * Decodes UTF-8 strings or arrays of strings to output in HTML
+ * @param {String|Array} s A string or array of strings to decode for HTML
+ * @returns {String}
+ */
+Exhibit.Localization.decodeUTF8 = function(s) {
+    var r, i;
+    if (typeof s === "string") {
+        r = Exhibit.Localization._decodeUTF8(s);
+    } else if (typeof s === "object") {
+        r = new Array(s.length);
+        for (i = 0; i < s.length; i++) {
+            r[i] = Exhibit.Localization._decodeUTF8(s[i]);
+        }
+    } else {
+        r = s;
+    }
+    return r;
+};
+
+/**
  * Decodes UTF-8 strings to output in HTML
+ * @private
  * @param {String} s
  * @returns {String}
  * @see http://ecmanaut.blogspot.com/2006/07/encoding-decoding-utf8-in-javascript.html
  */
-Exhibit.Localization.decodeUTF8 = function(s) {
+Exhibit.Localization._decodeUTF8 = function(s) {
     var r;
     try {
         r = decodeURIComponent(escape(s));
@@ -3212,7 +3233,7 @@ Exhibit.Localization.decodeUTF8 = function(s) {
  * Looks up a key in the set of localization and returns the corresponding
  * message; may return undefined if not found.
  * @param {String} key
- * @returns {String}
+ * @returns {String|Array}
  */
 Exhibit.Localization.lookup = function(key) {
     var i, locale;
@@ -4357,7 +4378,7 @@ Exhibit.ViewUtilities.openBubbleForItems = function(anchorElmt, arrayOfItemIDs, 
         uiContext.getSetting("bubbleWidth"), // px
         uiContext.getSetting("bubbleHeight") // px
     );
-    Exhibit.ViewUtilities.fillBubbleWithItems(bubble.content, arrayOfItemIDs, uiContext);
+    Exhibit.ViewUtilities.fillBubbleWithItems(bubble.content, arrayOfItemIDs, null, uiContext);
 };
 
 /**
@@ -4365,11 +4386,12 @@ Exhibit.ViewUtilities.openBubbleForItems = function(anchorElmt, arrayOfItemIDs, 
  * @static
  * @param {Element} bubbleElmt
  * @param {Array} arrayOfItemIDs
+ * @param {Exhibit.Expression._Impl} labelExpression
  * @param {Exhibit.UIContext} uiContext
  * @returns {Element}
  */
-Exhibit.ViewUtilities.fillBubbleWithItems = function(bubbleElmt, arrayOfItemIDs, uiContext) {
-    var ul, i, itemLensDiv, itemLens;
+Exhibit.ViewUtilities.fillBubbleWithItems = function(bubbleElmt, arrayOfItemIDs, labelExpression, uiContext) {
+    var ul, i, makeItem, itemLensDiv, itemLens;
     if (typeof bubbleElmt === "undefined" || bubbleElmt === null) {
         bubbleElmt = Exhibit.jQuery("<div>");
     }
@@ -4383,6 +4405,9 @@ Exhibit.ViewUtilities.fillBubbleWithItems = function(bubbleElmt, arrayOfItemIDs,
                 .append(elmt)
                 .appendTo(ul);
         };
+        if (typeof labelExpression !== "undefined" && labelExpression !== null) {
+            uiContext.putSetting("format/item/title", labelExpression);
+        }
         for (i = 0; i < arrayOfItemIDs.length; i++) {
             uiContext.format(arrayOfItemIDs[i], "item", makeItem);
         }
@@ -13543,6 +13568,7 @@ Exhibit.UI.createFacet = function(configuration, elmt, uiContext) {
  */
 Exhibit.UI.createFacetFromDOM = function(elmt, container, uiContext) {
     var facetClass = Exhibit.UI.facetClassNameToFacetClass(Exhibit.getAttribute(elmt, "facetClass"));
+    console.log("running facet ", elmt, facetClass);
     return facetClass.createFromDOM(elmt, container, uiContext);
 };
 
@@ -16951,7 +16977,7 @@ Exhibit.TextSearchFacet._configure = function(facet, configuration) {
             expressionsStrings.push(configuration.expressions[i]);
             expressions.push(Exhibit.ExpressionParser.parse(configuration.expressions[i]));
         }
-        facet.setExpressionString(expressionsStrings.join(",").replace(/ /g, ""));
+        facet.setExpressionString(expressionStrings.join(",").replace(/ /g, ""));
         facet.setExpression(expressions);
     }
     if (typeof configuration.selection !== "undefined") {
@@ -17182,12 +17208,13 @@ Exhibit.TextSearchFacet.prototype._onTimeout = function() {
  */
 Exhibit.TextSearchFacet.prototype._buildMaps = function() {
     var itemToValue, allItems, database, expressions, propertyIDs;
+    expressions = this.getExpression() | [];
     if (typeof this._itemToValue === "undefined") {
         itemToValue = {};
         allItems = this.getUIContext().getCollection().getAllItems();
         database = this.getUIContext().getDatabase();
         
-        if (this.getExpression().length > 0) {
+        if (expressions.length > 0) {
             expressions = this.getExpression();
             allItems.visit(function(item) {
                 var values, x, expression;
@@ -22445,12 +22472,12 @@ Exhibit.ThumbnailView.prototype._reconstructWithFloats = function() {
 
     closeGroups = function(groupLevel) {
         for (i = groupLevel; i < state.groupDoms.length; i++) {
-            state.groupDoms[i].countSpan.innerHTML = state.groupCounts[i];
+            Exhibit.jQuery(state.groupDoms[i].countSpan).html(state.groupCounts[i]);
         }
         state.groupDoms = state.groupDoms.slice(0, groupLevel);
         state.groupCounts = state.groupCounts.slice(0, groupLevel);
 
-        if (groupLevel > 0) {
+        if (groupLevel > 0 && groupLevel <= state.groupDoms.length) {
             state.div = state.groupDoms[groupLevel - 1].contentDiv;
         } else {
             state.div = view._dom.bodyDiv;
@@ -24249,6 +24276,7 @@ Exhibit.CollectionSummaryWidget.prototype._resetCollection = function() {
  * @author David Huynh
  * @author Johan Sundström
  * @author Margaret Leibovic
+ * @author David Karger
  * @author <a href="mailto:ryanlee@zepheira.com">Ryan Lee</a>
  */
 
@@ -24314,7 +24342,7 @@ Exhibit.LegendWidget.prototype._initializeUI = function() {
  *
  */
 Exhibit.LegendWidget.prototype.clear = function() {
-    Exhibit.jQuery(this._div).html('<div id="exhibit-color-legend"></div><div id="exhibit-size-legend"></div><div id="exhibit-icon-legend"></div>');
+    Exhibit.jQuery(this._div).html('<div class="exhibit-color-legend"></div><div class="exhibit-size-legend"></div><div class="exhibit-icon-legend"></div>');
 };
 
 /**
@@ -24325,15 +24353,15 @@ Exhibit.LegendWidget.prototype.addLegendLabel = function(label, type) {
     var dom;
 	dom = Exhibit.jQuery.simileDOM("string",
 			"div",
-			'<div id="legend-label">' +
-				'<span id="label" class="exhibit-legendWidget-entry-title">' + 
+			'<div class="legend-label">' +
+				'<span class="label" class="exhibit-legendWidget-entry-title">' + 
 					label.replace(/\s+/g, "&nbsp;") + 
 				"</span>" +
 			"&nbsp;&nbsp; </div>",
 			{ }
 		);
 	Exhibit.jQuery(dom.elmt).attr("class","exhibit-legendWidget-label");
-	Exhibit.jQuery('#exhibit-' + type + '-legend').append(dom.elmt);
+	Exhibit.jQuery('.exhibit-' + type + '-legend', this._div).append(dom.elmt);
 }
 
 /**
@@ -24345,7 +24373,8 @@ Exhibit.LegendWidget.prototype.addEntry = function(value, label, type) {
     var dom, legendDiv;
 
 	type = type || "color";
-    label = (typeof label === "object") ? label.toString() : label;
+    label = (typeof label !== "string") ? label.toString() : label;
+    legendDiv = Exhibit.jQuery('.exhibit-' + type + '-legend', this._div);
 
     if (type === "color") {
 		dom = Exhibit.jQuery.simileDOM("string",
@@ -24357,7 +24386,6 @@ Exhibit.LegendWidget.prototype.addEntry = function(value, label, type) {
 				"&nbsp;&nbsp; ",
 			{ marker: this._colorMarkerGenerator(value) }
 		);
-		legendDiv = Exhibit.jQuery("#exhibit-color-legend");
 	}
 
 	if (type === "size") {
@@ -24370,7 +24398,6 @@ Exhibit.LegendWidget.prototype.addEntry = function(value, label, type) {
 				"&nbsp;&nbsp; ",
 			{ marker: this._sizeMarkerGenerator(value) }
 		);
-		legendDiv = Exhibit.jQuery("#exhibit-size-legend");
 	}
 
 	if (type === "icon") {
@@ -24383,7 +24410,6 @@ Exhibit.LegendWidget.prototype.addEntry = function(value, label, type) {
 				"&nbsp; ",
 			{ marker: this._iconMarkerGenerator(value) }
 		);
-		legendDiv = Exhibit.jQuery("#exhibit-icon-legend");
 	}
     Exhibit.jQuery(dom.elmt).attr("class", "exhibit-legendWidget-entry");
     this._labelStyler(dom.label, value);
@@ -25242,7 +25268,7 @@ Exhibit.jQuery(document).ready(function() {
     // would make more sense.
     delays = [];
     localeLoaded = false;
-
+    
     Exhibit.jQuery(document).bind("delayCreation.exhibit", function(evt, delayID) {
         delays.push(delayID);
     });
@@ -25250,7 +25276,7 @@ Exhibit.jQuery(document).ready(function() {
     Exhibit.jQuery(document).bind("delayFinished.exhibit", function(evt, delayID) {
         var idx = delays.indexOf(delayID);
         if (idx >= 0) {
-            delays.splice(idx);
+            delays.splice(idx, 1);
             if (delays.length === 0 && localeLoaded) {
                 delays = null;
                 Exhibit.jQuery(document).trigger("scriptsLoaded.exhibit");
@@ -25261,7 +25287,7 @@ Exhibit.jQuery(document).ready(function() {
     Exhibit.jQuery(document).bind("localeSet.exhibit", function(evt, localeURLs) {
         var i;
         for (i = 0; i < localeURLs.length; i++) {
-            Exhibit.loader.script(localeURLs[i]);
+            Exhibit.includeJavascriptFile(null, localeURLs[i]);
         }
         Exhibit.jQuery(document).trigger("loadExtensions.exhibit");
     });
@@ -25301,10 +25327,10 @@ Exhibit.jQuery(document).ready(function() {
     Exhibit.staticRegistry = new Exhibit.Registry(true);
 
     Exhibit.jQuery("link[rel='exhibit-extension']").each(function(idx, el) {
-        Exhibit.loader.script(Exhibit.jQuery(el).attr("href"));
+        Exhibit.includeJavascriptFile(null, Exhibit.jQuery(el).attr("href"), false);
     });
 
-    Exhibit.loader.wait(function() {
+    Exhibit.wait(function() {
         Exhibit.jQuery(document).trigger("registerLocalization.exhibit", Exhibit.staticRegistry);
     });
 });
