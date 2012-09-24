@@ -67,7 +67,7 @@ var Exhibit = {
      */
     params: {
         bundle: true,
-        autoCreate: true,
+        autoCreate: false,
         safe: false,
         babel: undefined,
         backstage: undefined,
@@ -165,7 +165,6 @@ var Exhibit = {
         "scripts/ui/facets/alpha-range-facet.js",
         "scripts/ui/facets/cloud-facet.js",
         "scripts/ui/facets/text-search-facet.js",
-        "scripts/ui/facets/text-prefix-complete.js",
         "scripts/ui/facets/hierarchical-facet.js",
         "scripts/ui/views/view.js",
         "scripts/ui/views/view-panel.js",
@@ -349,27 +348,67 @@ Exhibit.includeCssFile = function(doc, url) {
 /**
  * @static
  * @param {Document} doc
- * @param {String} urlPrefix
+ * @param {String} urlPrefix Path prefix to add to the list of filenames; use
+ *     null or an empty string if no prefix is needed.
  * @param {Array} filenames
  */
 Exhibit.includeCssFiles = function(doc, urlPrefix, filenames) {
     var i;
     for (i = 0; i < filenames.length; i++) {
-        Exhibit.includeCssFile(doc, urlPrefix + filenames[i]);
+        if (urlPrefix !== null && urlPrefix !== "") {
+            Exhibit.includeCssFile(doc, urlPrefix + filenames[i]);
+        } else {
+            Exhibit.includeCssFile(doc, filenames[i]);
+        }
     }
 };
 
 /**
  * @static
- * @param {Document} doc
- * @param {String} urlPrefix
+ * @param {String} urlPrefix Path prefix to add to the list of filenames; use
+ *     null or an empty string if no prefix is needed.
  * @param {Array} filenames
+ * @param {Boolean} [serial]
  */
-Exhibit.includeJavascriptFiles = function(doc, urlPrefix, filenames) {
+Exhibit.includeJavascriptFiles = function(urlPrefix, filenames, serial) {
     var i;
     for (i = 0; i < filenames.length; i++) {
-        Exhibit.loader.script(urlPrefix + filenames[i]);
+        Exhibit.includeJavascriptFile(urlPrefix, filenames[i], serial);
     }
+};
+
+/**
+ * @static
+ * @param {String} urlPrefix Path prefix to add to the list of filenames; use
+ *     null or an empty string if no prefix is needed.
+ * @param {String} filename The remainder of the script URL following the
+ *     urlPrefix; a script to add to Exhibit's ordered loading.
+ * @param {Boolean} [serial] Whether to wait for a script to load before
+ *      loading the next in line.  True by default.
+ */
+Exhibit.includeJavascriptFile = function(urlPrefix, filename, serial) {
+    if (typeof serial === "undefined" || serial === null) {
+        serial = true;
+    }
+
+    if (urlPrefix !== null && urlPrefix !== "") {
+        filename = urlPrefix + filename;
+    }
+
+    if (serial) {
+        Exhibit.loader.script(filename).wait();
+    } else {
+        Exhibit.loader.script(filename);
+    }
+};
+
+/**
+ * @static
+ * @param {Function} fn A Javascript function to insert into Exhibit's
+ *     ordered file loading process.
+ */
+Exhibit.wait = function(fn) {
+    Exhibit.loader.wait(fn);
 };
 
 /**
@@ -471,7 +510,6 @@ Exhibit.load = function() {
     }
 
     $LAB.setGlobalDefaults({
-        AlwaysPreserveOrder: true,
         UseLocalXHR: false,
         AllowDuplicates: false
     });
@@ -479,12 +517,12 @@ Exhibit.load = function() {
 
     for (i in Exhibit._dependencies) {
         if (typeof Exhibit._dependencies[i] === "undefined") {
-            Exhibit.loader.script(Exhibit.urlPrefix + i);
+            Exhibit.includeJavascriptFile(Exhibit.urlPrefix, i);
         } else if (Exhibit._dependencies.hasOwnProperty(i)) {
             dep = Exhibit._dependencies[i].split(".");
             if (dep.length === 1) {
                 if (!Object.prototype.hasOwnProperty.call(window, dep[0])) {
-                    Exhibit.loader.script(Exhibit.urlPrefix + i);
+                    Exhibit.includeJavascriptFile(Exhibit.urlPrefix, i);
                 }
             } else {
                 for (j = 0; j < dep.length; j++) {
@@ -494,7 +532,7 @@ Exhibit.load = function() {
                     }
                     if (!o.hasOwnProperty(dep[j])) {
                         if (j === dep.length - 1) {
-                            Exhibit.loader.script(Exhibit.urlPrefix + i);
+                            Exhibit.includeJavascriptFile(Exhibit.urlPrefix, i);
                         } else {
                             break;
                         }
@@ -508,9 +546,9 @@ Exhibit.load = function() {
     for (i = 0; i < scr.length; i++) {
         if (scr[i].indexOf("/") === 0 ||
             (scr[i].indexOf(":") > 0 && scr[i].indexOf("//") > 0)) {
-            Exhibit.loader.script(scr[i]);
+            Exhibit.includeJavascriptFile(null, scr[i]);
         } else {
-            Exhibit.loader.script(Exhibit.urlPrefix + scr[i]);
+            Exhibit.includeJavascriptFile(Exhibit.urlPrefix, scr[i]);
         }
     }
 };

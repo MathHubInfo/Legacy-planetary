@@ -112,7 +112,7 @@ Exhibit.TextSearchFacet._configure = function(facet, configuration) {
             expressionsStrings.push(configuration.expressions[i]);
             expressions.push(Exhibit.ExpressionParser.parse(configuration.expressions[i]));
         }
-        facet.setExpressionString(expressionsStrings.join(",").replace(/ /g, ""));
+        facet.setExpressionString(expressionStrings.join(",").replace(/ /g, ""));
         facet.setExpression(expressions);
     }
     if (typeof configuration.selection !== "undefined") {

@@ -1,0 +1,48 @@
+<HTML>
+
+<head>
+  <script src="exhibit/lib/jQuery-1.7.2.js"></script>
+  <script src="exhibit/exhibit-api.js?autocreate=false"></script>
+  <link rel="exhibit-data" type="application/json" href="environments.js"></link>
+  <link rel="stylesheet" type="text/css" href="exhibit/class.css" />
+</head>
+
+<body>
+asd
+<script>
+  jQuery(document).one("registerImporters.exhibit", function() {
+    window.database = Exhibit.Database.create();
+    window.database.loadLinks(function() {
+      window.exhibit = Exhibit.create();
+      window.exhibit.configureFromDOM();
+    });
+  });
+</script>
+
+<div id="ace_cmd_dialog" xmlns:ex="http://simile.mit.edu/2006/11/exhibit#">
+<!--  <div data-ex-role='facet' data-ex-expression ='.label' data-ex-facetClass='PrefixComplete' data-ex-query="" data-ex-facetLabel="Name filter" data-ex-onEnter="#ace_cmd_dialog"> </div> -->
+
+  <div data-ex-role='facet'
+       data-ex-facet-class='TextSearch'
+       data-ex-facetlabel="Name filter"> 
+  </div>
+  
+  <div class='linedWidgets'>
+    <div data-ex-role='view' data-ex-showHeader='false' data-ex-paginate='true' data-ex-pageSize='10' class="cmd_list"> 
+      <div data-ex-role='exhibit-lens' >
+        <div>
+          <a data-ex-href-content=".label"><span data-ex-content='.label'></span></a>
+        </div>
+      </div>
+    </div>
+    <div data-ex-role='facet' data-ex-expression='.category' data-ex-facetLabel="Category" class="cmd_category"></div> 
+  </div>
+</div>
+<div id="ace_properties" >
+Options for environment <span id="ace_properties_cmd_name"></span>
+<form id="ace_properties_form"></form>
+</div>
+
+</body>
+
+</HTML>
