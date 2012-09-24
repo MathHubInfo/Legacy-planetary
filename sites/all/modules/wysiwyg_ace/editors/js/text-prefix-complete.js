@@ -185,6 +185,7 @@ Exhibit.PrefixCompleteFacet.prototype.setText = function(text) {
         text = text.length > 0 ? text : null;
     } else {
         Exhibit.jQuery(this._dom.input).val("");
+        text = "";
     }
     
     if (text !== this._text) {
@@ -390,6 +391,7 @@ Exhibit.PrefixCompleteFacet.prototype._onTimeout = function() {
  *
  */
 Exhibit.PrefixCompleteFacet.prototype._buildMaps = function() {
+    console.log("building maps");
     var itemToValue, allItems, database, expression, propertyIDs;
     if (typeof this._itemToValue === "undefined") {
         itemToValue = {};
