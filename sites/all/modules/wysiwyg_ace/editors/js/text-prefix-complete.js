@@ -185,6 +185,7 @@ Exhibit.PrefixCompleteFacet.prototype.setText = function(text) {
         text = text.length > 0 ? text : null;
     } else {
         Exhibit.jQuery(this._dom.input).val("");
+        text = "";
     }
     
     if (text !== this._text) {

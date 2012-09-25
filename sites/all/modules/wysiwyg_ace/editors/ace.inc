@@ -74,10 +74,13 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 	* TODO: just a STUB 
 	*/
 	$plugins = $profile->settings["buttons"]["default"];
-	drupal_add_css(drupal_get_path("module", "wysiwyg_ace")."/css/ace.css", 
+	$plugin_path = drupal_get_path("module", "wysiwyg_ace");
+	drupal_add_css($plugin_path."/css/ace.css", 
 		array(
 			"type" => "internal"
 			));
+	drupal_add_css($plugin_path."/editors/js/select_widget.css", array("type"=>"internal"));
+
 	#foreach ($plugins as $plugin=>$p) {
 	#	drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
 	#	drupal_add_js($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.js');
@@ -85,9 +88,9 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 	$cpath = url("", array("absolute"=>true)).drupal_get_path("module", "wysiwyg_ace")."/editors/js/";
 	drupal_add_library('system', 'ui.button');
 	drupal_add_library('system', 'ui.dialog');
-	drupal_add_js($cpath."/exhibit/exhibit-api.js?autoCreate=false", array("external"=>true));
-	drupal_add_js($cpath."/text-prefix-complete.js", array("external"=>true));
-	drupal_add_js($cpath."/emacs.js", array("external"=>true));
+	drupal_add_js($cpath."exhibit/exhibit-api.js?autoCreate=false", array("external"=>true));
+	drupal_add_js($cpath."text-prefix-complete.js", array("external"=>true));
+	drupal_add_js($cpath."emacs.js", array("external"=>true));
 	drupal_add_html_head_link(array(
       'rel' => 'exhibit-data',
       'type' => 'application/json',
