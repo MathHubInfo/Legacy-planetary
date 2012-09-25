@@ -1,26 +1,25 @@
 <script>
-(function ($) {
-window.emacs_dialog_select = function (self) {
-  console.log(self);
-  console.log($(self).text());
-  $("#ace_cmd_dialog").trigger("onEnter", { item : $(self).text()});
-}
-
-})(jQuery);
+  function select_environment(item) {
+    jQuery("#ace_cmd_dialog").trigger("onEnter", { "item": item, db: window.database });
+  }
 </script>
 
 <div id="ace_cmd_dialog" style="display:none" xmlns:ex="http://simile.mit.edu/2006/11/exhibit#">
-  <div data-ex-role='facet' data-ex-expression ='.label' data-ex-facet-class='PrefixComplete' data-ex-query="" data-ex-facet-label="Name filter" data-ex-on-enter="#ace_cmd_dialog"> </div>
 
-  <div class='linedWidgets'>
-    <div data-ex-role='view' data-ex-show-header='false' data-ex-paginate='true' data-ex-page-size='10' class="cmd_list"> 
-      <div data-ex-role='exhibit-lens' style='display: none;'>
-        <div>
-          <a data-ex-href-content=".label"><span data-ex-content='.label'></span></a>
-        </div>
+  <div class="semantic-select-widget-container">
+    <div class="semantic-select-widget-text-field" data-ex-role='facet' data-ex-expression ='.label' data-ex-facet-class='PrefixComplete' data-ex-query="" data-ex-facet-label="Name filter" data-ex-on-enter="#ace_cmd_dialog"> </div>
+    <div class="semantic-select-widget-result-wrapper">
+      <div class="semantic-select-widget-result" data-ex-role='view' data-ex-show-header='false' data-ex-paginate='true' data-ex-page-size='10' class="cmd_list"> 
+        <div data-ex-role='exhibit-lens' >
+          <div>
+           <a data-ex-href-subcontent="javascript:select_environment('{{.label}}')"><span data-ex-content='.label'></span></a>
+          </div>
+      </div>
+      </div>
+      <div class="semantic-select-widget-categories">
+      <div data-ex-role='facet' data-ex-expression='.category' data-ex-facet-label="Category" class="cmd_category"></div> 
       </div>
     </div>
-    <div data-ex-role='facet' data-ex-expression='.category' data-ex-facetLabel="Category" class="cmd_category"></div> 
   </div>
 </div>
 
