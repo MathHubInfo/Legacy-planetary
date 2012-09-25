@@ -1,0 +1,14 @@
+.semantic-select-widget-container {
+  max-width: 600px;
+}
+
+.semantic-select-widget-result {
+  float: left;
+  
+}
+
+.semantic-select-widget-categories {
+  float: right;
+  width: 180px;
+  height: 200px;
+}
