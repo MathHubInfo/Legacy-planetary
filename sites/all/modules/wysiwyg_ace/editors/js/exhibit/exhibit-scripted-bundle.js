@@ -13568,7 +13568,6 @@ Exhibit.UI.createFacet = function(configuration, elmt, uiContext) {
  */
 Exhibit.UI.createFacetFromDOM = function(elmt, container, uiContext) {
     var facetClass = Exhibit.UI.facetClassNameToFacetClass(Exhibit.getAttribute(elmt, "facetClass"));
-    console.log("running facet ", elmt, facetClass);
     return facetClass.createFromDOM(elmt, container, uiContext);
 };
 

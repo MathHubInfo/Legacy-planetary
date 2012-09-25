@@ -74,10 +74,13 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 	* TODO: just a STUB 
 	*/
 	$plugins = $profile->settings["buttons"]["default"];
-	drupal_add_css(drupal_get_path("module", "wysiwyg_ace")."/css/ace.css", 
+	$plugin_path = drupal_get_path("module", "wysiwyg_ace");
+	drupal_add_css($plugin_path."/css/ace.css", 
 		array(
 			"type" => "internal"
 			));
+	drupal_add_css($plugin_path."/editors/js/select_widget.css", array("type"=>"internal"));
+
 	#foreach ($plugins as $plugin=>$p) {
 	#	drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
 	#	drupal_add_js($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.js');
