@@ -255,7 +255,29 @@ function latex_field_form_alter(&$form, &$form_state, $form_id){
     }
     // otherwise, we use the global preamble
     if (empty($preamble)) {
-      $form[$fieldname]['und'][0]['preamble']['#default_value'] = '%SITEWIDE DEFAULT SHOULD GO HERE';
+      $form[$fieldname]['und'][0]['preamble']['#default_value'] = '% this is the default PlanetMath preamble.  as your knowledge
+% of TeX increases, you will probably want to edit this, but
+% it should be fine as is for beginners.
+
+% almost certainly you want these
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+% need this for including graphics (\includegraphics)
+\usepackage{graphicx}
+% for neatly defining theorems and propositions
+\usepackage{amsthm}
+
+% making logically defined graphics
+%\usepackage{xypic}
+% used for TeXing text within eps files
+%\usepackage{psfrag}
+
+% there are many more packages, add them here as you need them
+
+% define commands here
+';
     } else {
       $form[$fieldname]['und'][0]['preamble']['#default_value']= $preamble;
     }
