@@ -42,7 +42,6 @@
                     item = data.item;
                     var template = db.getObject(item, "template");
                     params = db.getObject(item, "params");
-                    console.log(item, params);
                     $("#ace_cmd_dialog").dialog("close");
                     $("#ace_properties_cmd_name").text(item);
                     $("#ace_properties_form").empty();
@@ -53,6 +52,11 @@
                           onSubmit : function (errors, values) {
                             if (errors) {
                               return false;
+                            }
+                            for (x in params) {
+                              if (typeof(values[x])==="undefined") {
+                                values[x] = params[x]["default"];
+                              }
                             }
                             $("#ace_properties").dialog("close");
                             try {
