@@ -89,6 +89,8 @@
       oldScreenFnc = editor.renderer.screenToTextCoordinates;
       editor.setKeyboardHandler(emacs);
       editor.renderer.screenToTextCoordinates = oldScreenFnc;
+      editor.getSession().setUseWrapMode(true);
+      editor.getSession().adjustWrapLimit(80);
       
       editor.addToolbarButton("add environment", "envInsertIcon", function(evt, btn) {
           emacs.commands.addEnvironment.exec(editor);    
