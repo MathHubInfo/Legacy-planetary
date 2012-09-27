@@ -61,7 +61,7 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
 	      rDoc.insert(range.start, "\\em{")
 	  }, {});
 	  
-	  window.aceEmacs.prepareEmacsMode(editor);
+	  window.aceEmacs.prepareEmacsMode(editor, settings);
 	  if (cSettings["ShareJS"]) {
 	    var docName = generateDocName(getDocumentID(), params);
 	    Drupal.ShareJS.connectServices(docName, "ace", editor, editor.getSession().getValue(), function() {} );
