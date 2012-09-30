@@ -27,6 +27,9 @@ textarea .ace_editor {
 	background-image: url(../images/italic.png);
 }
 
+.ui-button .share {
+	background-image: url(../images/share.png);
+}
 
 .linedWidgets .cmd_list {
 	float: left;
