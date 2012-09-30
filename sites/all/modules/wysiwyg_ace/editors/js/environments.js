@@ -81,7 +81,7 @@
                 "spacing": {
                     "title": "Commands to change the spacing parameters for the list",
                     "type": "string",
-                    "default": " "
+                    "default": ""
                 }
             }
         },
