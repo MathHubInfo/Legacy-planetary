@@ -37,7 +37,7 @@ Drupal.ShareJS = (_editor, _docName, _editorType) ->
     libPath = Drupal.settings.basePath+"sites/all/libraries/mathquill/"
     async.waterfall([
       (callback) -> jQuery.getScript(libPath+"build/mathquill.js",(success, textStatus, jqXHR) -> callback(null)),
-      (callback) -> $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', libPath+"mathquill.css") ); callback();
+      (callback) -> jQuery('head').append( jQuery('<link rel="stylesheet" type="text/css" />').attr('href', libPath+"mathquill.css") ); callback();
     ], _callback);
   
   assertLoadShareJS = (_callback) -> 
@@ -65,12 +65,13 @@ Drupal.ShareJS = (_editor, _docName, _editorType) ->
       rDoc.insert(range.end, "}")
       rDoc.insert(range.start, "\\em{")
     );
-    editor.addToolbarButton("Math", "math", (data) ->
+    editor.addToolbarButton("Add formula", "formula", (data) ->
       async.waterfall([
         (callback) -> assertLoadMathQuill(callback),
         (callback) -> inMathEnvironment(callback),
         (range, callback) ->
           rDoc = editor.getSession().getDocument();
+          console.log("Range=",range);
           formulaText = "";
           if range?
             formulaText = rDoc.getTextRange(range);
@@ -91,9 +92,8 @@ Drupal.ShareJS = (_editor, _docName, _editorType) ->
               else
                 code = e.which;
               if (code == 13)
-                insertFormula();
                 e.stopPropagation();
-                editor.focus();
+                insertFormula();
                 return;
             )
           else

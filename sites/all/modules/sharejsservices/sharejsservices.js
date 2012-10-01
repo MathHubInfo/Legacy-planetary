@@ -60,7 +60,7 @@
             return callback(null);
           });
         }, function(callback) {
-          $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', libPath + "mathquill.css"));
+          jQuery('head').append(jQuery('<link rel="stylesheet" type="text/css" />').attr('href', libPath + "mathquill.css"));
           return callback();
         }
       ], _callback);
@@ -109,7 +109,7 @@
         rDoc.insert(range.end, "}");
         return rDoc.insert(range.start, "\\em{");
       });
-      editor.addToolbarButton("Math", "math", function(data) {
+      editor.addToolbarButton("Add formula", "formula", function(data) {
         return async.waterfall([
           function(callback) {
             return assertLoadMathQuill(callback);
@@ -118,6 +118,7 @@
           }, function(range, callback) {
             var formulaText, insertFormula, rDoc;
             rDoc = editor.getSession().getDocument();
+            console.log("Range=", range);
             formulaText = "";
             if (range != null) {
               formulaText = rDoc.getTextRange(range);
@@ -144,9 +145,8 @@
                   code = e.which;
                 }
                 if (code === 13) {
-                  insertFormula();
                   e.stopPropagation();
-                  editor.focus();
+                  insertFormula();
                 }
               });
             } else {
