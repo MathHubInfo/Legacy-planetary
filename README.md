@@ -1,4 +1,19 @@
-## INSTALL PLANETARY
+# Our development style
+
+We will be making some very small milestones, picking no more than 10
+issues at a time and moving them into the [Hotfix issue queue](https://github.com/cdavid/drupal_planetary/issues?labels=&milestone=4&page=1&state=open).  This
+would roughly simulate the "velocity" (tickets per iteration) measure
+used by e.g.  the [Pivotal tracker](http://www.pivotaltracker.com/help/faq#whatisvelocity).  I
+don't quite know what velocity we'll be able to maintain - but we'd
+find out!
+
+Questions or ideas?  Get in touch via the [Google group](http://groups.google.com/group/planetary-dev).
+
+# Brief installation instructions
+
+Full instructions are [here](http://trac.mathweb.org/planetary/wiki/DrupalPorting).
+
+## INSTALL THE CODE FROM THIS REPOSITORY
 
 ```
 git clone git://github.com/cdavid/drupal_planetary.git
