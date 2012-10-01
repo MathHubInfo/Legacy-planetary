@@ -11,9 +11,12 @@ Questions or ideas?  Get in touch via the [Google group](http://groups.google.co
 
 # Brief installation instructions
 
-Full instructions are [here](http://trac.mathweb.org/planetary/wiki/DrupalPorting).
+Full instructions are [here](http://trac.mathweb.org/planetary/wiki/DrupalPorting).  
+To get a minimal working "Math enhanced Drupal", you only need to do the first few steps below.
 
-## INSTALL THE CODE FROM THIS REPOSITORY
+## GRAB THE CODE FROM THIS REPOSITORY
+
+It's Drupal with our custom extensions.
 
 ```
 git clone git://github.com/cdavid/drupal_planetary.git
@@ -72,7 +75,7 @@ drush -y dl og-7.x-2.x-dev entityreference-7.x-1.x-dev entity-7.x-1.x-dev \
  watcher-7.x-1.x-dev rdfx-7.x-2.x-dev
 ```
 
-Look through the [main installation instructions](http://trac.mathweb.org/planetary/wiki/DrupalPorting) to make sure you have all the necessary configuration steps sorted out.  
+(You'll probably want to look through the [main installation instructions](http://trac.mathweb.org/planetary/wiki/DrupalPorting) to make sure you have all the necessary configuration steps sorted out.)
 
 ## INSTALL LATEXML
 
