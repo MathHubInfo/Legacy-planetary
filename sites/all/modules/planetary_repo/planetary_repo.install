@@ -1,0 +1,12 @@
+<?php
+
+function planetary_repo_field_schema($field) {
+  $columns = array(
+    'path' => array('type' => 'varchar', 'length' => 255, 'not null' => FALSE),
+    'rev' => array('type' => 'int', 'default' => 0),
+    'filter' => array('type' => 'varchar', 'length' => 20, 'not null' => FALSE)
+  );
+  return array(
+    'columns' => $columns,
+  );
+}
