@@ -1,5 +1,29 @@
 <?php
 
+// first a couple of things so we can include the text of the problem
+// when adding a solution
+
+/**
+ * implements hook_entity_info_alter
+ * - part of creating a custom way to render a node
+ */ 
+function solution_entity_info_alter(&$entity_info) {
+  $entity_info['node']['view modes']['content'] = array(
+    'label' => t('Just the content'),
+    'custom settings' => TRUE,
+  );
+}
+
+/**
+ * implements hook_preprocess_node
+ * - part of creating a custom way to render a node
+ */ 
+function solution_preprocess_node(&$vars) {
+  if($vars['view_mode'] == 'content') {
+    $vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] . '__content';
+  }
+}
+
 /**
  * Model functions
  */
@@ -138,7 +162,7 @@ function solution_theme($existing, $type, $theme, $path){
 // We SELECT the argument, but will it also be displayed?  It should be!
 function solution_form_solution_node_form_alter(&$form, &$form_state, $form_id) {
   global $user;
-  //dd($form['#node']);
+  // dpm($form['#node']);
 
   if(isset($form['#node']->field_solution_problem['und'][0]['nid'])) {
     $val = $form['#node']->field_solution_problem['und'][0]['nid'];
@@ -153,6 +177,8 @@ function solution_form_solution_node_form_alter(&$form, &$form_state, $form_id) 
   //$form['field_solution_problem']['und']['#title'] = 'Problem';
   //$form['field_solution_problem']['und']['#options'] = solution_model_getAllProblems();
   $form['field_solution_problem']['und'][0]['nid']['#default_value'] = $val;
+  $my_problem = node_load($val);
+  $form['problem_content'] = node_view($my_problem,'content');
 }
 
 // We will only consider adding new solutions, not existing solutions
