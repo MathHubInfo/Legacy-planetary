@@ -87,13 +87,29 @@ libxml-libxml-perl libclone-perl libdata-compare-perl libio-prompt-perl \
 libparse-recdescent-perl libxml-libxslt-perl libdb5.1 libdb5.1-dev \
 libgdbm-dev libarchive-zip-perl unzip
 
-perl -MCPAN -e shell
-install Parse::RecDescent XML::LibXSLT DB_File Mojolicious::Lite Data::Compare
+sudo perl -MCPAN -e shell
+install Parse::RecDescent XML::LibXSLT DB_File Data::Compare
 quit
+```
 
+You should grab and install a current version of Mojolicious:
+
+```
+wget -O mojo.tar.gz https://github.com/kraih/mojo/tarball/master
+tar -zvxf mojo.tar.gz
+```
+Change to the directory that was unpacked and do:
+```
 perl Makefile.PL
 make
-make install
+sudo make install
+```
+
+Once you've gotten all that sorted out, you can go to the arXMLiv directory and, again,
+```
+perl Makefile.PL
+make
+sudo make install
 ```
 
 ### CONFIGURE LATEXML TO RUN UNDER APACHE
