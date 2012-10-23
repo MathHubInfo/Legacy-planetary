@@ -35,6 +35,10 @@ function article_setup_menu() {
  * Modifies the article edit form to include an autocomplete field.
  */
 function article_setup_form_article_node_form_alter(&$form, &$form_state,$form_id) {
+
+  $path = drupal_get_path('theme','planetmath');
+  drupal_add_js("$path/js/theme_article_node.js");
+
   $form['field_msc']['und'][0]['value']['#autocomplete_path'] = 'msc/autocomplete';
   return $form;
 }
