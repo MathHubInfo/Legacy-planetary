@@ -238,6 +238,14 @@ cake.coffeescript webclient
 bin/exampleserver
 ```
 
+### INSTALL THE SHAREJSSERVICES MODULE 
+
+```
+drush -y en sharejsservices
+```
+
+And enable the ACE 2.0 editor at ```admin/config/content/wysiwyg```.
+
 ## INSTALL APACHE SOLR
 
 ```
