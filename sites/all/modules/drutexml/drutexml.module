@@ -137,7 +137,8 @@ function _drutexml_cache_set($md5, $xhtml, $etid = NULL) {
 	  ->key(array("cachemd5" => $md5))
 	  ->fields(array(
 		"cachemd5" => $md5,
-		"xhtml" => $xhtml,
+		// Need to do this to get around some bizarre PHP string encoding error
+		"xhtml" => utf8_encode($xhtml),
                 "etid" => $etid
 			 )
 		   )
@@ -215,7 +216,10 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
 
   $data = 'profile=planetmath&tex=' . urlencode($text);
   if ($preamble && $metadata) {
+    // new format:
     $data .= "&preamble=literal:" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
+    // old format:
+    // $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
   }
 
   if ($debug_drutexml)
