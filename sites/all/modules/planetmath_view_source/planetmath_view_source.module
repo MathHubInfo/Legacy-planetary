@@ -94,9 +94,19 @@ return '\documentclass{article}
 % And this stuff will go into our little history thing, to display
 % in the righthand margin
 \def\pmcanonicalname#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
+\def\pmtype#1#2{\historyAdd{$\langle${\it #2}$\rangle$\\ }}
+\def\pmclassification#1#2{\historyAdd{$\langle${\it #2}$\rangle$\\ }}
 \def\pmcreated#1{\historyAdd{created: $\langle${\it \protect\StrGobbleRight{#1}{9}}$\rangle$\\  }}
 \def\pmowner#1#2{\historyAdd{by: $\langle${\it #1}$\rangle$\\ }}
 \def\pmrecord#1#2{\historyAdd{version: $\langle${\it #2}$\rangle$}}
+\def\pmsynonym#1#2{}
+\def\pmrelated#1{}
+\def\pmdefines#1{}
+\def\PMlinkname#1#2{\href{http://beta.planetmath.org/#2}{#1}}
+\def\PMlinkescapeword#1{}
+\def\PMlinkescapetext#1{#1}
+\def\PMlinkexternal#1#2{\href{#2}{#1}}
+\def\PMlinkid#1#2{\href{http://beta.planetmath.org/node/#2}{#1}}
 %\pmauthor seems like a dumb command -- get rid of it.
 %\def\pmauthor#1#2{\historyAdd{$\langle${\it #1}$\rangle$}}
 \def\pmauthor#1#2{}
