@@ -42,7 +42,7 @@ function planetmath_view_pdf_node_update($node){
   fwrite($sourcefile, $content);
   fclose($sourcefile);
   // run PDFLaTeX command
-  $command = "/usr/bin/pdflatex --output-directory " 
+  $command = "/usr/bin/pdflatex -interaction=nonstopmode --output-directory " 
             .$base_path."/sites/default/files/texpdf/ ";
   system($command . $sourcefile_path);
 }
