@@ -13,10 +13,10 @@
 		       data.find('div').eq(0).toggle(500,function(){
 			   console.log(dataShown);
 			   if (dataShown==0){
-			       data.find('label.show_hide').text('Show thesaurus metadata »');
+			       data.find('label.show_hide').text('« Hide thesaurus metadata');
 			       dataShown=1;
 			   } else {
-			       data.find('label.show_hide').text('« Hide thesaurus metadata');
+			       data.find('label.show_hide').text('Show thesaurus metadata »');
 			       dataShown=0;
 			   }
 		       }); 
