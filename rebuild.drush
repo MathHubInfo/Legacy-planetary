@@ -5,7 +5,7 @@
 //   $ ./rebuild.drush @sitename
 
 set_time_limit(0);
-declare(ticks = 1);
+//declare(ticks = 1);
 
 global $retry;
 global $node;
@@ -16,26 +16,28 @@ $result = db_select('node', 'n')
   ->fields('n', array('nid'))
   ->orderBy('n.nid', 'ASC')
   ->condition('type','article')
-  ->condition('nid',34710,'>')
+  ->condition('nid',30000,'>')
   ->execute();
 
 foreach ($result as $row) {
   $node = node_load($row->nid, NULL, TRUE);
+  //  drush_print($row->nid);
+  //drush_print(var_dump($node));
   if(isset($node->field_latex['und'][0]['preamble']) 
      && isset($node->field_latex['und'][0]['document'])) {
     $node->field_latex['und'][0]['preamble'] =
       str_replace("\usepackage{xypic}",
       "%\\usepackage{xypic}",
           $node->field_latex['und'][0]['preamble']);
-    $node->field_latex['und'][0]['document'] =
-      $node->field_latex['und'][0]['document'] . "%";
+    $node->field_latex['und'][0]['document'] = $node->field_latex['und'][0]['document'] . "%";
     // Key line...
     $node->field_latex['und'][0]['format'] = 'tex_editor';
     // dpm($node);
-    pcntl_signal(SIGALRM, "signal_handler", true);
-    pcntl_alarm(300);
+    
+    //pcntl_signal(SIGALRM, "signal_handler", true);
+    //pcntl_alarm(300);
     node_save($node);
-    pcntl_alarm(0);
+    //pcntl_alarm(0);
 
     drush_print("Processed: " .
        $node->field_canonicalname['und'][0]['value'] . " (" . $node->nid .
@@ -44,6 +46,8 @@ foreach ($result as $row) {
     $retry = 1;
     // also needed (or, maybe not anymore)
     node_view($node);
+  } else  {
+    drush_print("No");
   }
 }
 
@@ -61,7 +65,3 @@ function signal_handler($signal) {
     }
   }
 }
-
-To use: make it executable, and give it the name of the site you're working as an argument, like this:
-
-$ ./rebuild.drush @sitename
