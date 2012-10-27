@@ -81,7 +81,7 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
 	   num_lines += Math.ceil(jQuery(this).text().length/42);
 	   max_lines = Math.max(max_lines,num_lines);
          });
-       this_line_height = (200/num_lines);
+       this_line_height = (350/num_lines);
        min_line_height = Math.min(this_line_height,min_line_height);
        // now that we know how many lines in THIS block
        // we set the line height in this block accordingly
@@ -92,7 +92,7 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
    console.log(max_lines+"|||");
    console.log(min_line_height+"///");
    jQuery('.tab-contents').parent().css('height',
-            Math.ceil((max_lines*min_line_height*5))+'px');
+            Math.ceil((max_lines*min_line_height*1.7))+'px');
    });
 
 </script>
