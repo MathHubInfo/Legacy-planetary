@@ -16,6 +16,7 @@ global $debug_pyrdfa;
 $debug_pyrdfa = 0;
 
 function dp($content) {
+  global $debug_pyrdfa;
   if($debug_pyrdfa) {
     dd($content);
   }
@@ -26,7 +27,7 @@ function pyrdfa_node_postsave($node){
   if ($node->type=="article"){
     global $base_url;
     $base_path = "/home/joe/staging/drupal_planetary";
-    $virtuoso_location = "http://li311-58.members.linode.com:8890";
+    $virtuoso_location = "http://planet.math.uwaterloo.ca:8890";
     
     // Actually now the contents are being stored by canonical name not path so this should change.
 
@@ -80,7 +81,7 @@ function upload_new_triples($virtuoso_location,$base_path,$path){
   $response = curl_exec($cup);
 
   //  drupal_set_message("INFO ABOUT CURL: <pre>".print_r(curl_getinfo($cup),true)."</pre>");
-  //dp("CURL RESPONSE <pre>".print_r($response,true)."</pre>");
+  dp("Uploading new triples, CURL RESPONSE <pre>".print_r($response,true)."</pre>");
   curl_close($cup);
 }
 
@@ -132,7 +133,7 @@ function curl_post($url, array $post = NULL, array $options = array()) {
  * in this file, since it uses one of the subroutines.
  */
 function pyrdfa_node_delete($node){
-  $virtuoso_location = "http://li311-58.members.linode.com:8890";
+  $virtuoso_location = "http://planet.math.uwaterloo.ca:8890";
   $subject_uri = "http://local.virt/". $node->field_canonicalname['und'][0]['value'];
   delete_triples($virtuoso_location,$subject_uri);
 }

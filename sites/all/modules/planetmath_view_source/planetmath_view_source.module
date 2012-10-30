@@ -88,7 +88,7 @@ return '\documentclass{article}
 % use these to build the actual "title" stuff
 % (though, note, we could do a better job grabbing
 % the "author" information out of Drupal)
-\newcommand{\pmtitle}[1]{\title{{\bf #1}\marginpar{\history}}}
+\newcommand{\pmtitle}[1]{\title{{\bf #1}\footnote{\history}}}
 \newcommand{\pmmodified}[1]{\date{{\it #1}}}
 \newcommand{\pmmodifier}[2]{\author{{\it #1}\thanks{This text is available under the Creative Commons Attribution/Share-Alike License 3.0. You can reuse this document or portions thereof only if you do so under terms that are compatible with the CC-BY-SA license.}}}
 % And this stuff will go into our little history thing, to display
@@ -96,6 +96,7 @@ return '\documentclass{article}
 \def\pmcanonicalname#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
 \def\pmtype#1#2{\historyAdd{$\langle${\it #2}$\rangle$\\ }}
 \def\pmclassification#1#2{\historyAdd{$\langle${\it #2}$\rangle$\\ }}
+\def\pmcomment#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
 \def\pmcreated#1{\historyAdd{created: $\langle${\it \protect\StrGobbleRight{#1}{9}}$\rangle$\\  }}
 \def\pmowner#1#2{\historyAdd{by: $\langle${\it #1}$\rangle$\\ }}
 \def\pmrecord#1#2{\historyAdd{version: $\langle${\it #2}$\rangle$}}

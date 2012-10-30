@@ -16,7 +16,7 @@ $result = db_select('node', 'n')
   ->fields('n', array('nid'))
   ->orderBy('n.nid', 'ASC')
   ->condition('type','article')
-  ->condition('nid',30000,'>')
+  ->condition('nid',31362,'>')
   ->execute();
 
 foreach ($result as $row) {
@@ -29,7 +29,8 @@ foreach ($result as $row) {
       str_replace("\usepackage{xypic}",
       "%\\usepackage{xypic}",
           $node->field_latex['und'][0]['preamble']);
-    $node->field_latex['und'][0]['document'] = $node->field_latex['und'][0]['document'] . "%";
+    $node->field_latex['und'][0]['document'] = $node->field_latex['und'][0]['document'] . "
+%%%%%";
     // Key line...
     $node->field_latex['und'][0]['format'] = 'tex_editor';
     // dpm($node);

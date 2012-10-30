@@ -288,9 +288,15 @@ The following step is important to get the relevant webapp to build.
 ```
 cd ../apache-solr-3.6.1/solr/
 ant example
-lynx http://localhost:8983/solr/admin/
 ```
-Finally:
+Then, you can run the webapp:
+```
+cd example
+java -jar start.jar
+```
+Check it out via ```lynx http://localhost:8983/solr/admin/``` or similar.
+
+Finally, install the Drupal modules so you can use this:
 ```
 drush -y en apachesolr apachesolr_search
 ```

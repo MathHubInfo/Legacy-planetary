@@ -56,11 +56,6 @@ function latex_field_theme($existing, $type, $theme, $path) {
 /**
 * Implements hook_field_formatter_view().
 *
-* Two formatters are implemented.
-* - field_example_simple_text just outputs markup indicating the color that
-*   was entered and uses an inline style to set the text color to that value.
-* - field_example_color_background does the same but also changes the
-*   background color of div.region-content.
 */
 function latex_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   
@@ -78,6 +73,12 @@ function latex_field_field_formatter_view($entity_type, $entity, $field, $instan
 				$latex_preamble = $item['preamble']; 
 				$latex_metadata = $item['metadata']; 
 				$latex_etid = $entity->nid;
+				//dd("latex_field_field_formatter_view preamble");
+				//dd($item["preamble"]);
+				//dd("latex_field_field_formatter_view metadata");
+				//dd($item["metadata"]);
+				//dd("latex_field_field_formatter_view etid");
+				//dd($entity->nid);
 				$fobj = check_markup($item['document'], $filter, $entity->language, true);
 				//dd($fobj, "response from filter is");
 				$element[$delta]['#markup'] = theme("localedit",
@@ -204,11 +205,17 @@ function latex_field_field_widget_settings_form($field, $instance) {
 	return $form;
 }
 
-// Retrieve the user's preamble or site wide preamble, and populate the "preamble" 
-// This seems to work fine, but it isn't going to be GENERAL unless we name
-// the latex field in a consistent way.  OK, the function here now sorts out the
-// naming concerns... and together with the corresponding JS (and removing the
-// content-type-specific template files) this is ready to deploy.
+/* Implements hook_form_alter
+ * this changes the way the LaTeX field looks & feels when it is edited by the user.
+ *
+ * In detail: Retrieve the user's preamble or site wide preamble, and
+ * populate the "preamble" This seems to work fine, but it isn't going
+ * to be GENERAL unless we name the latex field in a consistent way.
+ * OK, the function here now sorts out the naming concerns... and
+ * together with the corresponding JS (and removing the
+ * content-type-specific template files) this is ready to deploy.
+ */
+
 function latex_field_form_alter(&$form, &$form_state, $form_id){
 
   global $user;
@@ -227,6 +234,9 @@ function latex_field_form_alter(&$form, &$form_state, $form_id){
       preg_match("/(.*)_node_form/", $form_id, $matches);
       $fieldname='field_'.$matches[1].'_latex';
     }
+
+    //    dd("latex_field_form_alter METADATA");
+    //    dd($form[$fieldname]['und'][0]['metadata']);
 
     // THE NEXT THING IS TO BE SURE TO GET THE *LOCAL* PREAMBLE IN CASE IT EXISTS
     // AND USE THAT.  OF COURSE, THIS IS ONLY MEANINGFUL WHEN THE NID IS DEFINED
