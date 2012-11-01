@@ -159,7 +159,7 @@ function planetmath_owner_node_delete($node){
   $points_params = array('uid' => $node->uid,
 			 'points' => $value,
 			 'description' => ucfirst($node->type).' deleted',
-			 'entity_id' => $nid,
+			 'entity_id' => $node->nid,
 			 'entity_type' => 'node'
 			 );
   userpoints_userpointsapi($points_params);
