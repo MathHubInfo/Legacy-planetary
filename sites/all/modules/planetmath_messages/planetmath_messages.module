@@ -1,14 +1,14 @@
 <?php
 
 // call to hook_views_pre_execute to override the query for the groups browser
-function planetmath_messages_view_views_pre_execute(&$view) {
-   dd($view->name);
-   if($view->name=="messages") {
-     // This is a way to display the query, but I don't have a particularly
-     // clear sense of how to *modify* the query
-     dsm($view->build_info['query']->__toString()); 
-      }
-}
+/* function planetmath_messages_view_views_pre_execute(&$view) { */
+/*    dd($view->name); */
+/*    if($view->name=="messages") { */
+/*      // This is a way to display the query, but I don't have a particularly */
+/*      // clear sense of how to *modify* the query */
+/*      dsm($view->build_info['query']->__toString());  */
+/*       } */
+/* } */
 
 function planetmath_messages_menu() {
   $items = array();
