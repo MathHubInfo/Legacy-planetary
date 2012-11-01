@@ -32,6 +32,21 @@ define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES',
 /**
  * Queries for the block views 
  */
+function planetmath_blocks_queryBasic($type, $sortBy = 'n.created') {
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
+    FROM node n 
+    LEFT JOIN field_data_body fdb
+    ON n.nid = fdb.entity_id 
+    INNER JOIN users u ON u.uid = n.uid
+    WHERE n.`type` = :type ORDER BY $sortBy 
+    DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => $type));
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
 function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
   $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
     FROM node n 
@@ -549,7 +564,7 @@ function planetmath_blocks_block_messages() {
 function planetmath_blocks_block_revisions() {
   return array(
       'subject' => 'Latest Revisions',
-      'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryRevisions('article', 'n.changed'),'changed')
+      'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryRevisions('article', 'changed'),'changed')
   );
 }
 
@@ -600,23 +615,26 @@ as part of the Planetary project.  Some release notes are !here.",
  */
 function planetmath_blocks_block_view($delta = '') {
   $block = array();
+
+  if ($delta == 'news') {
+    $block = array(
+          'subject' => t("News"),
+          'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryBasic('news'),'created')
+      );
+  }
+
   $block_names = array('article' => 'Latest Additions',
 		       'request' => 'Requests',
-		       'news' => 'News',
 		       'forum' => 'Messages');
 
-  foreach ($block_names as $name => $cannonicalName) {
+  foreach ($block_names as $name => $blocktitle) {
     if ($delta == $name) {
       $block = array(
-          'subject' => t(ucfirst($cannonicalName)),
+          'subject' => t(ucfirst($blocktitle)),
           'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryGeneral($name),'created')
       );
     }
   }
-
-  //dd("In blocks view");
-  //dd(arg(1));
-  //dd($delta);
 
   if ($delta == 'correction') {
     $block = planetmath_blocks_block_corrections(arg(1));
