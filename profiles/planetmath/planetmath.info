@@ -135,6 +135,9 @@ dependencies[] = wysiwyg_ace
 dependencies[] = planetmath_orphanage
 dependencies[] = planetmath_owner
 dependencies[] = planetmath_user
+dependencies[] = planetmath_messages
+dependencies[] = planetmath_overview
+dependencies[] = planetmath_overview_links
 ;; I'll like this module when it integrates with the gallery properly
 ; dependencies[] = planetmath_image
 
