@@ -1410,6 +1410,25 @@ return false;
                         ),
                   array(
                         'module' => 'planetmath_blocks',
+                        'delta' => 'childarticles',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -32,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return planetmath_blocks_countChildArticles(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'planetmath_blocks',
                         'delta' => 'solution',
                         'theme' => $theme_default,
                         'status' => 1,
@@ -1537,7 +1556,7 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_category_image', '0');
   variable_set('userpoints_nc_category_news', '0');
   variable_set('userpoints_nc_category_page', '0');
-  variable_set('userpoints_nc_category_request', '0');
+  variable_set('userpoints_nc_category_question', '0');
   variable_set('userpoints_nc_comment_category', '0');
   variable_set('userpoints_nc_comment_category_correction', '0');
   variable_set('userpoints_nc_comment_category_forum', '0');
@@ -1545,7 +1564,7 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_comment_category_image', '0');
   variable_set('userpoints_nc_comment_category_news', '0');
   variable_set('userpoints_nc_comment_category_page', '0');
-  variable_set('userpoints_nc_comment_category_request', '0');
+  variable_set('userpoints_nc_comment_category_question', '0');
   variable_set('userpoints_nc_comment_delete_deduct', 1);
   variable_set('userpoints_nc_comment_delete_deduct_correction', 1);
   variable_set('userpoints_nc_comment_delete_deduct_forum', 1);
@@ -1553,7 +1572,7 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_comment_delete_deduct_image', 1);
   variable_set('userpoints_nc_comment_delete_deduct_news', 1);
   variable_set('userpoints_nc_comment_delete_deduct_page', 1);
-  variable_set('userpoints_nc_comment_delete_deduct_request', 1);
+  variable_set('userpoints_nc_comment_delete_deduct_question', 1);
   variable_set('userpoints_nc_comment_enabled', 1);
   variable_set('userpoints_nc_comment_enabled_correction', 1);
   variable_set('userpoints_nc_comment_enabled_forum', 1);
@@ -1561,15 +1580,15 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_comment_enabled_image', 1);
   variable_set('userpoints_nc_comment_enabled_news', 1);
   variable_set('userpoints_nc_comment_enabled_page', 1);
-  variable_set('userpoints_nc_comment_enabled_request', 1);
-  variable_set('userpoints_nc_comment_ownership_deduct', 1);
-  variable_set('userpoints_nc_comment_ownership_deduct_correction', 1);
-  variable_set('userpoints_nc_comment_ownership_deduct_forum', 1);
-  variable_set('userpoints_nc_comment_ownership_deduct_group', 1);
-  variable_set('userpoints_nc_comment_ownership_deduct_image', 1);
-  variable_set('userpoints_nc_comment_ownership_deduct_news', 1);
-  variable_set('userpoints_nc_comment_ownership_deduct_page', 1);
-  variable_set('userpoints_nc_comment_ownership_deduct_request', 1);
+  variable_set('userpoints_nc_comment_enabled_question', 1);
+  variable_set('userpoints_nc_comment_ownership_deduct', 0);
+  variable_set('userpoints_nc_comment_ownership_deduct_correction', 0);
+  variable_set('userpoints_nc_comment_ownership_deduct_forum', 0);
+  variable_set('userpoints_nc_comment_ownership_deduct_group', 0);
+  variable_set('userpoints_nc_comment_ownership_deduct_image', 0);
+  variable_set('userpoints_nc_comment_ownership_deduct_news', 0);
+  variable_set('userpoints_nc_comment_ownership_deduct_page', 0);
+  variable_set('userpoints_nc_comment_ownership_deduct_question', 0);
   variable_set('userpoints_nc_comment_points', '1');
   variable_set('userpoints_nc_comment_points_correction', '1');
   variable_set('userpoints_nc_comment_points_forum', '1');
@@ -1577,16 +1596,16 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_comment_points_image', '1');
   variable_set('userpoints_nc_comment_points_news', '1');
   variable_set('userpoints_nc_comment_points_page', '1');
-  variable_set('userpoints_nc_comment_points_request', '1');
+  variable_set('userpoints_nc_comment_points_question', '1');
   variable_set('userpoints_nc_comment_published_only', 1);
-  variable_set('userpoints_nc_delete_deduct', 1);
-  variable_set('userpoints_nc_delete_deduct_correction', 1);
-  variable_set('userpoints_nc_delete_deduct_forum', 1);
-  variable_set('userpoints_nc_delete_deduct_group', 1);
-  variable_set('userpoints_nc_delete_deduct_image', 1);
-  variable_set('userpoints_nc_delete_deduct_news', 1);
-  variable_set('userpoints_nc_delete_deduct_page', 1);
-  variable_set('userpoints_nc_delete_deduct_request', 1);
+  variable_set('userpoints_nc_delete_deduct', 0);
+  variable_set('userpoints_nc_delete_deduct_correction', 0);
+  variable_set('userpoints_nc_delete_deduct_forum', 0);
+  variable_set('userpoints_nc_delete_deduct_group', 0);
+  variable_set('userpoints_nc_delete_deduct_image', 0);
+  variable_set('userpoints_nc_delete_deduct_news', 0);
+  variable_set('userpoints_nc_delete_deduct_page', 0);
+  variable_set('userpoints_nc_delete_deduct_question', 0);
   variable_set('userpoints_nc_enabled', 1);
   variable_set('userpoints_nc_enabled_correction', 1);
   variable_set('userpoints_nc_enabled_forum', 1);
@@ -1594,7 +1613,7 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_enabled_image', 1);
   variable_set('userpoints_nc_enabled_news', 1);
   variable_set('userpoints_nc_enabled_page', 1);
-  variable_set('userpoints_nc_enabled_request', 1);
+  variable_set('userpoints_nc_enabled_question', 1);
   variable_set('userpoints_nc_ownership_deduct', 1);
   variable_set('userpoints_nc_ownership_deduct_correction', 1);
   variable_set('userpoints_nc_ownership_deduct_forum', 1);
@@ -1602,15 +1621,19 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_ownership_deduct_image', 1);
   variable_set('userpoints_nc_ownership_deduct_news', 1);
   variable_set('userpoints_nc_ownership_deduct_page', 1);
-  variable_set('userpoints_nc_ownership_deduct_request', 1);
+  variable_set('userpoints_nc_ownership_deduct_question', 1);
   variable_set('userpoints_nc_points', '100');
-  variable_set('userpoints_nc_points_correction', '5');
-  variable_set('userpoints_nc_points_forum', '5');
-  variable_set('userpoints_nc_points_group', '1');
   variable_set('userpoints_nc_points_image', '10');
-  variable_set('userpoints_nc_points_news', '100');
+  variable_set('userpoints_nc_points_problem', '10');
+  variable_set('userpoints_nc_points_solution', '10');
+  variable_set('userpoints_nc_points_review', '10');
+  variable_set('userpoints_nc_points_collection', '5');
+  variable_set('userpoints_nc_points_correction', '5');
+  variable_set('userpoints_nc_points_forum', '1');
+  variable_set('userpoints_nc_points_news', '1');
   variable_set('userpoints_nc_points_page', '1');
-  variable_set('userpoints_nc_points_request', '1');
+  variable_set('userpoints_nc_points_group', '1');
+  variable_set('userpoints_nc_points_question', '2');
   variable_set('userpoints_nc_published_only', 1);
   variable_set('userpoints_nc_revision_category', '0');
   variable_set('userpoints_nc_revision_category_correction', '0');
@@ -1619,7 +1642,7 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_revision_category_image', '0');
   variable_set('userpoints_nc_revision_category_news', '0');
   variable_set('userpoints_nc_revision_category_page', '0');
-  variable_set('userpoints_nc_revision_category_request', '0');
+  variable_set('userpoints_nc_revision_category_question', '0');
   variable_set('userpoints_nc_revision_enabled', 1);
   variable_set('userpoints_nc_revision_enabled_correction', 1);
   variable_set('userpoints_nc_revision_enabled_forum', 1);
@@ -1627,7 +1650,7 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_revision_enabled_image', 1);
   variable_set('userpoints_nc_revision_enabled_news', 1);
   variable_set('userpoints_nc_revision_enabled_page', 1);
-  variable_set('userpoints_nc_revision_enabled_request', 1);
+  variable_set('userpoints_nc_revision_enabled_question', 1);
   variable_set('userpoints_nc_revision_own_nodes', 0);
   variable_set('userpoints_nc_revision_own_nodes_correction', 0);
   variable_set('userpoints_nc_revision_own_nodes_forum', 0);
@@ -1635,15 +1658,15 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('userpoints_nc_revision_own_nodes_image', 0);
   variable_set('userpoints_nc_revision_own_nodes_news', 0);
   variable_set('userpoints_nc_revision_own_nodes_page', 0);
-  variable_set('userpoints_nc_revision_own_nodes_request', 0);
+  variable_set('userpoints_nc_revision_own_nodes_question', 0);
   variable_set('userpoints_nc_revision_points', '5');
-  variable_set('userpoints_nc_revision_points_correction', '1');
-  variable_set('userpoints_nc_revision_points_forum', '0');
-  variable_set('userpoints_nc_revision_points_group', '1');
+  variable_set('userpoints_nc_revision_points_correction', '5');
+  variable_set('userpoints_nc_revision_points_forum', '5');
+  variable_set('userpoints_nc_revision_points_group', '5');
   variable_set('userpoints_nc_revision_points_image', '5');
   variable_set('userpoints_nc_revision_points_news', '5');
-  variable_set('userpoints_nc_revision_points_page', '1');
-  variable_set('userpoints_nc_revision_points_request', '1');
+  variable_set('userpoints_nc_revision_points_page', '5');
+  variable_set('userpoints_nc_revision_points_question', '5');
   variable_set('userpoints_points_moderation', '0');
   variable_set('userpoints_report_displayzero', '1');
   variable_set('userpoints_report_limit', '10');
@@ -1661,7 +1684,7 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('additional_settings__active_tab_group', 'edit-userpoints-nc-revision');
   variable_set('additional_settings__active_tab_image', 'edit-userpoints-nc-revision');
   variable_set('additional_settings__active_tab_page', 'edit-userpoints-nc-revision');
-  variable_set('additional_settings__active_tab_request', 'edit-userpoints-nc-revision');
+  variable_set('additional_settings__active_tab_question', 'edit-userpoints-nc-revision');
   variable_set('settings_additional__active_tab', 'edit-userpoints-nc-comment');
 }
 

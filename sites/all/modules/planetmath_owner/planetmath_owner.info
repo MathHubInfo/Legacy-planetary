@@ -3,3 +3,5 @@ description = "Only for owners"
 version = "7.x-1.0"
 core = "7.x"
 package = "Planetary Modules"
+
+dependencies[] = planetmath_orphanage

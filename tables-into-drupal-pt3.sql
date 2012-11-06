@@ -15,15 +15,15 @@ UPDATE node_revision nr SET log = (SELECT version FROM planetmath_objects po whe
 -- Copy the article latex over
 
 INSERT INTO field_data_field_latex
- (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_latex_preamble, field_latex_document,field_latex_format)
- SELECT 'node','article',0, node.nid, node.vid,'und',0, planetmath_objects.preamble, planetmath_objects.data, 'tex_editor'
+ (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_latex_preamble, field_latex_metadata,field_latex_document,field_latex_format)
+ SELECT 'node','article',0, node.nid, node.vid,'und',0, planetmath_objects.preamble,"", planetmath_objects.data, 'tex_editor'
  FROM planetmath_objects,node where node.nid = planetmath_objects.uid;
 
 -- Copy the collab latex over
 
 INSERT INTO field_data_field_latex
- (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_latex_preamble, field_latex_document,field_latex_format)
- SELECT 'node','article',0, node.nid, node.vid,'und',0, '%none for now', planetmath_collab.data, 'tex_editor'
+ (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_latex_preamble, field_latex_metadata,field_latex_document,field_latex_format)
+ SELECT 'node','article',0, node.nid, node.vid,'und',0, '%none for now', "",planetmath_collab.data, 'tex_editor'
  FROM planetmath_collab,node where node.nid = planetmath_collab.uid;
 
 
@@ -31,6 +31,6 @@ INSERT INTO field_data_field_latex
 
 INSERT INTO field_data_field_question_latex
  (entity_type, bundle, deleted, entity_id, revision_id, language, delta, field_question_latex_document,field_question_latex_preamble,field_question_latex_metadata,field_question_latex_format)
- SELECT 'node','question',0, node.nid, node.vid,'und',0,planetmath_requests.data,'%none for now','','tex_editor'
+ SELECT 'node','question',0, node.nid, node.vid,'und',0,planetmath_requests.data,'%none for now',"",'tex_editor'
  FROM planetmath_requests,node where node.nid = planetmath_requests.uid;
 

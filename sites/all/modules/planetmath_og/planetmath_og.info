@@ -3,3 +3,5 @@ description = "Adds a couple of custom features to the default organic groups mo
 version = "7.x-1.0"
 core = "7.x"
 package = "Planetary Modules"
+
+dependencies[] = og

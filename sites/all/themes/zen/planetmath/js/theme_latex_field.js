@@ -1,44 +1,24 @@
 (function($){
-
-
-
-
-
  $(document).ready(function(){
-          //end of remove grippies code       
-          // There's probably a "cooler" way to do this.
-//console.log('in');
+// There's probably a "cooler" way to do this.
 //remove grippies code
 $(window).load(RemoveGrippies);
-
 function RemoveGrippies() {
-
 	var objs = document.getElementsByTagName("div");
 	var oi = 0;
 	var thisObj;
-
 	for (oi = 0; oi != objs.length; oi++) {
 		thisObj = objs[oi];
 		if (thisObj.className == 'grippie') {
 		        thisObj.className = "";
 		}
 	}
-
 	return;
-
 }
-          
-          
-          
-          
-          
- //console.log('hide0');
+
 $('.form-type-textarea').each(function(){
 var regex = / form-item-field-.*und-0-preamble$/;
-
 var className = $(this).attr('class');
-//console.log(className);
-
 var preambleShown =0;
 
 if (className.match(regex)){
@@ -63,13 +43,8 @@ if (className.match(regex)){
 regex = / form-item-field-.*und-0-metadata$/;
 if (className.match(regex)){
 $(this).hide();
-
 }
 
-
-});
-});
-
-
-
+}); // end of $('.form-type-textarea').each
+}); // end of $(document).ready
 })(jQuery);

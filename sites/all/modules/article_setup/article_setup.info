@@ -23,4 +23,4 @@ features[field][] = node-article-field_revisioncomment
 features[field][] = node-article-field_section
 features[field][] = node-article-field_sitedoc
 features[field][] = node-article-field_synonym
-features[field][] = node-article-field_timecreated
+

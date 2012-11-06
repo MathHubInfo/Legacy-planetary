@@ -323,47 +323,54 @@ function article_setup_field_default_fields() {
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_mathtype',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
+      'foreign keys' => array(),
       'indexes' => array(
-        'format' => array(
-          0 => 'format',
+        'value' => array(
+          0 => 'value',
         ),
       ),
       'locked' => '0',
-      'module' => 'text',
+      'module' => 'list',
       'settings' => array(
-        'max_length' => '255',
-        'profile2_private' => FALSE,
+        'allowed_values' => array(
+				  'Definition' => 'Definition',
+				  'Theorem' => 'Theorem',
+				  'Proof' => 'Proof',
+				  'Corollary' => 'Corollary',
+				  'Result' => 'Result',
+				  'Algorithm' => 'Algorithm',
+				  'Data Structure' => 'Data Structure',
+				  'Axiom' => 'Axiom',
+				  'Topic' => 'Topic',
+				  'Biography' => 'Biography',
+				  'Example' => 'Example',
+				  'Derivation' => 'Derivation',
+				  'Conjecture' => 'Conjecture',
+				  'Application' => 'Application',
+				  'Feature' => 'Feature',
+				  'Bibliography' => 'Bibliography',
+				  ),
+        'allowed_values_function' => '',
       ),
       'translatable' => '0',
-      'type' => 'text',
+      'type' => 'list_text',
     ),
     'field_instance' => array(
       'bundle' => 'article',
-      'default_value' => NULL,
+      'default_value' => array(
+        0 => array(
+          'value' => 'Definition',
+        ),
+      ),
       'deleted' => '0',
-      'description' => 'One of: Theorem, Lemma, Proof, etc.',
+      'description' => 'One of: Definition, Theorem, Proof, etc.',
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'text',
+          'module' => 'list',
           'settings' => array(),
-          'type' => 'text_default',
-          'weight' => '3',
-        ),
-        'full' => array(
-          'label' => 'above',
-          'module' => 'text',
-          'settings' => array(),
-          'type' => 'text_default',
-          'weight' => '4',
+          'type' => 'list_default',
+          'weight' => 14,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -375,19 +382,16 @@ function article_setup_field_default_fields() {
       'entity_type' => 'node',
       'field_name' => 'field_mathtype',
       'label' => 'Type of Math Object',
-      'required' => 0,
+      'required' => 1,
       'settings' => array(
-        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '60',
-        ),
-        'type' => 'text_textfield',
-        'weight' => '6',
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => '13',
       ),
     ),
   );
@@ -426,7 +430,7 @@ function article_setup_field_default_fields() {
       'bundle' => 'article',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Use the msc_browser to select a good MSC code.  You can have more than one classification - comma separate your entries here!',
+      'description' => 'Use a keyword search to select a good classification.  If using more than one code, comma-separate your selections.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -451,7 +455,7 @@ function article_setup_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_msc',
-      'label' => 'MSC',
+      'label' => 'Mathematics Subject Classification code(s)',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -464,7 +468,7 @@ function article_setup_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '5',
+        'weight' => '17',
       ),
     ),
   );
@@ -521,14 +525,14 @@ function article_setup_field_default_fields() {
       'bundle' => 'article',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'If this article should be attached to another article, type the name of the parent article here, otherwise leave this blank.',
       'display' => array(
         'default' => array(
           'label' => 'above',
           'module' => 'node_reference',
           'settings' => array(),
           'type' => 'node_reference_default',
-          'weight' => 17,
+          'weight' => 18,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -592,7 +596,7 @@ function article_setup_field_default_fields() {
         ),
       ),
       'deleted' => '0',
-      'description' => 'Articles are public by default, which means they show up in public listings.  Articles that are not public show up in private listings.  They are, however, available to the world via a direct URL, so don\'t put confidential data here.',
+      'description' => 'Articles are public by default, which means they show up in public listings.  Articles that are not public only show up in private listings.',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -993,81 +997,6 @@ function article_setup_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-article-field_timecreated'.
-  $fields['node-article-field_timecreated'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_timecreated',
-      'foreign keys' => array(
-        'format' => array(
-          'columns' => array(
-            'format' => 'format',
-          ),
-          'table' => 'filter_format',
-        ),
-      ),
-      'indexes' => array(
-        'format' => array(
-          0 => 'format',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'text',
-      'settings' => array(
-        'max_length' => '255',
-        'profile2_private' => FALSE,
-      ),
-      'translatable' => '0',
-      'type' => 'text',
-    ),
-    'field_instance' => array(
-      'bundle' => 'article',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '11',
-        ),
-        'full' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_timecreated',
-      'label' => 'Time Created',
-      'required' => 0,
-      'settings' => array(
-        'text_processing' => '0',
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '60',
-        ),
-        'type' => 'text_textfield',
-        'weight' => '10',
-      ),
-    ),
-  );
-
   // Translatables
   // Included for use with string extractors like potx.
   t('A multi-part field for LaTeX documents (source and preamble).');
@@ -1079,16 +1008,15 @@ function article_setup_field_default_fields() {
   t('Is this article part of PlanetMath\'s documentation?');
   t('Keywords');
   t('LaTeX');
-  t('MSC');
+  t('Mathematics Subject Classification code(s)');
   t('Major Section');
-  t('One of: Theorem, Lemma, Proof, etc.');
+  t('One of: Theorem, Theorem, Proof, etc.');
   t('Parent');
   t('Public');
   t('Related');
   t('Revision Comment');
   t('Should this article be part of PlanetMath\'s documentation?');
   t('Synonym');
-  t('Time Created');
   t('Type of Math Object');
   t('Use the msc_browser to select a good MSC code.  You can have more than one classification - comma separate your entries here!');
 

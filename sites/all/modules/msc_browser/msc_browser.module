@@ -34,8 +34,8 @@ function msc_browser_title(){
 
 function msc_browser_get_label($code) {
   include_once('sites/all/libraries/ARC2/arc/ARC2.php');
-  $endpoint = (object) array('uri' => "http://li311-58.members.linode.com:8890/sparql");
-  $graph="http://localhost:8890/DAV/home/dba/rdf_sink/";
+  $endpoint = (object) array('uri' => "http://planet.math.uwaterloo.ca:8890/sparql");
+  $graph="http://localhost:8890/DAV/home/dba/rdf_sink#this";
 
   $query = "PREFIX msc: <http://msc2010.org/resources/MSC/2010/> ".
            "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ".
@@ -55,8 +55,8 @@ function msc_browser_get_label($code) {
 
 function msc_browser_get_parent($code) {
   include_once('sites/all/libraries/ARC2/arc/ARC2.php');
-  $endpoint = (object) array('uri' => "http://li311-58.members.linode.com:8890/sparql");
-  $graph="http://localhost:8890/DAV/home/dba/rdf_sink/";
+  $endpoint = (object) array('uri' => "http://planet.math.uwaterloo.ca:8890/sparql");
+  $graph="http://localhost:8890/DAV/home/dba/rdf_sink#this";
 
   $query = "PREFIX msc: <http://msc2010.org/resources/MSC/2010/> ".
            "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ".
@@ -76,9 +76,11 @@ function msc_browser_get_parent($code) {
 }
 
 function msc_browser_handler($cat='') {
-  //  $endpoint = sparql_registry_load_by_uri("http://li311-58.members.linode.com:8890/sparql");
-  $endpoint = (object) array('uri' => "http://li311-58.members.linode.com:8890/sparql");
-  $graph="http://localhost:8890/DAV/home/dba/rdf_sink/";
+  //  $endpoint = sparql_registry_load_by_uri("http://planet.math.uwaterloo.ca:8890/sparql");
+  $endpoint = (object) array('uri' => "http://planet.math.uwaterloo.ca:8890/sparql");
+  $graph1="http://localhost:8890/DAV/home/dba/rdf_sink#this";
+  $graph2="http://localhost:8890/DAV/home/dba/rdf_sink";
+  $graph3="http://planet.math.uwaterloo.ca:8890/DAV/home/dba/rdf_sink/";
   $query = "";
   $result ="";
   $articles_flag = 0;
@@ -91,7 +93,7 @@ function msc_browser_handler($cat='') {
     $query =  "PREFIX msc:<http://msc2010.org/resources/MSC/2010/> ".
       "PREFIX skos:<http://www.w3.org/2004/02/skos/core#> ".
       "select distinct ?child ?label where { ".
-      "GRAPH <".$graph."> {".
+      "GRAPH <".$graph1."> {".
       "?child skos:topConceptOf <http://msc2010.org/resources/MSC/2010/MSC2010> . ".
       "?child skos:prefLabel ?label . ".
       "FILTER langMatches( lang(?label), \"en\" )  }}".
@@ -110,7 +112,7 @@ function msc_browser_handler($cat='') {
       $articles_query = "PREFIX dc:<http://purl.org/dc/terms/> ".
                         "PREFIX msc:<http://msc2010.org/resources/MSC/2010/> ".
  	                "select ?child ?canonicalname where { ".
-	                "GRAPH <".$graph."> {".
+	                "GRAPH <".$graph3."> {".
 	                "?child dc:subject msc:".$cat." . ".
 	                "?child dc:identifier ?canonicalname}}";
 
@@ -123,7 +125,7 @@ function msc_browser_handler($cat='') {
       $subcats_query = "PREFIX msc:<http://msc2010.org/resources/MSC/2010/> ".
 	"PREFIX skos:<http://www.w3.org/2004/02/skos/core#> ".
 	"select distinct ?child ?label where { ".
-	"GRAPH <".$graph."> {".
+	"GRAPH <".$graph1."> {".
 	"msc:".$cat." skos:narrower ?child . ".
 	"?child skos:prefLabel ?label . ".
 	"FILTER langMatches( lang(?label), \"en\" )  }}";
@@ -170,8 +172,7 @@ function msc_browser_handler($cat='') {
           $count_query ="PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
-SELECT ?article ?notation ?subconcept WHERE {".
-	    "GRAPH <".$graph."> {".
+SELECT DISTINCT ?article ?notation ?subconcept WHERE {".
 	    "{
  {
     msc:".$sub_cat_code." skos:narrower ?intermediate .
@@ -179,7 +180,6 @@ SELECT ?article ?notation ?subconcept WHERE {".
     ?article dct:subject ?subconcept .
  }
  UNION
-
  {
     msc:".$sub_cat_code." skos:narrower ?subconcept .
     ?article dct:subject ?subconcept .
@@ -190,17 +190,16 @@ OPTIONAL {
  ?subconcept skos:narrower ?child .
 }
 FILTER (!bound(?child))
-}}
+}
  ";
 	} else if ($level==0) {
 	  // xx level
           $count_query ="PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
-SELECT ?article WHERE {".
-	    "GRAPH <".$graph."> {".
+SELECT DISTINCT ?article WHERE {".
 	    " ?article dct:subject msc:".$sub_cat_code.
-	    "}}";
+	    "}";
 	}
 
 	$result_of_count_query = sparql_request($count_query,$endpoint);

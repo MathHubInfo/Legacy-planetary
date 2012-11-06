@@ -137,7 +137,8 @@ function _drutexml_cache_set($md5, $xhtml, $etid = NULL) {
 	  ->key(array("cachemd5" => $md5))
 	  ->fields(array(
 		"cachemd5" => $md5,
-		"xhtml" => $xhtml,
+		// Need to do this to get around some bizarre PHP string encoding error
+		"xhtml" => utf8_encode($xhtml),
                 "etid" => $etid
 			 )
 		   )
@@ -182,7 +183,8 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
       dd($latex_preamble,"received preamble");
       dd($latex_etid,"received etid");
     }
-  //dd($latex_metadata, "received metadata");
+
+      dd($latex_metadata, "received metadata");
 
   // so it receives the right data
   if ($m > 0) {
@@ -215,21 +217,30 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
 
   $data = 'profile=planetmath&tex=' . urlencode($text);
   if ($preamble && $metadata) {
-    $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
+    // new format:
+    $data .= "&preamble=literal:" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
+    // old format:
+    // $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
   }
 
-  //dd("LATEXML HOST IS");
-  //dd($host);
-
-  //dd("LATEXML DATA IS");
-  //dd($data);
+  if ($debug_drutexml)
+    {
+      dd("LATEXML HOST IS");
+      dd($host);
+      
+      dd("LATEXML DATA IS");
+      dd($data);
+    }
   
   $content = planetary_webglue_do_post($host,$data);
   $res = json_decode($content);
   $res = trim($res->{'result'});
-  
-  //dd("LATEXML RESULT IS");
-  //dd($res);
+
+  if ($debug_drutexml)
+    {  
+      dd("LATEXML RESULT IS");
+      dd($res);
+    }
 
   /* $data = array ('json_data' => json_encode(array('function'=>'linkentry', */
   /*                                                 'body'=>$res, */

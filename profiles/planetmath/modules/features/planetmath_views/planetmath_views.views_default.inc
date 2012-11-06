@@ -1280,6 +1280,17 @@ else if (!$field_correction_closed){
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  /* Field: Content: Image */
+  $handler->display->display_options['fields']['gallery_image']['id'] = 'gallery_image';
+  $handler->display->display_options['fields']['gallery_image']['table'] = 'field_data_gallery_image';
+  $handler->display->display_options['fields']['gallery_image']['field'] = 'gallery_image';
+  $handler->display->display_options['fields']['gallery_image']['label'] = '';
+  $handler->display->display_options['fields']['gallery_image']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['gallery_image']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['gallery_image']['settings'] = array(
+    'image_style' => 'large',
+    'image_link' => 'content',
+  );
   /* Sort criterion: Content: Updated date */
   $handler->display->display_options['sorts']['changed']['id'] = 'changed';
   $handler->display->display_options['sorts']['changed']['table'] = 'node';
