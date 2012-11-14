@@ -913,8 +913,12 @@ function planetmath_profile_configure_groups () {
 
   // It is important to set this or authenticated users won't be able
   // to "create article content" (i.e. add articles to groups).
-  // I think that's the only "interesting" permission to change
-  og_role_grant_permissions(2, array("create article content",
+  // (Similarly with commenting on a group.)
+  // Note that if we wanted to make it so that only group members could
+  // post comments, that would be a different story.  There's a module for
+  // that, though I don't know if it is currently working.
+  og_role_grant_permissions(2, array("post comments",
+				     "create article content",
                                      "update own article content",
                                      "update any article content",
                                      "delete own article content"));
