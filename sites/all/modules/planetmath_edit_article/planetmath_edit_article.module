@@ -121,7 +121,7 @@ function planetmath_edit_article_process_metadata($node){
 
   if (isset($node->field_mathtype['und'][0])){
     $math_type = $node->field_mathtype['und'][0]['value'];
-    if (isset($math_type)) $metadata .= "\\pmtype{".$node->type."}{".$math_type."}\n";
+    if (isset($math_type)) $metadata .= "\\pmtype{".$math_type."}\n";
   }
 
   if (isset($node->field_revisioncomment['und'][0])){

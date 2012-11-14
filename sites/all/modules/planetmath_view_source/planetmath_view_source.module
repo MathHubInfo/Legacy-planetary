@@ -94,7 +94,7 @@ return '\documentclass{article}
 % And this stuff will go into our little history thing, to display
 % in the righthand margin
 \def\pmcanonicalname#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
-\def\pmtype#1#2{\historyAdd{$\langle${\it #2}$\rangle$\\ }}
+\def\pmtype#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
 \def\pmclassification#1#2{\historyAdd{$\langle${\it #2}$\rangle$\\ }}
 \def\pmcomment#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
 \def\pmcreated#1{\historyAdd{created: $\langle${\it \protect\StrGobbleRight{#1}{9}}$\rangle$\\  }}
