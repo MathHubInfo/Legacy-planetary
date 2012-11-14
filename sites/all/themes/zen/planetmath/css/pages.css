@@ -18,7 +18,8 @@ body {
   line-height: 1.4em;
   font-family: "Hoefler Text", Georgia, Times, serif;
   color: #444;  
-  background-image: url(../images/paper.jpg);
+  background-color: #FFF5EE;
+ /* background-image: url(../images/paper.jpg);*/
   background-repeat: repeat-y;
   background-size: 100% 100%;
 }
@@ -377,7 +378,10 @@ a:hover{
   margin-left: 0px;
   margin-right: -265px;  
   line-height: 150%;
-  background-image: url(../images/old-paper.jpg);
+  border-color: #cdc0b0;
+ /* border-color: #fffafa; */
+  background: rgba(248, 248, 255, 0.6);
+  /* background-image: url(../images/old-paper.jpg); */
 }
 
 .front-right, #front-right-block-tabs{
@@ -386,8 +390,10 @@ a:hover{
   height: 365px;
   line-height: 150%;
   margin-left: 280px;
-  margin-right: -550px;  
-  background-image: url(../images/old-paper3.jpg);
+  margin-right: -550px;
+  border-color: #cdc0b0;
+  background: rgba(248, 248, 255, 0.6);
+ /* background-image: url(../images/old-paper3.jpg); */
 }
 
 #front-mid-tabs{
@@ -396,12 +402,17 @@ a:hover{
 }
 
 #front-right-mid-block-tabs{
-  background-image: url(../images/grid.jpg);
+  border-color: #DAF4F0;
+  background: rgba(248, 248, 255, 0.6);
+/*  background-image: url(../images/grid.jpg); */
 }
 
 #front-left-mid-block-tabs{
   margin-top: -40px;
-  background-image: url(../images/envelope-cropped.jpg);
+ /* background-color: #D9D9F3; */
+  background: rgba(248, 248, 255, 0.6);
+  /* border-color: #D9D9F3; */
+  /* background-image: url(../images/envelope-cropped.jpg);*/
 }
 
 .ui-tabs .ui-tabs-nav li {
@@ -450,7 +461,8 @@ a:hover{
 
 #front-center-block{
   width: 560px;
-  background-image: url(../images/laid.jpg);
+   background: rgba(248, 248, 255, 0.6);
+  /* background-image: url(../images/laid.jpg); */
   background-size: 100%;
 }
 

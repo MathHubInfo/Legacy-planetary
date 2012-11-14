@@ -28,14 +28,14 @@ li a.active {
 #navigation ul.links li, /* A simple method to get navigation links to appear in one line. */
 #navigation li {
   float: left; /* LTR */
-  padding: 0 17px 0 0; /* LTR */
-  width: 80px;
+  padding: 0 7px 0 0; /* LTR */
+  width: 99px;
 }
 
 #navigation li.leaf {
   float: none; /* LTR */
   margin-left: -12px; /* LTR */
-  width: 86px; /* LTR */
+  width: 99px; /* LTR */
 }
 
 
