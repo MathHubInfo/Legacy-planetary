@@ -75,6 +75,7 @@ function planetmath_edit_article_node_presave($node) {
 }
 
 function planetmath_edit_article_node_update($node){
+  if ($node->type==='article'){
     //NOTE: it is important to set 'language' here, otherwise, your aliases
     //come back with an extra "-0" attached to them -- which is rather confusing!
     $path= array('source' => 'node/'.$node->nid,
@@ -82,6 +83,7 @@ function planetmath_edit_article_node_update($node){
 		 'language' => '');
 
     path_save($path);
+  }
 }
 
 function planetmath_edit_article_process_metadata($node){
