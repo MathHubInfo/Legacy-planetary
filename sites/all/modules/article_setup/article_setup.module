@@ -70,8 +70,8 @@ function article_setup_msc_selector($string = '') {
 
 function article_setup_get_labels($search) {
   include_once('sites/all/libraries/ARC2/arc/ARC2.php');
-  $endpoint = (object) array('uri' => "http://li311-58.members.linode.com:8890/sparql");
-  $graph="http://localhost:8890/DAV/home/dba/rdf_sink/";
+  $endpoint = (object) array('uri' => "http://planet.math.uwaterloo.ca:8890/sparql");
+  $graph="http://localhost:8890/DAV/home/dba/rdf_sink#this";
 
   $query = "PREFIX msc: <http://msc2010.org/resources/MSC/2010/> ".
            "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> ".
