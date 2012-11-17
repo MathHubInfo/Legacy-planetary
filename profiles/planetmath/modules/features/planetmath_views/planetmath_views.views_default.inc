@@ -1371,7 +1371,7 @@ else if (!$field_correction_closed){
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['style_plugin'] = 'default';
-  $handler->display->display_options['row_plugin'] = 'node';
+  $handler->display->display_options['row_plugin'] = 'fields';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -1379,18 +1379,20 @@ else if (!$field_correction_closed){
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Field: Content: Type */
+  $handler->display->display_options['fields']['type']['id'] = 'type';
+  $handler->display->display_options['fields']['type']['table'] = 'node';
+  $handler->display->display_options['fields']['type']['field'] = 'type';
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
   $handler->display->display_options['sorts']['created']['field'] = 'created';
   $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Filter criterion: Content: Published */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'node';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = 1;
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  $handler->display->display_options['filter_groups']['operator'] = 'OR';
+  $handler->display->display_options['filter_groups']['groups'] = array(
+    1 => 'AND',
+    2 => 'AND',
+  );
   /* Filter criterion: Content: Type */
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'node';
@@ -1400,21 +1402,11 @@ else if (!$field_correction_closed){
     'article' => 'article',
     'page' => 'page',
     'forum' => 'forum',
+    'group' => 'group',
     'news' => 'news',
     'poll' => 'poll',
   );
-  /* Filter criterion: Filter out groups that are not teams */
-  $handler->display->display_options['filters']['php']['id'] = 'php';
-  $handler->display->display_options['filters']['php']['table'] = 'views';
-  $handler->display->display_options['filters']['php']['field'] = 'php';
-  $handler->display->display_options['filters']['php']['ui_name'] = 'Filter out groups that are not teams';
-  $handler->display->display_options['filters']['php']['use_php_setup'] = 0;
-  $handler->display->display_options['filters']['php']['php_filter'] = '$node = node_load($data->nid);
-if (($node->type = \'group\') && ($node->field_group_subtype[\'und\'][0][\'value\'] != \'Team\')) {
- return TRUE;
-} else {
-return FALSE;
-}';
+  $handler->display->display_options['filters']['type']['group'] = 2;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -1436,6 +1428,7 @@ return FALSE;
     t('‹ previous'),
     t('next ›'),
     t('last »'),
+    t('Type'),
     t('Page'),
   );
   $export['new_stuff'] = $view;
