@@ -1916,14 +1916,14 @@ function planetmath_profile_setup_user_entities () {
   set_time_limit(0);
 
 
-    planetmath_profile_docreate_user_field('user_forename', 'Forename', 'Forename');
-    planetmath_profile_docreate_user_field('user_surname', 'Surname', 'Surname');
-    planetmath_profile_docreate_user_field('user_city', 'City', 'City');
-    planetmath_profile_docreate_user_field('user_state', 'State', 'State');
-    planetmath_profile_docreate_user_field('user_country', 'Country', 'Country');
-    planetmath_profile_docreate_user_field('user_homepage', 'Homepage', 'Homepage');
-    planetmath_profile_docreate_user_field_long('user_preamble', 'Preamble', 'Preamble');
-    planetmath_profile_docreate_user_field_long('user_bio', 'Bio', 'Bio');
+    planetmath_profile_docreate_user_field('user_forename', 'Forename');
+    planetmath_profile_docreate_user_field('user_surname', 'Surname');
+    planetmath_profile_docreate_user_field('user_city', 'City');
+    planetmath_profile_docreate_user_field('user_state', 'State');
+    planetmath_profile_docreate_user_field('user_country', 'Country');
+    planetmath_profile_docreate_user_field('user_homepage', 'Homepage');
+    planetmath_profile_docreate_user_field_long('user_preamble', 'Preamble', 'If you want to use a custom LaTeX preamble, enter it here, otherwise the site default will be used.');
+    planetmath_profile_docreate_user_field_long('user_bio', 'Bio', 'Tell us who you are!');
     planetmath_profile_docreate_user_buddy_list_field();
 
     // Let's not port the score for now, they are being re-calculated; if we really
@@ -2065,7 +2065,7 @@ function planetmath_profile_docreate_field ($machine_name, $bundle, $description
   field_create_instance($newfield_instance);
 }
 
-function planetmath_profile_docreate_user_field ($myField_name, $label, $desc){
+function planetmath_profile_docreate_user_field ($myField_name, $label){
 
     if(!field_info_field($myField_name)) // check if the field already exists.
     {
@@ -2080,7 +2080,7 @@ function planetmath_profile_docreate_user_field ($myField_name, $label, $desc){
             'entity_type'   => 'user',
             'bundle'        => 'user',
             'label'         => t($label),
-            'description'   => t($desc),
+            'description'   => "",
             'widget'        => array(
                 'type'      => 'text_textfield',
                 'weight'    => 10,
@@ -2122,8 +2122,6 @@ function planetmath_profile_docreate_user_field_long ($myField_name, $label, $de
             )
         );
         field_create_instance($field_instance);
-
-
 }
 
 function planetmath_profile_docreate_user_buddy_list_field ()
