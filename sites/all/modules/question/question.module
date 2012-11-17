@@ -8,9 +8,10 @@
  * Still to do: 
     - we should be able to mark garbagy questions as "Won't fix".
     - Similar to StackExchange, a question should probably have multiple answers.
-    - we would then provide a way to rate answers or select the best answer etc.
+    - we would then provide a way to rate the answers or select the best answer etc.
     - It would be nice to be able to save questions to a "dossier" of "things
-      I'm working on" (integration with collections module?)
+      I'm working on" (integration with collections module?) -- this is related to
+      the ability to specify "goals"
  */
 
 function question_node_info() {
@@ -270,11 +271,27 @@ function question_form_question_node_form_alter(&$form, &$form_state, $form_id) 
   $form['field_question_article']['und'][0]['nid']['#default_value'] = $val;
 
   // If the article isn't closed, then we don't want to see these
-  // (Actually we might never want to see these on the form, since they
-  // should be filled in automatically when the question is answered, once
-  // we get that part sorted out)
+  // (Actually we might never want to see these on a *form*, since they
+  // should be filled in *automatically* when the question is answered...
+  // feature to be added of course!)
   if(!isset($form['#node']->field_question_closed['und'][0]['value'])) {
     hide($form['field_question_fulfiller']);
+
+    $form['field_question_closed']['und'][0]['#value']['value'] =
+      array(
+            'month' => NULL,
+            'day' => NULL,
+            'year' => NULL,
+            'hour' => NULL,
+            'minute' => NULL,
+        );
     hide($form['field_question_closed']);
+   
+    //$form['#submit'][] = 'my_additional_submit_handler';     
   }
 }
+
+// Debugging code
+//function my_additional_submit_handler(&$form, &$form_state, $form_id) {
+//  dpm($form['field_question_closed']);
+//}
