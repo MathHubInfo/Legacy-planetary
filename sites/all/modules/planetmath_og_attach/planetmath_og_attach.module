@@ -1,7 +1,9 @@
 <?php
 
 /*
- * Problem module
+ * PlanetMath OG Attach
+ * This module takes care of attaching content to groups
+ * This functionality should of course only be available for group members!
  */
 
 
@@ -13,10 +15,10 @@ function planetmath_og_attach_menu() {
       'type' => MENU_CALLBACK,
       'page callback' => 'planetmath_og_attach_content',
       'page arguments' => array(1),
-      'access arguments' => array('create correction content')
+      'access callback' => 'planetmath_og_attach_is_member',
+      'access arguments' => array(1),
   );
 
-  
   $items['group/confirm/%/%'] = array(
       'title' => 'Confirm attachment',
       'type' => MENU_CALLBACK,
@@ -34,6 +36,11 @@ function planetmath_og_attach_menu() {
    
   
   return $items;
+}
+
+function planetmath_og_attach_is_member($nid){
+  global $user;
+  return planetmath_og_model_isUserMemberOfGroup($user->uid,node_load($nid));
 }
 
 function planetmath_og_attach_content($nid){
@@ -79,14 +86,15 @@ function planetmath_og_attach_content($nid){
 }
 
 function planetmath_og_attach_confirm($gid_of_group,$nid_of_content){
- //   drupal_set_message('Node '.$nid_of_content.' is now attached to this group (needs to be implemented)');
+ // drupal_set_message('Node '.$nid_of_content.' is now attached to this group (needs to be implemented)');
  
-dd($gid_of_group);
-dd($nid_of_content);
-//og_membership_save
-og_membership_create('node',$gid_of_group,'node',$nid_of_content,'og_group_ref')->save();
+  //dd($gid_of_group);
+  //dd($nid_of_content);
 
-   drupal_goto('node/'.$gid_of_group);
+  //og_membership_save
+  og_membership_create('node',$gid_of_group,'node',$nid_of_content,'og_group_ref')->save();
+
+  drupal_goto('node/'.$gid_of_group);
 }
 
 function planetmath_og_attach_decouple($gid_of_group,$nid_of_content){
@@ -112,7 +120,7 @@ function planetmath_og_attach_get_all_content(){
 
 
 function theme_add_stuff($variables){
-  dd($variables);
+  //dd($variables);
   return l("Add Content", $variables['links']['target']);
 }
 
@@ -144,7 +152,7 @@ function planetmath_og_attach_theme($existing, $type, $theme, $path){
 
 // Main point of entry
 function planetmath_og_attach_node_view($node){
-  if($node->type == 'group'){
+  if($node->type == 'group' && planetmath_og_attach_is_member($node->nid)){
     $node->content['add_stuff'] = array(
         '#markup' => '',
         '#weight' => 10,

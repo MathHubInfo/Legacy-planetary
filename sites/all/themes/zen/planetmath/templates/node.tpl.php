@@ -139,8 +139,8 @@
      // is supposed to go into the buddy list group.   For now, we just remove
      // the "add stuff" link from the presentation for everyone but Teams,
      // (later we can have a more robust solution).
-     if ($content['field_group_subtype'][0]['#markup'] == "Team") {
-       dd("Rendering 'add stuff'");
+     if ($content['field_group_subtype'][0]['#markup'] == "Team"
+         && planetmath_og_attach_is_member($nid)) {
        print render($content['add_stuff']);
      }
      hide($content['add_stuff']);
