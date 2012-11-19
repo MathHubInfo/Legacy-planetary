@@ -134,17 +134,17 @@
      print render($content['field_group_subtype'][0]);
      hide($content['field_group_subtype']);
    ?> <br /> <br />
-   <?php
-     // You can't add more content to a Co-authors group, and all content by me.
-     // is supposed to go into the buddy list group.   For now, we just remove
-     // the "add stuff" link from the presentation for everyone but Teams,
-     // (later we can have a more robust solution).
-     if ($content['field_group_subtype'][0]['#markup'] == "Team"
-         && planetmath_og_attach_is_member($nid)) {
-       print render($content['add_stuff']);
-     }
-     hide($content['add_stuff']);
-     ?> <br />
+   <?php if ($content['field_group_subtype'][0]['#markup'] == "Team"
+	   && planetmath_og_attach_is_member($nid)) : 
+	// You can't add more content to a Co-authors group, and all content by me.
+	// is supposed to go into the buddy list group.   For now, we just remove
+	// the "add stuff" link from the presentation for everyone but Teams,
+	// (later we can have a more robust solution).
+    ?>
+     <?php print render($content['add_stuff']); ?>
+     <br />
+   <?php endif; ?>
+   <?php hide($content['add_stuff']); ?> 
    <?php
      // I don't know why, but this seems to be needed to get "subscribe" link
      // to show up for non-admin users (but we hide this for the World Writable group)
