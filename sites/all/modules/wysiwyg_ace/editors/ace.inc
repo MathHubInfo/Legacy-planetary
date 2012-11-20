@@ -137,6 +137,8 @@ function wysiwyg_ace_ace_settings($editor, $config, $theme) {
 		}
 		$settings["enabled"] = $result;				
 	}
+	$settings["piwik_url"] = variable_get('piwik_url_http', '');
+	$settings["piwik_id"] = variable_get('piwik_site_id', '');
 	return $settings;
 }
 

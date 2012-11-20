@@ -35,8 +35,9 @@ class SFBrowser extends AbstractSFB {
 			switch ($this->sAction) {
 
 				case "fileList": // retreive file list
-				    $sDir = isset($_POST["folder"])?$_POST["folder"]:"/";
+				  $sDir = isset($_POST["folder"])?$_POST["folder"]:"/";
 					$aFiles = array();
+					dd($sDir, "getting list from TNT ");
 					$listing = tntbase_get_path_contents($sDir, true);
 					
 					foreach ($listing as $file=>$prop) {
