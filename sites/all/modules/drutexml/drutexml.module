@@ -50,6 +50,8 @@ function drutexml_menu() {
  * Implements hook_filter_info().
  */
 function drutexml_filter_info() {
+  global $debug_drutexml; 
+
   $filters['latex'] = array(
     'title' => t('LaTeX filter'),
     'description' => t('The text will be passed as LaTeX to LaTeXML daemon and then shown to the user'),
@@ -58,7 +60,7 @@ function drutexml_filter_info() {
       'latexml_url' => 'http://latexml.mathweb.org/convert',
       'latexml_preamble' => '',
     ),
-    'cache' => TRUE,
+    'cache' => $debug_drutexml == 0,
     'settings callback' => '_drutexml_filter_latex_settings',
     'tips callback' => '_drutexml_filter_latex_tips',
   );
@@ -66,15 +68,134 @@ function drutexml_filter_info() {
     'title' => t('Image Sanetizer'),
     'description' => t('Replaces images with src="some local path" to images pointing to src="sites/default/files/nodeid"'),
     'process callback' => '_drutexml_image_sanetizer',
-    'cache' => false,
+    'cache' => $debug_drutexml == 0,
   );
   $filters['xhtml2html5'] = array(
     'title' => t('XHTML to HTML5 filter'),
     'description' => t('Removes namespaces'),
     'process callback' => '_drutexml_xhtml2html5',
-    'cache' => false,
+    'cache' => $debug_drutexml == 0,
+  );
+  $filters['tntbase_preamble_enricher'] = array(
+    'title' => t('TNTBase enricher of the preamble'),
+    'description' => t('Enriches the preamble of the sTeX files with the path in the sTeX repository'),
+    'process callback' => '_drutexml_preamble_enricher',
+    'default settings' => array(
+      'tntbase_prefix' => 'http://127.0.0.1',
+    ),
+    'settings callback' => '_drutexml_filter_tnt_settings',
+    'cache' => $debug_drutexml == 0,
+  );
+  $filters['omdoc2html5'] = array(
+    'title' => t('OMDOC to HTML5 filter'),
+    'description' => t('Transforms OMDoc output to HTML5'),
+    'process callback' => '_drutexml_omdoc2html5',
+    'cache' => $debug_drutexml == 0,
+    'default settings' => array(
+      'jomdoc_url' => 'http://latexml.mathweb.org/convert',
+      'css' => '',
+    ),
+    'settings callback' => '_drutexml_filter_omdoc_settings',
   );
   return $filters;
+}
+
+function drutexml_field_formatter_info() {
+  return array('context_aware' => array(
+      'label' => t('Context aware'), 
+      'description' => t('Context aware formatter allows the filters to have access to all node fields rather than only the text'),
+      'settings' => array(
+          "secondary_formatter" => "text_default"
+        ),
+      'field types' => array('text', 'text_long', 'text_with_summary', 'field_latex')
+    ));
+}
+
+function drutexml_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  global $drutexml_node;
+  $element = array();
+
+  switch ($display['type']) {
+    # doing this for text fields only
+    case 'context_aware':
+      $drutexml_node = $entity;
+      foreach ($items as $delta => $item) {
+        $column = "";
+        // most of the cases the right column is value
+        if (isset($item["value"]))
+          $column = "value";
+        // in case of LaTeX field it's "document"
+        if (isset($item["document"]))
+          $column = "document";
+        $output = check_markup($item[$column], $item['format'], $langcode);
+        $element[$delta] = array('#markup' => $output);
+      }
+    break;
+  }
+  return $element;
+}
+
+/**
+ * Enriches sTeX sources with \baseURI allowing dependencies to be resolved
+ */
+function _drutexml_omdoc2html5($text, $filter, $format, $langcode, $cache, $cache_id) {
+  global $debug_drutexml;
+  $key = md5($text);
+  $cache = _drutexml_cache_read($key);
+
+  // HACK
+  $text = str_replace("/opt/latexml/webapp/mikoslides", "/test.omdoc", $text);
+
+  if (isset($cache) && $debug_drutexml == 0) {
+    return $cache;
+  }
+
+  $host = isset($filter->settings['jomdoc_url']) ? $filter->settings['jomdoc_url'] : 'http://127.0.0.1/jomdoc.php';
+  $data = "omdoc=".urlencode($text);
+
+  $content = planetary_webglue_do_post($host,$data);
+
+  _drutexml_cache_set($key, $content);
+
+  return $content;
+}
+
+function _drutexml_filter_omdoc_settings($form, $form_state, $filter, $format, $defaults) {
+    $settings['jomdoc_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('OMDOC daemon URL'),
+    '#default_value' => isset($filter->settings['jomdoc_url']) ? $filter->settings['jomdoc_url'] : $defaults['jomdoc_url'],
+    '#description' => t('The URL of the OMDOC daemon.'),
+  );
+  return $settings;
+}
+
+function _drutexml_filter_tnt_settings($form, $form_state, $filter, $format, $defaults) {
+    $settings['tntbase_prefix'] = array(
+    '#type' => 'textfield',
+    '#title' => t('TNTBase Prefix'),
+    '#default_value' => isset($filter->settings['tntbase_prefix']) ? $filter->settings['tntbase_prefix'] : $defaults['tntbase_prefix'],
+    '#description' => t('The URL prefix to be prepended to the TNTBase path to get the file name'),
+  );
+  return $settings;
+}
+
+
+/**
+ * Enriches sTeX sources with \baseURI allowing dependencies to be resolved
+ */
+function _drutexml_preamble_enricher($text, $filter, $format, $langcode, $cache, $cache_id) {
+  global $drutexml_node;
+  if (isset($drutexml_node) && isset($drutexml_node->tnt_path)) {
+    $path = $drutexml_node->tnt_path;
+    // making sure we're not doing this for non TNT files 
+    if (strlen($path) > 0) {
+      $dir = dirname($path);
+      $basePath = $filter->settings["tntbase_prefix"].$dir;
+      $text = "\\baseURI[".$dir."]{".$basePath."}\n".$text;
+    }
+  }
+  return $text;
 }
 
 /**
@@ -104,6 +225,12 @@ function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $
     '#title' => t('LaTeXML daemon URL'),
     '#default_value' => isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : $defaults['latexml_url'],
     '#description' => t('The URL of the LaTeXMl daemon.'),
+  );
+  $settings['latexml_profile'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Profile to be used'),
+    '#default_value' => isset($filter->settings['latexml_profile']) ? $filter->settings['latexml_profile'] : $defaults['latexml_profile'],
+    '#description' => t('The profile to be used for the daemon.'),
   );
   $settings['latexml_preamble'] = array(
     '#type' => 'textarea',
@@ -137,7 +264,8 @@ function _drutexml_cache_set($md5, $xhtml, $etid = NULL) {
 	  ->key(array("cachemd5" => $md5))
 	  ->fields(array(
 		"cachemd5" => $md5,
-		"xhtml" => $xhtml,
+		// Need to do this to get around some bizarre PHP string encoding error
+		"xhtml" => utf8_encode($xhtml),
                 "etid" => $etid
 			 )
 		   )
@@ -153,6 +281,38 @@ function _drutexml_filter_reset_cache($form, &$form_state) {
 	_drutexml_cache_clear();
 }
 
+function process_latexml($host, $text, $preamble, $metadata, $profile) {
+  global $debug_drutexml;
+
+  $data = 'profile='.$profile.'&tex=' . urlencode($text);
+  if (isset($preamble) && isset($metadata)) {
+    // new format:
+    $data .= "&preamble=literal:" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
+    // old format:
+    // $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
+  }
+
+  if ($debug_drutexml)
+    {
+      dd("LATEXML HOST IS");
+      dd($host);
+      
+      dd("LATEXML DATA IS");
+      dd($data);
+
+      dd("LATEXML Preamble");
+      dd($preamble);
+
+      dd("LATEXML Metadata");
+      dd($metadata);
+    }
+ 
+  $content = planetary_webglue_do_post($host,$data);
+  $res = json_decode($content);
+  $res = trim($res->{'result'});
+  return $res;
+}
+
 /**
  * LaTeX filter process callback
  * @see drutexml_filter_info
@@ -166,31 +326,40 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
 
   $key = md5($text);
   $cache = _drutexml_cache_read($key);
-  if (isset($cache)) {
+  if (isset($cache) && $debug_drutexml == 0) {
   	return $cache;
   }
-  
   $hasPreamble = '/^([\s\S]*)\\\\begin{document}([\s\S]*)\\\\end{document}([\s\S]*)$/';
   $m = preg_match($hasPreamble, $text, $matches);
   
   global $latex_preamble;
   global $latex_metadata;
   global $latex_etid;
+  global $drutexml_node;
+
 
   if ($debug_drutexml)
     {
       dd($latex_preamble,"received preamble");
       dd($latex_etid,"received etid");
     }
-  //dd($latex_metadata, "received metadata");
+
+      dd($latex_metadata, "received metadata");
 
   // so it receives the right data
   if ($m > 0) {
-	$preamble = $matches[1];
-	$text = $matches[2];	
+  	$preamble = $matches[1];
+  	$text = $matches[2];	
   } else
   if (isset($latex_preamble) && strlen($latex_preamble) > 0) {
   		$preamble = $latex_preamble;
+  } else
+  if (isset($drutexml_node->field_preamble)) {
+    $nid = $drutexml_node->field_preamble["und"][0]["nid"];
+    if (isset($nid)) {
+      $node = node_load($nid);
+      $preamble = $node->body["und"][0]["value"];
+    }
   } else
     {
      	$preamble = $filter->settings['latexml_preamble'];
@@ -204,32 +373,21 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
 %END METADATA BLOCK";
     }
   
-  $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
-  
   /// Ideally we would have a preprocess hook, but I need to sort out
   /// the details of the hook system first...
 
-  // $text = module_invoke_all('drutexml_preprocess',$text);  
+  // $text = module_invoke_all('drutexml_preprocess',$text);   
   // dd($text);
   // $text=$text[0];
+  $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
 
-  $data = 'profile=planetmath&tex=' . urlencode($text);
-  if ($preamble && $metadata) {
-    $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
-  }
-
-  //dd("LATEXML HOST IS");
-  //dd($host);
-
-  //dd("LATEXML DATA IS");
-  //dd($data);
+  $res = process_latexml($host, $text, $preamble, $metadata, "stex-module");
   
-  $content = planetary_webglue_do_post($host,$data);
-  $res = json_decode($content);
-  $res = trim($res->{'result'});
-  
-  //dd("LATEXML RESULT IS");
-  //dd($res);
+  if ($debug_drutexml)
+    {  
+      dd("LATEXML RESULT IS");
+      dd($res);
+    }
 
   /* $data = array ('json_data' => json_encode(array('function'=>'linkentry', */
   /*                                                 'body'=>$res, */
@@ -242,8 +400,6 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   if (!empty($nexres)) {
     $nexres= $nexres[0];
     $nexres = trim(json_decode($nexres)->{'result'});  
-    //dd("NNEXUS RESULT IS");
-    //dd($nexres);
     if (strlen($nexres)>strlen($res)) {
       $res = $nexres;
     }
@@ -324,4 +480,3 @@ function drutexml_process_node(&$vars) {
     drupal_set_title($node->textitle);
   }
 }
-
