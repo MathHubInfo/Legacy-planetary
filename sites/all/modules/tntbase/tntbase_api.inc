@@ -25,6 +25,12 @@ function tntbase_form_alter(&$form, $form_state, $form_id) {
 		    	'#description' => t('Revision of the file'),
 		    	'#default_value' => isset($node->tnt_rev) ? $node->tnt_rev : ''
 		);
+		$form['actions']['commit'] = array(
+				'#type' => "submit",
+				'#value' => "Save & Commit",
+				'#weight' => 11,
+				'#submit' => array("tntbase_node_commit"),
+			);
 	}
 }
 
@@ -104,9 +110,11 @@ function tntbase_node_import($tnt_path, $content_type="article", $body_field="bo
 	$node[$body_field][$node["language"]][0]=array();
 	if ($type=="latex") {
 		$node[$body_field][$node["language"]][0]['value']   = $body_text;
+		$node[$body_field][$node["language"]][0]['document']   = $body_text;
 		$node[$body_field][$node["language"]][0]['format']  = 'latex';
 	} else {
 		$node[$body_field][$node["language"]][0]['value']   = $doc["BodyXHTML"];
+		$node[$body_field][$node["language"]][0]['document'] = $doc["BodyXHTML"];
 		$node[$body_field][$node["language"]][0]['format']  = 'full_html';
 	}	
 	$node = (object) $node;
@@ -162,22 +170,24 @@ function tntbase_node_getNodeFromPath($tnt_path) {
 }
 
 
-function tntbase_node_update($node) {
-	// If may happen that this node does not have a previous saved rating
-	// value, so we can't just update it, we need to check first if this
+function tntbase_node_commit($form, &$form_state) {
+	$node = (array)node_form_submit_build_node($form, $form_state);
+	$nid = $node["nid"];
+	$original = (array) node_load($nid);
+	
 	$path = db_select('tntbase_url', 'e')
 		->fields('e', array(
 		'tnt_path',
 		'tnt_rev',
 	))
-	->where('e.nid = (:nid)', array(':nid' => $node->nid))
+	->where('e.nid = (:nid)', array(':nid' => $node["nid"]))
 		->execute()->fetchField();
 	if ($path) {
 	// node has been rated before.
 		db_update('tntbase_url')
-			->fields(array('tnt_path' => $node->tnt_path,
-						   'tnt_rev' => $node->tnt_rev))
-			->condition('nid', $node->nid)
+			->fields(array('tnt_path' => $node["tnt_path"],
+						   'tnt_rev' => $node["tnt_rev"]))
+			->condition('nid', $node["nid"])
 			->execute();
 		
     }
@@ -185,16 +195,28 @@ function tntbase_node_update($node) {
 		// Node was not previously rated, so insert a new rating in database.
 		tntbase_node_insert($node);
 	}
-	$language = $node->language;
-	$original = $node->original;
-	if (strlen($node->tnt_path)>0 && $node->body[$language][0]["value"]!=$original->body[$language][0]["value"]) {
-		$new_rev = tntbase_commit_file($node->body[$language][0]["value"], $node->tnt_path);
-		dpm($new_rev);
+	$language = $node["language"];
+
+	if (isset($node["body"])) {
+		$fldName = "body";
+		$valName = "value";
+	} else
+	if (isset($node["field_latex"])) {
+		$fldName = "field_latex";
+		$valName = "document";
+	} else {
+		dpm("TNTBase: don't know what field to commit");
+		return;
+	}
+
+	if (strlen($node["tnt_path"])>0 && $node[$fldName][$language][0][$valName]!=$original[$fldName][$language][0][$valName]) {
+		$new_rev = tntbase_commit_file($node[$fldName][$language][0][$valName], $node["tnt_path"]);
 		db_update('tntbase_url')
-			->fields(array('tnt_path' => $node->tnt_path,
+			->fields(array('tnt_path' => $node["tnt_path"],
 						   'tnt_rev' => $new_rev))
-			->condition('nid', $node->nid)
+			->condition('nid', $node["nid"])
 			->execute();
 	}
+	node_form_submit($form, $form_state);
 }
 ?>

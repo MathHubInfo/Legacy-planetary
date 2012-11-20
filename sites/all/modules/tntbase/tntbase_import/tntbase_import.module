@@ -49,36 +49,134 @@ function tntbase_update_taxonomy_based($form, &$form_state) {
 	tntbase_sync_nodes($nids);
 }
 
+function df() {
+	 $numargs = func_num_args();
+	 for ($i=0; $i<$numargs; $i++) {
+	 	$val = func_get_arg($i);
+	 	if (isset($val))
+	 		return $val;
+	 }
+}
+
+function dfa($arr, $key, $default) {
+	if (isset($arr[$key]))
+		return $arr[$key];
+	else
+		return $default;
+}
+
+
 function tntbase_import_page($form, &$form_status) {
 	drupal_add_js(drupal_get_path("module","tntbase_import")."/tntbase_import.js");
 	tntbase_sfbrowser_initialize();
-	
+	$state = isset($form_status["values"])?$form_status["values"]:array();
+
 	$options = array();
+	$valid_bundle = null;
 	foreach (field_info_bundles("node") as $key => $bundle) {
+		if ($valid_bundle == null)
+			$valid_bundle = $key;
 		$options[$key]=$bundle["label"];
 	}
-	
-	$form["ImportType"] = array(
-				'#type' => 'select', 
-				'#title'=>'Please select the content type to be created for new imported files',
-				'#default_value' => 'article',
-				'#options' => $options,
-	);
 
 	$form["ImportFormat"] = array(
 					'#type' => 'select', 
 					'#title'=>'Please select the format to be imported',
-					'#default_value' => 'latex',
+					'#default_value' => dfa($state, "ImportFormat", 'latex'),
 					'#options' => array("latex"=>"latex", "xhtml"=>"xhtml"),
 	);
 	
-	$form["ImportField"] = array(
-					'#type' => 'textfield', 
-					'#title'=>'What field should be populated with the document (use the machine name)',
-					'#default_value' => 'body'
+	$form["ImportType"] = array(
+				'#type' => 'select', 
+				'#title'=>'Please select the content type to be created for new imported files',
+				'#default_value' => dfa($state,"ImportType", $valid_bundle),
+				'#options' => $options,
+			    '#ajax' => array(
+    				  'callback' => 'tntbase_import_setter_init',
+      				  'wrapper' => 'field_part',
+      				  'method' => 'replace',
+      				  'effect' => 'fade',
+    			 ),
 	);
-	
-	
+
+	$type = dfa($state, "ImportType", $valid_bundle);
+	$fld = array();
+	$valid_field = null;
+
+	foreach (field_info_fields() as $field_id => $data) {
+		if (!isset($data["bundles"]["node"]))
+			continue;
+		foreach ($data["bundles"]["node"] as $content_type) {
+			if ($content_type == $type) {
+				if ($valid_field == null)
+					$valid_field = $field_id;
+				$fld[$field_id]=$field_id;
+			}
+		}
+	}
+
+	$form["ImportField"] = array(
+					'#type' => 'select', 
+					'#title'=>'What field should be populated with the document',
+					'#default_value' => dfa($state, "ImportField", $valid_field),
+					'#options' => $fld,
+					'#prefix' => '<div id="field_part">',
+    				'#suffix' => '</div>',
+	);
+
+	$opts = array(NULL => "None");
+	foreach (node_load_multiple(array(), array('type' => "stex_preamble")) as $id => $nd) {
+		$opts [$id] = $nd->title;
+	}
+
+
+	$form["PreambleSetting"] = array(
+					'#type' => 'select',
+					'#title' => 'What preamble should be used?',
+					'#default_value' => dfa($state, "PreambleSetting", null),
+					'#options' => $opts,
+			    	'#ajax' => array(
+    				  'callback' => 'tntbase_import_preamble_init',
+      				  'wrapper' => 'preamble_field_part',
+      				  'method' => 'replace',
+      				  'effect' => 'fade',
+    			 	),					
+	);
+
+
+	$state = dfa($state, "PreambleSetting", null);
+	if ($state != null)  {
+		$fld = array();
+		$valid_field = null;
+
+		foreach (field_info_fields() as $field_id => $data) {
+			if (!isset($data["bundles"]["node"]))
+				continue;
+			foreach ($data["bundles"]["node"] as $content_type) {
+				if ($content_type == $type && $data["type"]=="node_reference") {
+					if ($valid_field == null)
+						$valid_field = $field_id;
+					$fld[$field_id]=$field_id;
+				}
+			}
+		}
+
+		$form["PreambleField"] = array(
+			'#type' => 'select', 
+			'#title'=>'What field should be populated with the Preamble',
+			'#default_value' => dfa($state, "PreambleField", $valid_field),
+			'#options' => $fld,
+			'#prefix' => '<div id="preamble_field_part">',
+			'#suffix' => '</div>',
+			);
+	} else {
+		$form["PreambleField"] = array(
+				'#type' => 'container',
+				'#prefix' => '<div id="preamble_field_part">',
+				'#suffix' => '</div>',
+			);
+	}
+
 	$form["TNTPath"] = array(
 			'#type' => 'textarea', 
 			'#title'=>'Please enter the path of the files to import from TNTBase',
@@ -98,12 +196,24 @@ function tntbase_import_page($form, &$form_status) {
 	return $form;
 }
 
+function tntbase_import_setter_init($form, &$form_state) {
+  return $form['ImportField'];
+}
+
+function tntbase_import_preamble_init($form, &$form_state) {
+  return $form['PreambleField'];
+}
+
 function tntbase_import_doImport($form, &$form_state) {
-	$paths = $form_state["values"]["TNTPath"];
-	$importField = $form_state["values"]["ImportField"];
-	$importType = $form_state["values"]["ImportType"];
-	$importFormat = $form_state["values"]["ImportFormat"];
-	
+	$state = isset($form_state["values"])?$form_state["values"]:array();
+	dpm($state);
+	$paths = $state["TNTPath"];
+	$importField = $state["ImportField"];
+	$importType = $state["ImportType"];
+	$importFormat = $state["ImportFormat"];
+	$preamble_settings = dfa($state, "PreambleSetting", null);
+	$preamble_field = dfa($state, "PreambleField", null);
+
 	$status = "";
 	$url_node = url("<front>", array("absolute"=>true))."/node";
 	foreach (preg_split("/[\s,]+/", $paths) as $path) {
@@ -119,6 +229,11 @@ function tntbase_import_doImport($form, &$form_state) {
 		} else {
 			$nid = tntbase_node_import("/".$path, $importType, $importField, $importFormat);
 			$status.="Document ".$path." got imported and not has node id = <a href='$url_node/$nid'>".$nid."</a><br/>";
+		}
+		if ($preamble_settings != null && $preamble_field != null) {
+			$node = node_load($nid);
+			$node->$preamble_field = array("und" => array(0=>array("nid" => $preamble_settings)));
+			node_save($node);
 		}
 	}
 	drupal_set_message($status, "notice");
