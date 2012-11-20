@@ -130,10 +130,14 @@ dependencies[] = planetmath_edit_article
 dependencies[] = msc_browser
 dependencies[] = pyrdfa
 dependencies[] = wysiwyg_codemirror
-dependencies[] = wysiwyg_etherpad_lite
+dependencies[] = wysiwyg_ace
+; dependencies[] = wysiwyg_etherpad_lite
 dependencies[] = planetmath_orphanage
 dependencies[] = planetmath_owner
 dependencies[] = planetmath_user
+dependencies[] = planetmath_messages
+dependencies[] = planetmath_overview
+dependencies[] = planetmath_overview_links
 ;; I'll like this module when it integrates with the gallery properly
 ; dependencies[] = planetmath_image
 

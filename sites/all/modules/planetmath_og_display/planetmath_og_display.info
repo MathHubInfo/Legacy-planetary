@@ -1,5 +1,7 @@
-name = "PlanetMath Organic Group display cusatomizations"
+name = "PlanetMath Organic Group display customizations"
 description = "Adds a couple of custom features in node's view"
 version = "7.x-1.0"
 core = "7.x"
 package = "Planetary Modules"
+
+dependencies[] = planetmath_og

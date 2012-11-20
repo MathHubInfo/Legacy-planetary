@@ -701,6 +701,13 @@ function hook_node_update($node) {
 }
 
 /**
+ * Respond to updates to a node after the transaction is over
+ */
+
+function hook_node_postsave($node){
+}
+
+/**
  * Act on a node being indexed for searching.
  *
  * This hook is invoked during search indexing, after node_load(), and after

@@ -299,12 +299,6 @@ function process_latexml($host, $text, $preamble, $metadata, $profile) {
       
       dd("LATEXML DATA IS");
       dd($data);
-
-      dd("LATEXML Preamble");
-      dd($preamble);
-
-      dd("LATEXML Metadata");
-      dd($metadata);
     }
  
   $content = planetary_webglue_do_post($host,$data);
@@ -381,7 +375,7 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   // $text=$text[0];
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
 
-  $res = process_latexml($host, $text, $preamble, $metadata, "stex-module");
+  $res = process_latexml($host, $text, $preamble, $metadata, $filter->settings['latexml_profile']);
   
   if ($debug_drutexml)
     {  

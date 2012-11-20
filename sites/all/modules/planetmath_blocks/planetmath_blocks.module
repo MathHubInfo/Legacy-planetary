@@ -15,6 +15,7 @@ define('PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK', 7);
 define('PLANETMATH_BLOCKS_NUMBER_OF_MESSAGES_ON_BLOCK', 10);
 define('PLANETMATH_BLOCKS_NUMBER_OF_USERS_ON_BLOCK', 7);
 define('PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK', 5);
+define('PLANETMATH_BLOCKS_NUMBER_OF_CHILDREN_ON_BLOCK', 10);
 define('PLANETMATH_BLOCKS_NUMBER_OF_PROBLEMS_ON_BLOCK', 5);
 define('PLANETMATH_BLOCKS_NUMBER_OF_SOLUTIONS_ON_BLOCK', 5);
 define('PLANETMATH_BLOCKS_NUMBER_OF_REVIEWS_ON_BLOCK', 5);
@@ -31,6 +32,21 @@ define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES',
 /**
  * Queries for the block views 
  */
+function planetmath_blocks_queryBasic($type, $sortBy = 'n.created') {
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
+    FROM node n 
+    LEFT JOIN field_data_body fdb
+    ON n.nid = fdb.entity_id 
+    INNER JOIN users u ON u.uid = n.uid
+    WHERE n.`type` = :type ORDER BY $sortBy 
+    DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => $type));
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
 function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
   $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
     FROM node n 
@@ -207,6 +223,25 @@ function planetmath_blocks_countReverseProblems($pid) {
     WHERE ahp.pid=:nid LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_PROBLEMS_ON_BLOCK, array(':nid' => $pid))->fetchObject()->cnt > 0) ? true : false;
 }
 
+// This function will find the articles that are attached to this article
+function planetmath_blocks_queryChildArticles($nid) {
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, u.`name` AS username, n.created, u.uid AS uid
+    FROM node n INNER JOIN field_data_field_parent AS fdfp ON (n.nid=fdfp.entity_id) 
+    INNER JOIN users u ON u.uid = n.uid 
+    WHERE fdfp.field_parent_nid=:nid ORDER BY n.created DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_CHILDREN_ON_BLOCK, array(':nid' => $nid));
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
+function planetmath_blocks_countChildArticles($nid) {
+  return (db_query("SELECT COUNT(n.nid) AS cnt
+    FROM node n INNER JOIN field_data_field_parent AS fdfp ON (n.nid=fdfp.entity_id) 
+    WHERE fdfp.field_parent_nid=:nid LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_CHILDREN_ON_BLOCK, array(':nid' => $nid))->fetchObject()->cnt > 0) ? true : false;
+}
+
 
 function planetmath_blocks_querySolutions($nid) {
   $results = db_query("SELECT n.nid AS nid, n.title AS title, u.`name` AS username, n.created, u.uid AS uid
@@ -305,6 +340,8 @@ function planetmath_blocks_blockThemeResults($results, $nid, $delta = NULL) {
   // NOTE: we use customized views for this, see planetmath_blocks.views.inc
 
   // 'versions' will be dealt with in a different way
+
+  // TODO: we should add a way to see all child articles, if there's more than 10.
 
 if ($delta == 'corrections' && $count == PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK) {
     $html .= '<div style="text-align:right;">' . l('see all',
@@ -494,6 +531,13 @@ function planetmath_blocks_block_reverseproblems($nid) {
   );
 }
 
+function planetmath_blocks_block_childarticles($nid) {
+  return array(
+      'subject' => 'Attached Articles',
+      'content' => planetmath_blocks_blockThemeResults(planetmath_blocks_queryChildArticles($nid),$nid,'childarticles')
+  );
+}
+
 function planetmath_blocks_block_solutions($nid) {
   return array(
       'subject' => 'Solutions',
@@ -520,7 +564,7 @@ function planetmath_blocks_block_messages() {
 function planetmath_blocks_block_revisions() {
   return array(
       'subject' => 'Latest Revisions',
-      'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryRevisions('article', 'n.changed'),'changed')
+      'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryRevisions('article', 'changed'),'changed')
   );
 }
 
@@ -571,23 +615,26 @@ as part of the Planetary project.  Some release notes are !here.",
  */
 function planetmath_blocks_block_view($delta = '') {
   $block = array();
+
+  if ($delta == 'news') {
+    $block = array(
+          'subject' => t("News"),
+          'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryBasic('news'),'created')
+      );
+  }
+
   $block_names = array('article' => 'Latest Additions',
 		       'request' => 'Requests',
-		       'news' => 'News',
 		       'forum' => 'Messages');
 
-  foreach ($block_names as $name => $cannonicalName) {
+  foreach ($block_names as $name => $blocktitle) {
     if ($delta == $name) {
       $block = array(
-          'subject' => t(ucfirst($cannonicalName)),
+          'subject' => t(ucfirst($blocktitle)),
           'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryGeneral($name),'created')
       );
     }
   }
-
-  //dd("In blocks view");
-  //dd(arg(1));
-  //dd($delta);
 
   if ($delta == 'correction') {
     $block = planetmath_blocks_block_corrections(arg(1));
@@ -603,6 +650,10 @@ function planetmath_blocks_block_view($delta = '') {
 
   if ($delta == 'reverseproblem') {
     $block = planetmath_blocks_block_reverseproblems(arg(1));
+  }
+
+  if ($delta == 'childarticles') {
+    $block = planetmath_blocks_block_childarticles(arg(1));
   }
 
   if ($delta == 'review') {

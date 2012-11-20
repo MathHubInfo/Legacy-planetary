@@ -76,7 +76,7 @@ dl.description dt { margin-right:0.5em; float:left;
 dl.description dd { margin-left:5em; }
 dl.description dl.description dd { margin-left:3em; }
 
-li.nobullet { list-style-type:none; }
+li.nobullet { list-style-type:none !important; }
 li span.tag:first-child {
  display: inline-block;
  font-weight: bold;

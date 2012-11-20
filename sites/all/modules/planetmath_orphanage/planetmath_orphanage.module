@@ -7,7 +7,7 @@
 define("PLANETMATH_ORPHANAGE_NO_OF_DAYS", 42);
 define("PLANETMATH_NOTICE_NO_OF_DAYS", 30);
 
-function planetmath_orphanage_model_createOrpahnedNode($node) {
+function planetmath_orphanage_model_createOrphanedNode($node) {
   db_insert('orphanage')->fields(array('nid' => $node->nid, 'puid' => $node->uid, 'created' => REQUEST_TIME))->execute();
 }
 
@@ -15,9 +15,47 @@ function planetmath_orphanage_model_getOrphanUser() {
   return user_load_by_mail("orphanage@planetmath.org");
 }
 
-function planetmath_orphanage_model_addNode($node) {
+/* transfer an object to the orphanage and lose points for that
+*/
+function planetmath_orphanage_model_addNode($nid) {
+  $node = node_load($nid);
+  $current_user = $node->uid;
+
+  $value = 0;
+  switch ($node->type) {
+  case 'article':
+    $value = 50;
+    break;
+  case 'problem':
+    $value = 5;
+    break;
+  case 'solution':
+    $value = 5;
+    break;
+  case 'review':
+    $value = 5;
+    break;
+  case 'image':
+    $value = 5;
+    break;
+  case 'collection':
+    $value = 3;
+    break;
+  case 'correction':
+    $value = 3;
+    break;
+  }
+  $points_params = array('uid' => $current_user,
+			 'points' => $value,
+			 'description' => ucfirst($node->type).' orphaned',
+			 'entity_id' => $nid,
+			 'entity_type' => 'node'
+			 );
+  userpoints_userpointsapi($points_params);
+  drupal_set_message(ucfirst($node->type)." orphaned: subtracted $value points.");
+
   $ou = planetmath_orphanage_model_getOrphanUser();
-  planetmath_orphanage_model_createOrpahnedNode($node);
+  planetmath_orphanage_model_createOrphanedNode($node);
   $node->uid = $ou->uid;
   $node->changed = REQUEST_TIME;
   node_save($node);
@@ -57,13 +95,13 @@ function planetmath_orphanage_model_cronJob() {
     // something like:
     // if ($result->created - $refNode->changed) > $notice &&
     //     $result->created - $refNode->changed) < $notice + 2*24*3600 )    
+
     if (($result->created - $refNode->changed) > $notice  && $refNode->noticed==false) {
-      //planetmath_orphanage_model_addNode(node_load($refNode->nid));
         $refNode->noticed = true;
     }
     
     if (($result->created - $refNode->changed) > $deadline) {
-      planetmath_orphanage_model_addNode(node_load($refNode->nid));
+      planetmath_orphanage_model_addNode($refNode->nid);
     }
   }
 }
@@ -99,13 +137,50 @@ function planetmath_orphanage_access_claim($nid) {
   return $access;
 }
 
+/* Claim an object from the orphanage and get awarded points for that
+*/
 function planetmath_orphanage_view_claimOrphanage($nid) {
   $node = node_load($nid);
   global $user;
   if ($node->uid == planetmath_orphanage_model_getOrphanUser()->uid) {
     planetmath_orphanage_model_claimOrphanedNode($node, $user);
   }
-  drupal_goto();
+  // points for adopting (note: it's not actually clear that
+  // we have the interaction for orphaning all of these different
+  // kinds of objects yet, but we will eventually)
+  $value = 0;
+  switch ($node->type) {
+  case 'article':
+    $value = 50;
+    break;
+  case 'problem':
+    $value = 5;
+    break;
+  case 'solution':
+    $value = 5;
+    break;
+  case 'review':
+    $value = 5;
+    break;
+  case 'image':
+    $value = 5;
+    break;
+  case 'collection':
+    $value = 3;
+    break;
+  case 'correction':
+    $value = 3;
+    break;
+  }
+  $points_params = array('uid' => $user->uid,
+			 'points' => $value,
+			 'description' => ucfirst($node->type).' adopted',
+			 'entity_id' => $nid,
+			 'entity_type' => 'node'
+			 );
+  userpoints_userpointsapi($points_params);
+  drupal_set_message(ucfirst($node->type)." adopted: added $value points.");
+  drupal_goto('node/'.$nid);
 }
 
 function planetmath_orphanage_view_mainOrphanageList() {

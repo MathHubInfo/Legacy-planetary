@@ -16,7 +16,14 @@ function planetmath_owner_menu() {
     'type' => MENU_NORMAL_ITEM,
     'file' => "planetmath_owner.module",
     'weight' => 5,
-    // We need to change this so that only the owner has permission to do this
+    'access callback' => 'planetmath_owner_rights',
+    'access arguments' => array(1),
+  );
+
+  $items['node/%/orphan'] = array(
+    'page callback' => 'planetmath_orphanage_model_addNode',
+    'title' => 'Move this node to the orphanage',
+    'page arguments' => array(1),
     'access callback' => 'planetmath_owner_rights',
     'access arguments' => array(1),
   );
@@ -24,6 +31,7 @@ function planetmath_owner_menu() {
   return $items;
 }
 
+// Check if the current user owns the node
 function planetmath_owner_rights ($nid) {
   global $user;
   $node = node_load($nid);
@@ -71,15 +79,89 @@ function planetmath_owner_transfer_submit($form, &$form_state) {
   //  $state = $form_state['values']['state'];
 
   $node = node_load($nid);
-  $account = user_load_by_name($form_state['values']['name']);
 
+  $value = 0;
+  switch ($node->type) {
+  case 'article':
+    $value = 50;
+    break;
+  case 'problem':
+    $value = 5;
+    break;
+  case 'solution':
+    $value = 5;
+    break;
+  case 'review':
+    $value = 5;
+    break;
+  case 'image':
+    $value = 5;
+    break;
+  case 'collection':
+    $value = 3;
+    break;
+  case 'correction':
+    $value = 3;
+    break;
+  }
+  $points_params = array('uid' => $node->uid,
+			 'points' => $value,
+			 'description' => ucfirst($node->type).' transferred',
+			 'entity_id' => $nid,
+			 'entity_type' => 'node'
+			 );
+  userpoints_userpointsapi($points_params);
+  drupal_set_message(ucfirst($node->type)." transferred: subtracted $value points.");
+
+  $account = user_load_by_name($form_state['values']['name']);
 
   $node->uid = $account->uid;
   node_save($node);
   drupal_goto("node/".$node->nid);
 
+
   drupal_set_message(t('%type transfered to %user.', 
 		       array('%type' => $node->type,
 			     '%user' => format_username($account))));
 
+}
+
+/* Implements hook_node_delete
+ * Delete points from the node's owner
+ */
+
+function planetmath_owner_node_delete($node){
+  $value = 0;
+  switch ($node->type) {
+  case 'article':
+    $value = 100;
+    break;
+  case 'problem':
+    $value = 10;
+    break;
+  case 'solution':
+    $value = 10;
+    break;
+  case 'review':
+    $value = 10;
+    break;
+  case 'image':
+    $value = 10;
+    break;
+  case 'collection':
+    $value = 5;
+    break;
+  case 'correction':
+    $value = 5;
+    break;
+  }
+
+  $points_params = array('uid' => $node->uid,
+			 'points' => $value,
+			 'description' => ucfirst($node->type).' deleted',
+			 'entity_id' => $node->nid,
+			 'entity_type' => 'node'
+			 );
+  userpoints_userpointsapi($points_params);
+  drupal_set_message(ucfirst($node->type)." deleted: subtracted $value points.");
 }
