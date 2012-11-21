@@ -1,0 +1,7 @@
+name = Planetary Apache Solr Customizations
+description = Make MathML show up in search results
+package = Planetary
+dependencies[] = apachesolr
+
+core = 7.x
+files[] = planetary_apachesolr.module
