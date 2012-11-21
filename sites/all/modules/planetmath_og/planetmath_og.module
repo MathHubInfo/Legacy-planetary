@@ -78,12 +78,14 @@ function planetmath_og_model_isUserGroupAdmin($uid, $group) {
   return $isAdmin;
 }
 
+// A PENDING user will still exist in the database, but not with a state=1
+// So we use this fact to discriminate between "members" and "nonmembers".
 function planetmath_og_model_isUserMemberOfGroup($uid, $group) {
   $isMember = false;
   if ($group->uid == $uid) {
     $isMember = true;
   } else {
-    $countMembership = db_query("SELECT COUNT(etid) AS count_uid FROM og_membership WHERE gid = :gid AND etid = :uid AND entity_type = 'user'", array(':uid' => $uid, ':gid' => $group->nid))->fetchObject()->count_uid;
+    $countMembership = db_query("SELECT COUNT(etid) AS count_uid FROM og_membership WHERE gid = :gid AND etid = :uid AND entity_type = 'user' AND state = 1", array(':uid' => $uid, ':gid' => $group->nid))->fetchObject()->count_uid;
     if ($countMembership >= 1) {
       $isMember = true;
     }
@@ -360,7 +362,7 @@ function planetmath_og_node_view($node) {
   // first select relevant information about group members (given an nid)
   // this can be made into a separate function
 
-    $user_info = db_query("SELECT u.name, u.uid FROM users u INNER JOIN og_membership ON og_membership.etid = u.uid WHERE og_membership.gid = :nid AND og_membership.group_type='node' AND og_membership.entity_type = 'user' ORDER BY u.access LIMIT 20;", array(':nid' => $node->nid));
+    $user_info = db_query("SELECT u.name, u.uid FROM users u INNER JOIN og_membership ON og_membership.etid = u.uid WHERE og_membership.gid = :nid AND og_membership.group_type='node' AND og_membership.entity_type = 'user' AND og_membership.state = 1 ORDER BY u.access LIMIT 20;", array(':nid' => $node->nid));
 
     // It might be interesting to do a count of the number of users, and only include a link to the full roster if there are more than 20, but I think I found a cheaper solution
 
