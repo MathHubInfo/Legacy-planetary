@@ -46,25 +46,12 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
 	  editor.getSession().setValue(obj.value);
 	  editor.setTheme("ace/theme/textmate");
 	  editor.getSession().setMode("ace/mode/"+cSettings["mode"]);
-
-	  editor.addToolbarButton("Bold", "bold", function(data) {
-	      var range = editor.getSelectionRange();
-	      var rDoc = editor.getSession().getDocument();
-	      rDoc.insert(range.end, "}")
-	      rDoc.insert(range.start, "\\bf{")
-	  }, {});
-
-	  editor.addToolbarButton("Italic", "italic", function(data) {
-	      var range = editor.getSelectionRange();
-	      var rDoc = editor.getSession().getDocument();
-	      rDoc.insert(range.end, "}")
-	      rDoc.insert(range.start, "\\em{")
-	  }, {});
 	  
-	  window.aceEmacs.prepareEmacsMode(editor);
+	  window.aceEmacs.prepareEmacsMode(editor, settings);
 	  if (cSettings["ShareJS"]) {
 	    var docName = generateDocName(getDocumentID(), params);
-	    Drupal.ShareJS.connectServices(docName, "ace", editor, editor.getSession().getValue(), function() {} );
+	    var sharejs = new Drupal.ShareJS(editor, docName, "ace");
+	    sharejs.initToolbar();
 	  }
 	  jQuery.data(obj, 'editor', editor);
   });

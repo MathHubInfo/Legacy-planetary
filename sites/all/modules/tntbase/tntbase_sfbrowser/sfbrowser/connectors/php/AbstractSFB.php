@@ -62,7 +62,7 @@ abstract class AbstractSFB {
 			// check if path within base path
 			if (!$this->pathWithin($sSFile,($bFld?$this->sConnBse:"").SFB_BASE)) $sErr .= $this->sterf("file not within base: [".$sSFile."] [".SFB_BASE."]");
 		} else if ($bFld&&!$this->pathWithin($_POST["folder"],SFB_BASE)) {
-			$sErr .= $this->sterf("path not within base");
+			$sErr .= $this->sterf("path not within base ");
 		}
 		// log
 		if (SFB_DEBUG) {
@@ -210,7 +210,8 @@ abstract class AbstractSFB {
 		$sDir = SFB_PATH.'lang/';
 		if ($oDir = opendir($sDir)) {
 			while (false!==($sPoFilename=readdir($oDir))) {
-				$sExt = array_pop(explode(".",$sPoFilename));
+				$arr = explode(".",$sPoFilename);
+				$sExt = array_pop($arr);
 				if ($sExt=='po') {
 					$this->po2js($sDir.$sPoFilename,"// js generated from ".$sPoFilename."\n".'jQuery.sfbrowser.defaults.lang = ',';');
 				}
@@ -226,7 +227,8 @@ abstract class AbstractSFB {
 					if (file_exists($sPluginLangDir = $sPluginDir.'/lang/')) {
 						if ($oPluginsLangDir = opendir($sPluginLangDir)) {
 							while (false!==($sPluginLangname=readdir($oPluginsLangDir))) {
-								$sExt = array_pop(explode(".",$sPluginLangname));
+								$arr = explode(".",$sPluginLangname);
+								$sExt = array_pop($arr);
 								if ($sExt=='po') {
 									$this->po2js($sPluginLangDir.$sPluginLangname,'jQuery.sfbrowser.addLang(',');');
 								}

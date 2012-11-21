@@ -2,14 +2,17 @@
     window.aceEmacs = {};
     var dialogLoad = false;
     var dataLoaded = false;
+    var settings = {};
     
-    window.aceEmacs.prepareEmacsMode = function (editor) {
-      
+    window.aceEmacs.prepareEmacsMode = function (editor, _settings) {
       if (!dialogLoad) {
         dialogLoad = true;
         jQuery.get(Drupal.settings.basePath+"sites/all/modules/wysiwyg_ace/editors/dialogs.xml", function(data) {
             jQuery("body").append(data);
         }, "text");
+        if (typeof(_settings) != "undefined")
+          settings = _settings;
+        
       }
       
       function loadEnvironments(callback) {
@@ -27,8 +30,21 @@
       
       var emacs = window.ace.require("ace/keyboard/emacs").handler
       
+      function updateStatistics(id, value) {
+          if (typeof(Piwik) === "undefined" || 
+              typeof(settings["piwik_url"]) === "undefined" ||
+              typeof(settings["piwik_id"]) === "undefined")
+            return;
+          var piwikTracker = Piwik.getTracker(settings["piwik_url"]+"/piwik.php", settings["piwik_id"]);
+          if (typeof(value)=="undefined")
+            piwikTracker.trackGoal(id);
+          else
+            piwikTracker.trackGoal(id, value);
+      };
+      
       emacs.addCommands({
           addEnvironment : function (_editor) {
+            updateStatistics(1);
             var editor = _editor;
             loadEnvironments(function() {
                 $("#ace_cmd_dialog").dialog({
@@ -60,6 +76,7 @@
                             }
                             $("#ace_properties").dialog("close");
                             try {
+                              updateStatistics(3);
                               editor.insert(_.template(template, values));
                             } catch (e) {
                               console.log(e);
@@ -75,6 +92,7 @@
                       }, 200);
                       
                     } else {
+                      updateStatistics(3);
                       editor.insert(_.template(template, {}));
                       setTimeout(function() {
                           editor.focus();
