@@ -1,0 +1,62 @@
+<?php
+
+/*
+ * Implementation of hook_schema().
+ */
+function btnt_schema(){
+    return array(
+        'bookstnt' => array(
+            'description' => 'Stores the node ids of the book pages together with their corresponding TNT paths.',
+            'fields' => array(
+                'nid' => array(
+                    'type' => 'int',
+                    'not null' => TRUE,
+                ),
+                'tntpath' => array(
+                    'type' => 'varchar',
+                    'length' => 255,
+                    'not null' => TRUE,
+                    'default' => ''
+                )
+            ),
+            'primary key' => array('nid')
+        ),
+        
+        'bookstnt_failed' => array(
+            'description' => 'Stores the paths of the pages which could not be imported',
+            'fields' => array(
+                'id' => array(
+                    'type' => 'serial',
+                ),
+                'created' => array(
+                    'type' => 'int',
+                    'not null' => TRUE,
+                    'default' => 0
+                ),
+                'tntpath' => array(
+                    'type' => 'varchar',
+                    'length' => 255,
+                    'not null' => TRUE,
+                    'default' => ''
+                )
+            ),
+            'primary key' => array('id')
+        ),
+        
+        'bookstnt_tree' => array(
+            'description' => 'Stores the TNT paths tree of each book, in the form of serialized arrays',
+            'fields' => array(
+                'nid' => array(
+                    'type' => 'int',
+                    'not null' => TRUE,
+                    'default' => 0
+                ),
+                'tree' => array(
+                    'type' => 'text',
+                    'size' => 'big',
+                )
+            ),
+            'primary key' => array('nid')
+        )
+    );
+}
