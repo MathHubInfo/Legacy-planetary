@@ -1,0 +1,4 @@
+name = Books TNT
+description = Integrates Book module with TNT Base, allowing the creation of books from TNT documents.
+core = 7.x
+dependencies[] = book
