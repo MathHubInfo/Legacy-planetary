@@ -120,6 +120,8 @@ function planetmath_edit_article_process_metadata($node){
   // this will have to change when we have a proper versioning system in place
   $metadata .= "\\pmrecord{1}{".$node->nid."}\n";
   $metadata .= "\\pmauthor{".$node->name."}{".$user->uid."}\n";
+  // jac, Nov 27, 2012 - I need to add this so we can extract it later
+  $metadata .= "\\pmprivacy{".$node->field_published['und'][0]['value']."}\n";
 
   if (isset($node->field_mathtype['und'][0])){
     $math_type = $node->field_mathtype['und'][0]['value'];
