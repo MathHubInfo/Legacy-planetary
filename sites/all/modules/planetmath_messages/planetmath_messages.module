@@ -24,20 +24,22 @@ function planetmath_messages_menu() {
   return $items;
 }
 
-function planetmath_messages_get_all_messages_workaround(){
+function planetmath_messages_get_all_messages_workaround($page = 0){
+  $num_per_page=20;
+  $offset=$num_per_page*$page;
 $results = db_query("(SELECT n.nid AS my_id, n.title AS title, n.uid AS uid, n.changed AS changed, n.created AS created, u.name AS username, n.nid AS nid, n.type AS my_type, fdb.body_value AS body
 FROM node n
 LEFT OUTER JOIN field_data_body fdb ON n.nid = fdb.entity_id
 INNER JOIN users u ON u.uid = n.uid
 WHERE (type = 'forum')
-ORDER BY created DESC LIMIT 20 OFFSET 0)
+ORDER BY created DESC)
 UNION ALL
 (SELECT c.cid AS my_id, c.subject AS title, c.uid AS uid, c.changed AS changed, c.created AS created, c.name AS username, n.nid AS nid, n.type AS my_type, fcb.comment_body_value AS body
 FROM comment c
 INNER JOIN node n ON n.nid = c.nid
 LEFT OUTER JOIN field_data_comment_body fcb ON c.cid = fcb.entity_id
 INNER JOIN users u ON u.uid = c.uid
-ORDER BY created DESC LIMIT 20 OFFSET 0) ORDER BY created DESC LIMIT 20");
+ORDER BY created DESC) ORDER BY created DESC LIMIT $offset, $num_per_page");
   $return = array();
   foreach ($results as $result) {
     $return[] = $result;
@@ -45,6 +47,7 @@ ORDER BY created DESC LIMIT 20 OFFSET 0) ORDER BY created DESC LIMIT 20");
   return $return;
 }
 
+// we ignore this function for now and use the above work around
 function planetmath_messages_get_all_messages(){
 
   $firstQuery = db_select('comment','c');
@@ -118,13 +121,14 @@ function planetmath_messages_get_all_messages(){
   return $result;
 }
 
-function planetmath_messages_show($nid){
+function planetmath_messages_show(){
   global $base_url;
+  $page = arg(1);
 
   $count1=db_query("SELECT COUNT(nid) as count FROM comment")->fetchObject();
   $count2=db_query("SELECT COUNT(nid) as count FROM node WHERE type = 'forum'")->fetchObject();
   if($count1->count > 0 || $count2->count > 0) {
-    $messages = planetmath_messages_get_all_messages_workaround();
+    $messages = planetmath_messages_get_all_messages_workaround($page);
 
     // start with a couple columns for now
     $header = array(array('data' => 'Title', 
@@ -138,8 +142,8 @@ function planetmath_messages_show($nid){
     $rows = array();
 
     foreach ($messages as $message) {
-      dd("MESSAGE");
-      dd($message);
+      //dd("MESSAGE");
+      //dd($message);
 
       $rows[] = array(
 		      array('data' => l($message->title, 'node/' . $message->nid), 
@@ -151,14 +155,22 @@ function planetmath_messages_show($nid){
 		      );
     }
 
-    dd("ROWS");
-    dd($rows);
+    //dd("ROWS");
+    //dd($rows);
 
-    return theme('table', array(
+    $retval=theme('table', array(
 				'header' => $header,
 				'rows' => $rows
-				)) 
-           . theme('pager');
+				 ));
+    //dd("PAGE");
+    //dd($page);
+    $prevpage = $page-1;
+    $nextpage = $page+1;
+    if($page> 0){
+      $retval = $retval . l("« Newer","talk/".$prevpage). "  ";
+    }
+    $retval = $retval . l("Older »","talk/".$nextpage);
+    return $retval;
   } else {
     drupal_set_message("Go ahead and create some messages.  They will show up in the listing in due course!");
     drupal_goto('forum');
