@@ -1,0 +1,21 @@
+.subchapter{
+    border: 1px solid #EDEDED;
+    border-top: 0;
+    padding-left: 5px;
+    margin-bottom: 5px;
+}
+li.expandable-collapsed{
+    list-style-image: url('/misc/menu-collapsed.png');
+}
+
+.expandable-expanded{
+    list-style-image: url('/misc/menu-expanded.png');
+}
+
+.item{
+    list-style-image: url('/misc/menu-leaf.png');
+}
+
+ul li{
+    padding: 0;
+}
