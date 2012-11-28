@@ -62,6 +62,7 @@ function planetary_authorlinks_countLinks($nid){
     if ($node->type == 'article' 
 	|| $node->type == 'problem'
 	|| $node->type == 'solution'
+	|| $node->type == 'question'
         || $node->type == 'collection') {
       return TRUE;
     }
@@ -83,15 +84,24 @@ function planetary_authorlinks_page_build(&$page){
     if(is_object($node) && ($node->type == 'article' 
 			    || $node->type == 'problem'
 			    || $node->type == 'solution'
+			    || $node->type == 'question'
 			    || $node->type == 'collection')) {
-      // grab the original set of links from the node object
-      $links = $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links'];
-      if(!empty($links)) {
-	// concatenate them
-	$catted_links = '<ul><li>' . implode(' <br><li> ', $links) . '</ul>';
-	// stick that into the block
-	$page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
-      } else {
+      if(isset($page['content']['system_main']['nodes'][$node->nid]['planetary_links'])){
+	// grab the original set of links from the node object
+	$links = $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links'];
+	if(!empty($links)) {
+	  // concatenate them
+	  $catted_links = '<ul><li>' . implode(' <br><li> ', $links) . '</ul>';
+	  // stick that into the block
+	  $page['sidebar_second']['planetary_authorlinks_authorlinks']['#markup'] = $catted_links;
+	} 
+	// get rid of the block 
+	else {
+	  unset($page['sidebar_second']['planetary_authorlinks_authorlinks']);
+	}
+      }
+      // get rid of the block (hackish)
+      else {
 	unset($page['sidebar_second']['planetary_authorlinks_authorlinks']);
       }
     }

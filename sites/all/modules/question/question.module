@@ -7,11 +7,16 @@
    
  * Still to do: 
     - we should be able to mark garbagy questions as "Won't fix".
-    - Similar to StackExchange, a question should probably have multiple answers.
-    - we would then provide a way to rate the answers or select the best answer etc.
     - It would be nice to be able to save questions to a "dossier" of "things
       I'm working on" (integration with collections module?) -- this is related to
       the ability to specify "goals"
+
+ * Things to contemplate:
+    - Similar to StackExchange, a question could have multiple answers (NB. much
+      like a problem can have multiple solutions, or a collection has multiple
+      component elements).  At the moment this isn't the route we take however!
+    + we would then provide a way to rate the answers or select the best answer etc.
+      (la la la!)
  */
 
 function question_node_info() {
@@ -57,7 +62,8 @@ function question_menu() {
       'page arguments' => array(2,3),
       'access arguments' => array('create correction content')
   );
-  
+
+  // Maybe only be available to the person who initially asked the question?
   $items['questions/decouple/%/%'] = array(
       'title' => 'Decouple question-article connection',
       'type' => MENU_CALLBACK,
@@ -225,7 +231,9 @@ function question_add_links_question($node) {
 // Not a bad idea to keep using the planetary_links
 // mechanism introduced in other modules, since
 // when we have an "interact box", that will get
-// themed nicely...
+// themed nicely
+//
+// So why doesn't the thing show up?
 function question_node_view($node){
 
   // For articles, we can ASK a question
@@ -242,8 +250,10 @@ function question_node_view($node){
   
   // For questions, we can add an ANSWER...
   if($node->type == 'question'){
+    dd("What's the article?");
+    dd($node->field_question_article['und'][0]['nid']);
     // ... but that only makes sense if no answer has been given already
-    if(!isset($node->field_question_article)) {
+    if(!isset($node->field_question_article['und'][0]['nid'])) {
       $newlinks = question_authorlinks_assemble_question($node);
 
       $node->content['planetary_links'] = array(
@@ -252,7 +262,7 @@ function question_node_view($node){
 						'#theme' => 'planetary_links',
 						'#links' => $newlinks
 						);
-    }
+    } 
   }
 }
 
