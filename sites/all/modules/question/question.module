@@ -82,6 +82,11 @@ function question_confirm_attachment($nid_of_question,$nid_of_answer){
   $question_node = node_load($nid_of_question);
   // set the fulfiller id field to the current user id
   $question_node->field_question_fulfiller['und'][0]['uid'] = $user->uid;
+
+  // needs a little work to get this to actually stay
+  $nowtime=date('Y-m-d H:i:s');
+  $question_node->field_question_closed['und'][0]['value'] = $nowtime;
+
   // set the relevant article field to the one indicated
   $question_node->field_question_article['und'][0]['nid'] = $nid_of_answer;
   // save our changes
@@ -250,10 +255,10 @@ function question_node_view($node){
   
   // For questions, we can add an ANSWER...
   if($node->type == 'question'){
-    dd("What's the article?");
-    dd($node->field_question_article['und'][0]['nid']);
+    //dd("What's the article?");
+    //dd($node->field_question_article['und'][0]['nid']);
     // ... but that only makes sense if no answer has been given already
-    if(!isset($node->field_question_article['und'][0]['nid'])) {
+    if(!isset($node->field_question_closed['und'][0]['value'])) {
       $newlinks = question_authorlinks_assemble_question($node);
 
       $node->content['planetary_links'] = array(
@@ -279,13 +284,14 @@ function question_form_question_node_form_alter(&$form, &$form_state, $form_id) 
     $val = arg(3); 
   } 
   $form['field_question_article']['und'][0]['nid']['#default_value'] = $val;
-
+  if($val==NULL) {
+    hide($form['field_question_article']);
+  }
   // If the article isn't closed, then we don't want to see these
   // (Actually we might never want to see these on a *form*, since they
   // should be filled in *automatically* when the question is answered...
   // feature to be added of course!)
   if(!isset($form['#node']->field_question_closed['und'][0]['value'])) {
-    hide($form['field_question_fulfiller']);
 
     $form['field_question_closed']['und'][0]['#value']['value'] =
       array(
@@ -295,13 +301,25 @@ function question_form_question_node_form_alter(&$form, &$form_state, $form_id) 
             'hour' => NULL,
             'minute' => NULL,
         );
-    hide($form['field_question_closed']);
-   
-    //$form['#submit'][] = 'my_additional_submit_handler';     
+    
   }
+  $default_submit=$form['#submit'];
+  $form['#submit'] = array_merge(array('question_additional_submit_handler'),$default_submit);
+  hide($form['field_question_fulfiller']);
+  hide($form['field_question_closed']);
 }
 
-// Debugging code
-//function my_additional_submit_handler(&$form, &$form_state, $form_id) {
-//  dpm($form['field_question_closed']);
-//}
+function question_additional_submit_handler(&$form, &$form_state) {
+  // If the user deletes the reference to the article, then the fulfilled time goes away
+  // and the question is open again
+  if(!isset($form['#node']->field_question_article['und'][0]['nid'])
+    ||!$form['#node']->field_question_article['und'][0]['nid']){
+    //dd("zap");
+    //dpm($form_state);
+    $form_state['values']['field_question_fulfiller']['und'][0]['uid'] = NULL;
+    $form_state['values']['field_question_closed']['und'][0]['value'] = NULL;
+    $form_state['values']['field_question_closed']['und'][0]['value2'] = NULL;
+    $form_state['values']['field_question_closed']['und'][0]['timezone'] = NULL;
+    //dpm($form_state);
+  }
+}
