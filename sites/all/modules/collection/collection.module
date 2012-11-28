@@ -258,7 +258,9 @@ function collection_insert_content($nid) {
         . theme('pager'); //adds the pagination element in the bottom of the table
   }
   else {
-    //in the (even possible?) occasion we do not have any content to list
+    // in the occasion we do not have any content to list --
+    // (Actually, this should be changed, the user should be able to create a
+    // new collection the first time they do this.)
     drupal_set_message("Sorry there is no valid collection to add to!");
     drupal_goto('node/'.$nid);
   }
@@ -408,13 +410,20 @@ function collection_user_add_links($node){
   // The link to add the collection to another collection
   // should really only appear IF THERE IS SOME OTHER VALID COLLECTION to add to!
   // Luckily, we can just figure that out.
-  $countOtherCollections = db_query("SELECT COUNT(nid) as count FROM node ".
+  //
+  // Actually, that logic seems wrong.  The user should be able to make
+  // an initial collection on the fly.
+
+  /* $countOtherCollections = db_query("SELECT COUNT(nid) as count FROM node ".
 		    "WHERE type = 'collection' ".
 		    "AND uid = :uid ".
 		    "AND nid <> :nid", array(':uid'=>$user->uid,
-					     ':nid'=>$node->nid))->fetchObject();
-  if ($countOtherCollections->count > 0) {
-    $str = '';
+		    ':nid'=>$node->nid))->fetchObject(); 
+   */
+
+  //  if ($countOtherCollections->count > 0) {
+  //  $str = '';
+
     if($node->type=='collection'){
       $str = "Add this collection to another collection";
     } else {
@@ -422,7 +431,8 @@ function collection_user_add_links($node){
     }
     $links[] = l($str, 
       'collection/' . $node->nid . '/insert');
-  }
+
+  // }
 
   return $links;
 }
@@ -609,6 +619,8 @@ function collection_node_view($node) {
       }
     } else {
 	$newlinks = collection_user_add_links($node);
+	dd("USERLINKS");
+	dd($newlinks);
     }
       $node->content['planetary_links'] = array(
 						'#markup' => '',
