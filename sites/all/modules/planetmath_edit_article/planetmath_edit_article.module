@@ -47,7 +47,7 @@ function planetmath_edit_article_node_insert($node) {
  */
 
 function planetmath_edit_article_node_presave($node) {
-  if(isset($node->original) && is_numeric($node->original->log)) {
+  if(is_object($node) && isset($node->original) && is_numeric($node->original->log)) {
     $node->log = $node->original->log+1;
   } else {
     $node->log = 1;
