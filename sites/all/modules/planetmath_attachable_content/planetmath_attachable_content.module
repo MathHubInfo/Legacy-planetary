@@ -1,0 +1,104 @@
+<?php
+/*
+ * @file
+ * 
+ * I can use apachesolr_views to create a view based on search results.
+ * But I need some custom code to tweak the output so it looks better and does
+ * some useful stuff!
+ *
+ * I'm hoping that I can use hook_preprocess_views_view_table(&$vars)
+ * together with some code we wrote when we were just presenting results
+ * in a (non-searchable) table ... to rewrite the contents of the table 
+ * when it is presented to the user.  The application I have in mind requires
+ * a pretty much complete rewrite of the table's contents.
+ *
+ * PARTICULARS ON THE IMPLEMENTATION STRATEGY
+ *
+ * The theming stuff for the block is in 
+ *   block--views--acv_attachable_content_block.tpl.php
+ * This is just done to get rid of the title.
+ *
+ * TODO
+ * - It would be cool to use AJAX to do the attachment
+ * - but for now it's just necessary to get the attachment operation working whatsoever,
+ *   should be straightforward enough to copy the interactions from 
+ *    question ; planetmath_og_attach ;  collection
+ */
+
+function planetmath_attachable_content_menu() {
+  $items = array();
+  $items['attach/%'] = array(
+      'title' => 'Attach content to a node',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'planetmath_attachable_content_attach',
+      'page arguments' => array(1),
+      'access arguments' => array('create correction content')
+  );
+
+  $items['attach/confirm/%/%'] = array(
+      'title' => 'Confirm attachment',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'question_confirm_attachment',
+      'page arguments' => array(2,3),
+      'access arguments' => array('create correction content')
+  );
+
+  return $items;
+}
+
+// Ah, we can always grab the current URL and do something with that.
+function planetmath_attachable_content_preprocess_views_view_table(&$vars){
+  global $base_url;
+
+  $myarg = substr(current_path(),7);
+
+  if($vars['view']->name == 'acv'){
+    //dd(array_keys($vars));
+    dpm($vars);
+    $newrows=array();
+    $extraclasses=array();
+    $extraattributes=array();
+    if( is_array( $newrows )){
+      foreach( $vars['rows'] as $dataRow){
+	$mynode=node_load($dataRow['entity_id']);
+	$newrows[] = array('url'=>l($mynode->title,"node/".$dataRow['entity_id']),
+			   'entity_id'=>user_load($mynode->uid)->name,
+			   'foo'=>l("Attach", 
+				    $base_url.
+				    "/attach/confirm/".
+				    $myarg . "/" . $dataRow['entity_id']));
+	$extraclasses[] = "views-field views-field-foo";
+	$extraattributes[] = array();
+        }
+    }
+    $vars['rows']=$newrows;
+    $vars['classes_array']=array('views-table','cols-3');
+    $vars['fields']= array('url'=>'url',
+			   'entity_id'=>'entity_id',
+			   'foo'=>'foo');
+    $vars['field_classes']= array('url'=>$vars['field_classes']['url'],
+				  'entity_id'=>$vars['field_classes']['entity_id'],
+				  'foo'=>$extraclasses);
+    $vars['field_attributes']= array('url'=>$vars['field_attributes']['url'],
+				     'entity_id'=>$vars['field_attributes']['entity_id'],
+				     'foo'=>$extraattributes);
+    $vars['header'] = array();
+    //dpm($vars);
+  }
+}
+
+function planetmath_attachable_content_attach($nid){
+  return "Enter search terms into the first box above and hit Apply to find matching terms.  Once you've found what you're looking for, click Attach!";
+}
+
+
+/* Implements hook_views_api
+ * This is needed to get our custom view working
+ * See planetmath_blocks.views.inc for details
+ */
+function planetmath_attachable_content_views_api() {
+  return array(
+	       'api' => 3, 
+	       'path' => drupal_get_path('module', 'planetmath_attachable_content'), 
+	       );
+}
