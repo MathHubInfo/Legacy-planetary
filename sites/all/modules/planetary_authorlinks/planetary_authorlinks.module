@@ -22,9 +22,10 @@ function theme_planetary_links($variables) {
 // to see how we're going to get the links in there...
 function planetary_authorlinks_block($nid) {
   $node = node_load($nid);
+  //dpm($node);
   return array(
       'subject' => 'Interact',
-      'content' => "Somehow we have to get the links to show up here.  We currently have the node, but not rendered content... " . '``' . $node->textitle . "''"
+      'content' => "Somehow we have to get the links to show up here.  We currently have the node, but not rendered content... " . '``' . $node->title . "''"
   );
 }
 
@@ -79,13 +80,15 @@ function planetary_authorlinks_countLinks($nid){
  * the future it may not.  See comments on function above.
  */
 function planetary_authorlinks_page_build(&$page){
+  //dd("hook runs");
   if (user_is_logged_in()) {
-    $node = menu_get_object();
+    $node = node_load(arg(1));
     if(is_object($node) && ($node->type == 'article' 
 			    || $node->type == 'problem'
 			    || $node->type == 'solution'
 			    || $node->type == 'question'
 			    || $node->type == 'collection')) {
+      //dd("we have a node");
       if(isset($page['content']['system_main']['nodes'][$node->nid]['planetary_links'])){
 	// grab the original set of links from the node object
 	$links = $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links'];
@@ -101,6 +104,7 @@ function planetary_authorlinks_page_build(&$page){
 	}
       }
       // get rid of the block (hackish)
+      // Note that this means that we don't have the "Interact" menu when viewing source
       else {
 	unset($page['sidebar_second']['planetary_authorlinks_authorlinks']);
       }
