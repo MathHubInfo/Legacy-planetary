@@ -508,7 +508,8 @@ function planetmath_og_get_user_buddy_group_id($uid){
   $gid = NULL;
   $user = user_load($uid);
   if(isset($user->buddy_list) && !empty($user->buddy_list)){
-    $gid=$user->buddy_list['und'][0]['value'];
+    //$gid=$user->buddy_list['und'][0]['value'];
+    $gid=$user->buddy_list['und'][0]['nid'];
   }
   return $gid;
 }
