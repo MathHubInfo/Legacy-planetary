@@ -1696,6 +1696,32 @@ function planetmath_profile_set_misc_variables () {
   dd("Profile- In planetmath_profile_set_misc_variables");
   set_time_limit(0);
 
+  // set watchable content types
+  variable_set('watcher_content_types', serialize(array(
+							"article"=> "article",
+							"page"=> 0,
+							"collection"=> 0,
+							"correction"=> "correction",
+							"forum"=> 0,
+							"group"=> 0,
+							"image"=> 0,
+							"news"=> 0,
+							"poll"=> 0,
+							"problem"=> "problem",
+							"question"=> "question",
+							"review"=> 0,
+							"solution"=> 0,
+							)));
+
+  variable_set('watcher_default_settings',
+	       serialize(array(
+			       'watcher_automatic_enable_notifications' => 1,
+			       'watcher_notifications_updates' => 1,
+			       'watcher_notifications_new_comments' => 1,
+			       'watcher_autowatch_commented_on' => 0,
+			       'watcher_autowatch_posted' => 1,
+			       'watcher_share_binder' => 0,
+			       )));
   // Default "Basic page" to not be promoted and have comments disabled.
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
