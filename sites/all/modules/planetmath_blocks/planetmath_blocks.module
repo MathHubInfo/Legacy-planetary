@@ -204,10 +204,12 @@ function planetmath_blocks_queryUserList() {
 }
 
 function planetmath_blocks_queryCorrections($nid) {
-  $results = db_query("SELECT n.nid AS nid, n.title AS title, fdb.body_value AS body, u.`name` AS username, n.created, u.uid AS uid
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, fdb.body_value AS body, u.`name` AS username, n.created, u.uid AS uid, fcx.field_correction_accepted_value as accepted, fcc.field_correction_closed_value as closed
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     LEFT JOIN field_data_field_correction_article fca ON fca.entity_id = n.nid
+    LEFT JOIN field_data_field_correction_accepted fcx ON fcx.entity_id = n.nid
+    LEFT JOIN field_data_field_correction_closed fcc ON fcc.entity_id = n.nid
     INNER JOIN users u ON u.uid = n.uid
     WHERE n.`type` = :type AND fca.field_correction_article_nid = :nid ORDER BY n.created DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK, array(':type' => 'correction', ':nid' => $nid));
   $return = array();
@@ -365,10 +367,24 @@ function planetmath_blocks_blockThemeResults($results, $nid, $delta = NULL) {
       $changed = ' ' . date('Y-m-d',$result->changed);
     }
 
+    // For corrections, we add some annotations
+    if (!isset($result->accepted)) {
+      $accepted = '';
+    } else {
+      if($result->accepted==0 && $result->closed==0){
+	$accepted = '';
+      } else if ($result->accepted==0 && $result->closed==1){
+	$accepted = " ✘";
+      } else {
+	$accepted = " ✓";
+      }
+    } 
+
     $html .= '<span>' . $title
 	              . ' by ' 
                       . l($result->username, 'user/' . $result->uid) 
 	              . $changed
+	              . $accepted
                       . '</span><br />';
   }
  
