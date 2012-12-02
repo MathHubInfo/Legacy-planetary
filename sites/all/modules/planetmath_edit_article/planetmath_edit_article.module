@@ -229,4 +229,13 @@ function planetmath_edit_article_canonicalize_name($node, $str, $count = 1) {
     return preg_replace("/[^a-zA-Z0-9\s]/", "", $name);;
   }
 }
+
+// Sticking this here, even though it applies to all nodes not just articles
+function planetmath_edit_article_form_alter(&$form,&$form_state,$form_id){
+  if($form['#node_edit_form'] && !$form['changed']['#default_value']){
+    $form['revision_information']['#access']=FALSE;
+  }
+  //  dpm($form);
+}
+
 // EOF
