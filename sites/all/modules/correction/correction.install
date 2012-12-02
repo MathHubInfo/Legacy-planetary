@@ -171,6 +171,8 @@ function _correction_installed_instances() {
       'field_name'  => 'field_correction_type',
       'label'       => $t('What kind of correction is this'),
       'cardinality' => 1,
+      'required'=> 1,
+      'default_value' => array(array('value'=>'err')),
       'widget'      => array(
 	'type'          => 'options_select',
      ),
