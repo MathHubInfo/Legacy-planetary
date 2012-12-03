@@ -157,8 +157,8 @@ function planetmath_messages_show(){
 
     //dd("ROWS");
     //dd($rows);
-
-    $retval=theme('table', array(
+    $retval=l("Add forum topic","node/add/forum")."<br>";
+    $retval.=theme('table', array(
 				'header' => $header,
 				'rows' => $rows
 				 ));
