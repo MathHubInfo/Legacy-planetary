@@ -113,6 +113,8 @@ function planetmath_image_node_view($node) {
     }
   }
   if ($node->type == 'image') {
+    // Soon this should be handled via the triple store, I'm not sure that there
+    // is actually a real Drupal-based implementation anyway.
     if (!empty($node->articles)) {
       $node->content['planetmath_image_articles'] = array(
           '#markup' => '',
@@ -120,12 +122,14 @@ function planetmath_image_node_view($node) {
           '#theme' => 'planetmath_image_view_articles',
           '#articles' => $node->articles
       );
-      if ($node->content['field_obj_cname']['#items']) {
-        $node->content['field_obj_cname'] = array(
-            '#markup' => '<h3>Object Cannonical Name: </h3>' . l($node->content['field_obj_cname']['#items'][0]['value'], $node->content['field_obj_cname']['#items'][0]['value']),
-            '#weight' => 1
-        );
-      }
+
+      /* if ($node->content['field_obj_cname']['#items']) { */
+      /*   $node->content['field_obj_cname'] = array( */
+      /*       '#markup' => '<h3>Object Cannonical Name: </h3>' . l($node->content['field_obj_cname']['#items'][0]['value'], $node->content['field_obj_cname']['#items'][0]['value']), */
+      /*       '#weight' => 1 */
+      /*   ); */
+      /* } */
+
     }
   }
 }

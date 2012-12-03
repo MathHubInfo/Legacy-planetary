@@ -80,18 +80,18 @@ function image_migrate_createNode($imgName, $uid, $canName){
     node_object_prepare($node);
     $node->title = $name;
     $node->uid = $uid;
-    $node->field_obj_cname = array(
-         'und' => array
-                        (
-                            0 => array
-                                (
-                                    'value' => $canName,
-                                    'format' => '',
-                                    'safe_value' => $canName
-                                )
+    /* $node->field_obj_cname = array( */
+    /*      'und' => array */
+    /*                     ( */
+    /*                         0 => array */
+    /*                             ( */
+    /*                                 'value' => $canName, */
+    /*                                 'format' => '', */
+    /*                                 'safe_value' => $canName */
+    /*                             ) */
 
-                        )
-    );
+    /*                     ) */
+    /* ); */
     node_save($node);
     $path = array(
                 'source' => 'node/'.$node->nid,

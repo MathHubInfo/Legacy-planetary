@@ -883,22 +883,26 @@ function planetmath_profile_configure_node_types () {
   // Note also: In the future we should find a way to maintain a list of multiple
   // places where images are used.  Probably this will be done with Virtuoso.
   // In which case, we may not need this field in the future.
-  $newfield=array(
-                  'field_name' => 'obj_cname',
-                  'type' => 'text'
-                  );
-  field_create_field($newfield);
-  $newfield_instance=array(
-                           'field_name' => 'obj_cname',
-                           'entity_type' => 'node',
-                           'bundle' => 'image',
-                           'label' => t('Object Canonical Name'),
-                           'description' => t('First article where this image is used'),
-                           'widget' => array(
-                                             'type' => 'text_textfield'
-                                             )
-                           );
-  field_create_instance($newfield_instance);
+
+  // OK, even though we don't have the Virtuoso part set up, I think
+  // it is time to get rid of this field.
+
+  /* $newfield=array( */
+  /*                 'field_name' => 'obj_cname', */
+  /*                 'type' => 'text' */
+  /*                 ); */
+  /* field_create_field($newfield); */
+  /* $newfield_instance=array( */
+  /*                          'field_name' => 'obj_cname', */
+  /*                          'entity_type' => 'node', */
+  /*                          'bundle' => 'image', */
+  /*                          'label' => t('Object Canonical Name'), */
+  /*                          'description' => t('First article where this image is used'), */
+  /*                          'widget' => array( */
+  /*                                            'type' => 'text_textfield' */
+  /*                                            ) */
+  /*                          ); */
+  /* field_create_instance($newfield_instance); */
 
   return NULL;
 }
