@@ -44,7 +44,9 @@ function planetmath_view_pdf_node_update($node){
   // run PDFLaTeX command
   $command = "/usr/bin/pdflatex -interaction=nonstopmode --output-directory " 
             .$base_path."/sites/default/files/texpdf/ ";
-  system($command . $sourcefile_path);
+  // run the command in the background, though it's not entirely clear that this
+  // is actually any faster from the point of view of the user
+  system($command . $sourcefile_path . " &");
 }
 
 // EOF
