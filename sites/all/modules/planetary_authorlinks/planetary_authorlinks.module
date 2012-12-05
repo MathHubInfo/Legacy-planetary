@@ -61,6 +61,7 @@ function planetary_authorlinks_countLinks($nid){
   // of nodes, but we can come back to that.
   if($node){
     if ($node->type == 'article' 
+	|| $node->type == 'group'
 	|| $node->type == 'problem'
 	|| $node->type == 'solution'
 	|| $node->type == 'question'
@@ -84,6 +85,7 @@ function planetary_authorlinks_page_build(&$page){
   if (user_is_logged_in()) {
     $node = node_load(arg(1));
     if(is_object($node) && ($node->type == 'article' 
+			    || $node->type == 'group'
 			    || $node->type == 'problem'
 			    || $node->type == 'solution'
 			    || $node->type == 'question'

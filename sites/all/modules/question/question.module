@@ -47,7 +47,9 @@ function question_menu() {
       'access arguments' => array('create correction content')
   );
 
-  $items['questions/%/attach'] = array(
+  // This path is pretty much superseded by the functionality coming from
+  // planetmath_attachable_content
+  $items['question/%/attach'] = array(
       'title' => 'Attach answer',
       'type' => MENU_CALLBACK,
       'page callback' => 'question_attach_answer',
@@ -55,7 +57,7 @@ function question_menu() {
       'access arguments' => array('create correction content')
   );
 
-  $items['questions/confirm/%/%'] = array(
+  $items['question/confirm/%/%'] = array(
       'title' => 'Confirm attachment',
       'type' => MENU_CALLBACK,
       'page callback' => 'question_confirm_attachment',
@@ -64,7 +66,7 @@ function question_menu() {
   );
 
   // Maybe only be available to the person who initially asked the question?
-  $items['questions/decouple/%/%'] = array(
+  $items['question/decouple/%/%'] = array(
       'title' => 'Decouple question-article connection',
       'type' => MENU_CALLBACK,
       'page callback' => 'question_decouple_connection',
@@ -254,10 +256,16 @@ function question_node_view($node){
   }
   
   // For questions, we can add an ANSWER...
+  // But I'm getting rid of this functionality because we'll provide it
+  // using the "attachable content" module
+
+/*
   if($node->type == 'question'){
     //dd("What's the article?");
     //dd($node->field_question_article['und'][0]['nid']);
     // ... but that only makes sense if no answer has been given already
+
+ 
     if(!isset($node->field_question_closed['und'][0]['value'])) {
       $newlinks = question_authorlinks_assemble_question($node);
 
@@ -267,8 +275,8 @@ function question_node_view($node){
 						'#theme' => 'planetary_links',
 						'#links' => $newlinks
 						);
-    } 
   }
+} */ 
 }
 
 function question_form_question_node_form_alter(&$form, &$form_state, $form_id) {

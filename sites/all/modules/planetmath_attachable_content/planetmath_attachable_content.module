@@ -23,6 +23,8 @@
  * - but for now it's just necessary to get the attachment operation working whatsoever,
  *   should be straightforward enough to copy the interactions from 
  *    question ; planetmath_og_attach ;  collection
+ *
+ * - It would be cool to get the search prepopulated with the title of the target node
  */
 
 function planetmath_attachable_content_menu() {
@@ -51,10 +53,23 @@ function planetmath_attachable_content_preprocess_views_view_table(&$vars){
   global $base_url;
 
   $myarg = substr(current_path(),7);
+  $mybase = node_load($myarg);
+
+  // Different modules can respond differently to the "attachment" action
+  // -- hook in to that here.
+  if($mybase->type=='collection'){
+    $mypath = "/collection/confirm/";
+  } else if ($mybase->type=='question'){
+    $mypath = "/question/confirm/";
+  } else if ($mybase->type=='group'){
+    $mypath = "/group/confirm/";
+  } else{
+    $mypath = "/attach/confirm/";
+  }
 
   if($vars['view']->name == 'acv'){
     //dd(array_keys($vars));
-    dpm($vars);
+    //dpm($vars);
     $newrows=array();
     $extraclasses=array();
     $extraattributes=array();
@@ -65,7 +80,7 @@ function planetmath_attachable_content_preprocess_views_view_table(&$vars){
 			   'entity_id'=>user_load($mynode->uid)->name,
 			   'foo'=>l("Attach", 
 				    $base_url.
-				    "/attach/confirm/".
+				    $mypath.
 				    $myarg . "/" . $dataRow['entity_id']));
 	$extraclasses[] = "views-field views-field-foo";
 	$extraattributes[] = array();
@@ -101,4 +116,57 @@ function planetmath_attachable_content_views_api() {
 	       'api' => 3, 
 	       'path' => drupal_get_path('module', 'planetmath_attachable_content'), 
 	       );
+}
+
+/* Add some links for the relevant node types */
+
+function planetmath_attachable_content_authorlinks_assemble($node){
+  $newlinks = array();
+  if (isset($node->content['planetary_links'])) {
+    $oldlinks = $node->content['planetary_links']['#links'];
+    if (!empty($oldlinks)) {
+      // Since "Add" is an important interaction, we put it at the front of the list
+      $newlinks = array_merge(planetmath_attachable_content_add_links($node),$oldlinks);
+    } else {
+      $newlinks = planetmath_attachable_content_add_links($node);
+    }
+  } else {
+    $newlinks = planetmath_attachable_content_add_links($node);
+  }
+  return $newlinks;
+}
+
+function planetmath_attachable_content_add_links($node) {
+
+  if($node->type == 'question'){
+    $link_string = "¡Answer this question!";
+  } else if ($node->type == 'collection') {
+    $link_string = "¡Add to this collection!";
+  } else if ($node->type == 'group') {
+    $link_string = "¡Add content to this group!";
+  }
+
+    $links = array(
+		   'attach-something' => l($link_string, 
+					'attach/'. $node->nid)
+		   );
+    return $links;
+}
+
+// show the "attach" link on *collections*, *groups*, and *unanswered questions*.
+function planetmath_attachable_content_node_view($node){
+  if( ($node->type == 'question' 
+        && !isset($node->field_question_closed['und'][0]['value']))
+    ||$node->type == 'collection'
+    ||$node->type == 'group') {
+
+      $newlinks = planetmath_attachable_content_authorlinks_assemble($node);
+
+      $node->content['planetary_links'] = array(
+						'#markup' => '',
+						'#weight' => 10,
+						'#theme' => 'planetary_links',
+						'#links' => $newlinks
+						);
+  }
 }

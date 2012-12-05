@@ -40,6 +40,8 @@ function collection_menu() {
     'file' => 'collection.table.inc',
   );
 
+  // This particular path will be pretty much superseded by the feature coming from 
+  // planetmath_attachable_content
   $items['collection/%/attach'] = array(
     'title' => 'Attach content',
     'type' => MENU_CALLBACK,
@@ -388,12 +390,12 @@ function collection_remove_attachment($collection_id, $content_id) {
 function collection_add_links($node, $rows){
   global $user;
 
-  $links = array(
-		 'add-to-collection' => l("Add to this collection", 
-					  'collection/' . $node->nid . '/attach'),
-		 'drop-from-collection' => l("Drop from this collection", 
-					  'collection/' . $node->nid . '/detach')
-		 );
+  $links = array();
+
+  if (count($rows) > 0) {
+    $links[] = l("Drop from this collection", 
+		 'collection/' . $node->nid . '/detach');
+  }
   if (count($rows) > 1) {
     $links[] = l("Reorder this collection", 
 		 'collection/' . $node->nid . '/reorder');
@@ -576,6 +578,9 @@ function collection_node_view($node) {
 	$newlinks = collection_add_links($node, $rows);
       }
 
+      // make use of the dependency on planetmath_attachable_content
+      $newlinks = array_merge(planetmath_attachable_content_add_links($node),$newlinks);
+
       $node->content['planetary_links'] = array(
 						'#markup' => '',
 						'#weight' => 10,
@@ -619,8 +624,8 @@ function collection_node_view($node) {
       }
     } else {
 	$newlinks = collection_user_add_links($node);
-	dd("USERLINKS");
-	dd($newlinks);
+	// dd("USERLINKS");
+	// dd($newlinks);
     }
       $node->content['planetary_links'] = array(
 						'#markup' => '',
