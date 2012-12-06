@@ -1,0 +1,6 @@
+210a211
+>       'collation' => 'utf8mb4_general_ci',
+214a216,218
+>       'pdo' => array(
+>                      PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
+>                      )
