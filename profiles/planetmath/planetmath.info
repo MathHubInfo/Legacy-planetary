@@ -95,6 +95,8 @@ dependencies[] = efq_views
 dependencies[] = views
 dependencies[] = views_php
 dependencies[] = views_ui
+dependencies[] = captcha
+dependencies[] = riddler
 
 ;; rdf stuff - hopefully it will get the ARC2 parser this way.
 ;; Note that there may be other ways with fewer dependencies!
