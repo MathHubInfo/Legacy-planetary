@@ -63,8 +63,29 @@ function planetmath_blocks_queryGeneral($type, $sortBy = 'n.created') {
   return $return;
 }
 
+function planetmath_blocks_queryEncyclopedia() {
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
+    FROM node n 
+    LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
+    INNER JOIN users u ON u.uid = n.uid
+    INNER JOIN field_data_field_published f ON n.nid = f.entity_id
+    INNER JOIN field_data_field_section s ON n.nid = s.entity_id
+    WHERE n.`type` = 'article'
+    AND f.field_published_value = 1
+    AND s.field_section_value = 'Reference'
+    ORDER BY n.created DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK);
+  $return = array();
+  foreach ($results as $result) {
+    $return[] = $result;
+  }
+  return $return;
+}
+
 /**
  * Queries for the block views 
+ *
+ * Note, we want to skip things where "created" is the same as "changed" 
+ * (i.e. we're at version 1).
  */
 function planetmath_blocks_queryRevisions($type, $sortBy = 'n.created') {
   $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
@@ -75,6 +96,7 @@ function planetmath_blocks_queryRevisions($type, $sortBy = 'n.created') {
     INNER JOIN field_data_field_published f ON n.nid = f.entity_id
     WHERE n.`type` = :type 
     AND f.field_published_value = 1
+    AND n.created <> n.changed
     ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => $type));
   $return = array();
   foreach ($results as $result) {
@@ -96,14 +118,29 @@ function planetmath_blocks_queryPersonalResponses($uid) {
   return $return;  
 }
 
-function planetmath_blocks_queryEverythingElse($sortBy = 'n.changed') {
-  $results = db_query("SELECT n.nid AS nid, n.title AS title, n.type as type, n.uid, fdb.body_value AS body, u.`name` AS username, n.created
+// I want the non-encyclopedia articles to show up here in addition to all the 
+// other stuff... I think maybe easiest way to achieve this is with a UNION?
+function planetmath_blocks_queryEverythingElse() {
+  $results = db_query("(SELECT n.nid AS nid, n.title AS title, n.type as type, n.uid, fdb.body_value AS body, u.`name` AS username, n.created AS created, n.changed, 'foo' AS metadata
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     INNER JOIN users u ON u.uid = n.uid
-    WHERE n.`type` IN (:type) ORDER BY $sortBy DESC LIMIT 0," . PLANETMATH_BLOCKS_EVERYTHING_ELSE_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => unserialize(PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES)));
+    WHERE n.`type` IN (:type) ORDER BY n.changed DESC)
+UNION ALL
+   (SELECT n.nid AS nid, n.title AS title, n.type as type, n.uid, fdb.body_value AS body, u.`name` AS username, n.created AS created, n.changed, s.field_section_value AS metadata 
+    FROM node n 
+    LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
+    INNER JOIN users u ON u.uid = n.uid
+    INNER JOIN field_data_field_published f ON n.nid = f.entity_id
+    INNER JOIN field_data_field_section s ON n.nid = s.entity_id
+    WHERE n.`type` = 'article'
+    AND f.field_published_value = 1
+    AND s.field_section_value <> 'Reference'
+    ORDER BY n.created DESC) ORDER BY created DESC
+ LIMIT 0," . PLANETMATH_BLOCKS_EVERYTHING_ELSE_NUMBER_OF_ITEMS_ON_BLOCK, array(':type' => unserialize(PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES)));
   $return = array();
-  // We will filter out the groups that are not of subtype "Team".
+  // We will filter out any GROUPS that are not of subtype "Team".
+  // NB. this could be done with another subselect and a bigger union.
   foreach ($results as $result) {
     if ($result->type == 'group') {
       $subtype = node_load($result->nid)->field_group_subtype['und'][0]['value'];
@@ -167,10 +204,12 @@ function planetmath_blocks_queryUserList() {
 }
 
 function planetmath_blocks_queryCorrections($nid) {
-  $results = db_query("SELECT n.nid AS nid, n.title AS title, fdb.body_value AS body, u.`name` AS username, n.created, u.uid AS uid
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, fdb.body_value AS body, u.`name` AS username, n.created, u.uid AS uid, fcx.field_correction_accepted_value as accepted, fcc.field_correction_closed_value as closed
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
     LEFT JOIN field_data_field_correction_article fca ON fca.entity_id = n.nid
+    LEFT JOIN field_data_field_correction_accepted fcx ON fcx.entity_id = n.nid
+    LEFT JOIN field_data_field_correction_closed fcc ON fcc.entity_id = n.nid
     INNER JOIN users u ON u.uid = n.uid
     WHERE n.`type` = :type AND fca.field_correction_article_nid = :nid ORDER BY n.created DESC LIMIT 0," . PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK, array(':type' => 'correction', ':nid' => $nid));
   $return = array();
@@ -328,10 +367,24 @@ function planetmath_blocks_blockThemeResults($results, $nid, $delta = NULL) {
       $changed = ' ' . date('Y-m-d',$result->changed);
     }
 
+    // For corrections, we add some annotations
+    if (!isset($result->accepted)) {
+      $accepted = '';
+    } else {
+      if($result->accepted==0 && $result->closed==0){
+	$accepted = '';
+      } else if ($result->accepted==0 && $result->closed==1){
+	$accepted = " ✘";
+      } else {
+	$accepted = " ✓";
+      }
+    } 
+
     $html .= '<span>' . $title
 	              . ' by ' 
                       . l($result->username, 'user/' . $result->uid) 
 	              . $changed
+	              . $accepted
                       . '</span><br />';
   }
  
@@ -410,7 +463,13 @@ function planetmath_blocks_blockThemeEverythingElseWithDate($results, $sortBy = 
     // It would be nice to include the "parent" in some fashion, when it exists, i.e.
     // new solution XX to problem YY.
 
-    $html .= '<span>' . 'new '. $result->type . ': '
+    if ($result->type == 'article'){
+      $kind = "<em>" . $result->metadata . "</em>";
+    } else {
+      $kind = $result->type;
+    }
+
+    $html .= '<span>' . 'new '. $kind . ': '
               . l($result->title . ' ' . $result->version, 'node/' . $result->nid) 
               . ' by ' . l($result->username, 'user/' . $result->uid) 
               . '</span><br />';
@@ -623,8 +682,7 @@ function planetmath_blocks_block_view($delta = '') {
       );
   }
 
-  $block_names = array('article' => 'Latest Additions',
-		       'request' => 'Requests',
+  $block_names = array('request' => 'Requests',
 		       'forum' => 'Messages');
 
   foreach ($block_names as $name => $blocktitle) {
@@ -634,6 +692,12 @@ function planetmath_blocks_block_view($delta = '') {
           'content' => planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryGeneral($name),'created')
       );
     }
+  }
+
+  if ($delta == 'article'){
+    $block = array(
+		   'subject'=> "New in Encyclopedia",
+		   'content'=> planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryEncyclopedia()));
   }
 
   if ($delta == 'correction') {

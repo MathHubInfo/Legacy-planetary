@@ -131,8 +131,8 @@ XML;
 
     $mscclasses = explode(",",$node->field_msc['und'][0]['value']);
 
-    dd("MSCCLASSES");
-    dd($mscclasses);
+    //dd("MSCCLASSES");
+    //dd($mscclasses);
     foreach($mscclasses as $k=>$code) {
       $record->classification->addChild('category');
       $record->classification->category[$k]->addAttribute('scheme','msc');

@@ -95,6 +95,7 @@ return '\documentclass{article}
 % in the righthand margin
 \def\pmcanonicalname#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
 \def\pmtype#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
+\def\pmprivacy#1{\historyAdd{Privacy setting: $\langle${\it #1}$\rangle$\\ }}
 \def\pmclassification#1#2{\historyAdd{$\langle${\it #2}$\rangle$\\ }}
 \def\pmcomment#1{\historyAdd{$\langle${\it #1}$\rangle$\\ }}
 \def\pmcreated#1{\historyAdd{created: $\langle${\it \protect\StrGobbleRight{#1}{9}}$\rangle$\\  }}

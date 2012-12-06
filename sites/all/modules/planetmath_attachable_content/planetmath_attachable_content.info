@@ -1,0 +1,10 @@
+name = "PlanetMath Attachable Content"
+description = "Use apachesolr_views to make searchable, attachable, content."
+package = "Planetary Modules"
+version = "7.x-1.0"
+core = "7.x"
+
+files[] = planetmath_attachable_content.views_default.inc
+
+dependencies[] = apachesolr_views
+dependencies[] = views

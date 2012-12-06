@@ -89,11 +89,15 @@ function planetmath_user_queryprivatearticles($uid, $sortBy = 'n.title') {
 
 // get the articles where the user is designated as a co-author
 function planetmath_user_querycoauthoredarticles($uid, $sortBy = 'n.title') {
+  global $user;
+  
 /* The logic of this query is: 
    - start by getting the groups that the user is a member of 
    - ... and checking to see which of these have type 'coauthor group' 
    - then obtain the nids and titles of the corresponding articles */
-  $results = db_query("SELECT n.title, n.nid FROM og_membership om INNER JOIN node n
+
+  if($user->uid == $uid){
+$query="SELECT n.title, n.nid FROM og_membership om INNER JOIN node n
 ON n.nid = om.etid
 WHERE om.gid IN ( SELECT f.entity_id
    FROM og_membership INNER JOIN node m
@@ -105,7 +109,26 @@ WHERE om.gid IN ( SELECT f.entity_id
    AND f.field_group_subtype_value = 'coauthors' )
 AND n.uid <> $uid 
 AND om.entity_type = 'node'
-ORDER BY $sortBy ASC");
+ORDER BY $sortBy ASC";
+  } else {
+$query="SELECT n.title, n.nid FROM og_membership om INNER JOIN node n
+ON n.nid = om.etid
+WHERE om.gid IN ( SELECT f.entity_id
+   FROM og_membership INNER JOIN node m
+   ON gid = m.nid
+   INNER JOIN field_data_field_group_subtype f
+   ON f.entity_id = m.nid
+   INNER JOIN field_data_field_published p
+   ON p.entity_id = m.nid
+   WHERE etid=$uid
+   AND og_membership.entity_type = 'user'
+   AND f.field_group_subtype_value = 'coauthors'
+   AND p.field_published_value = 1 )
+AND n.uid <> $uid 
+AND om.entity_type = 'node'
+ORDER BY $sortBy ASC";
+}
+  $results = db_query($query);
   $links = array();
   foreach ($results as $result) {
     $links = array_merge($links, planetmath_user_add_links($result->title, $result->nid));

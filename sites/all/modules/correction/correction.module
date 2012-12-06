@@ -256,3 +256,33 @@ function correction_form_correction_node_form_alter(&$form, &$form_state, $form_
   $form['field_correction_article']['und'][0]['nid']['#default_value'] = $val;
 }
 
+function correction_node_insert($node) {
+  $nid=$node->field_correction_article['und'][0]['nid'];
+  $article=node_load($nid);
+  $owner=user_load($article->uid);
+  correction_notify($owner,$article);
+}
+
+function correction_notify($account,$article) {
+     $params['account'] = $account;
+     $params['article'] = $article;
+     drupal_mail('correction', 'notice', $account->mail, user_preferred_language($account), $params);
+ }
+
+function correction_mail($key, &$message, $params) {
+  $data['user'] = $params['account'];
+  $options['language'] = $message['language'];
+  user_mail_tokens($variables, $data, $options);
+  switch($key) {
+    case 'notice':
+      $langcode = $message['language']->language;
+      $message['subject'] = t('New correction on beta.planetmath.org', $variables, array('langcode' => $langcode));
+      $message['body'][] = 
+	t("Dear ".$params['account']->name.
+	  "\n\nThere is a new correction to your article \"".
+	  $params['article']->title.
+	  "\".\n\nPlease take a look at the article, at http://beta.planetmath.org/node/" .$params['article']->nid. 
+	  ", and make any required fixes promptly.", $variables, array('langcode' => $langcode));
+      break;
+  }
+}

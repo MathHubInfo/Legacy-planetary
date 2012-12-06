@@ -1,0 +1,52 @@
+<?php 
+
+/**
+ * Custom hooks to get MathML to show up in Apache Solr search results.
+ * @author: 
+ *     Joe Corneli <holtzermann17@gmail.com> 
+ *
+ * Based on advice from Dave Stuart, see http://drupal.org/node/1827260 
+ */
+
+/**
+ * Implements hook_apachesolr_index_document_build_ENTITY_TYPE
+ *
+ * - jac: This will presumably need to be repeated for other entity
+ *   types that use LaTeX in a different way.
+ *
+ *        Note, since the actual XHTML is stored somewhere else, we need
+ *        to retrieve it, using the md5 hash of the document's content.
+ */
+function planetary_apachesolr_apachesolr_index_document_build_node(ApacheSolrDocument $document, $entity, $env_id) {
+  // dd("ENTITY PRINTOUT");
+  // dd($entity);
+  if($entity->type=='article'){
+    $key = $entity->field_latex['und'][0]['document'];
+  } else if ($entity->type=='solution') {
+    $key = $entity->field_solution_latex['und'][0]['document'];
+  } else if ($entity->type=='problem') {
+    $key = $entity->field_problem_latex['und'][0]['document'];
+  } else if ($entity->type=='question') {
+    $key = $entity->field_question_latex['und'][0]['document'];
+  } else if ($entity->type=='review') {
+    $key = $entity->field_review_latex['und'][0]['document'];
+  }
+  $cache = _drutexml_cache_read(md5($key));
+  $document->ss_raw_content = $cache;
+}
+
+/**
+ * Implementation of hook_apachesolr_query_alter
+ * - add the newly indexed field to the return docs from solr
+ */
+function planetary_apachesolr_apachesolr_query_alter($query) {
+  $query->addParam('fl', 'ss_raw_content');
+} 
+
+/**
+ * Implementation of hook_preprocess_search_result
+ * - override the teaser/snippet field in the search result
+ */
+function planetary_apachesolr_preprocess_search_result(&$variables) {
+  $variables['snippet']  = $variables['result']['fields']['ss_raw_content'];
+}

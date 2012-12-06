@@ -1,0 +1,68 @@
+/*
+     $Id: pf.css 981 2009-08-05 17:06:02Z clange $
+     $HeadURL: https://svn.omdoc.org/repos/jomdoc/src/jomdoc/trunk/css/pf.css $
+
+     Copyright (c) KWARC, Jacobs University Bremen, 2009
+     http://kwarc.info
+
+     This library is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public
+     License as published by the Free Software Foundation; either
+     version 3 of the license, or (at your option) any later version.
+
+     For other licensing options, please contact Michael Kohlhase
+     <m.kohlhase@jacobs-university.de>.
+
+     This library is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this library; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+/*
+ * PF module (structured proofs)
+ */
+
+div.omdoc-proof {
+    width: 80%;
+    margin-left: 0.5em;
+    font-size: medium;
+}
+
+div.omdoc-Fitch-box {
+    border-left: 2px solid black;
+    margin-left: 0.2em;
+}
+
+div.omdoc-Fitch-flag {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border-top: 2px solid black;
+    border-right: 2px solid black;
+    border-bottom: 2px solid black;
+    padding-left: 0.5em;
+}
+
+span.omdoc-plineno {
+    font-weight: bold;
+    color: darkred;
+}
+
+span.omdoc-justification {
+}
+
+span.omdoc-justification-method {
+    padding-left: 1em;
+}
+
+span.omdoc-justification-premises {
+    padding-left: 1em;
+}
+
+div.omdoc-derive {
+    padding-left: 1em;
+}
