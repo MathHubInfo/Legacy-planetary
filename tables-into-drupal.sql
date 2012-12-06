@@ -17,13 +17,14 @@
 -- Next: you will have to do further configurations, which are in
 -- tables-into-drupal-pt2.sql and tables-into-drupal-pt3.sql
 
--- Those can be run as the drupaldb user.  Details follow:
+-- In order to avoid permissions problems, you might as well run these as the
+-- MySQL "root" user as well:
 
 -- BEFORE Drupal migrations:
--- $ mysql -u drupaldb --password=PASSWORD drupaldb < tables-into-drupal-pt2.sql
+-- $ mysql -u root --password=PASSWORD drupaldb < tables-into-drupal-pt2.sql
 
 -- AFTER Drupal migrations:
--- $ mysql -u drupaldb --password=PASSWORD drupaldb < tables-into-drupal-pt3.sql
+-- $ mysql -u root --password=PASSWORD drupaldb < tables-into-drupal-pt3.sql
 
 -- See those files for specific commands.
 

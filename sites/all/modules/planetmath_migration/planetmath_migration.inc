@@ -201,9 +201,6 @@ class PMForumOPMigration extends Migration {
     $this->source = new MigrateSourceSQL($query, array(), NULL, array('map_joinable' => FALSE));
     $this->destination = new MigrateDestinationNode('forum');
 
-    $this->addFieldMapping('is_new')
-         ->defaultValue(TRUE);
-
     $this->addFieldMapping('nid', 'uid')
          ->description(t('Preserve old uid as new nid in Drupal.'));
     $this->addFieldMapping('is_new')
@@ -292,7 +289,6 @@ class PMForumCommentMigration extends Migration {
                                            'homepage',
                                            'threadid',
                                            'language',
-                                           'changed',
                                            'hostname'));
   }
 }
@@ -360,7 +356,6 @@ class PMObjectMigration extends PMMigration {
     $this->addFieldMapping('title', 'title');
     $this->addFieldMapping('created', 'epoch_created');
     $this->addFieldMapping('changed', 'epoch_modified');
-    $this->addFieldMapping('access', 'epoch_last');
     $this->addFieldMapping('access', 'epoch_last');
 
     // Rather than leaving these things unmapped, we'll try creating some new fields to hold them.
@@ -499,7 +494,6 @@ class PMObjectCommentMigration extends PMMigration {
                                            'homepage',
                                            'threadid',
                                            'language',
-                                           'changed',
                                            'hostname'));
   }
 }
@@ -661,7 +655,6 @@ class PMCollabCommentMigration extends PMMigration {
                                            'homepage',
                                            'threadid',
                                            'language',
-                                           'changed',
                                            'hostname'));
   }
 }
@@ -821,7 +814,6 @@ class PMCorrectionCommentMigration extends PMMigration {
                                            'homepage',
                                            'threadid',
                                            'language',
-                                           'changed',
                                            'hostname'));
   }
 }
@@ -970,7 +962,6 @@ class PMRequestCommentMigration extends PMMigration {
                                            'homepage',
                                            'threadid',
                                            'language',
-                                           'changed',
                                            'hostname'));
   }
 }
