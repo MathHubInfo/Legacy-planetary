@@ -257,10 +257,12 @@ function correction_form_correction_node_form_alter(&$form, &$form_state, $form_
 }
 
 function correction_node_insert($node) {
+  if($node->type=='correction') {
   $nid=$node->field_correction_article['und'][0]['nid'];
   $article=node_load($nid);
   $owner=user_load($article->uid);
   correction_notify($owner,$article);
+  }
 }
 
 function correction_notify($account,$article) {
