@@ -161,6 +161,13 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_set_misc_variables',
                                         ),
+                 'my_cap_task' => array(
+                                        'display_name' => st('Configure site CAPTCHA'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'planetmath_profile_configure_captcha',
+                                        ),
                  'my_13th_task' => array(
                                         'display_name' => st('Configure Menus'),
                                         'display' => TRUE,
@@ -1694,6 +1701,22 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('additional_settings__active_tab_page', 'edit-userpoints-nc-revision');
   variable_set('additional_settings__active_tab_question', 'edit-userpoints-nc-revision');
   variable_set('settings_additional__active_tab', 'edit-userpoints-nc-comment');
+}
+
+function planetmath_profile_configure_captcha (){
+  db_merge('captcha_points')
+    ->key(array('form_id'=> 'user_register_form'))
+    ->fields(array(
+      'module' => 'riddler',
+      'captcha_type' => 'Riddler'))
+    ->execute();
+
+  db_merge('riddler_questions')
+    ->key(array('qid'=> '1'))
+    ->fields(array(
+      'question' => 'What is twice the base of the natural logarithm?',
+      'answer' => '2e'))
+    ->execute();
 }
 
 function planetmath_profile_set_misc_variables () {
