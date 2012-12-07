@@ -321,6 +321,14 @@ drush -y en apachesolr_user
 
 and visit ```admin/config/search/apachesolr``` to tick the box selecting User as an indexable type.
 
+**Finally, you definitely want to do**
+```
+drush -y dl apachesolr_views
+drush -y en apachesolr_views
+```
+
+(PlanetMath will depend on this stuff, so I'll get as much of it as possible into the profile...)
+
 There are some additional plugins but details on those will follow later.  See this ticket [#141](https://github.com/cdavid/drupal_planetary/issues/141) for some further notes.
 
 ## LATEX INTEGRATION TO GENERATE PDFs
