@@ -225,7 +225,7 @@ Or grab the latest coffeescript if you're on an older system: http://coffeescrip
 
 ```
 npm install redis
-npm link
+sudo npm link
 cake.coffeescript build
 cake.coffeescript webclient
 ```
@@ -239,6 +239,8 @@ bin/exampleserver
 ```
 
 ### INSTALL THE SHAREJSSERVICES MODULE 
+
+This module ships with Planetary.  If you haven't already turned it on, do so now:
 
 ```
 drush -y en sharejsservices
@@ -276,11 +278,11 @@ mv solr/example/solr/conf/protwords.txt solr/example/solr/conf/protwords.bak
 cd ../drupal_planetary
 drush dl apachesolr
 
-cp sites/all/modules/apachesolr/solr-conf/schema-solr3x.xml \
+cp sites/all/modules/apachesolr/solr-conf/solr-3.x/schema.xml \
  ../apache-solr-3.6.1/solr/example/solr/conf/schema.xml
-cp sites/all/modules/apachesolr/solr-conf/solrconfig.xml \
+cp sites/all/modules/apachesolr/solr-conf/solr-3.x/solrconfig.xml \
  ../apache-solr-3.6.1/solr/example/solr/conf/solrconfig.xml
-cp sites/all/modules/apachesolr/solr-conf/protwords.txt \
+cp sites/all/modules/apachesolr/solr-conf/solr-3.x/protwords.txt \
  ../apache-solr-3.6.1/solr/example/solr/conf/protwords.txt
 ```
 
