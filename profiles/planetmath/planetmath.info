@@ -97,6 +97,9 @@ dependencies[] = views_php
 dependencies[] = views_ui
 dependencies[] = captcha
 dependencies[] = riddler
+dependencies[] = apachesolr
+dependencies[] = apachesolr_search
+dependencies[] = apachesolr_views
 
 ;; rdf stuff - hopefully it will get the ARC2 parser this way.
 ;; Note that there may be other ways with fewer dependencies!
@@ -142,6 +145,11 @@ dependencies[] = planetmath_overview
 dependencies[] = planetmath_overview_links
 ;; I'll like this module when it integrates with the gallery properly
 ; dependencies[] = planetmath_image
+
+dependencies[] = planetmath_view_pdf
+dependencies[] = planetmath_view_source
+dependencies[] = sharejsservices
+dependencies[] = planetary_apachesolr
 
 ;; features
 ;; Apparently we cannot load permissions unless they are required via this dependency,
