@@ -336,9 +336,8 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
     {
       dd($latex_preamble,"received preamble");
       dd($latex_etid,"received etid");
-    }
-
       dd($latex_metadata, "received metadata");
+    }
 
   // so it receives the right data
   if ($m > 0) {

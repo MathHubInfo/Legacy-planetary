@@ -594,7 +594,7 @@ function collection_node_view($node) {
   
   /* implement page view tracking using the userpoints API */
   if(user_is_logged_in() && $node->type=='article'){
-    dd("ABOUT TO ADD POINTS");
+    // dd("ABOUT TO ADD POINTS");
     $points_params = array('uid' => $user->uid,
 			   'points' => 0,
 			   'moderate' => FALSE,
