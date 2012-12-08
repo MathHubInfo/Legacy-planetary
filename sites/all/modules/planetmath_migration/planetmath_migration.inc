@@ -307,7 +307,7 @@ class PMObjectMigration extends PMMigration {
     parent::__construct();
     $this->description = t('PM Article data');
 
-    $this->dependencies = array('PMForumComment');
+    $this->dependencies = array('PMUser');
 
     $this->map = new MigrateSQLMap($this->machineName,
       array(
