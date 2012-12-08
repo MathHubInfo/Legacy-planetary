@@ -224,7 +224,7 @@ function planetmath_edit_article_canonicalize_name($node, $str, $count = 1) {
   }
 
   if($match) {
-    return planetmath_edit_article_canonicalize_name($name . $count, $count + 1);
+    return planetmath_edit_article_canonicalize_name($node, $name . $count, $count + 1);
   } else {
     //dd('Returning: ' . preg_replace("/[^a-zA-Z0-9\s]/", "", $name));
     // finally, replace non-alphabetic stuff
