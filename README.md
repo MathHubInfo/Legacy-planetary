@@ -250,6 +250,10 @@ And enable the ACE 2.0 editor at ```admin/config/content/wysiwyg```.
 
 ## INSTALL APACHE SOLR
 
+Pick a mirror from
+[Apache](http://www.apache.org/dyn/closer.cgi/lucene/solr/3.6.1) and
+download Solr with a command similar to this one:
+
 ```
 wget http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/3.6.1/apache-solr-3.6.1-src.tgz
 ```
