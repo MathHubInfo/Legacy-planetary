@@ -1,0 +1,5 @@
+name = Virtual File System abstraction
+description = Allows fields to be connected to content from a VFS
+core = 7.x
+package     = Planetary Modules
+dependencies[] = curli
