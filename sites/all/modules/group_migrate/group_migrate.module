@@ -54,7 +54,7 @@
      implementation,  planetmath_og_user_insert */
 
 function group_migrate_port_world_writable() {
-  $articles = db_query("SELECT objectid FROM {planetmath_acl} WHERE default_or_normal = 'd' and _write = 1");
+  $articles = db_query("SELECT objectid FROM {planetmath_acl} WHERE default_or_normal = 'd' and _write = 1 AND objectid > 30000");
   foreach ($articles as $article) {
     planetmath_og_model_addContentToGroup(1,$article->objectid);
     }
