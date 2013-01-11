@@ -10,6 +10,16 @@ function sally_menu() {
 			"page callback" => "sally_show_definition",
 			"access callback" => true,
 	);
+	$item["sally/services/json"] = array(
+			"page callback" => "sally_return_json",
+			"access callback" => true,
+	);
+	$item["sally/semnav"] = array(
+		"page callback" => "sally_show_graph",
+		"access callback" => true,
+	);
+
+	
 	return $item;
 }
 
@@ -18,15 +28,36 @@ function sally_theme($existing, $type, $theme, $path) {
 			'sally_show_definition' => array(
 					'variables' => array('content' => NULL),
 					'template' => "sally_show_definition"
-			));
+			),
+			'sally_show_graph' => array(
+					'variables' => array('content' => NULL),
+					'template' => "sally_show_graph"
+			),
+			'sally_return_json' => array(
+			)
+			);
 }
 
 function sally_show_definition($cd, $name) {
 	$url = "https://tnt.kwarc.info/tntbase/stc/restful/jobad/basic?action=expandDefinition&cd=$cd&symbol=$name";
-	$result = getResult( $url, '', 'get', '' );
-	echo theme("sally_show_definition", array("content"=>$result));
+	$result = tntbase_get( $url );
+	$jobad = url("<front>", array("absolute"=>true)).drupal_get_path("module","jobad");
+	echo theme("sally_show_definition", array("content"=>$result, "jobad"=>$jobad));
 }
 
+function sally_show_graph($cd, $name) {
+	$url = "https://tnt.kwarc.info/tntbase/stc/BasicBrowser/vdocs/json-graph-termrefs.json?name=$cd&symbol=$name";
+	$result = tntbase_get( $url );
+	$jobad = url("<front>", array("absolute"=>true)).drupal_get_path("module","jobad");
+	$sally = url("<front>", array("absolute"=>true)).drupal_get_path("module","sally");
+	echo theme("sally_show_graph", array("content"=>$result, "jobad"=>$jobad, "sally"=>$sally));
+}
+
+function sally_return_json($cd, $name){
+	$url = "https://tnt.kwarc.info/tntbase/stc/BasicBrowser/vdocs/json-graph-termrefs.json?name=$cd&symbol=$name";
+	$result = tntbase_get( $url );
+	echo $result;
+}
 
 function sally_search_form($form, &$form_state) {
 	$form["search"] = array(
@@ -53,3 +84,4 @@ function sally_search_form($form, &$form_state) {
 }
 
 ?>
+
