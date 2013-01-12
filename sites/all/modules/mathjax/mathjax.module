@@ -1,8 +1,9 @@
 <?php
 
 function mathjax_preprocess( &$variables, $hook ){
-   
-	if ( !stristr($_SERVER["HTTP_USER_AGENT"], "Firefox") ) {
+  if ( !(stristr($_SERVER["HTTP_USER_AGENT"], "Firefox")||
+         stristr($_SERVER["HTTP_USER_AGENT"], "Chrome/24.0.1312.52")||
+         stristr($_SERVER["HTTP_USER_AGENT"], "Safari/537.17")) ) {
       drupal_add_js('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML', array( 'type' => 'external', 'weight' => 2 ) );
       drupal_add_js(drupal_get_path("module","mathjax")."/mathjax.js", array('type' => 'file', 'weight' => 3) );
 	}
