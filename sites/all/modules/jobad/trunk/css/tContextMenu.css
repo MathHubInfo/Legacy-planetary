@@ -11,6 +11,7 @@
    font-weight    : normal;
    list-style-type: none;
    color          : black;
+   z-index		  : 99999;
 }
 .tContextMenu li {
    position       : relative;
@@ -20,6 +21,7 @@
    font-size      : 10px;
    color          : black;
    cursor         : default;
+   z-index		  : 99999;
 }
 .tContextMenu-node{
    background     : url('../images/li-arrow-right.png') no-repeat 100% 50%;
@@ -28,12 +30,15 @@
 .tContextMenu ul {
    left     : 98%;
    top      : 0px;
+   z-index  : 99999;
 }
 .tContextMenu li:hover, .tContextMenu-hover {
    background-color : rgba(255, 190, 0, 0.7);
+   z-index			: 99999;
 }
 .tContextMenu-smallIcon{
    position : absolute;
    left     : 5px;
    top      : 2px;
+   z-index  : 99999;
 }

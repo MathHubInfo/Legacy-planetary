@@ -38,19 +38,21 @@ function sally_theme($existing, $type, $theme, $path) {
 			);
 }
 
-function sally_show_definition($cd, $name) {
+function sally_show_definition($cd, $name, $token) {
+	drupal_add_http_header('Content-Type', 'application/xhtml+xml; utf-8');
 	$url = "https://tnt.kwarc.info/tntbase/stc/restful/jobad/basic?action=expandDefinition&cd=$cd&symbol=$name";
 	$result = tntbase_get( $url );
+	$sally = url("<front>", array("absolute"=>true)).drupal_get_path("module","sally");
 	$jobad = url("<front>", array("absolute"=>true)).drupal_get_path("module","jobad");
-	echo theme("sally_show_definition", array("content"=>$result, "jobad"=>$jobad));
+	echo theme("sally_show_definition", array("content"=>$result, "jobad"=>$jobad, "sally"=>$sally, "token"=>$token));
 }
 
-function sally_show_graph($cd, $name) {
+function sally_show_graph($cd, $name, $token) {
 	$url = "https://tnt.kwarc.info/tntbase/stc/BasicBrowser/vdocs/json-graph-termrefs.json?name=$cd&symbol=$name";
 	$result = tntbase_get( $url );
 	$jobad = url("<front>", array("absolute"=>true)).drupal_get_path("module","jobad");
 	$sally = url("<front>", array("absolute"=>true)).drupal_get_path("module","sally");
-	echo theme("sally_show_graph", array("content"=>$result, "jobad"=>$jobad, "sally"=>$sally));
+	echo theme("sally_show_graph", array("content"=>$result, "jobad"=>$jobad, "sally"=>$sally, "token"=>$token));
 }
 
 function sally_return_json($cd, $name){

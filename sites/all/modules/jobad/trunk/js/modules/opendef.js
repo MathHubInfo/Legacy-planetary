@@ -1,5 +1,5 @@
 _newModule({
-
+	
 	info : {
 		'identifier' : 'open_def',
 		'title' : 'Open definition',
@@ -7,15 +7,14 @@ _newModule({
 		'description' : 'Open the definition of the selected item in the current window',
 		'dependencies' : []
 	},
-
-	options : {},
-
-	validate : (function() {
 	
-		return function(event, container) {
+	options : {},
+	
+	validate : (function () {
+		
+		return function (event, container) {
 			var target = event.target;
 			var jTarget = $(target);
-			 semMap = [["sax-salarycosts","sax-salarycostsperti"],["sax-revenues-actual" , "sax-revenuesperti-actual"],["sax-salarycosts-actual" , "sax-salarycostsperti-actual"],["sax-expenses-actual" , "sax-expensesperti-actual"],["sax-utilitycosts-projected" , "sax-utilitycostsperti-projected"],["sax-expenses-actual" , "sax-othercostsperti-actual"],["sax-expenses-projected" , "sax-othercostsperti-projected"],["sax-revenues-projected" , "sax-revenuesperti-projected"],["sax-utilitycosts-actual" , "sax-utilitycostsperti-actual"],["sax-admincosts-actual" , "sax-admincostsperti-actual"],["sax-materialcosts-projected" , "sax-materialcostsperti-projected"],["sax-salarycosts-projected" , "sax-salarycostsperti-projected"],["sax-profits-actual" , "sax-profitsperti-actual"],["sax-salarycosts-projected" , "sax-salaryperti-projected"],["sax-materialcosts-actual" , "sax-materialcostsperti-actual"],["timeinterval" , "timeinterval"],["sax-expenses-projected" , "sax-expensesperti-projected"],["sax-admincosts-projected" , "sax-admincostsperti-projected"],["sax-profits-projected" , "sax-profitsperti-projected"],["sax-salarycosts-actual" , "sax-salaryperti-actual"]];
 			var obj = {};
 			$.extend(obj, tContextMenu.templates.moduleOutput, {
 				element : container,
@@ -25,26 +24,34 @@ _newModule({
 				smallIcon : 'js/modules/icons/module1_small.png',
 				weight : 50
 			});
-
-			obj.element.bind('click.switchViews', function() {
-				tContextMenu.hide(function(view) {
+			
+			obj.element.bind('click.switchViews', function () {
+				tContextMenu.hide(function (view) {
 					tContextMenu.setView(view);
 				}, [$(this).data('identifier')]);
 			});
+			
+			obj.element.bind('click', function () {
+				var cd,
+				symbol;
+				if (jTarget.is('span')) {
+					cd = jTarget.attr("omdoc:cd");
+					symbol = jTarget.attr("omdoc:name");
+				} else if (jTarget.is('div')) {
+					var aux = jTarget.attr('id');
+					aux = aux.substring(aux.lastIndexOf("/") + 1);
+					cd = aux.substring(0, aux.indexOf(".omdoc"));
+					symbol = aux.substring(aux.indexOf("#") + 1, aux.lastIndexOf(".def"));
+				}
+
+					window.open("http://localhost/drupal_planetary/?q=sally/showdef/" + cd + "/" + symbol + "/" + token, "_parent");
 				
-			obj.element.bind('click',function(){
-				cd = jTarget.attr("omdoc:cd");
-				symbol = jTarget.attr("omdoc:name");
-            	window.open("http://localhost:8080/sally/web/definition?cd=" + cd + "&name=" + symbol + "&theoid=" + theoid, "_parent");
-       
-	 	});
-		
-			if(jTarget.is('.omdoc-term'))
+			});
+			if ((jTarget.is('.omdoc-term') || jTarget.attr('class') == 'node')&& typeof(token)!= 'undefined')
 				return obj;
 			return false;
-	
-
+			
 		}
 	})()
-
+	
 });
