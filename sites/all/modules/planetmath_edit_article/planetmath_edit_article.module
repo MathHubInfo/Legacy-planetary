@@ -116,7 +116,7 @@ function planetmath_edit_article_process_metadata($node){
   $metadata .= "\\pmmodified{".$now."}\n";
 
   global $user;
-  $metadata .= "\\pmowner{".$node->name."}{".$user->uid."}\n";
+  $metadata .= "\\pmowner{".$node->name."}{".$node->uid."}\n";
   $metadata .= "\\pmmodifier{".$node->name."}{".$user->uid."}\n";
   $metadata .= "\\pmtitle{".$node->title."}\n";
 
