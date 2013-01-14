@@ -1388,12 +1388,14 @@ if(arg(0) == "node"){
     || $node->type == "collection")
   return true;
 else
- return true;
+ return false;
 }
 return false;
 ?>',
 			'cache'=>1,
 			),
+		  // This causes version information to show up on forum posts,
+		  // I'm not sure we want that, but we can think more about it
                   array(
                         'module' => 'planetmath_blocks',
                         'delta' => 'pversion',
