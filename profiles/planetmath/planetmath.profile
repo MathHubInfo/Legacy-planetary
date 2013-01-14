@@ -1366,6 +1366,34 @@ return false;
 ?>',
                         'cache' => 1,
                         ),
+		  array('module'=> 'planetmath_blocks',
+			'delta' => 'provenance',
+			'theme' => $theme_default,
+			'delta' => 'provenance',
+			'status' => 1,
+			'weight' => -36,
+			'region' => 'sidebar_second',
+			'visibility' => 2,
+			'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ $node=node_load(arg(1));
+ if(   $node->type == "article" 
+    || $node->type == "group"
+    || $node->type == "problem"
+    || $node->type == "solution"
+    || $node->type == "question"
+    || $node->type == "collection")
+  return true;
+else
+ return true;
+}
+return false;
+?>',
+			'cache'=>1,
+			),
                   array(
                         'module' => 'planetmath_blocks',
                         'delta' => 'pversion',

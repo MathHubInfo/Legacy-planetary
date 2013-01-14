@@ -569,6 +569,68 @@ function planetmath_blocks_block_versions($nid) {
   );
 }
 
+// We'll add the user and author information here; we can later expand to deal with
+// any other provenance information that's relevant.
+
+// Note that the "submitted by" label is actually wrong, since the owner could have
+// changed in the mean time.  We should fix that.
+
+/* Note: this replaces the following code from node.tpl.php:
+
+  <?php if ($display_submitted): ?>
+    <div class="submitted">
+      <?php print $submitted; ?>
+
+    <?php if ($type === 'article'): ?>
+      <p> Authors:
+     <?php print render($content['planetmath_og_display_coauthors']); ?>
+      </p>
+    <?php endif; ?>
+    </div>
+  <?php endif; ?>
+*/
+
+// It also makes the planetmath_og_display module unnecessary
+
+function planetmath_blocks_block_provenance($nid) {
+  $node=node_load($nid);
+  //dpm($node);
+  $owner=user_load($node->uid);
+  $provenance = "Submitted by: " . l($owner->name,'user/'.$node->uid)
+               .'<br> '. date('D, Y-m-d - H:i',$node->created);
+
+  if($node->type=='article') {
+    $links = array(
+		   "$owner->name" => l($owner->name, 'user/' . $owner->uid),
+		   );
+
+    // Get the coauthor group for this node, if any
+    $group=planetmath_og_model_getNodeEditingGroup($nid);
+
+    if(isset($group->nid)) {
+      // This query needs to be fixed
+      $results = db_query("SELECT users.name,users.uid
+    FROM og_membership om INNER JOIN users
+    ON om.etid = users.uid 
+    WHERE om.entity_type = 'user' AND om.gid= :gid ORDER BY $sortBy DESC",
+			  array(':gid' => $group->nid));
+
+      foreach ($results as $result) {
+	$new = array(
+		     "$name" => l($name, 'user/' . $uid),
+		     );
+	$links = array_merge($links,$new );
+      }
+    }
+    $provenance .= "<br>Author(s): " . implode($links, ", ");
+  }
+
+  return array(
+      'subject' => 'Info',
+      'content' => $provenance
+  );
+}
+
 function planetmath_blocks_block_corrections($nid) {
   return array(
       'subject' => 'Corrections',
@@ -746,6 +808,10 @@ function planetmath_blocks_block_view($delta = '') {
 
   if ($delta == 'pversion') {
     $block = planetmath_blocks_block_versions(arg(1));
+  }
+
+  if ($delta == 'provenance') {
+    $block = planetmath_blocks_block_provenance(arg(1));
   }
 
   if ($delta == 'personal-feed') {
