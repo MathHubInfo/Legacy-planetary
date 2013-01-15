@@ -1,0 +1,288 @@
+<?php
+
+function planetmath_menu_tweaks_install() {
+  module_load_include('inc', 'menu', 'menu.admin');
+
+  // delete the annoying DruTeXML link
+  db_delete('menu_links')->condition('link_path','drutexml')->execute();
+
+  // Create an "Add new forum post" link in the menu
+  $toplid=db_query("SELECT * FROM menu_links where link_path = 'forum' and menu_name='navigation';")->fetchObject()->mlid;
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -9,
+       'link_title' => "New Forum Post",
+       'link_path'  => 'node/add/forum/0',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  // Add the forums directly into the navigation menu for good measure
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "PlanetMath System Updates and News",
+       'link_path'  => 'forum/1',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "PlanetMath Comments",
+       'link_path'  => 'forum/2',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "Math Competitions",
+       'link_path'  => 'forum/3',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -7,
+       'link_title' => "HS/Secondary",
+       'link_path'  => 'forum/4',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "Math Humor",
+       'link_path'  => 'forum/5',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -6,
+       'link_title' => "University/Tertiary",
+       'link_path'  => 'forum/6',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -1,
+       'link_title' => "Testing messages (ignore)",
+       'link_path'  => 'forum/7',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "LaTeX help",
+       'link_path'  => 'forum/8',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "PlanetMath help",
+       'link_path'  => 'forum/9',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "The Math Pub",
+       'link_path'  => 'forum/10',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -5,
+       'link_title' => "Graduate/Advanced",
+       'link_path'  => 'forum/11',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -3,
+       'link_title' => "Research Topics",
+       'link_path'  => 'forum/12',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -4,
+       'link_title' => "Industry/Practice",
+       'link_path'  => 'forum/13',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "Math History",
+       'link_path'  => 'forum/14',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "Strategic Communications Development",
+       'link_path'  => 'forum/15',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -2,
+       'link_title' => "PlanetMath.ORG",
+       'link_path'  => 'forum/16',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -8,
+       'link_title' => "Planetary Bugs",
+       'link_path'  => 'forum/17',
+       'module'     => 'planetmath_menu_tweaks',
+       'plid'       => $toplid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  menu_link_save($form_state['values']);
+}
+
+function planetmath_menu_tweaks_uninstall() {
+  db_delete('menu_links')
+    ->condition('module','planetmath_menu_tweaks')
+    ->execute();
+}

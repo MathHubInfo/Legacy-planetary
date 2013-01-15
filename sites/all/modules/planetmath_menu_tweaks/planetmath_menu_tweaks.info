@@ -1,0 +1,7 @@
+name = planetmath_menu_tweaks
+description = "Some final tweaks to the menu display"
+version = 7.x-1.0
+package = PlanetMath
+core = 7.x
+
+dependencies[] = drutexml
