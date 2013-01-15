@@ -1,0 +1,6 @@
+name = "JOBAD"
+description = "JOBAD Menu"
+package = "Development"
+core = 7.x
+
+files[] = jobad.module
