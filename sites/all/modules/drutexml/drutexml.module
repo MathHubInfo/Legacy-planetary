@@ -40,6 +40,7 @@ function drutexml_info() {
 function drutexml_menu() {
   $items['drutexml'] = array(
     'title' => 'LaTeX filter implemented via LaTeXML',
+    'type' => MENU_CALLBACK,
     'page callback' => '_drutexml_information',
     'access callback' => TRUE,
   );

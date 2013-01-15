@@ -1,4 +1,20 @@
 <?php
+function drutexml_install() {
+
+  module_load_include('inc', 'menu', 'menu.admin');
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => -10,
+       'link_title' => "LaTeX filter implemented via LaTeXML",
+       'link_path'  => 'drutexml',
+       'module'     => 'drutexml',
+       'mlid'       => NULL,
+     ),
+   );
+}
+
 function drutexml_schema() {
 	$schema['drutexml_cache'] = array(
     'description' => t('DruTeXML Cache'),
