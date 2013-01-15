@@ -7,7 +7,7 @@ The Communication object contains the client side logic for sending messages fro
  */
 var Communication = {
 	/**
-	The received variable tells us if the scripts have been loaded and if they are we can send proto messages to sally.
+	The received variable tells us if the scripts have been loaded and, if they are we can send proto messages to sally.
 	 */
 	received : false,
 	scriptTarget : 0,
@@ -29,9 +29,8 @@ var Communication = {
 	 */
 	injectResources : function () {
 		if (arguments.lenght == 1 && isFunction(arguments[0]))
-			ref.callback = arguments[0];
-		
-		if (received == true) {
+			this.callback = arguments[0];
+		if (this.received == true) {
 			var element = document.createElement("ResourceElement");
 			document.documentElement.appendChild(element);
 			// Sally needs the context for which the resources are required i.e. document type, filename, token
@@ -49,7 +48,7 @@ var Communication = {
 	},
 	
 	/**
-	Used to send events back to Sally.
+	Used to send events back to Sally. This implementation assumes that all actions will have a theory, a symbol, an action and a token.
 	 */
 	sendMessage : function (token, theory, symbol, action) {
 		//If the scripts have not been injected there in no point in proceeding further.
@@ -83,7 +82,7 @@ var Communication = {
 	counter : function () {
 		Communication.scriptTarget--;
 		if (Communication.scriptTarget == 0) {
-			received = true;
+			Communication.received = true;
 			if (Communication.callback !== null) {
 				Communication.injectResources();
 			}

@@ -20,7 +20,7 @@
         symbol=$(e.target).attr("omdoc:name");
         window.open("http://localhost/drupal_planetary/?q=sally/showdef/" + cd + "/" + symbol + "/" + token, "_parent");
 		});
-		window.message = message;
+		window.message = message;	// This is needed in the modules as context information (to determine which terms are in the spreadsheet and which are not)
 		var i=0;
 		while(true){
 		if(typeof message.context[i] == 'undefined')
@@ -40,7 +40,7 @@
 	  
     <script>
 	<![CDATA[
-        window.token = "<?php echo $token; ?>";
+        window.token = "<?php echo $token; ?>";	//This is needed in the modules. This way it is set as a global variable.
 		
          $(function(){
             tContextMenu.init({   
