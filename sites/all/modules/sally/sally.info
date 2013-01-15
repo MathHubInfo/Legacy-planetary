@@ -2,7 +2,7 @@ name = "Sally"
 description = "Semantic Ally"
 package = "Development"
 core = 7.x
-
+dependencies[] = jobad
 files[] = sally.module
 
 ; Information added by drupal.org packaging script on 2011-05-26

@@ -1,0 +1,16 @@
+<?php
+
+function jobad_menu() {
+	$item["jobad"] = array(
+			"title" => "JOBAD",
+			"page callback" => "jobad_welcome",
+			"access callback" => true,
+			"type" => MENU_CALLBACK,
+	);
+
+	return $item;
+}
+
+function jobad_welcome() {
+	return t('This is just a test page for JOBAD');
+}
