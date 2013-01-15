@@ -1,0 +1,37 @@
+<?php
+
+function planetmath_forms_article_node_form_alter(&$form,&$form_state,$form_id){
+  if(!isset($form['changed'])){
+    $form['revision_information']['#access']=FALSE;
+  }
+}
+
+function planetmath_forms_correction_node_form_alter(&$form,&$form_state,$form_id){
+  if(!isset($form['changed'])){
+    $form['revision_information']['#access']=FALSE;
+  }
+}
+
+function planetmath_forms_problem_node_form_alter(&$form,&$form_state,$form_id){
+  if(!isset($form['changed'])){
+    $form['revision_information']['#access']=FALSE;
+  }
+}
+
+function planetmath_forms_solution_node_form_alter(&$form,&$form_state,$form_id){
+  if(!isset($form['changed'])){
+    $form['revision_information']['#access']=FALSE;
+  }
+}
+
+function planetmath_forms_review_node_form_alter(&$form,&$form_state,$form_id){
+  if(!isset($form['changed'])){
+    $form['revision_information']['#access']=FALSE;
+  }
+}
+
+function planetmath_forms_question_node_form_alter(&$form,&$form_state,$form_id){
+  if(!isset($form['changed'])){
+    $form['revision_information']['#access']=FALSE;
+  }
+}

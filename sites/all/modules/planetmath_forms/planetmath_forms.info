@@ -1,0 +1,5 @@
+name = PlanetMath Forms
+description = Alter various forms across the site
+package = PlanetMath
+core = 7.x
+files[] = planetmath_forms.module

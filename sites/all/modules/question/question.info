@@ -7,6 +7,7 @@ core = "7.x"
 dependencies[] = node_reference
 dependencies[] = user_reference
 dependencies[] = date
+dependencies[] = planetmath_attachable_content
 
 files[] = question.install
 files[] = question.module

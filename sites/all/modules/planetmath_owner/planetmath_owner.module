@@ -36,10 +36,10 @@ function planetmath_owner_rights ($nid) {
   global $user;
   $node = node_load($nid);
   if ($user->uid == $node->uid) {
-    dd("User has owner rights");
+    //dd("User has owner rights");
     return TRUE;
   } else {
-    dd("User does not have owner rights");
+    //dd("User does not have owner rights");
     return FALSE;
   }
 }

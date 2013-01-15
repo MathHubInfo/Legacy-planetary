@@ -10,6 +10,8 @@
 function planetmath_og_attach_menu() {
   $items = array();
 
+  // This particular path is more or less superseded by functionality from the
+  // planetmath_attachable_content module
   $items['group/%/attach'] = array(
       'title' => 'Attach content',
       'type' => MENU_CALLBACK,
@@ -40,6 +42,7 @@ function planetmath_og_attach_menu() {
 
 function planetmath_og_attach_is_member($nid){
   global $user;
+  //dd(planetmath_og_model_isUserMemberOfGroup($user->uid,node_load($nid)));
   return planetmath_og_model_isUserMemberOfGroup($user->uid,node_load($nid));
 }
 
@@ -153,14 +156,15 @@ function planetmath_og_attach_theme($existing, $type, $theme, $path){
 // Main point of entry
 function planetmath_og_attach_node_view($node){
   if($node->type == 'group' && planetmath_og_attach_is_member($node->nid)){
-    $node->content['add_stuff'] = array(
-        '#markup' => '',
-        '#weight' => 10,
-        '#theme' => 'add_stuff',
-        '#links' => array('name'=>'Add content',
-			  'target'=> 'group/' 
-                		    . $node->nid
-		                    . '/attach')
-    );
+
+    // make use of the dependency on planetmath_attachable_content
+    $newlinks = planetmath_attachable_content_authorlinks_assemble($node);
+
+    $node->content['planetary_links'] = array(
+						'#markup' => '',
+						'#weight' => 10,
+						'#theme' => 'planetary_links',
+						'#links' => $newlinks
+						);
   }
 }

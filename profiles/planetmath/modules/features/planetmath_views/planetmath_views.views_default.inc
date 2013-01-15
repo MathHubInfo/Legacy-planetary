@@ -275,6 +275,13 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'article' => 'article',
   );
+  /* Filter criterion: Content: Public (field_published) */
+  $handler->display->display_options['filters']['field_published_value']['id'] = 'field_published_value';
+  $handler->display->display_options['filters']['field_published_value']['table'] = 'field_data_field_published';
+  $handler->display->display_options['filters']['field_published_value']['field'] = 'field_published_value';
+  $handler->display->display_options['filters']['field_published_value']['value'] = array(
+    1 => '1',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -363,6 +370,7 @@ function planetmath_views_views_default_views() {
  <li><a href="./node/add/article">Add new Article</a></li> 
  <li><a href="./msc_browser">View sorted by MSC</a></li> 
  <li><a href="./revisions">View sorted by revision date</a></li> 
+ <li><a href="./articlesicanedit">Only show articles I can edit</a></li> 
  <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
@@ -432,6 +440,13 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'article' => 'article',
   );
+  /* Filter criterion: Content: Public (field_published) */
+  $handler->display->display_options['filters']['field_published_value']['id'] = 'field_published_value';
+  $handler->display->display_options['filters']['field_published_value']['table'] = 'field_data_field_published';
+  $handler->display->display_options['filters']['field_published_value']['field'] = 'field_published_value';
+  $handler->display->display_options['filters']['field_published_value']['value'] = array(
+    1 => '1',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -470,6 +485,7 @@ function planetmath_views_views_default_views() {
  <li><a href="./node/add/article">Add new Article</a></li> 
  <li><a href="./msc_browser">View sorted by MSC</a></li> 
  <li><a href="./revisions">View sorted by revision date</a></li> 
+ <li><a href="./articlesicanedit">Only show articles I can edit</a></li> 
  <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
 </ul> '),
     t('AddArticle'),
@@ -589,6 +605,13 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'article' => 'article',
   );
+  /* Filter criterion: Content: Public (field_published) */
+  $handler->display->display_options['filters']['field_published_value']['id'] = 'field_published_value';
+  $handler->display->display_options['filters']['field_published_value']['table'] = 'field_data_field_published';
+  $handler->display->display_options['filters']['field_published_value']['field'] = 'field_published_value';
+  $handler->display->display_options['filters']['field_published_value']['value'] = array(
+    1 => '1',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -643,6 +666,210 @@ function planetmath_views_views_default_views() {
     t('Feed'),
   );
   $export['articlesbyproblem'] = $view;
+
+  $view = new view();
+  $view->name = 'articlesicanedit';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'node';
+  $view->human_name = 'ArticlesICanEdit';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['title'] = 'Articles';
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['query']['options']['distinct'] = TRUE;
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '20';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['row_plugin'] = 'fields';
+  /* Header: Global: Text area */
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  $handler->display->display_options['header']['area']['label'] = 'Add article';
+  $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
+ <li><a href="./node/add/article">Add new Article</a></li> 
+ <li><a href="./msc_browser">View sorted by MSC</a></li>
+ <li><a href="./revisions">View sorted by revision date</a></li> 
+ <li><a href="./articles">Include articles I can\'t edit</a></li> 
+ <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+</ul> ';
+  $handler->display->display_options['header']['area']['format'] = 'full_html';
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['label'] = 'AddArticle';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
+ <li><a href="node/add/article">Add new Article</a></li> 
+</ul> ';
+  $handler->display->display_options['empty']['area']['format'] = 'full_html';
+  /* Relationship: Content: Author */
+  $handler->display->display_options['relationships']['uid']['id'] = 'uid';
+  $handler->display->display_options['relationships']['uid']['table'] = 'node';
+  $handler->display->display_options['relationships']['uid']['field'] = 'uid';
+  /* Relationship: OG membership: OG membership from Node */
+  $handler->display->display_options['relationships']['og_membership_rel']['id'] = 'og_membership_rel';
+  $handler->display->display_options['relationships']['og_membership_rel']['table'] = 'node';
+  $handler->display->display_options['relationships']['og_membership_rel']['field'] = 'og_membership_rel';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_type'] = 'h2';
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  /* Field: Content: Updated date */
+  $handler->display->display_options['fields']['changed']['id'] = 'changed';
+  $handler->display->display_options['fields']['changed']['table'] = 'node';
+  $handler->display->display_options['fields']['changed']['field'] = 'changed';
+  $handler->display->display_options['fields']['changed']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['changed']['date_format'] = 'long';
+  /* Field: User: Name */
+  $handler->display->display_options['fields']['name']['id'] = 'name';
+  $handler->display->display_options['fields']['name']['table'] = 'users';
+  $handler->display->display_options['fields']['name']['field'] = 'name';
+  $handler->display->display_options['fields']['name']['relationship'] = 'uid';
+  $handler->display->display_options['fields']['name']['label'] = 'Last updated by';
+  $handler->display->display_options['fields']['name']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['name']['alter']['text'] = '[name] on [changed]';
+  /* Sort criterion: Content: Post date */
+  $handler->display->display_options['sorts']['created']['id'] = 'created';
+  $handler->display->display_options['sorts']['created']['table'] = 'node';
+  $handler->display->display_options['sorts']['created']['field'] = 'created';
+  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
+  /* Contextual filter: Content: Title */
+  $handler->display->display_options['arguments']['title']['id'] = 'title';
+  $handler->display->display_options['arguments']['title']['table'] = 'node';
+  $handler->display->display_options['arguments']['title']['field'] = 'title';
+  $handler->display->display_options['arguments']['title']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['title']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['title']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['title']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['title']['glossary'] = TRUE;
+  $handler->display->display_options['arguments']['title']['limit'] = '1';
+  /* Contextual filter: OG membership: Group ID */
+  $handler->display->display_options['arguments']['gid']['id'] = 'gid';
+  $handler->display->display_options['arguments']['gid']['table'] = 'og_membership';
+  $handler->display->display_options['arguments']['gid']['field'] = 'gid';
+  $handler->display->display_options['arguments']['gid']['relationship'] = 'og_membership_rel';
+  $handler->display->display_options['arguments']['gid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['gid']['default_argument_type'] = 'og_user_groups';
+  $handler->display->display_options['arguments']['gid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['gid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['gid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['gid']['break_phrase'] = TRUE;
+  $handler->display->display_options['filter_groups']['groups'] = array(
+    1 => 'AND',
+    2 => 'OR',
+  );
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'article' => 'article',
+  );
+  $handler->display->display_options['filters']['type']['group'] = 1;
+  /* Filter criterion: Content: Public (field_published) */
+  $handler->display->display_options['filters']['field_published_value']['id'] = 'field_published_value';
+  $handler->display->display_options['filters']['field_published_value']['table'] = 'field_data_field_published';
+  $handler->display->display_options['filters']['field_published_value']['field'] = 'field_published_value';
+  $handler->display->display_options['filters']['field_published_value']['value'] = array(
+    1 => '1',
+  );
+  $handler->display->display_options['filters']['field_published_value']['group'] = 1;
+  /* Filter criterion: OG membership: State */
+  $handler->display->display_options['filters']['state']['id'] = 'state';
+  $handler->display->display_options['filters']['state']['table'] = 'og_membership';
+  $handler->display->display_options['filters']['state']['field'] = 'state';
+  $handler->display->display_options['filters']['state']['relationship'] = 'og_membership_rel';
+  $handler->display->display_options['filters']['state']['value'] = array(
+    1 => '1',
+  );
+  $handler->display->display_options['filters']['state']['group'] = 2;
+  /* Filter criterion: User: Current */
+  $handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
+  $handler->display->display_options['filters']['uid_current']['table'] = 'users';
+  $handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
+  $handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
+  $handler->display->display_options['filters']['uid_current']['value'] = '1';
+  $handler->display->display_options['filters']['uid_current']['group'] = 2;
+
+  /* Display: Page */
+  $handler = $view->new_display('page', 'Page', 'page');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['path'] = 'articlesicanedit';
+
+  /* Display: Feed */
+  $handler = $view->new_display('feed', 'Feed', 'feed_1');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['style_plugin'] = 'rss';
+  $handler->display->display_options['row_plugin'] = 'node_rss';
+  $handler->display->display_options['path'] = 'articlesicanedit/rss.xml';
+  $handler->display->display_options['displays'] = array(
+    'page' => 'page',
+    'default' => 0,
+  );
+  $translatables['articlesicanedit'] = array(
+    t('Master'),
+    t('Articles'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort by'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('« first'),
+    t('‹ previous'),
+    t('next ›'),
+    t('last »'),
+    t('Add article'),
+    t('<ul class="action-links"> 
+ <li><a href="./node/add/article">Add new Article</a></li> 
+ <li><a href="./msc_browser">View sorted by MSC</a></li>
+ <li><a href="./revisions">View sorted by revision date</a></li> 
+ <li><a href="./articles">Include articles I can\'t edit</a></li> 
+ <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+</ul> '),
+    t('AddArticle'),
+    t('<ul class="action-links"> 
+ <li><a href="node/add/article">Add new Article</a></li> 
+</ul> '),
+    t('author'),
+    t('OG membership from node'),
+    t('Updated date'),
+    t('Last updated by'),
+    t('[name] on [changed]'),
+    t('All'),
+    t('Page'),
+    t('Feed'),
+  );
+  $export['articlesicanedit'] = $view;
 
   $view = new view();
   $view->name = 'clone_of_og_content';
@@ -1267,13 +1494,6 @@ else if (!$field_correction_closed){
  <li><a href="node/add/image">Add new Image</a></li> 
 </ul> ';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['field_gallery_image']['id'] = 'field_gallery_image';
-  $handler->display->display_options['fields']['field_gallery_image']['table'] = 'field_data_field_gallery_image';
-  $handler->display->display_options['fields']['field_gallery_image']['field'] = 'field_gallery_image';
-  $handler->display->display_options['fields']['field_gallery_image']['label'] = '';
-  $handler->display->display_options['fields']['field_gallery_image']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_gallery_image']['hide_alter_empty'] = FALSE;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';

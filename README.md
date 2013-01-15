@@ -225,7 +225,7 @@ Or grab the latest coffeescript if you're on an older system: http://coffeescrip
 
 ```
 npm install redis
-npm link
+sudo npm link
 cake.coffeescript build
 cake.coffeescript webclient
 ```
@@ -240,6 +240,8 @@ bin/exampleserver
 
 ### INSTALL THE SHAREJSSERVICES MODULE 
 
+This module ships with Planetary.  If you haven't already turned it on, do so now:
+
 ```
 drush -y en sharejsservices
 ```
@@ -247,6 +249,10 @@ drush -y en sharejsservices
 And enable the ACE 2.0 editor at ```admin/config/content/wysiwyg```.
 
 ## INSTALL APACHE SOLR
+
+Pick a mirror from
+[Apache](http://www.apache.org/dyn/closer.cgi/lucene/solr/3.6.1) and
+download Solr with a command similar to this one:
 
 ```
 wget http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/3.6.1/apache-solr-3.6.1-src.tgz
@@ -276,11 +282,11 @@ mv solr/example/solr/conf/protwords.txt solr/example/solr/conf/protwords.bak
 cd ../drupal_planetary
 drush dl apachesolr
 
-cp sites/all/modules/apachesolr/solr-conf/schema-solr3x.xml \
+cp sites/all/modules/apachesolr/solr-conf/solr-3.x/schema.xml \
  ../apache-solr-3.6.1/solr/example/solr/conf/schema.xml
-cp sites/all/modules/apachesolr/solr-conf/solrconfig.xml \
+cp sites/all/modules/apachesolr/solr-conf/solr-3.x/solrconfig.xml \
  ../apache-solr-3.6.1/solr/example/solr/conf/solrconfig.xml
-cp sites/all/modules/apachesolr/solr-conf/protwords.txt \
+cp sites/all/modules/apachesolr/solr-conf/solr-3.x/protwords.txt \
  ../apache-solr-3.6.1/solr/example/solr/conf/protwords.txt
 ```
 
@@ -320,6 +326,14 @@ drush -y en apachesolr_user
 ```
 
 and visit ```admin/config/search/apachesolr``` to tick the box selecting User as an indexable type.
+
+**Finally, you definitely want to do**
+```
+drush -y dl apachesolr_views
+drush -y en apachesolr_views
+```
+
+(PlanetMath will depend on this stuff, so I'll get as much of it as possible into the profile...)
 
 There are some additional plugins but details on those will follow later.  See this ticket [#141](https://github.com/cdavid/drupal_planetary/issues/141) for some further notes.
 

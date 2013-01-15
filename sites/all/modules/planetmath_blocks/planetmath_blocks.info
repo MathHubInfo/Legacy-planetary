@@ -3,3 +3,5 @@ description = "Adds useful blocks for the planetmath theme"
 version = 7.x-1.0
 package = Other
 core = 7.x
+
+dependencies[] = planetmath_og

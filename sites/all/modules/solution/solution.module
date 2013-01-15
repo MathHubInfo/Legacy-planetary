@@ -1,7 +1,25 @@
 <?php
 
-// first a couple of things so we can include the text of the problem
-// when adding a solution
+/* We implement hook_entity_info_alter and hook_preprocess_node,
+   together with node--problem--content.tpl.php (in the templates
+   directory) and solution-node-form.tpl.php (in this directory) in
+   order to be able to show a problem's content at the top of the page
+   when filling in a solution.
+
+   Throughout all of this, "content" in the name of the relevant "view
+   mode".  This is picked up by hook_preprocess_node which then
+   provides a theming suggestion.  
+
+   Ultimately the (rendered?) content is included into the solution form by running
+   node_view($my_problem,'content')
+   inside
+   solution_form_solution_node_form_alter(...). 
+
+   Finally, note that in order for this to work "out of the box", we need
+   to set visibility for 'field_question_latex' to be non-hidden in 
+   hook_node_view, otherwise it won't actually be available for theming.
+   
+   */
 
 /**
  * implements hook_entity_info_alter
@@ -113,8 +131,11 @@ function solution_node_insert($node) {
     }
 }
 
+// We could put in a second parameter here if we wanted to do some
+// more particular tweaks to the view mode, see
+// http://api.drupal.org/api/drupal/modules!node!node.api.php/function/hook_node_view/7
 function solution_node_view($node){
-  
+ 
   // for node with type==solution
   // .. nothing special (at least for now)
 
@@ -138,6 +159,9 @@ function solution_node_view($node){
         '#theme' => 'planetary_links',
         '#links' => $newlinks
     );
+
+    // Need to set this to non-hidden in order for it to show up
+    $node->content['field_question_latex']['#hidden'] = FALSE;
   }
 }
 

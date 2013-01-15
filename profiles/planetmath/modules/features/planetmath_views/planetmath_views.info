@@ -16,6 +16,7 @@ features[views_view][] = answered_questions
 features[views_view][] = articlerevisions
 features[views_view][] = articles
 features[views_view][] = articlesbyproblem
+features[views_view][] = articlesicanedit
 features[views_view][] = clone_of_og_content
 features[views_view][] = clone_of_og_members
 features[views_view][] = collections

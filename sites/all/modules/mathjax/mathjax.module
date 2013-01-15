@@ -1,8 +1,27 @@
 <?php
 
 function mathjax_preprocess( &$variables, $hook ){
-   
-	if ( !stristr($_SERVER["HTTP_USER_AGENT"], "Firefox") ) {
+  $strfirefox=stristr($_SERVER["HTTP_USER_AGENT"], "Firefox");
+  $strchrome=stristr($_SERVER["HTTP_USER_AGENT"], "Chrome");
+  $strsafari=stristr($_SERVER["HTTP_USER_AGENT"], "Safari");
+  // If we don't have a sufficiently big version of a MathML-compliant browser...
+  if ( !(( $strfirefox !=FALSE && 
+           intval(substr($strfirefox, 
+			 strpos($strfirefox,"/")+1,
+			 strpos($strfirefox, ".")-
+                         strpos($strfirefox,"/")-1))>=4)||
+       ( $strchrome !=FALSE && 
+           intval(substr($strchrome, 
+			 strpos($strchrome,"/")+1,
+			 strpos($strchrome, ".")-
+                         strpos($strchrome,"/")-1))>=24)||
+       ( $strsafari !=FALSE && 
+	 intval(substr($strsafari, 
+		       strpos($strsafari,"/")+1,
+		       strpos($strsafari, ".")-
+		       strpos($strsafari,"/")-1))>=537)) )
+    // then we must use MathJaX instead
+    {
       drupal_add_js('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=MML_HTMLorMML', array( 'type' => 'external', 'weight' => 2 ) );
       drupal_add_js(drupal_get_path("module","mathjax")."/mathjax.js", array('type' => 'file', 'weight' => 3) );
 	}

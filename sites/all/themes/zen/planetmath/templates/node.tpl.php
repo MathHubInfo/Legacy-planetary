@@ -84,32 +84,28 @@
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
- <?php
-  print render($title_prefix); ?>
- <?php if ($node->textitle) : ?>
+   <?php /* We won't use the theme to display titles for articles, rather, we use
+            LaTeXML for that.*/ ?>
+  <?php if ( ($node->textitle) && ($node->type != 'article') ) : ?>
+  <?php print render($title_prefix); ?>
     <h1<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $node->textitle; ?></a></h1>
-  <?php endif; ?>
   <?php print render($title_suffix); ?>
+  <?php endif; ?>
 
   <?php if ($unpublished): ?>
     <div class="unpublished"><?php print t('Unpublished'); ?></div>
   <?php endif; ?>
 
-  <?php if ($display_submitted): ?>
-    <div class="submitted">
-      <?php print $submitted;
-?>
-  <?php if ($type === 'article'): ?>
-      <p> Authors:
-     <?php
-            //dd($content['planetmath_og_display_coauthors']);
-            print render($content['planetmath_og_display_coauthors']); 
-      ?>
-      </p>
-  <?php endif; ?>
-    </div>
-  <?php endif; ?>
+   <?php /* Ideally we would ALWAYS put the "submitted" and
+	    "authorship" information into a block, similar to the
+	    Interact block -- once that's sorted out, this stuff can
+            be taken out of this part of the theme. */ ?>
 
+  <?php if ($type=='forum'): ?>
+    <div class="submitted">
+      <?php print $submitted; ?>
+    </div>
+   <?php endif; ?>
   
   <?php /* Only for groups!*/
    if ($type === 'group'): ?>

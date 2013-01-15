@@ -159,8 +159,8 @@ function collection_form_submit($form, &$form_state) {
 	     array(':weight' => $item['weight'], ':id' => $id)
     );
   }
-  dd('redirecting to:');
-  dd($form['cid']);
+  //dd('redirecting to:');
+  //dd($form['cid']);
   
   drupal_goto('node/'.$form['cid']['#value']);
 }

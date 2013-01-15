@@ -75,6 +75,14 @@ function _question_installed_fields() {
       'cardinality' => 1,
       'type'        => 'user_reference',
       'settings'    => array(
+                             'referenceable_roles' => array(
+                                                            2 => '2',
+                                                            3 => '3',
+                                                            ),
+                             'referenceable_status' => array(
+                                                             0 => 0,
+                                                             1 => '1'
+                                                             ),
                              ),
     ),
     'field_question_closed' => array(
@@ -131,7 +139,7 @@ function _question_installed_instances() {
   $instances = array(
     'field_question_article' => array(
       'field_name'  => 'field_question_article',
-      'label'       => $t('Reference to the article this question is about (if known)'),
+      'label'       => $t('The relevant article'),
       'cardinality' => 1,
       'widget'      => array(
         'type'          => 'node_reference_autocomplete',
@@ -141,13 +149,13 @@ function _question_installed_instances() {
       'field_name'  => 'field_question_fulfiller',
       'label'       => $t('Reference to the user who fulfilled i.e. answered the question'),
       'cardinality' => 1,
-      'settings'    => array(
-                             'type'          => 'user_reference_autocomplete',
+      'widget'      => array(
+                             'type' => 'user_reference_autocomplete',
                              ),
     ),
     'field_question_closed' => array(
       'field_name'  => 'field_question_closed',
-      'label'       => $t('Time when the answer was accepted and the question closed'),
+      'label'       => $t('Time when the answer was posted and the question closed'),
       'cardinality' => 1,
       'widget' => array(
                           'type' => 'text_field',

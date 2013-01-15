@@ -161,6 +161,13 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_set_misc_variables',
                                         ),
+                 'my_cap_task' => array(
+                                        'display_name' => st('Configure site CAPTCHA'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'planetmath_profile_configure_captcha',
+                                        ),
                  'my_13th_task' => array(
                                         'display_name' => st('Configure Menus'),
                                         'display' => TRUE,
@@ -883,22 +890,26 @@ function planetmath_profile_configure_node_types () {
   // Note also: In the future we should find a way to maintain a list of multiple
   // places where images are used.  Probably this will be done with Virtuoso.
   // In which case, we may not need this field in the future.
-  $newfield=array(
-                  'field_name' => 'obj_cname',
-                  'type' => 'text'
-                  );
-  field_create_field($newfield);
-  $newfield_instance=array(
-                           'field_name' => 'obj_cname',
-                           'entity_type' => 'node',
-                           'bundle' => 'image',
-                           'label' => t('Object Canonical Name'),
-                           'description' => t('First article where this image is used'),
-                           'widget' => array(
-                                             'type' => 'text_textfield'
-                                             )
-                           );
-  field_create_instance($newfield_instance);
+
+  // OK, even though we don't have the Virtuoso part set up, I think
+  // it is time to get rid of this field.
+
+  /* $newfield=array( */
+  /*                 'field_name' => 'obj_cname', */
+  /*                 'type' => 'text' */
+  /*                 ); */
+  /* field_create_field($newfield); */
+  /* $newfield_instance=array( */
+  /*                          'field_name' => 'obj_cname', */
+  /*                          'entity_type' => 'node', */
+  /*                          'bundle' => 'image', */
+  /*                          'label' => t('Object Canonical Name'), */
+  /*                          'description' => t('First article where this image is used'), */
+  /*                          'widget' => array( */
+  /*                                            'type' => 'text_textfield' */
+  /*                                            ) */
+  /*                          ); */
+  /* field_create_instance($newfield_instance); */
 
   return NULL;
 }
@@ -1355,6 +1366,36 @@ return false;
 ?>',
                         'cache' => 1,
                         ),
+		  array('module'=> 'planetmath_blocks',
+			'delta' => 'provenance',
+			'theme' => $theme_default,
+			'delta' => 'provenance',
+			'status' => 1,
+			'weight' => -36,
+			'region' => 'sidebar_second',
+			'visibility' => 2,
+			'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ $node=node_load(arg(1));
+ if(   $node->type == "article" 
+    || $node->type == "group"
+    || $node->type == "problem"
+    || $node->type == "solution"
+    || $node->type == "question"
+    || $node->type == "collection")
+  return true;
+else
+ return false;
+}
+return false;
+?>',
+			'cache'=>1,
+			),
+		  // This causes version information to show up on forum posts,
+		  // I'm not sure we want that, but we can think more about it
                   array(
                         'module' => 'planetmath_blocks',
                         'delta' => 'pversion',
@@ -1692,10 +1733,52 @@ function planetmath_profile_set_userpoints_variables () {
   variable_set('settings_additional__active_tab', 'edit-userpoints-nc-comment');
 }
 
+function planetmath_profile_configure_captcha (){
+  db_merge('captcha_points')
+    ->key(array('form_id'=> 'user_register_form'))
+    ->fields(array(
+      'module' => 'riddler',
+      'captcha_type' => 'Riddler'))
+    ->execute();
+
+  db_merge('riddler_questions')
+    ->key(array('qid'=> '1'))
+    ->fields(array(
+      'question' => 'What is twice the base of the natural logarithm?',
+      'answer' => '2e'))
+    ->execute();
+}
+
 function planetmath_profile_set_misc_variables () {
   dd("Profile- In planetmath_profile_set_misc_variables");
   set_time_limit(0);
 
+  // set watchable content types
+  variable_set('watcher_content_types', serialize(array(
+							"article"=> "article",
+							"page"=> 0,
+							"collection"=> 0,
+							"correction"=> "correction",
+							"forum"=> 0,
+							"group"=> 0,
+							"image"=> 0,
+							"news"=> 0,
+							"poll"=> 0,
+							"problem"=> "problem",
+							"question"=> "question",
+							"review"=> 0,
+							"solution"=> 0,
+							)));
+
+  variable_set('watcher_default_settings',
+	       serialize(array(
+			       'watcher_automatic_enable_notifications' => 1,
+			       'watcher_notifications_updates' => 1,
+			       'watcher_notifications_new_comments' => 1,
+			       'watcher_autowatch_commented_on' => 0,
+			       'watcher_autowatch_posted' => 1,
+			       'watcher_share_binder' => 0,
+			       )));
   // Default "Basic page" to not be promoted and have comments disabled.
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
@@ -1981,7 +2064,7 @@ function planetmath_profile_setup_permissions () {
   // Run  SELECT * FROM role_permission;  in mysql to see the
   // list of available permissions
 
-  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','cancel account','use text format tex_editor', 'create article content', 'create correction content', 'create forum content', 'create group content', 'create image content', 'create problem content', 'create review content', 'create solution content', 'create question content', 'edit own article content', 'edit own correction content', 'edit own forum content', 'edit own group content', 'edit own image content', 'edit own problem content', 'edit own review content', 'edit own solution content', 'edit own question content', 'delete own article content', 'delete own correction content', 'delete own group content', 'delete own image content', 'delete own problem content', 'delete own review content', 'delete own solution content', 'delete own question content', 'read privatemsg', 'write privatemsg', 'post comments', 'skip comment approval', 'edit own comments', 'view own userpoints', 'view userpoints', 'use watcher'));
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','cancel account','use text format tex_editor', 'create article content', 'create correction content', 'create forum content', 'create group content', 'create image content', 'create problem content', 'create review content', 'create solution content', 'create question content', 'edit own article content', 'edit own correction content', 'edit own forum content', 'edit own group content', 'edit own image content', 'edit own problem content', 'edit own review content', 'edit own solution content', 'edit own question content', 'delete own article content', 'delete own correction content', 'delete own group content', 'delete own image content', 'delete own problem content', 'delete own review content', 'delete own solution content', 'delete own question content', 'read privatemsg', 'write privatemsg', 'post comments', 'skip comment approval', 'edit own comments', 'view own userpoints', 'view userpoints', 'use watcher', 'change own user settings', 'access help page'));
 
   return NULL;
 }

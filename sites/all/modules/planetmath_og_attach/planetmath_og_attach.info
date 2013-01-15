@@ -6,3 +6,4 @@ package = "Planetary Modules"
 
 dependencies[] = og
 dependencies[] = planetmath_og
+dependencies[] = planetmath_attachable_content
