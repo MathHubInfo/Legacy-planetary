@@ -4,22 +4,11 @@ function planetmath_overview_links_install() {
 
   module_load_include('inc', 'menu', 'menu.admin');
 
-  $form_state = array(
-     'values' => array(
-       'menu_name'  => 'navigation',
-       'weight'     => -10,
-       'link_title' => "Site Content",
-       'link_path'  => 'sysstats',
-       'module'     => 'planetmath_overview',
-       'mlid'       => NULL,
-     ),
-   );
+  // There should only be ONE link like this, so we just select it
 
-  menu_edit_item_validate(array(), $form_state);
-  $toplid = menu_link_save($form_state['values']);
+  $toplid=db_query("SELECT mlid FROM menu_links where module = 'planetmath_overview'")->fetchObject()->mlid;
 
   // Users aren't really "content" so we might want to not put this here!
-
   $users = db_query("SELECT 'users', COUNT(*) as count FROM users")->fetchObject();
 
   $form_state = array(
@@ -37,7 +26,7 @@ function planetmath_overview_links_install() {
   menu_edit_item_validate(array(), $form_state);
   menu_link_save($form_state['values']);
 
-  // now add similar menu items for each of the content types!
+  // In any case, we now run a loop that adds a similar menu item per node type!
 
   $result = db_query("SELECT type, COUNT(*) as count FROM node GROUP BY type");
 

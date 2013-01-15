@@ -1,7 +1,8 @@
 name = planetmath_overview
-description = "Adds interesting overview items to the navigation menu"
+description = "Adds a link to the system stats page in the navigation menu"
 version = 7.x-1.0
 package = PlanetMath
 core = 7.x
 
 dependencies[] = menu
+dependencies[] = planetmath_sysstats

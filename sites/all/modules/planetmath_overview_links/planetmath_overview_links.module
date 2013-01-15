@@ -1,6 +1,11 @@
 <?php
 
 /* Implements hook_node_insert
+ *
+ * Respond to the creation of a new node by updating the stored counts associated with
+ * each of the node types.
+ *
+ * (Comment: why do this in a loop, if we're just updating one type?)
  */
 function planetmath_overview_links_node_insert ($node) {
 
@@ -14,9 +19,12 @@ function planetmath_overview_links_node_insert ($node) {
 
  $result = db_query("SELECT type, COUNT(*) as count FROM node GROUP BY type");
 
+ // Run a loop that adds the node path.
+
+ // This won't work for the "forum" type because there is no "forums" path...
+ // And # forums threads is sort of a different category anyway.  
+ // (So we skip forums in this here.)
  foreach ($result as $obj) {
-   // This won't work for the "forum" type because there is no "forums" path...
-   // And # forums threads is sort of a different category anyway.  Let's just elide it.
    if($obj->type != 'forum') {
      db_merge('menu_links')
        ->key(array('menu_name'=> 'navigation', 'link_path'=> $obj->type . "s"))

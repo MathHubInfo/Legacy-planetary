@@ -4,4 +4,5 @@ version = 7.x-1.0
 package = PlanetMath
 core = 7.x
 
+dependencies[] = menu
 dependencies[] = planetmath_overview
