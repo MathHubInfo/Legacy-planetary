@@ -1,8 +1,8 @@
 <?php
 
-define( 'TABLE_TINFOBAR', 'tInfoBar' );
-define( "TNTBASE_USERNAME", 'planetarybroker' );
-define( "TNTBASE_PASSWORD", 'n3pt4n3' );
+//define( 'TABLE_TINFOBAR', 'tInfoBar' );
+//define( "TNTBASE_USERNAME", 'planetarybroker' );
+//define( "TNTBASE_PASSWORD", 'n3pt4n3' );
 
 /**
 * Implements hook_help.
@@ -22,22 +22,19 @@ function tcontextmenu_help($path, $arg) {
   }
 }
 
+function get_jobad_path() {
+  $cpath = url("", array("absolute"=>true)).libraries_get_path("JOBAD");
+  return $cpath;
+}
+
+
 /**
-* Implements hook_preprocess_node
-*
-* @param &$variables
-*/
-function tcontextmenu_preprocess_node(&$variables = '') {
-  $node              = $variables['node'];
-  $acceptedTypes     = array( 'course_related_page', 'lecture' );
-  $viewMode          = $variables['view_mode'];
-  $acceptedViewModes = array( 'full' );
-
-  if ( !empty($node) && in_array($node->type, $acceptedTypes) && in_array($viewMode, $acceptedViewModes) ) {
-
-    $path = drupal_get_path( 'module', 'tcontextmenu' ) . '/';
+ * Add JOBAD to the rendered page
+ */
+function tcontextmenu_add_jobad() {
+    $path = get_jobad_path() . '/';
     
-    drupal_add_css( $path . 'css/tContextMenu.css' );
+    drupal_add_css( libraries_get_path("JOBAD") . '/css/tContextMenu.css' );
     drupal_add_js( $path . 'js/jquery.jsonp.js', array('weight'=>10)  );
     drupal_add_js( $path . 'js/tContextMenu.js', array('weight'=>11)  );
     drupal_add_js( <<<JS
@@ -45,14 +42,14 @@ function tcontextmenu_preprocess_node(&$variables = '') {
       
         $(function(){
           var target  = $('#block-system-main');
-          var baseURL = Drupal.extraInfo.baseURL + '$path';
+          var baseURL = '$path';
           
           tContextMenu.init({
              baseURL  : baseURL,
              target   : target,
              defaultIcons : {
-                small   : Drupal.extraInfo.baseURL + '$path' + tContextMenu.options.defaultIcons.small,
-                normal  : Drupal.extraInfo.baseURL + '$path' + tContextMenu.options.defaultIcons.normal
+                small   : baseURL + tContextMenu.options.defaultIcons.small,
+                normal  : baseURL + tContextMenu.options.defaultIcons.normal
              },
              views    : [
                 url( 'js/views/contextMenu.view.js' ),
@@ -97,7 +94,26 @@ function tcontextmenu_preprocess_node(&$variables = '') {
      })(jQuery);
 
 JS
-    , array( 'type' => 'inline', 'weight' => 12 ) );
+    , array( 'type' => 'inline', 'weight' => 12 ) );  
+}
+
+
+/**
+* Implements hook_preprocess_node
+*
+* @param &$variables
+*/
+function tcontextmenu_preprocess_node(&$variables = '') {
+  if (!isset($variables['node'])) {
+    return;
+  }
+  $node              = $variables['node'];
+  $acceptedTypes     = array( 'course_related_page', 'lecture', 'article', 'ontology' );
+  $viewMode          = $variables['view_mode'];
+  $acceptedViewModes = array( 'full' );
+
+  if ( !empty($node) && in_array($node->type, $acceptedTypes) && in_array($viewMode, $acceptedViewModes) ) {
+    tcontextmenu_add_jobad();
   }
 }
 

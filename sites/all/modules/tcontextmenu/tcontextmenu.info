@@ -4,5 +4,6 @@ version        = 0.6
 package        = Planetary Modules
 dependencies[] = "local_comments"
 dependencies[] = "planetaryinfo"
+dependencies[] = "libraries"
 core           = 7.x
 
