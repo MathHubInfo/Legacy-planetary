@@ -104,7 +104,7 @@ libparse-recdescent-perl libxml-libxslt-perl libdb5.1 libdb5.1-dev \
 libgdbm-dev libarchive-zip-perl unzip
 
 sudo perl -MCPAN -e shell
-install Parse::RecDescent XML::LibXSLT DB_File Data::Compare
+install Parse::RecDescent XML::LibXSLT DB_File Data::Compare File::Which
 quit
 ```
 
