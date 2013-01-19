@@ -9,6 +9,22 @@ find out!
 
 Questions or ideas?  Get in touch via the [Google group](http://groups.google.com/group/planetary-dev).
 
+## Summary/TOC
+
+1. [Grab the code](https://github.com/cdavid/drupal_planetary/#grab-the-code-from-this-repository)
+1. [Install drush](https://github.com/cdavid/drupal_planetary/#install-drush)
+1. [Create database](https://github.com/cdavid/drupal_planetary/#create-database)
+1. [Configure Apache](https://github.com/cdavid/drupal_planetary/#configure-apache)
+1. [Install required modules](https://github.com/cdavid/drupal_planetary/#install-required-modules)
+1. [Install LaTeXML](https://github.com/cdavid/drupal_planetary/#install-latexml)
+1. [Set up Virtuoso](https://github.com/cdavid/drupal_planetary/#set-up-virtuoso)
+1. [Set up PyRDFa](https://github.com/cdavid/drupal_planetary/#set-up-pyrdfa)
+1. [Get the ACE Editor](https://github.com/cdavid/drupal_planetary/#get-the-ace-editor-and-put-it-in-your-libraries-directory)
+1. [Get the ShareJS repository](https://github.com/cdavid/drupal_planetary/#get-the-sharejs-repository)
+1. [Install Apache Solr](https://github.com/cdavid/drupal_planetary/#install-apache-solr)
+1. [LaTeX integration](https://github.com/cdavid/drupal_planetary/#latex-integration-to-generate-pdfs)
+1. [Install NNexus](https://github.com/cdavid/drupal_planetary/#install-nnexus)
+
 # Brief installation instructions
 
 Full instructions are [here](http://trac.mathweb.org/planetary/wiki/DrupalPorting).  
