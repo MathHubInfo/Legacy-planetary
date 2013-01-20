@@ -181,22 +181,22 @@
     hide($content['field_sitedoc']);
     hide($content['field_published']);
     hide($content['planetary_links']);
+    hide($content['planetmath_og_display_coauthors']);
     //HACK to get the latex field to work
 //    hide($content['field_latex']);
     //END-HACK
     print render($content);
 ?> 
 
-<?php if(isset($node->field_msc['und'][0]['value'])): ?>
-  
-<h2>Mathematics Subject Classification</h2>
+  <?php if(isset($node->field_msc['und'][0]['value'])): ?>  
+  <h2>Mathematics Subject Classification</h2>
+  <?php $codes=explode(",",$node->field_msc['und'][0]['value']); 
+  foreach($codes as $code){
+    $code = trim($code);
+    print $code . " " . l(msc_browser_get_label($code),"msc_browser/".$code) . "<br/>";
+  } endif; ?>
 
-<?php $codes=explode(",",$node->field_msc['und'][0]['value']); 
-foreach($codes as $code){
-  $code = trim($code);
-  print $code . " " . l(msc_browser_get_label($code),"msc_browser/".$code) . "<br/>";
-} endif; ?>
-  </div>
+ </div> <?php /* End of content div */ ?>
 
   <br />  
   <div id="planetary-links">
