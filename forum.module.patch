@@ -1,0 +1,16 @@
+diff --git a/modules/forum/forum.module b/modules/forum/forum.module
+index 7e8d81b..3c87ba8 100644
+--- a/modules/forum/forum.module
++++ b/modules/forum/forum.module
+@@ -852,6 +852,11 @@ function forum_forum_load($tid = NULL) {
+     $forums[$forum->tid] = $forum;
+   }
+ 
++  // Sort here
++  usort($forums, function($a, $b) {
++      return $b->last_post->created - $a->last_post->created;
++  });
++
+   // Cache the result, and return the tree.
+   $forum_term->forums = $forums;
+   $cache[$tid] = $forum_term;
