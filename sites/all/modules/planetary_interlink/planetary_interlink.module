@@ -1,0 +1,141 @@
+<?php
+
+/* Starting this module as a modified version of
+   planetary_authorlinks.module, which successfully displays links for
+   authors to interact with the document, in a block.
+
+   In the current case, what we want to do is show all the "semantic"
+   links in the current node to other nodes, together with all the
+   "semantic" links from other articles to this one.  (Semantic links
+   are either added by NNexus, or by authors who type \pmlinkname or
+   similar commands into the document.)
+
+   The next step will be to provide ways to interact with these links:
+
+   -- For example, pulling the text from all of the LINKED-TO articles
+   into one page, or making a PDF or collection out of all linked-to
+   articles.  
+
+   -- Another interesting interaction would be to allow users to
+      un-link certain links directly from this interaction box
+      (i.e. change the link policy of the article by point-and-click).
+
+   Note that we retrieve the links from the triple store.  Basically,
+   implementing the module has two steps:
+
+    - Make a new block show up
+    - Populate it with links from the triple store. */
+
+function planetary_interlink_theme ($existing, $type, $theme, $path) {
+  return array(
+      'planetary_interlinks' => array(
+          'variables' => array('links' => array()),
+      ),
+  );
+}
+
+function theme_planetary_interlinks($variables) {
+  return implode(' <br> ', $variables['links']);
+}
+
+function planetary_interlink_block($nid) {
+  $node = node_load($nid);
+  //dpm($node);
+  return array(
+      'subject' => 'Interlinks',
+      'content' => "Somehow we have to get the links to show up here.  We currently have the node, but not rendered content... " . '``' . $node->title . "''"
+  );
+}
+
+/* Implements hook_block_view 
+ * This works in combination with the block defined in planetary_interlink.install
+ * and the contents defined just above in planetary_interlink_block
+ * However, for better functioning, we need to sue hook_page_build, see below
+ */
+function planetary_interlink_block_view($delta = '') {
+  $block = array();
+  if ($delta == 'interlinks') {
+    $block = planetary_interlink_block(arg(1));
+  }
+  return $block;
+}
+
+// This should reach inside the node and get the # of links back out
+// But that's tricky to do here, and easy to do later, so instead, we fake it.
+function planetary_interlink_countLinks($nid){
+  if (user_is_logged_in()) {
+  $node = node_load($nid);
+  if($node){
+    if ($node->type == 'article' 
+	|| $node->type == 'group'
+	|| $node->type == 'problem'
+	|| $node->type == 'solution'
+	|| $node->type == 'question'
+        || $node->type == 'collection') {
+      return TRUE;
+    }
+   }
+  }
+  return FALSE;
+}
+
+/* Implements hook_page_build
+ *
+ * For Planetary Interlinks, we might not need the "big gun" provided
+ * by this hook, since we're not moving content out of the node, but
+ * rather, retrieving it from the triple store.  Still, it should
+ * work.  Compare the implementation in Planetary Authorlinks for
+ * further comments.
+ *
+ * TODO: revise to make this use a node-level hook instead.
+ */
+function planetary_interlink_page_build(&$page){
+  //dd("page_build hook runs");
+  //dpm($page);
+
+  // We will probably want to *display* the block even if the user isn't logged in
+  // -- we just won't provide the same set of *interactions*.
+  if (user_is_logged_in()) {
+    $node = node_load(arg(1));
+    if(is_object($node) && ($node->type == 'article' 
+			    || $node->type == 'group'
+			    || $node->type == 'problem'
+			    || $node->type == 'solution'
+			    || $node->type == 'question'
+			    || $node->type == 'collection')) {
+
+  include_once('sites/all/libraries/ARC2/arc/ARC2.php');
+  $endpoint = (object) array('uri' => "http://planet.math.uwaterloo.ca:8890/sparql");
+  $graph="http://planet.math.uwaterloo.ca:8890/DAV/home/dba/rdf_sink/";
+
+  // This will have to be revised when we have real RDFa again
+  $query = "PREFIX pm: <http://alpha.planetmath.org/ns/> ".
+           "PREFIX local: <http://local.virt/> ".
+           "SELECT ?a ?target WHERE { ".
+           "GRAPH <".$graph."> { ".
+    // "local:".$node->field_canonicalname."
+              "?a pm:linksTo ?target ".
+           "}}";
+    $result = sparql_request($query, $endpoint);
+
+    //dpm($result['result']['rows']);
+
+    $links = array();
+    if (sizeof($result['result']['rows'])>0){
+      for ($i = 0; $i < sizeof($result['result']['rows']); $i++) {
+	$target = $result['result']['rows'][$i]['target'];
+	$target_nid = substr($target, 33);
+	$target_node = node_load($target_nid);
+	$links[] = l($target_node->title,$target_nid);
+      }
+    }
+    if(!empty($links)) { // concatenate them and stick that into the block
+      $catted_links = '<b>Outbound</b>:<br> <ul><li>' . implode(' <br><li> ', $links) . '</ul>';
+      $page['sidebar_second']['planetary_interlink_interlinks']['#markup'] = $catted_links;
+    } 
+    else { // get rid of the block 
+      unset($page['sidebar_second']['planetary_interlink_interlinks']);
+    }
+    }
+  }
+}

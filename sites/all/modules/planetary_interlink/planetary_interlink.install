@@ -1,0 +1,43 @@
+<?php
+/* implements hook_install
+ * The thought here is to make this module self-contained
+ * since interactions are ubiquitous and people not using the PlanetMath installation
+ * profile may well want to use them.
+ */ 
+function planetary_interlink_install() {
+$block = array('module' => 'planetary_interlink',
+               'delta' => 'interlinks',
+               'theme' => variable_get('theme_default'),
+               'status' => 1,
+               'weight' => -33,
+               'region' => 'sidebar_second',
+               'visibility' => 2,
+               'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return planetary_interlink_countLinks(arg(1));
+}
+return false;
+?>',
+               'cache' => 1,
+               );
+
+    db_merge('block')
+      ->key(array('module'=>$block['module'],
+		  'theme'=>$block['theme'],
+		  'delta' => $block['delta']))
+      ->fields(array('module'=> $block['module'],
+		     'theme' => $block['theme'],
+		     'delta' => $block['delta'],
+		     'status' => $block['status'],
+		     'weight' => $block['weight'],
+		     'region' => $block['region'],
+		     'visibility' => $block['visibility'],
+		     'pages' => $block['pages'],
+		     'cache' => $block['cache']))
+      ->execute();
+}
+
+

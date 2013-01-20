@@ -1,0 +1,5 @@
+name = "Planetary InterLink"
+description = "Display and interact with cross-references between articles and other content"
+package = "Planetary Modules"
+core = "7.x"
+version = "7.x-1.0"
