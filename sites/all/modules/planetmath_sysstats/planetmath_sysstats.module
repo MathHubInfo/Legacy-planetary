@@ -20,7 +20,6 @@ function planetmath_sysstats_menu() {
       'title' => 'System Stats',
       'type' => MENU_CALLBACK,
       'page callback' => 'planetmath_sysstats_show',
-      'page arguments' => array(1),
       'access arguments' => array('access comments')
   );
 
@@ -28,7 +27,7 @@ function planetmath_sysstats_menu() {
 }
 
 
-function planetmath_sysstats_show($nid){
+function planetmath_sysstats_show(){
 
   $midnight = strtotime('midnight today');
   $yesterday = strtotime('midnight yesterday');
