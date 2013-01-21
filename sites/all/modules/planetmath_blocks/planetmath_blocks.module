@@ -612,14 +612,16 @@ function planetmath_blocks_block_provenance($nid) {
       $results = db_query("SELECT users.name,users.uid
     FROM og_membership om INNER JOIN users
     ON om.etid = users.uid 
-    WHERE om.entity_type = 'user' AND om.gid= :gid ORDER BY $sortBy DESC",
+    WHERE om.entity_type = 'user' AND om.gid= :gid ORDER BY om.created DESC",
 			  array(':gid' => $group->nid));
 
       foreach ($results as $result) {
-	$new = array(
-		     "$name" => l($name, 'user/' . $uid),
-		     );
-	$links = array_merge($links,$new );
+	if($result->name){
+	  $new = array(
+		       "$result->name" => l($result->name, 'user/' . $result->name),
+		       );
+	  $links = array_merge($links,$new);
+	}
       }
     }
     $provenance .= "<br>Author(s): " . implode($links, ", ");
