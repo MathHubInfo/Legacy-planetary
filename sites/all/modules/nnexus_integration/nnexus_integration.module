@@ -112,32 +112,34 @@ function nnexus_integration_check($objid) {
  *
  * Apart from that, we just use the autolinking function by hooking into
  * hook_drutexml_postprocess (the implementatation is at the top of this file)
+ *
+ * NB. Commenting these out for now, since the API isn't quite ready for this
  */
 
-function nnexus_integration_node_insert($node){
-  if($node->type=='article') {
-    nnexus_integration_add($node->title, 
-                           $node->body, 
-                           $node->nid, 
-                           $node->uid, 
-                           $node->linkpolicy,
-                           $node->classes,
-                           $node->synonyms,
-                           $node->defines,
-                           $node->batchmode);
-  }
-}
+/* function nnexus_integration_node_insert($node){ */
+/*   if($node->type=='article') { */
+/*     nnexus_integration_add($node->title,  */
+/*                            $node->body,  */
+/*                            $node->nid,  */
+/*                            $node->uid,  */
+/*                            $node->linkpolicy, */
+/*                            $node->classes, */
+/*                            $node->synonyms, */
+/*                            $node->defines, */
+/*                            $node->batchmode); */
+/*   } */
+/* } */
 
-function nnexus_integration_node_update($node){
-  if($node->type=='article') {
-    nnexus_integration_add($node->title, 
-                           $node->body, 
-                           $node->nid, 
-                           $node->uid, 
-                           $node->linkpolicy,
-                           $node->classes,
-                           $node->synonyms,
-                           $node->defines,
-                           $node->batchmode);
-  }
-}
+/* function nnexus_integration_node_update($node){ */
+/*   if($node->type=='article') { */
+/*     nnexus_integration_add($node->title,  */
+/*                            $node->body,  */
+/*                            $node->nid,  */
+/*                            $node->uid,  */
+/*                            $node->linkpolicy, */
+/*                            $node->classes, */
+/*                            $node->synonyms, */
+/*                            $node->defines, */
+/*                            $node->batchmode); */
+/*   } */
+/* } */
