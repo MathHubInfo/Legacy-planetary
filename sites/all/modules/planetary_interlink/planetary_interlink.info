@@ -3,3 +3,5 @@ description = "Display and interact with cross-references between articles and o
 package = "Planetary Modules"
 core = "7.x"
 version = "7.x-1.0"
+
+dependencies[] = sparql
