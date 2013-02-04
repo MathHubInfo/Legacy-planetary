@@ -20,7 +20,7 @@ console = console || {
        */
       options  : {
          /** the base url for the plugin itself - used for referencing components **/
-         baseURL : './',
+         baseURI : './',
          /** the container in which the contextMenu will be triggered */
          target   : $(document),
          /** the default parent in which the contextMenu will be inserted */
