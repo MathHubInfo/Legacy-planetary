@@ -74,12 +74,12 @@ function tntbase_sync_nodes($nids) {
 	}
 }
 
-function tntbase_node_load_or_import($tnt_path) {
+function tntbase_node_load_or_import($tnt_path, $content_type="article", $body_field="body", $type="latex") {
 	$nid = tntbase_node_getNodeFromPath($tnt_path);
 	if ($nid) {
 		return $nid;
 	} else {
-		return tntbase_node_import($tnt_path);
+		return tntbase_node_import($tnt_path, $content_type, $body_field, $type);
 	}
 }
 
