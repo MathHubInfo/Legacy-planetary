@@ -51,14 +51,14 @@ function drutexml_menu() {
  */
 function drutexml_filter_info() {
   global $debug_drutexml; 
-
+  $filters = array();
+  
   $filters['latex'] = array(
     'title' => t('LaTeX filter'),
     'description' => t('The text will be passed as LaTeX to LaTeXML daemon and then shown to the user'),
     'process callback' => '_drutexml_filter_latex_process',
     'default settings' => array(
       'latexml_url' => 'http://latexml.mathweb.org/convert',
-      'latexml_profile' => 'planetmath',
       'latexml_preamble' => '',
     ),
     'cache' => $debug_drutexml == 0,
@@ -145,7 +145,7 @@ function _drutexml_omdoc2html5($text, $filter, $format, $langcode, $cache, $cach
   $cache = _drutexml_cache_read($key);
 
   // HACK
-  $text = str_replace("/opt/latexml/webapp/mikoslides", "/test.omdoc", $text);
+  $text = str_replace("xmlns:stex=\"http://kwarc.info/ns/sTeX\"", "xmlns:stex=\"http://kwarc.info/ns/sTeX\" xml:base=\"http://192.168.111.129:3002/sissi/winograd/cds/test.omdoc\"", $text);
 
   if (isset($cache) && $debug_drutexml == 0) {
     return $cache;
@@ -153,7 +153,6 @@ function _drutexml_omdoc2html5($text, $filter, $format, $langcode, $cache, $cach
 
   $host = isset($filter->settings['jomdoc_url']) ? $filter->settings['jomdoc_url'] : 'http://127.0.0.1/jomdoc.php';
   $data = "omdoc=".urlencode($text);
-
   $content = planetary_webglue_do_post($host,$data);
 
   _drutexml_cache_set($key, $content);
@@ -193,7 +192,7 @@ function _drutexml_preamble_enricher($text, $filter, $format, $langcode, $cache,
     if (strlen($path) > 0) {
       $dir = dirname($path);
       $basePath = $filter->settings["tntbase_prefix"].$dir;
-      $text = "\\baseURI[".$dir."]{".$basePath."}\n".$text;
+      //$text = "\\baseURI[".$dir."]{".$basePath."}\n".$text;
     }
   }
   return $text;
@@ -228,7 +227,7 @@ function _drutexml_filter_latex_settings($form, $form_state, $filter, $format, $
     '#description' => t('The URL of the LaTeXMl daemon.'),
   );
   $settings['latexml_profile'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('Profile to be used'),
     '#default_value' => isset($filter->settings['latexml_profile']) ? $filter->settings['latexml_profile'] : $defaults['latexml_profile'],
     '#description' => t('The profile to be used for the daemon.'),
@@ -297,11 +296,20 @@ function process_latexml($host, $text, $preamble, $metadata, $profile) {
       dd("LATEXML HOST IS");
       dd($host);
       
-      dd("LATEXML DATA IS");
-      dd($data);
+      dd("Preamble is");
+      dd($preamble);
+      dd("Tex");
+      dd($text);
+
+      dd($data, "data is");
     }
  
   $content = planetary_webglue_do_post($host,$data);
+  if ($debug_drutexml)
+    {
+      dd("RESULT");
+      dd($content);
+    }
   $res = json_decode($content);
   $res = trim($res->{'result'});
   return $res;
@@ -336,7 +344,6 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
     {
       dd($latex_preamble,"received preamble");
       dd($latex_etid,"received etid");
-      dd($latex_metadata, "received metadata");
     }
 
   // so it receives the right data
