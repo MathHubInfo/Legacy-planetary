@@ -84,7 +84,8 @@ drush -y dl migrate views features reroute_email references \
  pathauto profile2 subform token relation \
  relation_select  legal recaptcha userpoints userpoints_nc \
  privatemsg content_access ctools delete_all devel backup_migrate commentrss \
- nodeaccess wysiwyg views_php sparql filefield_paths date dhtml_menu
+ nodeaccess wysiwyg views_php sparql filefield_paths date dhtml_menu \
+ riddler apachesolr apachesolr_views
 
 drush -y dl og-7.x-2.x-dev entityreference-7.x-1.x-dev entity-7.x-1.x-dev \
  views_bulk_operations-7.x-3.x-dev captcha-7.x-1.x-dev efq_views-7.x-1.x-dev \
