@@ -1,0 +1,231 @@
+<?php
+
+/**
+ * checks if the user is able to access the path @path
+ * @return path - normalized path of the file to be accessed
+ *         false - if not allowed 
+ */
+function vfs_local_access_path($path) {
+  $root = realpath(variable_get('vfs_local_path', "/tmp/"));
+  $p = realpath(dirname($root."/".$path));
+  if (strlen($p)==0)
+    return false;
+  $prefix = substr($p, 0, strlen($root)); 
+  if (strcmp($prefix, $root) == 0)
+    return $p."/".basename($path);
+  else
+    return false;
+}
+
+function vfs_local_save($path, $content) {
+  $full_path = vfs_local_access_path($path);
+  if (!$full_path) 
+    return false;
+  $f = fopen($full_path, "w");
+  fwrite($f, $content);
+  fclose($f);
+}
+
+function vfs_local_load($path) {
+  $full_path = vfs_local_access_path($path);
+  $f = fopen($full_path, "r");
+  $content = fread($f, 1000000);
+  fclose($f);
+  return $content;
+}
+
+function vfs_local_settings(&$element) {
+  $element["vfs_local_path"] = array(
+      "#type" => "textfield",
+      "#title" => "Path to the root directory",
+      "#default_value" => variable_get('vfs_local_path', "/tmp/"),
+    );
+}
+
+function vfs_virtual_settings(&$element) {
+}
+
+function vfs_repo_provider() {
+  return array(
+    "local" => array(
+        "label" => "Local File System",
+        "settings" => 'vfs_local_settings',
+        "save" => 'vfs_local_save',
+        "load" => 'vfs_local_load'
+      ),
+    "VFS" => array(
+        "label" => "Virtual File System",
+        "settings" => 'vfs_virtual_settings'
+      )
+    );
+}
+
+function vfs_menu() {
+  //create page where the paths can be configured
+  $items = array();
+  $items['admin/config/content/vfs'] = array(
+    'title' => 'Repositories configuration',
+    'description' => 'Configure the VFS to connect to',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('vfs_config_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+function vfs_save_file($path, $contents) {
+  $current = variable_get('vfs_provider', null);
+  if ($current) {
+    $providers = module_invoke_all("repo_provider");
+    $providers[$current]["save"]($path, $contents);
+  };
+}
+
+function vfs_load_file($path) {
+  $current = variable_get('vfs_provider', null);
+  if ($current) {
+    $providers = module_invoke_all("repo_provider");
+    return $providers[$current]["load"]($path);
+  };
+}
+
+
+function vfs_config_form($form, &$form_state) {
+  $providers = module_invoke_all("repo_provider");
+  $options = array();
+  foreach ($providers as $id=>$provider) {
+    $options[$id] = $provider["label"];
+  }
+  $current = variable_get('vfs_provider', null);
+  $form['vfs_provider'] = array(
+    '#type' => 'select',
+    '#title' => t('What kind of repository should be used'),
+    '#default_value' => $current,
+    '#options' => $options,
+    '#description' => t('Determine if we are using sTeX or normal LaTeX'),
+  );
+  if ($current) {
+    $form['settings'] = array();
+    $providers[$current]["settings"]($form['settings']);
+  }
+  return system_settings_form($form);
+}
+
+/*
+ * hook_field_info
+ */
+function vfs_field_info() {
+  return array(
+    'vfs_file' => array(
+      'label' => t('VFS file'),
+      'description' => t('File residing on a Virtual File System'),
+      'default_widget' => 'vfs_widget',
+      'default_formatter' => 'vfs_formatter'
+    )
+  );
+}
+
+function vfs_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+  foreach ($items as $delta => $item) {
+    if (!empty($item['path'])) {
+      // TODO: write code to check that the path inside the VFS exists
+    }
+  }
+}
+
+function vfs_field_formatter_info() {
+  return array(
+   // This formatter changes the background color of the content region.
+    'vfs_formatter' => array(
+      'label' => t('Formatter of VFS content'),
+      'field types' => array('vfs_file'),
+    ),
+  );
+}
+
+function vfs_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    // This formatter simply outputs the field as text and with a color.
+    case 'vfs_formatter':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array(
+          // We create a render array to produce the desired markup,
+          // "<p style="color: #hexcolor">The color code ... #hexcolor</p>".
+          // See theme_html_tag().
+          '#type' => 'html_tag',
+          '#tag' => 'p',
+          '#value' => t('Path is @code', array('@code' => $item['path'])),
+        );
+      }
+      break;
+  }
+
+  return $element;
+}
+
+function vfs_field_widget_info() {
+  return array(
+    'vfs_widget' => array(
+      'label' => t('VFS widget'),
+      'field types' => array('vfs_file'),
+    ),
+  );
+}
+
+function vfs_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $path = isset($items[$delta]['path']) ? $items[$delta]['path'] : '';
+  $filter = isset($items[$delta]['filter']) ? $items[$delta]['filter'] : '';
+  $widget = $element;
+  $widget['#delta'] = $delta;
+  $content = vfs_load_file($path);
+
+  switch ($instance['widget']['type']) {
+    case 'vfs_widget':
+      $widget['#element_validate'] = array('vfs_field_widget_validate');
+      $widget["#type"] = "fieldset";
+      $widget["data"] = array(
+             "path" => array(
+               "#type" => "textfield",
+               "#title" => "File path",
+               "#default_value" => $path
+             ),
+             "content" => array(
+              '#title' => t('Editor'),
+              '#type' => 'text_format',
+              '#tree' => true,
+              '#default_value' => $content,
+              '#rows' => 20,
+              '#format' => $filter,
+              )
+        );
+      $widget["filter"] = array(
+              '#type' => 'hidden',
+              );
+      $widget["path"] = array(
+              '#type' => 'hidden',
+              );
+      break;
+  }
+
+  return $widget;
+}
+
+function vfs_field_widget_validate($element, &$form_state) {
+  $delta = $element['#delta']; // TODO: Isn't there a better way to find out which element?
+  $field = $form_state['field'][$element['#field_name']][$element['#language']]['field'];
+  $field_name = $field['field_name'];
+  if (isset($form_state['values'][$field_name][$element['#language']][$delta])) {
+    $values = $form_state['values'][$field_name][$element['#language']][$delta];
+    vfs_save_file($values["data"]["path"], $values["data"]["content"]["value"]);
+    form_set_value($element["filter"], $values["data"]["content"]["format"], $form_state);
+    form_set_value($element["path"], $values["data"]["path"], $form_state);
+  }
+}
+
+function vfs_field_is_empty($item, $field) {
+  return empty($item['path']);
+}
+

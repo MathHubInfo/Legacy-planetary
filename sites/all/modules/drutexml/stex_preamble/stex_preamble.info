@@ -1,0 +1,11 @@
+name = sTeX Preamble
+description = Creates a new content type for sTeX preambles
+core = 7.x
+package = Planetary Modules
+version = 7.x-1.0
+project = stex_preamble
+dependencies[] = features
+dependencies[] = text
+features[features_api][] = api:1
+features[field][] = node-stex_preamble-body
+features[node][] = stex_preamble

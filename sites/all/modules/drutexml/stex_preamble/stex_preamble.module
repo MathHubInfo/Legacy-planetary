@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the sTeX Preamble feature.
+ */
+
+include_once 'stex_preamble.features.inc';
