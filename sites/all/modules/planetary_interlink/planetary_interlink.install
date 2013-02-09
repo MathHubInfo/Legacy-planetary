@@ -41,3 +41,6 @@ return false;
 }
 
 
+function planetary_interlink_uninstall() {
+  db_delete('block')->condition('module','planetary_interlink');
+}
