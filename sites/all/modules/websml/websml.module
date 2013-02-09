@@ -72,7 +72,7 @@ function websml_menu() {
 	$item = array();
 	$item["websml"] = array(
 			"page callback" => "websml_render",
-			"access callback" => true,
+	        'access arguments' => array('access administration pages'),
 	);
     $item['admin/config/content/websml'] = array(
       'title' => 'WebSML configuration',
