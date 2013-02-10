@@ -30,7 +30,7 @@
 function planetmath_attachable_content_menu() {
   $items = array();
   $items['attach/%'] = array(
-      'title' => 'Attach content to a node',
+      'title' => 'Attach content',
       'type' => MENU_CALLBACK,
       'page callback' => 'planetmath_attachable_content_attach',
       'page arguments' => array(1),
@@ -103,7 +103,7 @@ function planetmath_attachable_content_preprocess_views_view_table(&$vars){
 }
 
 function planetmath_attachable_content_attach($nid){
-  return "Enter search terms into the first box above and hit Apply to find matching terms.  Once you've found what you're looking for, click Attach!";
+  return "Enter search terms into the first box above and hit \"Apply\" to find matching terms.  Once you've found what you're looking for, click \"Attach\"!";
 }
 
 
