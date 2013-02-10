@@ -46,6 +46,19 @@ function solution_install() {
     field_create_instance($instance);
   }
 
+  // Turning on the LaTeX displayer for field_problem_latex -- see
+  // notes in solution.module that explain why we're doing this and
+  // talk about how to generalize it.
+   $instance = field_read_instance('node', 'field_problem_latex', 'problem');
+   $instance['display']['content'] = array(
+   'label' => 'above', 
+   'type' => 'latex_formatter', 
+   'weight' => 0, 
+   'settings' => array(),
+   'module' => 'latex_field',
+   );
+   field_update_instance($instance);
+
 }
 
 // NEED

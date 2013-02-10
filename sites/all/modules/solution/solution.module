@@ -34,13 +34,48 @@ function solution_entity_info_alter(&$entity_info) {
 
 /**
  * implements hook_preprocess_node
- * - part of creating a custom way to render a node
+ * - another part of creating a custom way to render a node
  */ 
 function solution_preprocess_node(&$vars) {
   if($vars['view_mode'] == 'content') {
     $vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] . '__content';
   }
 }
+
+/* Final step: in order to "turn on" the custom rendering, we need to
+   adjust the field instance for the relevant field, in this case,
+   field_problem_latex.  It is possible to do that within the UI, at
+   admin/structure/types/manage/NODETYPE/display/VIEWMODE i.e. in this
+   case, admin/structure/types/manage/problem/display/content ...
+   
+   We can get a hint about how to implement that in code from the
+   function that defines the relevant action on that page:
+ 
+   http://api.drupal.org/api/drupal/modules!field_ui!field_ui.admin.inc/function/field_ui_display_overview_form_submit/7
+   
+   And another clue from looking at the settings for field_problem_latex in the
+   field_config_instance table.
+
+   Namely, it seems we have to do something like this:
+
+   $instance = field_read_instance('node', 'field_problem_latex', 'problem');
+   $instance['display']['content'] = array(
+   'label' => 'above', 
+   'type' => 'latex_formatter', 
+   'weight' => 0, 
+   'settings' => array(),
+   'module' => 'latex_field',
+   );
+   field_update_instance($instance);
+
+   Presumably it makes sense to make such adjustments from within the
+   .install file for this module, or come to think of it maybe it
+   would make even more sense to do it within the "problem.install".
+   Or better still, create a separate module that allows for a "just
+   the content" view of all of the nodes that we might want to sling
+   around like this!  But that can come later.  I'll try sticking the
+   above into the .install file for this module, and then we can test
+   it out next time we install the code. */
 
 /**
  * Model functions
@@ -186,13 +221,13 @@ function solution_theme($existing, $type, $theme, $path){
 // We SELECT the argument, but will it also be displayed?  It should be!
 function solution_form_solution_node_form_alter(&$form, &$form_state, $form_id) {
   global $user;
-  // dpm($form['#node']);
+  //dpm($form);
 
-  if(isset($form['#node']->field_solution_problem['und'][0]['nid'])) {
-    $val = $form['#node']->field_solution_problem['und'][0]['nid'];
-  } else {
-    $val = arg(3); 
-  }
+  // if(isset($form['#node']->field_solution_problem['und'][0]['nid'])) {
+    //  $val = $form['#node']->field_solution_problem['und'][0]['nid'];
+    // } else {
+  $val = arg(3); 
+    //  }
   // SOMEHOW THIS STUFF SCREWS UP THE VALIDATION
   // SO COMMENTING IT OUT.
   // ANYWAY, I'M GUESSING THE AUTOCOMPLETE FIELD TAKES CARE OF CHOOSING AVAILABLE ITEMS
@@ -202,6 +237,7 @@ function solution_form_solution_node_form_alter(&$form, &$form_state, $form_id) 
   //$form['field_solution_problem']['und']['#options'] = solution_model_getAllProblems();
   $form['field_solution_problem']['und'][0]['nid']['#default_value'] = $val;
   $my_problem = node_load($val);
+  //dpm(node_view($my_problem,'content'));
   $form['problem_content'] = node_view($my_problem,'content');
 }
 
