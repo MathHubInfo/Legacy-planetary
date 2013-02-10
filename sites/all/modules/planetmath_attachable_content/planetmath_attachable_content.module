@@ -139,11 +139,11 @@ function planetmath_attachable_content_authorlinks_assemble($node){
 function planetmath_attachable_content_add_links($node) {
 
   if($node->type == 'question'){
-    $link_string = "¡Answer this question!";
+    $link_string = "Answer this question!";
   } else if ($node->type == 'collection') {
-    $link_string = "¡Add to this collection!";
+    $link_string = "Add to this collection!";
   } else if ($node->type == 'group') {
-    $link_string = "¡Add content to this group!";
+    $link_string = "Add content to this group!";
   }
 
     $links = array(
