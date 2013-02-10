@@ -168,6 +168,17 @@
    <?php endif; ?>
    <?php endif; ?>
 
+  <?php /* Only for solutions!*/
+   if ($type === 'solution'):  
+    if(isset($content['problem_content'])): ?>
+      <div id="problem_content" style="border:1px solid black;padding:4px;">
+      <h2> Problem: </h2>
+	 <?php print render($content['problem_content']); ?>
+      </div>
+    <?php print render($content['body']); ?>
+     <?php endif; ?>
+   <?php endif; ?>
+
   <div class="content"<?php print $content_attributes; ?>>
     <?php   /* Generic stuff for all nodes goes here */
     // We hide the comments and links now so that we can render them later (if desired).

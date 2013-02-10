@@ -142,8 +142,6 @@ function solution_node_update($node) {
   }
 }
 
-
-
 function solution_node_insert($node) {
     if ($node->type == 'solution') {
         //dest would be an array with a string in the form node/add/review/58579
@@ -170,9 +168,11 @@ function solution_node_insert($node) {
 // more particular tweaks to the view mode, see
 // http://api.drupal.org/api/drupal/modules!node!node.api.php/function/hook_node_view/7
 function solution_node_view($node){
- 
   // for node with type==solution
-  // .. nothing special (at least for now)
+  if($node->type == 'solution'){
+    $my_problem = $node->field_solution_problem['und'][0]['nid'];
+    $node->content['problem_content'] = node_view(node_load($my_problem),'content');
+  }
 
   // for node with type==problem
   if($node->type == 'problem'){
