@@ -32,6 +32,43 @@ function collection_install() {
   node_types_rebuild();
   menu_rebuild();
 
+  // Adding a block to show the collections that a given node is in
+  // (Note: we can use the existing table collection_has_content to
+  // figure out what's where!)
+  $block = array('module' => 'collection',
+		 'delta' => 'incollection',
+		 'theme' => variable_get('theme_default'),
+		 'status' => 1,
+		 'weight' => -29,
+		 'region' => 'sidebar_second',
+		 'visibility' => 2,
+		 'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return collection_countLinks(arg(1));
+}
+return false;
+?>',
+		 'cache' => 1,
+		 );
+
+  db_merge('block')
+    ->key(array('module'=>$block['module'],
+		'theme'=>$block['theme'],
+		'delta' => $block['delta']))
+    ->fields(array('module'=> $block['module'],
+		   'theme' => $block['theme'],
+		   'delta' => $block['delta'],
+		   'status' => $block['status'],
+		   'weight' => $block['weight'],
+		   'region' => $block['region'],
+		   'visibility' => $block['visibility'],
+		   'pages' => $block['pages'],
+		   'cache' => $block['cache']))
+    ->execute();
+
 }
 
 

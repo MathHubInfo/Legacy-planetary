@@ -678,5 +678,56 @@ function theme_collection_contents($variables) {
 }
 
 
+/* Adding a block so that collections will show up in context... 
+ * - Here, $nid is our "context".
+ */
 
+function collection_incollection_block($nid) {
+  $node = node_load($nid);
 
+  // Select collections that have the given article as a piece of content.
+  $results = db_query("SELECT * FROM collection_has_content WHERE collection_has_content.nid = :nid",
+		      array(':nid' => $nid));
+
+  $html = '<ul> ';
+  $count=0;
+  foreach ($results as $result) {
+    dpm($result);
+    $count=$count+1;
+    if($result->cid){
+      $interestingNode = node_load($result->cid);
+      dpm($interestingNode);
+      $html .= '<li>'.l($interestingNode->title, 'node/' . $result->cid).' by '.l($interestingNode->name, 'user/' . $interestingNode->uid).'</li>';
+    }
+  }
+  
+  if($count>1){
+    $subject='In Collections';
+  } else {
+    $subject='In Collection';
+  }
+  return array(
+	       // Put this in the singular if there's only one...
+	       'subject' => $subject,
+	       'content' => $html
+	       );
+}
+
+function collection_countLinks($nid){
+  $result = db_query("SELECT COUNT(*) AS cnt FROM collection_has_content WHERE collection_has_content.nid = :nid", array(':nid' => $nid))->fetchField();
+  if ($result > 0){
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}
+
+function collection_block_view($delta = '') {
+  $block = array();
+
+  if ($delta == 'incollection') {
+    $block = collection_incollection_block(arg(1));
+  }
+
+  return $block;
+}
