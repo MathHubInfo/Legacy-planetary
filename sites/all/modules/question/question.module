@@ -11,6 +11,8 @@
       I'm working on" (integration with collections module?) -- this is related to
       the ability to specify "goals"
 
+ * In progress: Show unanswered questions in the context where they were asked.
+
  * Things to contemplate:
     - Similar to StackExchange, a question could have multiple answers (NB. much
       like a problem can have multiple solutions, or a collection has multiple
@@ -95,6 +97,12 @@ function question_confirm_attachment($nid_of_question,$nid_of_answer){
   node_save($question_node);
 
   drupal_set_message('Article '.$nid_of_answer.' is now attached to this question as the answer');
+
+  db_merge('question_has_answer')
+    ->key(array('qid' =>$nid_of_question , 'aid' => $nid_of_answer))
+    ->fields(array('qid' =>$nid_of_question , 'aid' => $nid_of_answer))
+    ->execute();
+
   drupal_goto('node/'.$nid_of_question);
   dpm($question_node);
 }
@@ -121,8 +129,9 @@ function question_get_all_articles(){
   return $result;
 }
 
-// This just allows us to have a link like "node/ask/question/%" for asking questions
-// The actual processing of $nid is done by question_form_question_node_form_alter
+// This just allows us to have a link like "node/ask/question/%" for
+// asking questions The actual processing of $nid is done by
+// question_form_question_node_form_alter
 function question_attach_question($nid) {
   drupal_goto('node/add/question/'.$nid);
 }
@@ -279,26 +288,37 @@ function question_node_view($node){
 } */ 
 }
 
+// We don't have to specially set a reference to the user who *submits*
+// the question, since that's recorded for us by normal drupal "insert"
+// routine.  However, we *will* have to record a reference to the user
+// who *closes* the question.  That will have to follow a similar
+// logic to what we do here (I think?), but done elsewhere (?).
+//
 function question_form_question_node_form_alter(&$form, &$form_state, $form_id) {
-  // We don't have to specially set a reference to the user who *submits*
-  // the question, since that's recorded for us by normal drupal "insert"
-  // routine.  However, we *will* have to record a reference to the user
-  // who *closes* the question.  That will have to follow a similar
-  // logic to what we do here (I think?), but done elsewhere (?).
-
-  if(isset($form['#node']->field_question_article['und'][0]['nid'])) {
-    $val = $form['#node']->field_question_article['und'][0]['nid'];
+  if(isset($form['#node']->field_question_context['und'][0]['nid'])) {
+    $val = $form['#node']->field_question_context['und'][0]['nid'];
   } else {
     $val = arg(3); 
   } 
-  $form['field_question_article']['und'][0]['nid']['#default_value'] = $val;
+  $form['field_question_context']['und'][0]['nid']['#default_value'] = $val;
   if($val==NULL) {
+    hide($form['field_question_context']);
+  }
+  
+  $valb=NULL;
+  // gotta deal with the target article now
+  if(isset($form['#node']->field_question_article['und'][0]['nid'])) {
+    $valb = $form['#node']->field_question_article['und'][0]['nid'];
+  } 
+  if($valb==NULL) {
     hide($form['field_question_article']);
   }
-  // If the article isn't closed, then we don't want to see these
+
+  // If the question isn't closed, then we don't want to see these
   // (Actually we might never want to see these on a *form*, since they
   // should be filled in *automatically* when the question is answered...
   // feature to be added of course!)
+  //
   if(!isset($form['#node']->field_question_closed['und'][0]['value'])) {
 
     $form['field_question_closed']['und'][0]['#value']['value'] =
@@ -318,8 +338,10 @@ function question_form_question_node_form_alter(&$form, &$form_state, $form_id) 
 }
 
 function question_additional_submit_handler(&$form, &$form_state) {
-  // If the user deletes the reference to the article, then the fulfilled time goes away
-  // and the question is open again
+
+  // If the user deletes the reference to the article that contains
+  // the answer, then the fulfilled time goes away and the question is
+  // open again
   if(!isset($form['#node']->field_question_article['und'][0]['nid'])
     ||!$form['#node']->field_question_article['und'][0]['nid']){
     //dd("zap");
@@ -330,4 +352,61 @@ function question_additional_submit_handler(&$form, &$form_state) {
     $form_state['values']['field_question_closed']['und'][0]['timezone'] = NULL;
     //dpm($form_state);
   }
+}
+
+function question_node_insert($node){
+  if($node->type == 'question'){
+    if(isset($node->field_question_context))
+      {
+	db_merge('question_has_context')
+	  ->key(array('qid' =>$node->nid,
+		      'cid' => $node->field_question_context['und'][0]['nid']))
+	  ->fields(array('qid' =>$node->nid,
+			 'cid' => $node->field_question_context['und'][0]['nid']))
+	  ->execute();
+      }
+  }
+}
+
+/* Adding a block so that questions will show up in context... 
+ * - Here, $nid is our "context".
+ */
+
+function question_unanswered_block($nid) {
+  $node = node_load($nid);
+
+  // Select questions
+  $results = db_query("SELECT * FROM question_has_context WHERE question_has_context.cid = :nid AND NOT EXISTS (SELECT 1 from question_has_answer WHERE question_has_answer.qid = question_has_context.qid)",
+		      array(':nid' => $nid));
+
+  $html = '<ul> ';
+      foreach ($results as $result) {
+	if($result->qid){
+	  $interestingNode = node_load($result->qid);
+	  $html .= '<li>'.l($interestingNode->title, 'node/' . $result->qid).' by '.l($interestingNode->name, 'user/' . $interestingNode->uid).'</li>';
+	}
+      }
+  return array(
+	       'subject' => 'Burning Questions',
+	       'content' => $html
+	       );
+}
+
+function question_countLinks($nid){
+  $result = db_query("SELECT COUNT(*) AS cnt FROM question_has_context WHERE question_has_context.cid = :nid AND NOT EXISTS (SELECT 1 from question_has_answer WHERE question_has_answer.qid = question_has_context.qid)", array(':nid' => $nid))->fetchField();
+  if ($result > 0){
+    return TRUE;
+  } else {
+    return FALSE;
+  }
+}
+
+function question_block_view($delta = '') {
+  $block = array();
+
+  if ($delta == 'unanswered') {
+    $block = question_unanswered_block(arg(1));
+  }
+
+  return $block;
 }

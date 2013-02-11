@@ -62,11 +62,22 @@ function _question_installed_fields() {
   $fields = array(
     'field_question_article' => array(
       'field_name'  => 'field_question_article',
-      'label'       => $t('Reference to the article this question is about (for requests, this will be the answer).'),
+      'label'       => $t('Reference to the article that answers the question.'),
       'cardinality' => 1,
       'type'        => 'node_reference',
       'settings'    => array(
         'referenceable_types'  => array('article'),
+      ),
+    ),
+    'field_question_context' => array(
+      'field_name'  => 'field_question_context',
+      'label'       => $t('Reference to the node where this question was asked, if any.'),
+      'cardinality' => 1,
+      'type'        => 'node_reference',
+      'settings'    => array(
+			     'referenceable_types'  => 
+			     array('article','problem','solution',
+				   'group','collection','correction'),
       ),
     ),
     'field_question_fulfiller' => array(
@@ -139,7 +150,15 @@ function _question_installed_instances() {
   $instances = array(
     'field_question_article' => array(
       'field_name'  => 'field_question_article',
-      'label'       => $t('The relevant article'),
+      'label'       => $t('The answer is in this article'),
+      'cardinality' => 1,
+      'widget'      => array(
+        'type'          => 'node_reference_autocomplete',
+      ),
+    ),
+    'field_question_context' => array(
+      'field_name'  => 'field_question_context',
+      'label'       => $t('Context for the question'),
       'cardinality' => 1,
       'widget'      => array(
         'type'          => 'node_reference_autocomplete',
@@ -227,7 +246,6 @@ function question_uninstall() {
   // http://api.drupal.org/api/function/node_delete_multiple/7
   node_delete_multiple($nids);
 
-
   // Loop over each of the fields defined by this module and delete
   // all instances of the field, their data, and the field itself.
   // http://api.drupal.org/api/function/field_delete_field/7
@@ -238,6 +256,9 @@ function question_uninstall() {
   // Delete our content type
   // http://api.drupal.org/api/function/node_type_delete/7
   node_type_delete('question');
+
+  db_drop_table('question_has_answer');
+  db_drop_table('question_has_context');
 
   // Purge all field information
   // http://api.drupal.org/api/function/field_purge_batch/7
@@ -264,6 +285,25 @@ function question_schema() {
           )
       ),
       'primary key' => array('qid', 'aid')
+  );
+
+  $schema['question_has_context'] = array(
+      'description' => 'Connection table between questions and contexts (typically, articles)',
+      'fields' => array(
+          'qid' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true,
+              'description' => 'Question Id'
+          ),
+          'cid' => array(
+              'type' => 'int',
+              'unsigned' => true,
+              'not null' => true,
+              'description' => 'Context Id'
+          )
+      ),
+      'primary key' => array('qid', 'cid')
   );
 
   return $schema;

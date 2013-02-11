@@ -102,8 +102,15 @@ function planetmath_attachable_content_preprocess_views_view_table(&$vars){
   }
 }
 
+/* "Coming back to attach it later" is a pain.  It would be much nicer to
+   have a node/add/article/NID path that will add the article, AND set it up
+   as the answer to the question NID.*/
 function planetmath_attachable_content_attach($nid){
-  return "Enter search terms into the first box above and hit \"Apply\" to find matching terms.  Once you've found what you're looking for, click \"Attach\"!";
+  $note = '';
+  if(node_load($nid)->type=="question"){
+    $note = "<br><br>Note: The way question answering works around here is that every answer is an encyclopedia article.<br>If you can't find an existing article that answers the question, you should ".l("create one",'node/add/article')." and come back to attach it later.";
+  }
+  return "Enter search terms into the first box above and hit \"Apply\" to find matching terms.  Once you've found what you're looking for, click \"Attach\"!".$note;
 }
 
 
