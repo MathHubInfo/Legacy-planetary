@@ -223,11 +223,11 @@ function solution_form_solution_node_form_alter(&$form, &$form_state, $form_id) 
   global $user;
   //dpm($form);
 
-  // if(isset($form['#node']->field_solution_problem['und'][0]['nid'])) {
-    //  $val = $form['#node']->field_solution_problem['und'][0]['nid'];
-    // } else {
-  $val = arg(3); 
-    //  }
+  if(isset($form['#node']->field_solution_problem['und'][0]['nid'])) {
+    $val = $form['#node']->field_solution_problem['und'][0]['nid'];
+  } else {
+    $val = arg(3); 
+  }
   // SOMEHOW THIS STUFF SCREWS UP THE VALIDATION
   // SO COMMENTING IT OUT.
   // ANYWAY, I'M GUESSING THE AUTOCOMPLETE FIELD TAKES CARE OF CHOOSING AVAILABLE ITEMS
