@@ -693,11 +693,9 @@ function collection_incollection_block($nid) {
   $html = '<ul> ';
   $count=0;
   foreach ($results as $result) {
-    dpm($result);
     $count=$count+1;
     if($result->cid){
       $interestingNode = node_load($result->cid);
-      dpm($interestingNode);
       $html .= '<li>'.l($interestingNode->title, 'node/' . $result->cid).' by '.l($interestingNode->name, 'user/' . $interestingNode->uid).'</li>';
     }
   }

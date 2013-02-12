@@ -253,7 +253,6 @@ function question_add_links_question($node) {
 function question_node_view($node,$view_mode){
   if($view_mode!='content'){
     $mytype=$node->type;
-    dpm($node);
     // For articles, we can ASK a question
     if($mytype == 'article'
        || $mytype == 'problem'
