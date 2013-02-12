@@ -167,7 +167,8 @@ function solution_node_insert($node) {
 // We could put in a second parameter here if we wanted to do some
 // more particular tweaks to the view mode, see
 // http://api.drupal.org/api/drupal/modules!node!node.api.php/function/hook_node_view/7
-function solution_node_view($node){
+function solution_node_view($node, $view_mode){
+  if($view_mode!='content'){
   // for node with type==solution
   if($node->type == 'solution'){
     $my_problem = $node->field_solution_problem['und'][0]['nid'];
@@ -197,6 +198,7 @@ function solution_node_view($node){
 
     // Need to set this to non-hidden in order for it to show up
     $node->content['field_question_latex']['#hidden'] = FALSE;
+  }
   }
 }
 

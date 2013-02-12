@@ -19,12 +19,14 @@
  * This is just done to get rid of the title.
  *
  * TODO
- * - It would be cool to use AJAX to do the attachment
- * - but for now it's just necessary to get the attachment operation working whatsoever,
- *   should be straightforward enough to copy the interactions from 
- *    question ; planetmath_og_attach ;  collection
+ * - It would be cool to use AJAX to do the attachment so that we can add multiple
+ *   attachments (whenever this is a meaningful thing to do).
+ *   - but for now it's just necessary to get the attachment operation working whatsoever...
  *
  * - It would be cool to get the search prepopulated with the title of the target node
+ *
+ * - It would be good to have an alternative attaching method that just autocompletes
+ *   on the (known) name of the article: that should be fairly simple to add!
  */
 
 function planetmath_attachable_content_menu() {
@@ -161,7 +163,8 @@ function planetmath_attachable_content_add_links($node) {
 }
 
 // show the "attach" link on *collections*, *groups*, and *unanswered questions*.
-function planetmath_attachable_content_node_view($node){
+function planetmath_attachable_content_node_view($node, $view_mode){
+  if($view_mode!='content'){
   if( ($node->type == 'question' 
         && !isset($node->field_question_closed['und'][0]['value']))
     ||$node->type == 'collection'
@@ -175,5 +178,6 @@ function planetmath_attachable_content_node_view($node){
 						'#theme' => 'planetary_links',
 						'#links' => $newlinks
 						);
+  }
   }
 }
