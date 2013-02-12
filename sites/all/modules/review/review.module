@@ -82,7 +82,8 @@ function review_form_review_node_form_alter(&$form, &$form_state, $form_id) {
   $form['field_review_solution']['und'][0]['nid']['#default_value'] = arg(3);
 }
 
-function review_node_view($node) {
+function review_node_view($node,$view_mode){
+  if($view_mode!='content'){
     if ($node->type == 'solution') {
       //dd('Looking at a solution node');
         $newlinks = array();
@@ -108,6 +109,7 @@ function review_node_view($node) {
             '#links' => $newlinks
         );
     }
+}
 }
 
 function review_add_links($node) {

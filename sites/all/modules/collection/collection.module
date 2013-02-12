@@ -464,7 +464,8 @@ function collection_user_add_links($node){
  * - Also provides links for the "Interact" block for various kinds of nodes
  *   (including collections of course!)
  */
-function collection_node_view($node) {
+function collection_node_view($node, $view_mode){
+  if($view_mode!='content'){
   global $user;
  
   // assuming we're looking at a *collection*
@@ -651,7 +652,7 @@ function collection_node_view($node) {
 						'#links' => $newlinks
 						);
     }
-
+  }
 }
 
 function collection_theme($existing, $type, $theme, $path) {
