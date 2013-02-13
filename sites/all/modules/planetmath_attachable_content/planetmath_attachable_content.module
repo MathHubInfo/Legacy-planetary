@@ -6,13 +6,13 @@
  * But I need some custom code to tweak the output so it looks better and does
  * some useful stuff!
  *
- * I'm hoping that I can use hook_preprocess_views_view_table(&$vars)
- * together with some code we wrote when we were just presenting results
- * in a (non-searchable) table ... to rewrite the contents of the table 
- * when it is presented to the user.  The application I have in mind requires
- * a pretty much complete rewrite of the table's contents.
- *
  * PARTICULARS ON THE IMPLEMENTATION STRATEGY
+ *
+ * We put the view into a block that is set up to appear on paths attach/*
+ * The block is defined in planetmath_attachable_content.install.
+ *
+ * This block will contain a view, created using apachesolr_views, and defined in
+ * planetmath_attachable_content.views_default.inc
  *
  * The theming stuff for the block is in 
  *   block--views--acv_attachable_content_block.tpl.php
@@ -37,6 +37,13 @@ function planetmath_attachable_content_menu() {
       'page callback' => 'planetmath_attachable_content_attach',
       'page arguments' => array(1),
       'access arguments' => array('create correction content')
+  );
+
+  $items['attach/autocomplete'] = array(
+    'title' => 'Article selector (result)',
+    'page callback' => 'planetmath_attachable_content_article_selector_result',
+    'access arguments' => array('create correction content'),
+    'type' => MENU_CALLBACK
   );
 
   $items['attach/confirm/%/%'] = array(
@@ -110,11 +117,10 @@ function planetmath_attachable_content_preprocess_views_view_table(&$vars){
 function planetmath_attachable_content_attach($nid){
   $note = '';
   if(node_load($nid)->type=="question"){
-    $note = "<br><br>Note: The way question answering works around here is that every answer is an encyclopedia article.<br>If you can't find an existing article that answers the question, you should ".l("create one",'node/add/article')." and come back to attach it later.";
+    $note = "Note: The way question answering works around here is that every answer is an encyclopedia article.<br>If you can't find an existing article that answers the question, you should ".l("create one",'node/add/article')." and come back to attach it later.";
   }
-  return "Enter search terms into the first box above and hit \"Apply\" to find matching terms.  Once you've found what you're looking for, click \"Attach\"!".$note;
+  return $note;
 }
-
 
 /* Implements hook_views_api
  * This is needed to get our custom view working
@@ -180,4 +186,53 @@ function planetmath_attachable_content_node_view($node, $view_mode){
 						);
   }
   }
+}
+
+function planetmath_attachable_content_block_view_alter(&$data,$block) {
+  if($block->delta=='acv-attachable_content_block'){
+    // dpm($data);
+    // dpm($block);
+    $form = drupal_get_form('planetmath_attachable_content_article_selector');
+    $data['content']['#markup'] = "Enter search terms into the first box above and hit \"Apply\" to find matching items.  Once you've found what you're looking for, click \"Attach\"!".$data['content']['#markup'];
+    $data['content']['#markup'] .= "<br>Alternatively, search by title, and click \"Submit\" to attach that article:<br>" . render($form);
+  }
+}
+
+function planetmath_attachable_content_article_selector($form, &$form_state) {   
+  $form = array();
+
+  $form_state['storage']['target'] = arg(1);
+
+  $form['auto'] = array(
+			'#type' => 'textfield',
+			'#autocomplete_path' => 'attach/autocomplete'
+			);
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Submit'));
+
+
+  return $form;
+}
+
+function planetmath_attachable_content_article_selector_submit ($form, &$form_state){
+  $recipient=$form_state['storage']['target'];
+  $auto=$form['auto']['#value'];
+
+  $result=db_query("SELECT nid FROM node WHERE title=:title AND type='article'",
+		   array(':title' => $auto))->fetchObject();
+
+  drupal_goto('attach/confirm/'.$recipient.'/'.$result->nid);
+}
+
+function planetmath_attachable_content_article_selector_result($string = '') {
+  $matches = array();
+  if ($string) {
+    $result =
+      db_query_range("SELECT title FROM node WHERE LOWER(title) LIKE LOWER('$string%') AND type = 'article'", 0, 10); // only 10 results will show
+    foreach ($result as $match) {
+      $matches[$match->title] = check_plain($match->title);
+    }
+  }
+  drupal_json_output($matches); //Returns the data in JSON format
 }
