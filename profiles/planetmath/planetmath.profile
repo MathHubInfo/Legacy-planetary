@@ -90,6 +90,13 @@ function planetmath_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'planetmath_profile_create_full_html_format',
                                         ),
+		 'my_0ath_task' => array(
+                                        'display_name' => st('Create Filtered Html format.'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'planetmath_profile_create_filtered_html_format',
+                                        ),
 		 /* 'my_1st_task' => array( */
                  /*                        'display_name' => st('Patch the core.'), */
                  /*                        'display' => TRUE, */
@@ -228,6 +235,42 @@ function planetmath_profile_create_full_html_format() {
   );
   $full_html_format = (object) $full_html_format;
   filter_format_save($full_html_format);
+}
+
+function planetmath_profile_create_filtered_html_format() {
+    $filtered_html_format = array(
+    'format' => 'filtered_html',
+    'name' => 'Filtered HTML',
+    'weight' => 0,
+    'filters' => array(
+      
+      // URL filter.
+      'filter_url' => array(
+        'weight' => 0,
+        'status' => 1,
+      ),
+      
+      // HTML filter.
+      'filter_html' => array(
+        'weight' => 1,
+        'status' => 1,
+      ),
+      
+      // Line break filter.
+      'filter_autop' => array(
+        'weight' => 2,
+        'status' => 1,
+      ),
+      
+      // HTML corrector filter.
+      'filter_htmlcorrector' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+    ),
+  );
+  $filtered_html_format = (object) $filtered_html_format;
+  filter_format_save($filtered_html_format);
 }
 
 function planetmath_profile_patch_core() {
@@ -2064,7 +2107,7 @@ function planetmath_profile_setup_permissions () {
   // Run  SELECT * FROM role_permission;  in mysql to see the
   // list of available permissions
 
-  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','cancel account','use text format tex_editor', 'create article content', 'create correction content', 'create forum content', 'create group content', 'create image content', 'create problem content', 'create review content', 'create solution content', 'create question content', 'create collection content', 'edit own article content', 'edit own correction content', 'edit own forum content', 'edit own group content', 'edit own image content', 'edit own problem content', 'edit own review content', 'edit own solution content', 'edit own question content', 'edit own collection content', 'delete own article content', 'delete own correction content', 'delete own group content', 'delete own image content', 'delete own problem content', 'delete own review content', 'delete own solution content', 'delete own question content', 'delete own correction content', 'read privatemsg', 'write privatemsg', 'post comments', 'skip comment approval', 'edit own comments', 'view own userpoints', 'view userpoints', 'use watcher', 'change own user settings', 'access help page'));
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','cancel account','use text format tex_editor', 'use text format filtered_html', 'create article content', 'create correction content', 'create forum content', 'create group content', 'create image content', 'create problem content', 'create review content', 'create solution content', 'create question content', 'create collection content', 'edit own article content', 'edit own correction content', 'edit own forum content', 'edit own group content', 'edit own image content', 'edit own problem content', 'edit own review content', 'edit own solution content', 'edit own question content', 'edit own collection content', 'delete own article content', 'delete own correction content', 'delete own group content', 'delete own image content', 'delete own problem content', 'delete own review content', 'delete own solution content', 'delete own question content', 'delete own correction content', 'read privatemsg', 'write privatemsg', 'post comments', 'skip comment approval', 'edit own comments', 'view own userpoints', 'view userpoints', 'use watcher', 'change own user settings', 'access help page'));
 
   return NULL;
 }
