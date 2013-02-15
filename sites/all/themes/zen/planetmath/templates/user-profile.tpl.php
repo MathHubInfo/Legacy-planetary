@@ -74,6 +74,7 @@
          print render($user_profile['planetmath_user_buddies']);
          hide($user_profile['og_group_ref']);
          hide($user_profile['og_user_group_ref']);
+         hide($user_profile['og_user_node']);
          print render($user_profile['planetmath_my_teams']);?>
 </td>
 </tr>
