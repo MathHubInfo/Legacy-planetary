@@ -117,9 +117,18 @@ function planetmath_attachable_content_preprocess_views_view_table(&$vars){
 function planetmath_attachable_content_attach($nid){
   $note = '';
   if(node_load($nid)->type=="question"){
-    $note = "Note: The way question answering works around here is that every answer is an encyclopedia article.<br>If you can't find an existing article that answers the question, you should ".l("create one",'node/add/article')." and come back to attach it later.";
+    $note = "<b>Note: The way question answering works around here is that every answer is found in an encyclopedia article!  If you can't find an existing article that answers the question using the tools above, you can ".l("create one",'node/add/article/attach/'.$nid).", and it will be automatically attached as the answer when it's saved.</b>";
   }
-  return $note;
+  drupal_set_message($note);
+  return '';
+}
+
+function planetmath_attachable_content_node_insert($node){
+  //dd(arg(3));
+  //dd(arg(4));
+  if($node->type == 'article' && arg(3) == 'attach') {
+  drupal_goto('attach/confirm/'.arg(4).'/'.$node->nid);
+  }
 }
 
 /* Implements hook_views_api
