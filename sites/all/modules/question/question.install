@@ -1,25 +1,31 @@
 <?php
 
+/* NOTE: we probably don't need question_has_context, since we could
+   figure out the relevant information from the field_question_context
+   field (with a clever query.  The same probably goes for
+   question_has_answer and field_question_article.  But removing the
+   redundancy can happen later in a gentle rewrite. */
+
 function question_install() {
   // get the translation function relevant to our current localisation
   $t = get_t();
   // define the content type as an array (same as in hook_node_info())
   $question = array(
-              'type' => 'question',
-              'name' => 'Question',
-              'base' => 'node_content',
-              'module' => 'node',
-              'description' => t(''),
-              'has_title' => 1,
-              'custom' => false,
-              'modified' => false,
-              'locked' => 1,
-              'disabled' => 0,
-	      'promote' => 0,
-	      'status' => 1,
-	      'comment' => 0,
-              'orig_type' => 'question'
-  );
+		    'type' => 'question',
+		    'name' => 'Question',
+		    'base' => 'node_content',
+		    'module' => 'node',
+		    'description' => t(''),
+		    'has_title' => 1,
+		    'custom' => false,
+		    'modified' => false,
+		    'locked' => 1,
+		    'disabled' => 0,
+		    'promote' => 0,
+		    'status' => 1,
+		    'comment' => 0,
+		    'orig_type' => 'question'
+		    );
 
   // set default values for anything not explicitly defined in the above array
   $content_type = node_type_set_defaults($question);
@@ -46,6 +52,40 @@ function question_install() {
     field_create_instance($instance);
   }
 
+  $block = array('module' => 'question',
+		 'delta' => 'unanswered',
+		 'theme' => variable_get('theme_default'),
+		 'status' => 1,
+		 'weight' => -29,
+		 'region' => 'sidebar_second',
+		 'visibility' => 2,
+		 'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return question_countLinks(arg(1));
+}
+return false;
+?>',
+		 'cache' => 1,
+		 );
+
+  db_merge('block')
+    ->key(array('module'=>$block['module'],
+		'theme'=>$block['theme'],
+		'delta' => $block['delta']))
+    ->fields(array('module'=> $block['module'],
+		   'theme' => $block['theme'],
+		   'delta' => $block['delta'],
+		   'status' => $block['status'],
+		   'weight' => $block['weight'],
+		   'region' => $block['region'],
+		   'visibility' => $block['visibility'],
+		   'pages' => $block['pages'],
+		   'cache' => $block['cache']))
+    ->execute();
+
 }
 
 // NEED
@@ -60,172 +100,172 @@ function question_install() {
 function _question_installed_fields() {
   $t = get_t();
   $fields = array(
-    'field_question_article' => array(
-      'field_name'  => 'field_question_article',
-      'label'       => $t('Reference to the article that answers the question.'),
-      'cardinality' => 1,
-      'type'        => 'node_reference',
-      'settings'    => array(
-        'referenceable_types'  => array('article'),
-      ),
-    ),
-    'field_question_context' => array(
-      'field_name'  => 'field_question_context',
-      'label'       => $t('Reference to the node where this question was asked, if any.'),
-      'cardinality' => 1,
-      'type'        => 'node_reference',
-      'settings'    => array(
-			     'referenceable_types'  => 
-			     array('article','problem','solution',
-				   'group','collection','correction'),
-      ),
-    ),
-    'field_question_fulfiller' => array(
-      'field_name'  => 'field_question_fulfiller',
-      'label'       => $t('Reference to the user who fulfilled i.e. answered the question'),
-      'cardinality' => 1,
-      'type'        => 'user_reference',
-      'settings'    => array(
-                             'referenceable_roles' => array(
-                                                            2 => '2',
-                                                            3 => '3',
-                                                            ),
-                             'referenceable_status' => array(
-                                                             0 => 0,
-                                                             1 => '1'
-                                                             ),
-                             ),
-    ),
-    'field_question_closed' => array(
-      'field_name'  => 'field_question_closed',
-      'label'       => $t('Time when the answer was accepted and the question closed'),
-      'cardinality' => 1,
-      'type'        => 'datetime',
-      'module' => 'date',
-      'settings' => array(
-                          'cache_count' => '4',
-                          'cache_enabled' => 0,
-                          'granularity' => array(
-                                                 'day' => 'day',
-                                                 'hour' => 'hour',
-                                                 'minute' => 'minute',
-                                                 'month' => 'month',
-                                                 'second' => 0,
-                                                 'year' => 'year',
-                                                 ),
-                          'timezone_db' => 'UTC',
-                          'todate' => '',
-                          'tz_handling' => 'site',
-                          ),
-    ),
-   'field_question_type' => array(
-      'field_name'  => 'field_question_type',
-      'label'       => $t('What kind of question is this'),
-      'cardinality' => 1,
-      'type'        => 'list_text',
-      'settings'    => array(
-        'allowed_values' => array('hlp' => 'Help',
-				  'hnt' => 'Hint',
-				  'req' => 'Request',
-				  'cur' => 'Curiousity',
-				  'oth' => 'Other'),
-        'allowed_values_function' => '',
-      ),
-    ),
-    'field_question_latex' => array(
-      'field_name'  => 'field_question_latex',
-      'label'       => $t('LaTeX field for this question.'),
-      'cardinality' => 1,
-      'type'        => 'field_latex',
-      'settings' => array(
-			  'filter' => 'latex',
-			  ),
-    ),
-  );
+		  'field_question_article' => array(
+						    'field_name'  => 'field_question_article',
+						    'label'       => $t('Reference to the article that answers the question.'),
+						    'cardinality' => 1,
+						    'type'        => 'node_reference',
+						    'settings'    => array(
+									   'referenceable_types'  => array('article'),
+									   ),
+						    ),
+		  'field_question_context' => array(
+						    'field_name'  => 'field_question_context',
+						    'label'       => $t('Reference to the node where this question was asked, if any.'),
+						    'cardinality' => 1,
+						    'type'        => 'node_reference',
+						    'settings'    => array(
+									   'referenceable_types'  => 
+									   array('article','problem','solution',
+										 'group','collection','correction'),
+									   ),
+						    ),
+		  'field_question_fulfiller' => array(
+						      'field_name'  => 'field_question_fulfiller',
+						      'label'       => $t('Reference to the user who fulfilled i.e. answered the question'),
+						      'cardinality' => 1,
+						      'type'        => 'user_reference',
+						      'settings'    => array(
+									     'referenceable_roles' => array(
+													    2 => '2',
+													    3 => '3',
+													    ),
+									     'referenceable_status' => array(
+													     0 => 0,
+													     1 => '1'
+													     ),
+									     ),
+						      ),
+		  'field_question_closed' => array(
+						   'field_name'  => 'field_question_closed',
+						   'label'       => $t('Time when the answer was accepted and the question closed'),
+						   'cardinality' => 1,
+						   'type'        => 'datetime',
+						   'module' => 'date',
+						   'settings' => array(
+								       'cache_count' => '4',
+								       'cache_enabled' => 0,
+								       'granularity' => array(
+											      'day' => 'day',
+											      'hour' => 'hour',
+											      'minute' => 'minute',
+											      'month' => 'month',
+											      'second' => 0,
+											      'year' => 'year',
+											      ),
+								       'timezone_db' => 'UTC',
+								       'todate' => '',
+								       'tz_handling' => 'site',
+								       ),
+						   ),
+		  'field_question_type' => array(
+						 'field_name'  => 'field_question_type',
+						 'label'       => $t('What kind of question is this'),
+						 'cardinality' => 1,
+						 'type'        => 'list_text',
+						 'settings'    => array(
+									'allowed_values' => array('hlp' => 'Help',
+												  'hnt' => 'Hint',
+												  'req' => 'Request',
+												  'cur' => 'Curiousity',
+												  'oth' => 'Other'),
+									'allowed_values_function' => '',
+									),
+						 ),
+		  'field_question_latex' => array(
+						  'field_name'  => 'field_question_latex',
+						  'label'       => $t('LaTeX field for this question.'),
+						  'cardinality' => 1,
+						  'type'        => 'field_latex',
+						  'settings' => array(
+								      'filter' => 'latex',
+								      ),
+						  ),
+		  );
   return $fields;
 }
 
 function _question_installed_instances() {
   $t = get_t();
   $instances = array(
-    'field_question_article' => array(
-      'field_name'  => 'field_question_article',
-      'label'       => $t('The answer is in this article'),
-      'cardinality' => 1,
-      'widget'      => array(
-        'type'          => 'node_reference_autocomplete',
-      ),
-    ),
-    'field_question_context' => array(
-      'field_name'  => 'field_question_context',
-      'label'       => $t('Context for the question'),
-      'cardinality' => 1,
-      'widget'      => array(
-        'type'          => 'node_reference_autocomplete',
-      ),
-    ),
-    'field_question_fulfiller' => array(
-      'field_name'  => 'field_question_fulfiller',
-      'label'       => $t('Reference to the user who fulfilled i.e. answered the question'),
-      'cardinality' => 1,
-      'widget'      => array(
-                             'type' => 'user_reference_autocomplete',
-                             ),
-    ),
-    'field_question_closed' => array(
-      'field_name'  => 'field_question_closed',
-      'label'       => $t('Time when the answer was posted and the question closed'),
-      'cardinality' => 1,
-      'widget' => array(
-                          'type' => 'text_field',
-                        ),
-    ),
-    'field_question_type' => array(
-      'field_name'  => 'field_question_type',
-      'label'       => $t('What kind of question is this'),
-      'cardinality' => 1,
-      'widget'      => array(
-	'type'          => 'options_select',
-     ),
-    ),
-    'field_question_latex' => array(
-      'field_name'  => 'field_question_latex',
-      'label'       => $t('LaTeX field for this question'),
-      'cardinality' => 1,
-      'bundle' => 'problem',
-      'widget' => array(
-			'active' => 1,
-			'module' => 'latex_field',
-			'settings' => array(
-					    'filter' => 'tex_editor',
-					    ),
-			'type' => 'latex_widget',
-			),
-      // hoping this is the right way to make the label hidden
-      'display' => array(
-			 'default' => array(
-					    'label' => 'hidden',
-					    'module' => 'latex_field',
-					    'settings' => array(),
-					    'type' => 'latex_formatter',
-					    'weight' => '6',
-					    ),
-			 'full' => array(
-					 'label' => 'hidden',
-					 'module' => 'latex_field',
-					 'settings' => array(),
-					 'type' => 'latex_formatter',
-					 'weight' => '0',
-					 ),
-			 'teaser' => array(
-					   'label' => 'above',
-					   'settings' => array(),
-					   'type' => 'hidden',
-					   'weight' => 0,
-					   ),
-			 )
-    ),
-  );
+		     'field_question_article' => array(
+						       'field_name'  => 'field_question_article',
+						       'label'       => $t('The answer is in this article'),
+						       'cardinality' => 1,
+						       'widget'      => array(
+									      'type'          => 'node_reference_autocomplete',
+									      ),
+						       ),
+		     'field_question_context' => array(
+						       'field_name'  => 'field_question_context',
+						       'label'       => $t('Context for the question'),
+						       'cardinality' => 1,
+						       'widget'      => array(
+									      'type'          => 'node_reference_autocomplete',
+									      ),
+						       ),
+		     'field_question_fulfiller' => array(
+							 'field_name'  => 'field_question_fulfiller',
+							 'label'       => $t('Reference to the user who fulfilled i.e. answered the question'),
+							 'cardinality' => 1,
+							 'widget'      => array(
+										'type' => 'user_reference_autocomplete',
+										),
+							 ),
+		     'field_question_closed' => array(
+						      'field_name'  => 'field_question_closed',
+						      'label'       => $t('Time when the answer was posted and the question closed'),
+						      'cardinality' => 1,
+						      'widget' => array(
+									'type' => 'text_field',
+									),
+						      ),
+		     'field_question_type' => array(
+						    'field_name'  => 'field_question_type',
+						    'label'       => $t('What kind of question is this'),
+						    'cardinality' => 1,
+						    'widget'      => array(
+									   'type'          => 'options_select',
+									   ),
+						    ),
+		     'field_question_latex' => array(
+						     'field_name'  => 'field_question_latex',
+						     'label'       => $t('LaTeX field for this question'),
+						     'cardinality' => 1,
+						     'bundle' => 'problem',
+						     'widget' => array(
+								       'active' => 1,
+								       'module' => 'latex_field',
+								       'settings' => array(
+											   'filter' => 'tex_editor',
+											   ),
+								       'type' => 'latex_widget',
+								       ),
+						     // hoping this is the right way to make the label hidden
+						     'display' => array(
+									'default' => array(
+											   'label' => 'hidden',
+											   'module' => 'latex_field',
+											   'settings' => array(),
+											   'type' => 'latex_formatter',
+											   'weight' => '6',
+											   ),
+									'full' => array(
+											'label' => 'hidden',
+											'module' => 'latex_field',
+											'settings' => array(),
+											'type' => 'latex_formatter',
+											'weight' => '0',
+											),
+									'teaser' => array(
+											  'label' => 'above',
+											  'settings' => array(),
+											  'type' => 'hidden',
+											  'weight' => 0,
+											  ),
+									)
+						     ),
+		     );
   return $instances;
 }
 
@@ -269,42 +309,42 @@ function question_schema() {
   $schema = array();
 
   $schema['question_has_answer'] = array(
-      'description' => 'Connection table between questions and answers (typically, articles)',
-      'fields' => array(
-          'qid' => array(
-              'type' => 'int',
-              'unsigned' => true,
-              'not null' => true,
-              'description' => 'Question Id'
-          ),
-          'aid' => array(
-              'type' => 'int',
-              'unsigned' => true,
-              'not null' => true,
-              'description' => 'Answer Id'
-          )
-      ),
-      'primary key' => array('qid', 'aid')
-  );
+					 'description' => 'Connection table between questions and answers (typically, articles)',
+					 'fields' => array(
+							   'qid' => array(
+									  'type' => 'int',
+									  'unsigned' => true,
+									  'not null' => true,
+									  'description' => 'Question Id'
+									  ),
+							   'aid' => array(
+									  'type' => 'int',
+									  'unsigned' => true,
+									  'not null' => true,
+									  'description' => 'Answer Id'
+									  )
+							   ),
+					 'primary key' => array('qid', 'aid')
+					 );
 
   $schema['question_has_context'] = array(
-      'description' => 'Connection table between questions and contexts (typically, articles)',
-      'fields' => array(
-          'qid' => array(
-              'type' => 'int',
-              'unsigned' => true,
-              'not null' => true,
-              'description' => 'Question Id'
-          ),
-          'cid' => array(
-              'type' => 'int',
-              'unsigned' => true,
-              'not null' => true,
-              'description' => 'Context Id'
-          )
-      ),
-      'primary key' => array('qid', 'cid')
-  );
+					  'description' => 'Connection table between questions and contexts (typically, articles)',
+					  'fields' => array(
+							    'qid' => array(
+									   'type' => 'int',
+									   'unsigned' => true,
+									   'not null' => true,
+									   'description' => 'Question Id'
+									   ),
+							    'cid' => array(
+									   'type' => 'int',
+									   'unsigned' => true,
+									   'not null' => true,
+									   'description' => 'Context Id'
+									   )
+							    ),
+					  'primary key' => array('qid', 'cid')
+					  );
 
   return $schema;
 }
