@@ -2049,7 +2049,7 @@ function planetmath_profile_setup_user_entities () {
     planetmath_profile_docreate_user_field('user_country', 'Country');
     planetmath_profile_docreate_user_field('user_homepage', 'Homepage');
     planetmath_profile_docreate_user_field_long('user_preamble', 'Preamble', 'If you want to use a custom LaTeX preamble, enter it here, otherwise the site default will be used.');
-    planetmath_profile_docreate_user_field_long('user_bio', 'Bio', 'Tell us who you are!');
+    planetmath_profile_docreate_user_field_long_html('user_bio', 'Bio', 'Tell us who you are!');
     planetmath_profile_docreate_user_buddy_list_field();
 
     // Let's not port the score for now, they are being re-calculated; if we really
@@ -2243,6 +2243,34 @@ function planetmath_profile_docreate_user_field_long ($myField_name, $label, $de
             'formatter'     => array(
                 'label'     => t($label),
                 'format'    => 'text_default'
+            ),
+            'settings'      => array(
+            )
+        );
+        field_create_instance($field_instance);
+}
+
+function planetmath_profile_docreate_user_field_long_html ($myField_name, $label, $desc)
+{
+        $field = array(
+            'field_name'    => $myField_name,
+            'type'          => 'text_long',
+        );
+        field_create_field($field);
+
+        $field_instance = array(
+            'field_name'    => $myField_name,
+            'entity_type'   => 'user',
+            'bundle'        => 'user',
+            'label'         => t($label),
+            'description'   => t($desc),
+            'widget'        => array(
+                'type'      => 'text_textarea',
+                'weight'    => 10,
+            ),
+            'formatter'     => array(
+                'label'     => t($label),
+                'format'    => 'filtered_html'
             ),
             'settings'      => array(
             )
