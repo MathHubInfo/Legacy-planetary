@@ -236,6 +236,8 @@ function question_authorlinks_assemble_question($node){
   return $newlinks;
 }
 
+// This function and associated things it calls are out of date, supplanted by
+// things in the attachable content module
 function question_add_links_question($node) {
     $links = array(
 		   'attach-answer' => l('Answer this question', 
