@@ -46,10 +46,11 @@ function planetmath_attachable_content_menu() {
     'type' => MENU_CALLBACK
   );
 
+  // Here we seem to need some general attachment confirmation router...
   $items['attach/confirm/%/%'] = array(
       'title' => 'Confirm attachment',
       'type' => MENU_CALLBACK,
-      'page callback' => 'question_confirm_attachment',
+      'page callback' => 'planetmath_attachable_content_confirm_attachment',
       'page arguments' => array(2,3),
       'access arguments' => array('create correction content')
   );
@@ -61,6 +62,7 @@ function planetmath_attachable_content_menu() {
 function planetmath_attachable_content_preprocess_views_view_table(&$vars){
   global $base_url;
 
+  // I think this should actually be arg(2) or arg(3)...?
   $myarg = substr(current_path(),7);
   $mybase = node_load($myarg);
 
@@ -162,7 +164,7 @@ function planetmath_attachable_content_authorlinks_assemble($node){
 
 // TODO: Actually, some of these interactions are only meaningful
 // if the user has permission.  So, how do we check whether
-// the user has permission to add to a given collection 
+// the user does or does not have permission to add to a given collection 
 // or group?
 function planetmath_attachable_content_add_links($node) {
 
@@ -206,6 +208,7 @@ function planetmath_attachable_content_node_view($node, $view_mode){
   }
 }
 
+// illustrates use of "render" to add a form into a block.
 function planetmath_attachable_content_block_view_alter(&$data,$block) {
   if($block->delta=='acv-attachable_content_block'){
     // dpm($data);
@@ -233,6 +236,8 @@ function planetmath_attachable_content_article_selector($form, &$form_state) {
   return $form;
 }
 
+// Actually, this drupal_goto may have to be a different path, depending on
+// the type of the node that was submitted.
 function planetmath_attachable_content_article_selector_submit ($form, &$form_state){
   $recipient=$form_state['storage']['target'];
   $auto=$form['auto']['#value'];
@@ -253,4 +258,20 @@ function planetmath_attachable_content_article_selector_result($string = '') {
     }
   }
   drupal_json_output($matches); //Returns the data in JSON format
+}
+
+function planetmath_attachable_content_confirm_attachment ($nid_of_recipient,$nid_of_target) {
+  $mybase = node_load($nid_of_recipient);
+
+  // Different modules can respond differently to the "attachment" action
+  // -- hook in to that here.
+  if($mybase->type=='collection'){
+    collection_confirm_attachment($nid_of_recipient,$nid_of_target);
+  } else if ($mybase->type=='question'){
+    question_confirm_attachment($nid_of_recipient,$nid_of_target);
+  } else if ($mybase->type=='group'){
+    planetmath_og_attach_confirm($nid_of_recipient,$nid_of_target);
+  } else{
+    drupal_set_message("Something went wrong.");
+  }
 }
