@@ -11,6 +11,7 @@ dependencies[] = content_access
 dependencies[] = ctools
 dependencies[] = date
 dependencies[] = dhtml_menu
+dependencies[] = xdhtml_menu
 dependencies[] = views_content
 dependencies[] = aggregator
 dependencies[] = block
