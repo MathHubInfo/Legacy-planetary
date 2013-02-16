@@ -160,20 +160,29 @@ function planetmath_attachable_content_authorlinks_assemble($node){
   return $newlinks;
 }
 
+// TODO: Actually, some of these interactions are only meaningful
+// if the user has permission.  So, how do we check whether
+// the user has permission to add to a given collection 
+// or group?
 function planetmath_attachable_content_add_links($node) {
+
+  $link_string = '';
+  $links=array();
 
   if($node->type == 'question'){
     $link_string = "Answer this question!";
   } else if ($node->type == 'collection') {
     $link_string = "Add to this collection!";
-  } else if ($node->type == 'group') {
+  } else if ($node->type == 'group' && $node->field_group_subtype['und'][0]['value']=='Team') {
     $link_string = "Add content to this group!";
   }
 
+  if($link_string){
     $links = array(
 		   'attach-something' => l($link_string, 
 					'attach/'. $node->nid)
 		   );
+  }
     return $links;
 }
 

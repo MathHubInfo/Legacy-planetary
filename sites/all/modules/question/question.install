@@ -56,7 +56,7 @@ function question_install() {
 		 'delta' => 'unanswered',
 		 'theme' => variable_get('theme_default'),
 		 'status' => 1,
-		 'weight' => -29,
+		 'weight' => -32,
 		 'region' => 'sidebar_second',
 		 'visibility' => 2,
 		 'pages' => '<?php 

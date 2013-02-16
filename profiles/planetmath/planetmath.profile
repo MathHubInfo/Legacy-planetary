@@ -1395,7 +1395,7 @@ function planetmath_profile_configure_blocks () {
                         'delta' => 'correction',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -30,
+                        'weight' => -29,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 
@@ -1444,7 +1444,7 @@ return false;
                         'delta' => 'pversion',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -34,
+                        'weight' => -28,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 
@@ -1463,7 +1463,7 @@ return false;
                         'delta' => 'problem',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -32,
+                        'weight' => -30,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 
@@ -1482,7 +1482,7 @@ return false;
                         'delta' => 'reverseproblem',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -32,
+                        'weight' => -30,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 
@@ -1501,7 +1501,7 @@ return false;
                         'delta' => 'childarticles',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -32,
+                        'weight' => -31,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 
@@ -1520,7 +1520,7 @@ return false;
                         'delta' => 'solution',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -32,
+                        'weight' => -30,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 
@@ -1539,7 +1539,7 @@ return false;
                         'delta' => 'review',
                         'theme' => $theme_default,
                         'status' => 1,
-                        'weight' => -32,
+                        'weight' => -30,
                         'region' => 'sidebar_second',
                         'visibility' => 2,
                         'pages' => '<?php 
