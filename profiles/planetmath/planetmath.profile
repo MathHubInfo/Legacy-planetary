@@ -1835,7 +1835,7 @@ function planetmath_profile_set_misc_variables () {
                                                                                        'opacity' => "opacity",
                                                                                        'width' => "width"
                                                                                        ),
-                                                                   'speed' => "500"
+                                                                   'speed' => "1000"
                                                                    ),
                                              'effects' => array (
                                                                  'siblings' => "close-same-tree",
