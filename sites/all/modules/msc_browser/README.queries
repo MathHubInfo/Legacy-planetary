@@ -1,0 +1,89 @@
+-- SPARQL
+
+-- get label
+PREFIX msc: <http://msc2010.org/resources/MSC/2010/> 
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#> 
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX local: <http://local.virt/>
+SELECT ?label WHERE { 
+GRAPH <http://localhost:8890/DAV/home/dba/rdf_sink#this> { 
+msc:00A05 skos:prefLabel ?label 
+FILTER langMatches( lang(?label), "en" ) 
+}}
+
+-- get parent
+PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#> 
+PREFIX dct: <http://purl.org/dc/terms/> 
+PREFIX local: <http://local.virt/> 
+SELECT ?notation { 
+GRAPH <http://localhost:8890/DAV/home/dba/rdf_sink#this> { 
+  ?parent skos:narrower msc:00A05 .
+  ?parent skos:notation ?notation
+}}
+
+-- children of top concept
+PREFIX msc:<http://msc2010.org/resources/MSC/2010/> 
+PREFIX skos:<http://www.w3.org/2004/02/skos/core#> 
+select distinct ?child ?label where { 
+GRAPH <http://localhost:8890/DAV/home/dba/rdf_sink#this> {
+?child skos:topConceptOf <http://msc2010.org/resources/MSC/2010/MSC2010> . 
+?child skos:prefLabel ?label . 
+FILTER langMatches( lang(?label), "en" )  }}
+order by ?child
+
+-- subcategories of a middle-level category
+PREFIX msc:<http://msc2010.org/resources/MSC/2010/> 
+PREFIX skos:<http://www.w3.org/2004/02/skos/core#> 
+select distinct ?child ?label where { 
+GRAPH <http://localhost:8890/DAV/home/dba/rdf_sink#this> {
+msc:00Axx skos:narrower ?child . 
+?child skos:prefLabel ?label . 
+FILTER langMatches( lang(?label), "en" )  }}
+
+-- articles in a terminal category
+PREFIX dc:<http://purl.org/dc/terms/> 
+PREFIX msc:<http://msc2010.org/resources/MSC/2010/> 
+PREFIX pm: <http://beta.planetmath.org/ns/> 
+select ?child ?canonicalname where { 
+GRAPH <http://planet.math.uwaterloo.ca:8890/DAV/home/dba/rdf_sink/> {
+?child dc:subject msc:00A05 . 
+?child pm:privacy 1 . 
+?child dc:identifier ?canonicalname}}
+
+-- count query for middle-level categories
+PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX pm: <http://beta.planetmath.org/ns/>
+SELECT DISTINCT ?article ?notation ?subconcept WHERE {
+{
+ {
+    msc:00Axx skos:narrower ?intermediate .
+    ?intermediate skos:narrower ?subconcept .
+    ?article dct:subject ?subconcept .
+    ?article pm:privacy 1 .
+ }
+ UNION
+ {
+    msc:00Axx skos:narrower ?subconcept .
+    ?article dct:subject ?subconcept .
+    ?article pm:privacy 1 .
+ }
+}
+?subconcept skos:notation ?notation .
+OPTIONAL {
+ ?subconcept skos:narrower ?child .
+}
+FILTER (!bound(?child))
+}
+
+-- count query for terminal categories
+PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX pm: <http://beta.planetmath.org/ns/>
+SELECT DISTINCT ?article WHERE {
+ ?article dct:subject msc:00A05 .
+ ?article pm:privacy 1 
+}
