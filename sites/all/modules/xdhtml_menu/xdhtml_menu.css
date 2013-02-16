@@ -1,0 +1,53 @@
+/* $Id: xdhtml_menu.css,v 1.9 2009/11/07 00:57:37 arancaytar Exp $ */
+
+/**
+ * @file xdhtml_menu.css
+ * Static stylesheet rules to be applied to XDHTML Menu markup.
+ */
+
+/*
+ * Cloned leaves are small and emphasized with italics.
+ */
+li.xdhtml-menu-cloned-leaf {
+  font-size: 0.7em;
+  font-style: italic;
+}
+
+/*
+ * Menus that are initially collapsed must be hidden statically.
+ * Otherwise, they will show up while the page renders, until JS runs.
+ */
+li.xdhtml-menu.start-collapsed ul {
+  display: none;
+}
+
+/*
+ * When using open-only menus, expanded links are italicized
+ * to show that they are now static.
+ */ 
+li.xdhtml-menu-open > a {
+  font-style: italic;
+}
+
+/*
+ * When using bullet-icon expansion, make the invisible link as large 
+ * as the bullet icon (16x16). It will be positioned by Javascript, respecting 
+ * text direction. Therefore no positioning code is required here.
+ */
+a.xdhtml-menu-icon {
+  position: relative;
+  float: left;
+  width: 16px;
+  height: 16px;
+}
+
+/*
+ * Provide large and visible folder icons for easy clicking.
+ */
+li.xdhtml-folder.expanded {
+  list-style-image: url("images/folder-open-white.png") !important;
+}
+li.xdhtml-folder.collapsed {
+  list-style-image: url("images/folder-closed-white.png") !important;
+}
+
