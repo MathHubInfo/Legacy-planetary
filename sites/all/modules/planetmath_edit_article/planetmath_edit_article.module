@@ -116,15 +116,25 @@ function planetmath_edit_article_process_metadata($node){
   $metadata .= "\\pmmodified{".$now."}\n";
 
   global $user;
+  // This will get mapped to dct:creator, which isn't quite right but what's better?
   $metadata .= "\\pmowner{".$node->name."}{".$node->uid."}\n";
-  $metadata .= "\\pmmodifier{".$node->name."}{".$user->uid."}\n";
+  // Currently active user is the "modifier", clearly
+  $metadata .= "\\pmmodifier{".$user->name."}{".$user->uid."}\n";
+  // Title is the LaTeX source for the title
   $metadata .= "\\pmtitle{".$node->title."}\n";
-
   // this will have to change when we have a proper versioning system in place
-  $metadata .= "\\pmrecord{1}{".$node->nid."}\n";
-  $metadata .= "\\pmauthor{".$node->name."}{".$user->uid."}\n";
+  // QUESTION: How do we get the real version number? - 
+  // HINT: it's set earlier on in this file :)
+  // (so, that's sorted.)
+  $metadata .= "\\pmrecord{".$node->log."}{".$node->nid."}\n";
   // jac, Nov 27, 2012 - I need to add this so we can extract it later
   $metadata .= "\\pmprivacy{".$node->field_published['und'][0]['value']."}\n";
+
+  // TODO: We should loop over the authors defined by OG and add each one
+  // (assuming there's more than one)...  So, how do we get that stuff?
+  // HINT: It must be similar to what goes on in planetmath_og_display...
+  $metadata .= "\\pmauthor{".$node->name."}{".$user->uid."}\n";
+
 
   if (isset($node->field_mathtype['und'][0])){
     $math_type = $node->field_mathtype['und'][0]['value'];
@@ -198,7 +208,7 @@ function planetmath_edit_article_process_metadata($node){
     }
   }
   $node->field_latex['und'][0]['metadata'] = $metadata;
-  //dd("NOW Node defines metadata: ".$node->field_latex['und'][0]['metadata']);
+  dd("NOW Node defines metadata: ".$node->field_latex['und'][0]['metadata']);
   }
 }
 
