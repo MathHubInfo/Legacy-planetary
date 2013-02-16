@@ -57,6 +57,35 @@ class ARC2_Resource extends ARC2_Class {
     $this->index[$s][$this->expandPName($p)] = $os;
   }
 
+  /* add a relation to a URI. Allows for instance $res->setRel('rdf:type', 'doap:Project') */
+  function setRel($p, $r, $s = '') {
+    if(!is_array($r)) {
+      $uri = array (
+		    'type' => 'uri',
+		    'value' => $this->expandPName($r));
+      $this->setProp($p, $uri, $s);
+    } else {
+      if (!$s) $s = $this->uri;
+      foreach($r as $i => $x) {
+	if(!is_array($x)) {
+	  $uri = array (
+			'type' => 'uri',
+			'value' => $this->expandPName($x));
+	  $r[$i] = $uri;
+	}
+      }
+      $this->index[$s][$this->expandPName($p)] = $r;
+    }
+  }
+
+  /* Specialize setProp to set an xsd:dateTime typed literal. Example : $res->setPropXSDdateTime('dcterms:created', date('c')) */
+  function setPropXSDdateTime($p, $dt, $s = '') {
+	$datecreated=array('value' => $dt,
+		'type' => 'literal',
+		'datatype' => 'http://www.w3.org/2001/XMLSchema#dateTime');
+	$this->setProp($p, $datecreated, $s);
+  }
+
   function setStore($store) {
     $this->store = $store;
   }
