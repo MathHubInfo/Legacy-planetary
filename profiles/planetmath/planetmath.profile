@@ -1827,7 +1827,7 @@ function planetmath_profile_set_misc_variables () {
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
 
   variable_set('dhtml_menu_settings', array (
-                                             'nav' => "open",
+                                             'nav' => "hover",
                                              'animation' => array (
 								   // slide in horizontally, not vertically	
                                                                    'effects' => array (
