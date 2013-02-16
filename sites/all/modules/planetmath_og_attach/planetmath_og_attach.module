@@ -34,8 +34,7 @@ function planetmath_og_attach_menu() {
       'type' => MENU_CALLBACK,
       'page callback' => 'planetmath_og_attach_decouple',
       'page arguments' => array(2,3),//'nid_of_article','nid_of_problem'),
-      'access arguments' => array('create correction content'));
-   
+      'access arguments' => array('create correction content'));   
   
   return $items;
 }
@@ -151,7 +150,6 @@ function planetmath_og_attach_theme($existing, $type, $theme, $path){
 				    )
   );
 }
-
 
 // Main point of entry
 function planetmath_og_attach_node_view($node){
