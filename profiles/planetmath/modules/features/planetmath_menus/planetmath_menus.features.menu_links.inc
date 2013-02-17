@@ -15,7 +15,7 @@ function planetmath_menus_menu_default_menu_links() {
     'menu_name' => 'main-menu',
     'link_path' => '<front>',
     'router_path' => '',
-    'link_title' => 'Home',
+    'link_title' => 'Centre',
     'options' => array(
       'attributes' => array(
         'title' => '',
