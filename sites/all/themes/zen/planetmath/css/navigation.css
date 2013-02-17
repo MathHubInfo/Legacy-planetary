@@ -50,7 +50,30 @@ width: 500px !important;
  * Main menu and Secondary menu links
  */
 #main-menu {
+  margin-left: 10px;
 }
+
+#main-menu ul {
+  list-style-type: none !important;
+}
+
+#main-menu ul li.collapsed {
+  list-style-type: none !important;
+  list-style-image: none;
+}
+
+#main-menu li.expanded {
+  list-style-type: none !important;
+  list-style-image: none;
+}
+
+#main-menu li.dhtml-menu {
+  list-style-type: none !important;
+  margin-left:-26px !important;
+  padding-left:-13px !important;
+  list-style-image: none !important;
+}
+
 
 #secondary-menu {
   float: right;

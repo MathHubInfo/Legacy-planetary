@@ -167,7 +167,9 @@ $jq(document).ready(function () {
     <?php } ?>
     <?php if ($page['navigation'] || $main_menu): ?>
       <div id="navigation"><div class="section clearfix">
+        <div id="main-menu">
         <?php print render($main_menu_expanded);  ?>
+        </div>
         <?php print render($page['navigation']); ?>
       </div></div><!-- /.section, /#navigation -->
     <?php endif; ?>
