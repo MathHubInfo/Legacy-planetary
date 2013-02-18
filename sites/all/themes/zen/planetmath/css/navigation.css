@@ -57,19 +57,14 @@ width: 500px !important;
   list-style-type: none !important;
 }
 
-#main-menu ul li.collapsed {
+#main-menu ul li {
   list-style-type: none !important;
   list-style-image: none;
 }
 
-#main-menu li.expanded {
+#main-menu li.leaf {
   list-style-type: none !important;
-  list-style-image: none;
-}
-
-#main-menu li.dhtml-menu {
-  list-style-type: none !important;
-  margin-left:-26px !important;
+  margin-left:-27px !important;
   padding-left:-13px !important;
   list-style-image: none !important;
 }

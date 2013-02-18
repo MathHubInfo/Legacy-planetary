@@ -1846,9 +1846,9 @@ function planetmath_profile_set_misc_variables () {
                                                                 'type' => "blacklist",
                                                                 'list' => array(
                                                                                 'devel' => 0,
-                                                                                'main-menu' => 0,
+                                                                                'main-menu' => 1,
                                                                                 'management' => 0,
-                                                                                'navigation' => 0,
+                                                                                'navigation' => 1,
                                                                                 'shortcut-set-1' => 0,
                                                                                 'user-menu' => 0
                                                                     ))
