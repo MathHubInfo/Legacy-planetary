@@ -118,6 +118,24 @@ $jq(document).ready(function () {
       </div><!-- /#name-and-slogan -->
     <?php endif; ?>
 
+    <ul id="secondary-menu" class="links inline clearfix">
+    <?php $user_menu = menu_navigation_links('user-menu');
+		  print theme('links',
+			      array(
+				    'links' => $user_menu,
+				    'attributes' => array(
+							  'id' => 'user-menu',
+							  'class' => array('links', 'clearfix'),
+							  ),
+				    'heading' => array(
+						       'text' => t('User menu'),
+						       'level' => 'h2',
+						       'class' => array('element-invisible'),
+						       ),
+				    ));
+	    ?>
+    </ul>
+
  <?php print render($page['header']); ?> 
 
  <?php if ($logged_in): ?> 
