@@ -1,0 +1,5 @@
+name = PlanetMath Legacy URLs
+description = "Rewrite legacy URLs."
+package = "PlanetMath"
+core = 7.x
+version = VERSION
