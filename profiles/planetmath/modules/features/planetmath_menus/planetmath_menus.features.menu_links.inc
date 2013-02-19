@@ -15,7 +15,7 @@ function planetmath_menus_menu_default_menu_links() {
     'menu_name' => 'main-menu',
     'link_path' => '<front>',
     'router_path' => '',
-    'link_title' => 'Centre',
+    'link_title' => 'Home',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -120,7 +120,7 @@ function planetmath_menus_menu_default_menu_links() {
     'has_children' => '0',
     'expanded' => '0',
     'weight' => '-49',
-    'parent_path' => 'articles',
+    'parent_path' => 'questions',
   );
   // Exported menu link: main-menu:groups
   $menu_links['main-menu:groups'] = array(
@@ -232,6 +232,25 @@ function planetmath_menus_menu_default_menu_links() {
     'has_children' => '0',
     'expanded' => '0',
     'weight' => '-50',
+    'parent_path' => 'problems',
+  );
+  // Exported menu link: main-menu:solutions
+  $menu_links['main-menu:reviews'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'reviews',
+    'router_path' => 'reviews',
+    'link_title' => 'Reviews',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-49',
     'parent_path' => 'problems',
   );
   // Exported menu link: management:admin
