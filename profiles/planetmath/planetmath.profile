@@ -1383,8 +1383,13 @@ function planetmath_profile_configure_blocks () {
                         'weight' => -32,
                         'region' => 'frontpage_center',
                         'custom' => 1,
-                        'visibility' => 1,
-                        'pages' => '<front>',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+  global $user;
+  if (drupal_is_front_page()) {
+  return !((bool) $user->uid);
+  } ; 
+?>',
                         'cache' => 1,
                         ),
 		  // this is giving an error claiming that
