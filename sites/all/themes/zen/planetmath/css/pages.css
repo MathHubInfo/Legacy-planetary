@@ -16,9 +16,9 @@ body {
   padding: 0;
   font-size: 15px;
   line-height: 1.4em;
-  font-family: "Hoefler Text", Georgia, Times, serif;
+  /* font-family: "Hoefler Text", Georgia, Times, serif; */
   color: #444;  
-  background-color: #FFF5EE;
+  background-color: #FFFFFF;
  /* background-image: url(../images/paper.jpg);*/
   background-repeat: repeat-y;
   background-size: 100% 100%;
@@ -266,8 +266,9 @@ a:hover{
 
 #block-user-login{
   float: right;
-  margin-right: -12px;
-  margin-top: -70px;
+  margin-right: -2px;
+  margin-top: -216;
+
 }
 
 #block-user-login ul, #block-user-login li {
@@ -289,35 +290,16 @@ a:hover{
   display: none;
 }
 
-/* SEARCH */
-
-
-#block-search-form{
-  float: right;
-  margin-right: -390px;
-  margin-top: -18px;
-  background: none;
-  border: none;
-}
-
-#block-search-form .form-submit{
-  font-size: 12px;
-}
-
-#block-search-form input.form-text{
-  width: 200px;
-}
-
 #site-name{
   margin-top: 30px;
-  visibility:hidden;
+  /* visibility:hidden; */
 }
 
 /* LOGO AND SLOGAN */
 #name-and-slogan{
   margin-top: -1px;  
   margin-left: 30px;
-  visibility:hidden;  
+  /* visibility:hidden;  */
 }
 
 #logo{
@@ -556,14 +538,20 @@ h2.node-title{
   line-height: 1.5em;
 }
 
-.logged-in #block-search-form{
-  margin-right: 0;
-}
+
+
 
 #block-user-login{
   border: 0;
   padding: 4px;
+  position: relative;
+  top: -210px;
+  left: 0px;
   z-index: 100;
+}
+
+.clearfix:after{
+ margin-bottom: -78px; 
 }
 
 div.node.view-mode-full div.content{
@@ -614,6 +602,7 @@ ul.node-images-list li{
 /* margin-bottom: 10px; */
 /* margin-top: -5px; */
 }
+
 
 table {
 width: 100%;
@@ -700,11 +689,6 @@ padding: 0 0 0 15px;
 .node .field-name-field-latex h1.title{
   margin: 0;
 }
-#block-search-form{
-  z-index: 1;
-  margin-top: 3px;
-  margin-right: -485px;
-}
 
 .region-footer{
   margin-top: 50px;
@@ -716,4 +700,34 @@ padding: 0 0 0 15px;
 
 #forum {
 margin:0px -10px 0px -10px;
+}
+
+
+/* SEARCH */
+
+#block-search-form{
+/*  float: right; */
+/*  margin-right: -390px; */
+/*  margin-top: -18px; */
+/*  background: none; */
+/*  border: none; */
+    width: 160px;
+}
+
+#search-block-form{
+margin-top:7px;
+}
+
+#block-search-form .form-submit{
+  font-size: 12px;
+}
+
+#block-search-form input.form-text{
+ /* width: 200px; */
+}
+
+#block-search-form{
+  z-index: 1;
+  margin-top: 3px;
+  /* margin-right: -485px; 
 }

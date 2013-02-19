@@ -106,3 +106,11 @@ h2.block-title /* Block title */ {
 
 #block-user-online /* "Who's online" block for a list of the online users */ {
 }
+
+#block-planetmath-blocks-welcome {
+/* margin-left: 300px; */
+position:relative;
+top: 30px; 
+width: 100% !important;
+border: 1px solid #CCCCCC !important;
+}
