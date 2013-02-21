@@ -3,9 +3,9 @@ drupal_add_library('system', 'ui.tabs');
 $requests = (object) planetmath_blocks_block_view('request');
 $additions = (object) planetmath_blocks_block_view('article');
 $messages = (object) planetmath_blocks_block_view('message');
-$revisions = (object) planetmath_blocks_block_view('revision');
+// $revisions = (object) planetmath_blocks_block_view('revision');
 $solutions = (object) planetmath_blocks_block_view('solution');
-$everythingElse = (object) planetmath_blocks_block_view('everything-else');
+// $everythingElse = (object) planetmath_blocks_block_view('everything-else');
 $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
 ?>
 <div id="content" class="column frontpage-content"><div class="section">
@@ -21,15 +21,14 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
           <?php print $additions->content; ?>
         </div>      
       </div>
-      
-      <div id="front-right-block-tabs" class="front-right block-tabs">
-        <h2><?php print $revisions->subject; ?></h2>
+
+      <div id="front-right-block-tabs" class="front-right block-tabs" style="visibility:hidden">
+        <h2><?php print $messages->subject; ?></h2>
         <div class="tab-contents" id="front-right-tabs-1">
-          <?php print $revisions->content; ?>
+          <?php print $messages->content; ?>
         </div>      
       </div>
     </div>
-
 <br />
 <br />
 
@@ -42,15 +41,7 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
           <?php print $messages->content; ?>
         </div>      
       </div>
-
-      <div id="front-right-mid-block-tabs" class="front-right block-tabs">
-        <h2><?php print $everythingElse->subject; ?></h2>
-        <div class="tab-contents" id="front-right-mid-tabs-1">
-          <?php print $everythingElse->content; ?>
-        </div>      
-      </div>   
     </div>
-
 
 </div></div>
 
@@ -58,11 +49,11 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
 <script type="text/javascript">
   (function($){
     $(document).ready(function(){
-      $("#front-left-block-tabs").tabs();
-      $("#front-right-block-tabs").tabs();
-      $("#front-left-mid-block-tabs").tabs();
-      $("#front-right-mid-block-tabs").tabs();
-      $("#front-left-bot-block-tabs").tabs();
+       $("#front-left-block-tabs").tabs();
+       // $("#front-right-block-tabs").tabs();
+       $("#front-left-mid-block-tabs").tabs();
+       //       $("#front-right-mid-block-tabs").tabs();
+       // $("#front-left-bot-block-tabs").tabs();
     })    
   })(jQuery);
 </script>
@@ -81,7 +72,7 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
 	   num_lines += Math.ceil(jQuery(this).text().length/42);
 	   max_lines = Math.max(max_lines,num_lines);
          });
-       this_line_height = (350/num_lines);
+       this_line_height = (390/num_lines);
        min_line_height = Math.min(this_line_height,min_line_height);
        // now that we know how many lines in THIS block
        // we set the line height in this block accordingly
@@ -89,10 +80,8 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
       });
    // now that we know the maximum number of lines used on any block,
    // we set the height of all blocks based on that value
-   console.log(max_lines+"|||");
-   console.log(min_line_height+"///");
    jQuery('.tab-contents').parent().css('height',
-            Math.ceil((max_lines*min_line_height*1.7))+'px');
-   });
+            Math.ceil((max_lines*min_line_height*2.2))+'px');
+
 
 </script>

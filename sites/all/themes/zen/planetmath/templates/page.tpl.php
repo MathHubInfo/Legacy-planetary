@@ -140,7 +140,7 @@ $jq(document).ready(function () {
 
  <?php if ($logged_in): ?> 
     <div id="fill-this-space">
-     <div class="content"><br><br><br><br><br></div>
+     <div class="content"><br><br></div>
     </div>
  <?php endif;?>
   <div style="clear:both"></div>
@@ -173,6 +173,12 @@ $jq(document).ready(function () {
     <?php } else { ?>
       <?php require_once('frontpage.tpl.php') ?>
     <?php } ?>
+
+    <?php if ($page['navigation']): ?>
+      <div id="navigation"><div class="section clearfix">
+        <?php print render($page['navigation']); ?>
+      </div></div><!-- /.section, /#navigation -->
+    <?php endif; ?>
 
     <?php print render($page['sidebar_first']); ?> <!-- /sidebar_first -->
 

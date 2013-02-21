@@ -6,6 +6,7 @@
 
 .block /* Block wrapper */ {
   margin-bottom: 1.5em;
+ border-color: #cdc0b0;
 }
 
 .block.first /* The first block in the region */ {
@@ -110,7 +111,8 @@ h2.block-title /* Block title */ {
 #block-planetmath-blocks-welcome {
 /* margin-left: 300px; */
 position:relative;
-top: 30px; 
+top: 32px; 
+margin-bottom: -35px;
 width: 100% !important;
 border: 1px solid #CCCCCC !important;
 }

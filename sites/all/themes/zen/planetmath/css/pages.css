@@ -355,7 +355,7 @@ a:hover{
 
 .front-left, #front-left-block-tabs{
   float: left;
-  width: 270px;
+  width: 560px;
   height: 365px;
   margin-left: 0px;
   margin-right: -265px;  
@@ -384,7 +384,7 @@ a:hover{
 }
 
 #front-right-mid-block-tabs{
-  border-color: #DAF4F0;
+  border-color: #cdc0b0;
   background: rgba(248, 248, 255, 0.6);
 /*  background-image: url(../images/grid.jpg); */
 }
@@ -392,6 +392,7 @@ a:hover{
 #front-left-mid-block-tabs{
   margin-top: -40px;
  /* background-color: #D9D9F3; */
+  border-color: #cdc0b0;
   background: rgba(248, 248, 255, 0.6);
   /* border-color: #D9D9F3; */
   /* background-image: url(../images/envelope-cropped.jpg);*/
@@ -545,13 +546,9 @@ h2.node-title{
   border: 0;
   padding: 4px;
   position: relative;
-  top: -210px;
+  top: -155px;
   left: 0px;
   z-index: 100;
-}
-
-.clearfix:after{
- margin-bottom: -78px; 
 }
 
 div.node.view-mode-full div.content{

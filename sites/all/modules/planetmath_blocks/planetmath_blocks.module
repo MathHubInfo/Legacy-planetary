@@ -12,7 +12,7 @@
  */
 define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_NUMBER_OF_ITEMS_ON_BLOCK', 10);
 define('PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK', 7);
-define('PLANETMATH_BLOCKS_NUMBER_OF_MESSAGES_ON_BLOCK', 10);
+define('PLANETMATH_BLOCKS_NUMBER_OF_MESSAGES_ON_BLOCK', 7);
 define('PLANETMATH_BLOCKS_NUMBER_OF_USERS_ON_BLOCK', 7);
 define('PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK', 5);
 define('PLANETMATH_BLOCKS_NUMBER_OF_CHILDREN_ON_BLOCK', 10);
@@ -441,6 +441,35 @@ function planetmath_blocks_blockThemeResultsWithDate($results, $sortBy = 'create
   return $html;
 }
 
+function planetmath_blocks_blockThemeResultsWithDateBold($results, $sortBy = 'created') {
+  if (empty($results)) {
+    return '<h4>No results found</h4>';
+  }
+  $dates = array();
+
+  $html = "";// '<div style="padding-left:7%;padding-right:10%;padding-bottom:10%;"><br />';
+  foreach ($results as $result) {
+    if (!isset($result->version)) {
+      $result->version = "";
+    }
+
+    if ((count($dates) === 0) || 
+	strcmp($dates[count($dates) - 1], date('Y-m-d',$result->$sortBy)) != 0)
+      {
+	array_push($dates,date('Y-m-d',$result->$sortBy));
+	$html .= '<span class="block-day-date">'.date('Y-m-d',$result->$sortBy).'</span><br />';
+      }
+
+    $html .= '<span >' . '<b>'.l($result->title . ' ' . $result->version, 'node/' . $result->nid).'</b>' . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
+  }
+  if ($sortBy == 'created') {
+    $html .= '<div style="text-align:right;">' . l('more', 'articles') . '</div>';
+  } else if ($sortBy == 'changed') {
+    $html .= '<div style="text-align:right;">' . l('more', 'revisions') . '</div>';
+  }
+  return $html;
+}
+
 function planetmath_blocks_blockThemeEverythingElseWithDate($results, $sortBy = 'created') {
   if (empty($results)) {
     return '<h4>No results found</h4>';
@@ -509,9 +538,9 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
         $code = 'p';
       }
 
-      $html .=  '<span class="block-day-date">' . date('Y-m-d', $result->changed) . '</span>'. '<br /><span class="message-block-item">'. ' [' . l($code, 'node/' . $result->nid) . "] " . l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-' . $result->cid)) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
+      $html .=  '<span class="block-day-date">' . date('Y-m-d', $result->changed) . '</span>'. '<br /><span class="message-block-item">'. ' [' . l($code, 'node/' . $result->nid) . "] " . '<b>'.l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-' . $result->cid)).'</b>' . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
     } else {
-      $html .= '<span class="block-day-date">'. date('Y-m-d', $result->changed) . '</span>' . '<br /><span class="message-block-item">' . l($result->title, 'node/' . $result->nid) . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
+      $html .= '<span class="block-day-date">'. date('Y-m-d', $result->changed) . '</span>' . '<br /><span class="message-block-item">' . '<b>'.l($result->title, 'node/' . $result->nid).'</b>' . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
     }
   }
   // jac - link to see more
@@ -700,7 +729,7 @@ function planetmath_blocks_block_userList() {
 
 function planetmath_blocks_block_everythingElse() {
   return array(
-      'subject' => 'Other Recent Activity',
+      'subject' => 'Recent Activity',
       'content' => planetmath_blocks_blockThemeEverythingElseWithDate(planetmath_blocks_queryEverythingElse(),'created')
   );
 }
@@ -761,7 +790,7 @@ function planetmath_blocks_block_view($delta = '') {
   if ($delta == 'article'){
     $block = array(
 		   'subject'=> "New in Encyclopedia",
-		   'content'=> planetmath_blocks_blockThemeResultsWithDate(planetmath_blocks_queryEncyclopedia()));
+		   'content'=> planetmath_blocks_blockThemeResultsWithDateBold(planetmath_blocks_queryEncyclopedia()));
   }
 
   if ($delta == 'correction') {
