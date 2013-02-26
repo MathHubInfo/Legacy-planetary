@@ -1363,6 +1363,26 @@ function planetmath_profile_configure_blocks () {
 		  // appear in the sidebar.  This could presumably be
 		  // done from within the planetmath_blocks module itself
                   // but no harm prototyping here.
+                  array('module' => 'planetmath_blocks',
+                        'delta' => 'revision',
+                        'theme' => variable_get('theme_default'),
+                        'status' => 1,
+                        'weight' => 0,
+                        'region' => 'sidebar_second',
+                        'visibility' => 1,
+                        'pages' => '<front>',
+                        'cache' => 1,
+                        ),
+                  array('module' => 'planetmath_blocks',
+                        'delta' => 'everything-else',
+                        'theme' => variable_get('theme_default'),
+                        'status' => 1,
+                        'weight' => 10,
+                        'region' => 'sidebar_first',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => 1,
+                        ),
                   array(
                         'module' => 'planetmath_blocks',
                         'delta' => 'news',
