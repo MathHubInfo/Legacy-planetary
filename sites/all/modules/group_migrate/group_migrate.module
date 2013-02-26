@@ -163,7 +163,7 @@ function group_migrate_port_coauthors () {
     $members = db_query("SELECT DISTINCT subjectid FROM {planetmath_acl} WHERE {planetmath_acl}.objectid = :objectid", array(':objectid' => $object->objectid));
 	 
     foreach ($members as $member) {
-      if ($member->subjectid != $object->userid && $member->subjectid != -1){
+      if ($member->subjectid != $object->userid && $member->subjectid != -1 && $member->subjectid != 0){
         planetmath_og_model_addUserToGroup($group->nid, $member->subjectid);
       }
     }
@@ -186,7 +186,7 @@ function group_migrate_port_collab_coauthors() {
     $members = db_query("SELECT DISTINCT subjectid FROM {planetmath_acl} WHERE {planetmath_acl}.objectid = :objectid", array(':objectid' => $object->objectid));
 	 
     foreach ($members as $member) {
-      if ($member->subjectid != $object->userid && $member->subjectid != -1){
+      if ($member->subjectid != $object->userid && $member->subjectid != -1 && $member->subjectid != 0){
         planetmath_og_model_addUserToGroup($group->nid, $member->subjectid);
       }
     }
