@@ -54,14 +54,11 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
        $("#front-left-mid-block-tabs").tabs();
        //       $("#front-right-mid-block-tabs").tabs();
        // $("#front-left-bot-block-tabs").tabs();
-    })    
-  })(jQuery);
-</script>
 
-<script>
- jQuery(document).ready(function(){
+
    var max_lines =0;
    var min_line_height = 10;
+   // console.log("look inside");
    // look inside each block
    jQuery('.tab-contents').each( function(){
        // look inside each span
@@ -80,8 +77,9 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
       });
    // now that we know the maximum number of lines used on any block,
    // we set the height of all blocks based on that value
-   jQuery('.tab-contents').parent().css('height',
-            Math.ceil((max_lines*min_line_height*2.2))+'px');
+   jQuery('#front-left-block-tabs').css('height',Math.ceil((max_lines*min_line_height*2.2))+'px');
+   jQuery('#front-right-block-tabs').css('height',Math.ceil((max_lines*min_line_height*2.2))+'px');
 
-
+    })
+  })(jQuery);
 </script>
