@@ -5,7 +5,7 @@
  * @author: 
  *     Joe Corneli <holtzermann17@gmail.com> 
  *
- * Based on advice from Dave Stuart, see http://drupal.org/node/1827260 
+ * Based largely on advice from Dave Stuart, see http://drupal.org/node/1827260 
  */
 
 /**
@@ -30,6 +30,8 @@ function planetary_apachesolr_apachesolr_index_document_build_node(ApacheSolrDoc
     $key = $entity->field_question_latex['und'][0]['document'];
   } else if ($entity->type=='review') {
     $key = $entity->field_review_latex['und'][0]['document'];
+  } else if ($entity->type=='forum') {
+    $key = $entity->body['en'][0]['value'];
   }
   $cache = _drutexml_cache_read(md5($key));
   $document->ss_raw_content = $cache;
@@ -50,3 +52,25 @@ function planetary_apachesolr_apachesolr_query_alter($query) {
 function planetary_apachesolr_preprocess_search_result(&$variables) {
   $variables['snippet']  = $variables['result']['fields']['ss_raw_content'];
 }
+
+/**
+ * Implements hook_apachesolr_entity_info_alter().
+ */
+function planetary_apachesolr_apachesolr_entity_info_alter(&$entity_info) {
+  $entity_info['node']['status callback'][] = 'planetary_apachesolr_exclude_private';
+}
+
+/**
+ * Status callback for ApacheSolr, for nodes.
+ */
+function planetary_apachesolr_apachesolr_exclude_private($entity_id, $type) {
+  if ($type == 'node') {
+    $node = node_load($entity_id, NULL, TRUE);
+    if (is_object($node)) {
+      if (isset($node->field_published) && $node->field_published == 0) {
+        return 0;
+      }
+    }
+  }
+  return 1;
+} 
