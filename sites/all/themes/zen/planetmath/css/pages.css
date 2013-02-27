@@ -539,14 +539,11 @@ h2.node-title{
   line-height: 1.5em;
 }
 
-
-
-
 #block-user-login{
   border: 0;
   padding: 4px;
   position: relative;
-  top: -155px;
+  top: -69px;
   left: 0px;
   z-index: 100;
 }

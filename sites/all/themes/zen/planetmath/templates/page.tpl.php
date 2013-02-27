@@ -90,6 +90,10 @@ $jq(document).ready(function () {
 });
 </script>
 
+<?php if ($is_front): ?>
+<link type="text/css" rel="stylesheet" media="all" href="/sites/all/themes/zen/planetmath/css/front.css" />
+<?php endif; ?>
+
 <div id="page-wrapper"><div id="page">
 
   <div id="header region-header"><div class="section clearfix">
@@ -136,7 +140,7 @@ $jq(document).ready(function () {
 	    ?>
     </ul>
 
- <?php print render($page['header']); ?> 
+		  <?php print render($page['header']); ?> 
 
  <?php if ($logged_in): ?> 
     <div id="fill-this-space">
