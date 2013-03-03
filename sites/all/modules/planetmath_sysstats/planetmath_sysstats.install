@@ -9,7 +9,7 @@ function planetmath_sysstats_install() {
   $form_state = array(
      'values' => array(
        'menu_name'  => 'main-menu',
-       'weight'     => -10,
+       'weight'     => 1,
        'link_title' => "Overview",
        'link_path'  => 'sysstats',
        'module'     => 'planetmath_sysstats',

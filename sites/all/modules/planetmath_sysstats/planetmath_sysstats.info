@@ -3,3 +3,5 @@ description = "Builds a page of system stats"
 version = 7.x-1.0
 package = PlanetMath
 core = 7.x
+
+dependencies[] = planetmath_menus

@@ -1869,36 +1869,6 @@ function planetmath_profile_set_misc_variables () {
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
 
   variable_set('dhtml_menu_settings', array (
-                                             'nav' => "hover",
-                                             'animation' => array (
-								   // slide in horizontally, not vertically	
-                                                                   'effects' => array (
-                                                                                       'height' => 0,
-                                                                                       'opacity' => "opacity",
-                                                                                       'width' => "width"
-                                                                                       ),
-                                                                   'speed' => "1000"
-                                                                   ),
-                                             'effects' => array (
-                                                                 'siblings' => "close-same-tree",
-                                                                 'children' => "none",
-                                                                 'remember' => ""
-                                                                 ),
-                                             'filter' => array (
-                                                                'type' => "blacklist",
-                                                                'list' => array(
-                                                                                'devel' => 0,
-                                                                                'main-menu' => 1,
-                                                                                'management' => 0,
-                                                                                'navigation' => 1,
-                                                                                'shortcut-set-1' => 0,
-                                                                                'user-menu' => 0
-                                                                    ))
-                                             ));
-
-
-  // We need a copy of the dhtml menu that I call xdhtml -- with different settings
-  variable_set('xdhtml_menu_settings', array (
                                              'nav' => "open",
                                              'animation' => array (
 								   // slide in horizontally, not vertically	
@@ -1917,14 +1887,15 @@ function planetmath_profile_set_misc_variables () {
                                              'filter' => array (
                                                                 'type' => "blacklist",
                                                                 'list' => array(
-                                                                                'devel' => 0,
-                                                                                'main-menu' => 0,
-                                                                                'management' => 0,
-                                                                                'navigation' => 0,
-                                                                                'shortcut-set-1' => 0,
-                                                                                'user-menu' => 0
+                                                                         'devel' => 1,
+                                                                         'main-menu' => 1,
+                                                                         'management' => 1,
+                                                                         'navigation' => 0,
+                                                                         'shortcut-set-1' => 1,
+                                                                         'user-menu' => 1
                                                                     ))
                                              ));
+
 
   // this seems to be a way to make it so that articles are always versioned.
   variable_set('node_options_article', array (
