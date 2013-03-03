@@ -248,57 +248,14 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '9',
   );
-  // Exported menu link: navigation:aggregator
-  $menu_links['navigation:aggregator'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'aggregator',
-    'router_path' => 'aggregator',
-    'link_title' => 'Feed aggregator',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '1',
-    'external' => '0',
-    'has_children' => '1',
-    'expanded' => '0',
-    'weight' => '-42',
-  );
-  // Exported menu link: navigation:aggregator/sources
-  $menu_links['navigation:aggregator/sources'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'aggregator/sources',
-    'router_path' => 'aggregator/sources',
-    'link_title' => 'Sources',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '1',
-    'external' => '0',
-    'has_children' => '1',
-    'expanded' => '0',
-    'weight' => '0',
-    'parent_path' => 'aggregator',
-  );
-  // Exported menu link: navigation:filter/tips
-  $menu_links['navigation:filter/tips'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'filter/tips',
-    'router_path' => 'filter/tips',
-    'link_title' => 'Compose tips',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '1',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-48',
-  );
   // Exported menu link: navigation:forum
   $menu_links['navigation:forum'] = array(
     'menu_name' => 'navigation',
-    'link_path' => 'forum',
-    'router_path' => 'forum',
+    'link_path' => 'forum/%',
+    'router_path' => 'forum/%',
     'link_title' => 'Forums',
     'options' => array(),
-    'module' => 'system',
+    'module' => 'forum',
     'hidden' => '0',
     'external' => '0',
     'has_children' => '1',
@@ -934,10 +891,8 @@ function planetmath_menus_menu_default_menu_links() {
   t('Basic page');
   t('Collection');
   t('Collections');
-  t('Compose tips');
   t('Correction');
   t('Corrections');
-  t('Feed aggregator');
   t('Forum topic');
   t('Forums');
   t('Gallery');
@@ -976,13 +931,10 @@ function planetmath_menus_menu_default_menu_links() {
   t('Site docs');
   t('Solution');
   t('Solutions');
-  t('Sources');
   t('Strategic Communications Development');
   t('Testing messages (ignore)');
   t('The Math Pub');
   t('University/Tertiary');
   t('User account');
-
-
   return $menu_links;
 }
