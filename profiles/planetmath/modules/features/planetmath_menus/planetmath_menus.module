@@ -4,3 +4,8 @@
  */
 
 // Drupal needs this blank file.
+
+function planetmath_menus_menu_alter(&$items) {
+  // Example - disable the page at node/add
+  $items['poll']['access callback'] = FALSE;
+}
