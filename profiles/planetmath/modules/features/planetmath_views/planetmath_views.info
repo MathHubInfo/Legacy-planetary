@@ -30,6 +30,5 @@ features[views_view][] = questions
 features[views_view][] = reviews
 features[views_view][] = site_docs
 features[views_view][] = solutions
-features[views_view][] = reviews
 features[views_view][] = unanswered_questions
 features[views_view][] = userpoints

@@ -191,6 +191,7 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '20';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -282,6 +283,28 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['filters']['field_published_value']['value'] = array(
     1 => '1',
   );
+  /* Filter criterion: Content: Major Section (field_section) */
+  $handler->display->display_options['filters']['field_section_value']['id'] = 'field_section_value';
+  $handler->display->display_options['filters']['field_section_value']['table'] = 'field_data_field_section';
+  $handler->display->display_options['filters']['field_section_value']['field'] = 'field_section_value';
+  $handler->display->display_options['filters']['field_section_value']['value'] = array(
+    'all' => 'all',
+    'Collaboration' => 'Collaboration',
+    'Reference' => 'Reference',
+    'Research' => 'Research',
+    'Recreation' => 'Recreation',
+    'Education' => 'Education',
+  );
+  $handler->display->display_options['filters']['field_section_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_section_value']['expose']['operator_id'] = 'field_section_value_op';
+  $handler->display->display_options['filters']['field_section_value']['expose']['label'] = 'Major Section (field_section)';
+  $handler->display->display_options['filters']['field_section_value']['expose']['operator'] = 'field_section_value_op';
+  $handler->display->display_options['filters']['field_section_value']['expose']['identifier'] = 'section';
+  $handler->display->display_options['filters']['field_section_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -331,6 +354,7 @@ function planetmath_views_views_default_views() {
     t('Last updated by'),
     t('[name] on [changed]'),
     t('All'),
+    t('Major Section (field_section)'),
     t('Page'),
     t('Feed'),
   );
@@ -355,6 +379,7 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '20';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -447,6 +472,29 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['filters']['field_published_value']['value'] = array(
     1 => '1',
   );
+  /* Filter criterion: Content: Major Section (field_section) */
+  $handler->display->display_options['filters']['field_section_value']['id'] = 'field_section_value';
+  $handler->display->display_options['filters']['field_section_value']['table'] = 'field_data_field_section';
+  $handler->display->display_options['filters']['field_section_value']['field'] = 'field_section_value';
+  $handler->display->display_options['filters']['field_section_value']['value'] = array(
+    'all' => 'all',
+    'Collaboration' => 'Collaboration',
+    'Reference' => 'Reference',
+    'Research' => 'Research',
+    'Recreation' => 'Recreation',
+    'Education' => 'Education',
+  );
+  $handler->display->display_options['filters']['field_section_value']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_section_value']['expose']['operator_id'] = 'field_section_value_op';
+  $handler->display->display_options['filters']['field_section_value']['expose']['label'] = 'Major Section';
+  $handler->display->display_options['filters']['field_section_value']['expose']['operator'] = 'field_section_value_op';
+  $handler->display->display_options['filters']['field_section_value']['expose']['identifier'] = 'section';
+  $handler->display->display_options['filters']['field_section_value']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );
+  $handler->display->display_options['filters']['field_section_value']['expose']['reduce'] = TRUE;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -497,6 +545,7 @@ function planetmath_views_views_default_views() {
     t('Last updated by'),
     t('[name] on [changed]'),
     t('All'),
+    t('Major Section'),
     t('Page'),
     t('Feed'),
   );
@@ -2257,7 +2306,7 @@ else if (!$field_correction_closed){
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['label'] = 'AddReview';
   $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/solution">Add new Review</a></li> 
+ <li><a href="node/add/review">Add new Review</a></li> 
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   /* No results behavior: Global: Text area */
@@ -2267,7 +2316,7 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['label'] = 'AddReview';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/solution">Add new Review</a></li> 
+ <li><a href="node/add/review">Add new Review</a></li> 
 </ul> ';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   /* Relationship: Content: Author */
@@ -2306,7 +2355,7 @@ else if (!$field_correction_closed){
   $handler->display->display_options['arguments']['nid']['table'] = 'node';
   $handler->display->display_options['arguments']['nid']['field'] = 'nid';
   $handler->display->display_options['arguments']['nid']['title_enable'] = TRUE;
-  $handler->display->display_options['arguments']['nid']['title'] = 'Reviews of "%1"';
+  $handler->display->display_options['arguments']['nid']['title'] = 'Reviews attached to "%1"';
   $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
   $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
@@ -2333,12 +2382,12 @@ else if (!$field_correction_closed){
   $handler->display->display_options['path'] = 'reviews';
 
   /* Display: Feed */
-  $handler = $view->new_display('feed', 'Feed', 'solutionfeed_1');
+  $handler = $view->new_display('feed', 'Feed', 'reviewfeed_1');
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['style_plugin'] = 'rss';
   $handler->display->display_options['row_plugin'] = 'node_rss';
-  $handler->display->display_options['path'] = 'solutions/rss.xml';
+  $handler->display->display_options['path'] = 'reviews/rss.xml';
   $handler->display->display_options['displays'] = array(
     'page' => 'page',
     'default' => 0,
@@ -2361,12 +2410,12 @@ else if (!$field_correction_closed){
     t('last »'),
     t('AddReview'),
     t('<ul class="action-links"> 
- <li><a href="node/add/solution">Add new Review</a></li> 
+ <li><a href="node/add/review">Add new Review</a></li> 
 </ul> '),
     t('by'),
     t('last revised'),
     t('All'),
-    t('Reviews of "%1"'),
+    t('Reviews attached to "%1"'),
     t('Page'),
     t('Feed'),
   );
@@ -2670,160 +2719,6 @@ else if (!$field_correction_closed){
     t('Feed'),
   );
   $export['solutions'] = $view;
-
-  $view = new view();
-  $view->name = 'reviews';
-  $view->description = '';
-  $view->tag = 'default';
-  $view->base_table = 'node';
-  $view->human_name = 'Reviews';
-  $view->core = 7;
-  $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
-
-  /* Display: Master */
-  $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Reviews';
-  $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'perm';
-  $handler->display->display_options['cache']['type'] = 'none';
-  $handler->display->display_options['query']['type'] = 'views_query';
-  $handler->display->display_options['query']['options']['disable_sql_rewrite'] = TRUE;
-  $handler->display->display_options['query']['options']['query_comment'] = FALSE;
-  $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-  $handler->display->display_options['style_plugin'] = 'default';
-  $handler->display->display_options['style_options']['grouping'] = array(
-    0 => array(
-      'field' => 'title',
-      'rendered' => 1,
-    ),
-  );
-  $handler->display->display_options['row_plugin'] = 'fields';
-  $handler->display->display_options['row_options']['inline'] = array(
-    'title' => 'title',
-  );
-  /* Header: Global: Text area */
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['label'] = 'AddReview';
-  $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/review">Add new Review</a></li> 
-</ul> ';
-  $handler->display->display_options['header']['area']['format'] = 'full_html';
-  /* No results behavior: Global: Text area */
-  $handler->display->display_options['empty']['area']['id'] = 'area';
-  $handler->display->display_options['empty']['area']['table'] = 'views';
-  $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['label'] = 'AddReview';
-  $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/review">Add new Review</a></li> 
-</ul> ';
-  $handler->display->display_options['empty']['area']['format'] = 'full_html';
-  /* Relationship: Content: Author */
-  $handler->display->display_options['relationships']['uid']['id'] = 'uid';
-  $handler->display->display_options['relationships']['uid']['table'] = 'node';
-  $handler->display->display_options['relationships']['uid']['field'] = 'uid';
-  $handler->display->display_options['relationships']['uid']['label'] = 'by';
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'node';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
-  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  /* Field: User: Name */
-  $handler->display->display_options['fields']['name']['id'] = 'name';
-  $handler->display->display_options['fields']['name']['table'] = 'users';
-  $handler->display->display_options['fields']['name']['field'] = 'name';
-  $handler->display->display_options['fields']['name']['relationship'] = 'uid';
-  $handler->display->display_options['fields']['name']['label'] = 'by';
-  /* Field: Content: Updated date */
-  $handler->display->display_options['fields']['changed']['id'] = 'changed';
-  $handler->display->display_options['fields']['changed']['table'] = 'node';
-  $handler->display->display_options['fields']['changed']['field'] = 'changed';
-  $handler->display->display_options['fields']['changed']['label'] = 'last revised';
-  $handler->display->display_options['fields']['changed']['date_format'] = 'privatemsg_current_day';
-  /* Sort criterion: Content: Post date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'node';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
-  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Contextual filter: Content: Nid */
-  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['table'] = 'node';
-  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['title_enable'] = TRUE;
-  $handler->display->display_options['arguments']['nid']['title'] = 'Reviews attached to "%1"';
-  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
-  /* Filter criterion: Content: Published */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'node';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = 1;
-  $handler->display->display_options['filters']['status']['group'] = 0;
-  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-  /* Filter criterion: Content: Type */
-  $handler->display->display_options['filters']['type']['id'] = 'type';
-  $handler->display->display_options['filters']['type']['table'] = 'node';
-  $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['value'] = array(
-    'review' => 'review',
-  );
-  $handler->display->display_options['filters']['type']['group'] = '0';
-
-  /* Display: Page */
-  $handler = $view->new_display('page', 'Page', 'page');
-  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
-  $handler->display->display_options['path'] = 'reviews';
-
-  /* Display: Feed */
-  $handler = $view->new_display('feed', 'Feed', 'reviewfeed_1');
-  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
-  $handler->display->display_options['pager']['type'] = 'some';
-  $handler->display->display_options['style_plugin'] = 'rss';
-  $handler->display->display_options['row_plugin'] = 'node_rss';
-  $handler->display->display_options['path'] = 'reviews/rss.xml';
-  $handler->display->display_options['displays'] = array(
-    'page' => 'page',
-    'default' => 0,
-  );
-  $translatables['reviews'] = array(
-    t('Master'),
-    t('Reviews'),
-    t('more'),
-    t('Apply'),
-    t('Reset'),
-    t('Sort by'),
-    t('Asc'),
-    t('Desc'),
-    t('Items per page'),
-    t('- All -'),
-    t('Offset'),
-    t('« first'),
-    t('‹ previous'),
-    t('next ›'),
-    t('last »'),
-    t('AddReview'),
-    t('<ul class="action-links"> 
- <li><a href="node/add/review">Add new Review</a></li> 
-</ul> '),
-    t('by'),
-    t('last revised'),
-    t('All'),
-    t('Reviews attached to "%1"'),
-    t('Page'),
-    t('Feed'),
-  );
-  $export['reviews'] = $view;
 
   $view = new view();
   $view->name = 'unanswered_questions';
