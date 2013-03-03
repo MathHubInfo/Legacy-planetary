@@ -4,13 +4,16 @@ function planetmath_sysstats_install() {
 
   module_load_include('inc', 'menu', 'menu.admin');
 
+  $homeID = db_query("select mlid from menu_links where link_title = 'Home'")->fetchObject();
+
   $form_state = array(
      'values' => array(
-       'menu_name'  => 'navigation',
+       'menu_name'  => 'main-menu',
        'weight'     => -10,
-       'link_title' => "Site Content",
+       'link_title' => "Overview",
        'link_path'  => 'sysstats',
        'module'     => 'planetmath_sysstats',
+       'plid'       => $homeID->mlid,
        'mlid'       => NULL,
      ),
    );

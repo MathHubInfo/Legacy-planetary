@@ -109,9 +109,13 @@ function planetmath_orphanage_model_cronJob() {
 function planetmath_orphanage_menu() {
   $items = array();
 
+  $articlesID = db_query("select mlid from menu_links where link_title = 'Articles'")->fetchObject();
+
   $items['orphanage'] = array(
       'type' => MENU_NORMAL_ITEM,
       'title' => 'Orphanage',
+      'menu_name' => 'main-menu',
+      'plid' => $articlesID->mlid,
       'page callback' => 'planetmath_orphanage_view_mainOrphanageList',
       'access arguments' => array('access content')
   );
