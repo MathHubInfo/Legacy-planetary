@@ -2159,9 +2159,373 @@ function planetmath_profile_setup_menus () {
   dd("Profile- In planetmath_profile_setup_menus");
   set_time_limit(0);
 
-  menu_link_delete(NULL,'drutexml');
-  menu_link_delete(NULL,'poll');
+  module_load_include('inc', 'menu', 'menu.admin');
 
+  menu_link_delete(NULL,'drutexml');
+
+  $homeID = db_query("select mlid from menu_links where link_title = 'Home'")->fetchObject();
+
+  $articlesID = db_query("select mlid from menu_links where link_title = 'Articles'")->fetchObject();
+  $orphanageID = db_query("select mlid from menu_links where link_title = 'Orphanage'")->fetchObject();
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'main-menu',
+       'weight'     => 4,
+       'link_title' => "Orphanage",
+       'link_path'  => 'orphanage',
+       'module'     => 'planetmath_orphanage',
+       'plid'       => $articlesID->mlid,
+       'mlid'       => $orphanageID->mlid,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $overviewID = db_query("select mlid from menu_links where link_title = 'Overview'")->fetchObject();
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'main-menu',
+       'weight'     => 1,
+       'link_title' => "Overview",
+       'link_path'  => 'sysstats',
+       'module'     => 'planetmath_sysstats',
+       'plid'       => NULL,
+       'mlid'       => $overviewID->mlid,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $forumsID = db_query("select mlid from menu_links where link_title = 'Forums'")->fetchObject();
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'main-menu',
+       'weight'     => 1,
+       'link_title' => "Forums",
+       'link_path'  => 'forum',
+       'module'     => 'forum',
+       'plid'       => $overviewID->mlid,
+       'mlid'       => $forumsID->mlid,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $groupsID = db_query("select mlid from menu_links where link_title = 'Groups'")->fetchObject();
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'main-menu',
+       'weight'     => 2,
+       'link_title' => "Groups",
+       'link_path'  => 'groups',
+       'module'     => 'groups',
+       'plid'       => $overviewID->mlid,
+       'mlid'       => $groupsID->mlid,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $galleryID = db_query("select mlid from menu_links where link_title = 'Gallery'")->fetchObject();
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'main-menu',
+       'weight'     => 3,
+       'link_title' => "Gallery",
+       'link_path'  => 'gallery',
+       'module'     => 'gallery',
+       'plid'       => $overviewID->mlid,
+       'mlid'       => $galleryID->mlid,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  db_query("DELETE FROM menu_links WHERE link_title = 'Orphanage' AND menu_name = 'navigation'");
+  db_query("DELETE FROM menu_links WHERE link_title = 'Forums' AND plid = $homeID AND menu_name = 'main_menu'");
+
+
+  $forumsID = db_query("select mlid from menu_links where link_title = 'Forums' AND menu_name = 'navigation'")->fetchObject();
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 1,
+       'link_title' => "New Forum Post",
+       'link_path'  => 'node/add/forum/0',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => $galleryID->mlid,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 2,
+       'link_title' => "Planetary Bugs",
+       'link_path'  => 'forums/planetary-bugs',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "HS/Secondary",
+       'link_path'  => 'forums/high-schoolsecondary',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "University/Tertiary",
+       'link_path'  => 'forums/universitytertiary',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "Graduate/Advanced",
+       'link_path'  => 'forums/graduateadvanced',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "Industry/Practice",
+       'link_path'  => 'forums/industrypractice',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "Research Topics",
+       'link_path'  => 'forums/research-topics',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "LaTeX help",
+       'link_path'  => 'forums/latex-help',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "Math Comptetitions",
+       'link_path'  => 'forums/math-competitions',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "Math History",
+       'link_path'  => 'forums/math-history',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "Math Humor",
+       'link_path'  => 'forums/math-humor',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "PlanetMath Comments",
+       'link_path'  => 'forums/planetmath-comments',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "PlanetMath System Updates and News",
+       'link_path'  => 'forums/planetmath-system-updates-and-news',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "PlanetMath help",
+       'link_path'  => 'forums/planetmath-help',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "PlanetMath.ORG",
+       'link_path'  => 'forums/planetmathorg',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "Strategic Communications Development",
+       'link_path'  => 'forums/strategic-communications-development',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "The Math Pub",
+       'link_path'  => 'forums/the-math-pub',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
+
+  $form_state = array(
+     'values' => array(
+       'menu_name'  => 'navigation',
+       'weight'     => 3,
+       'link_title' => "Testing messages (ignore)",
+       'link_path'  => 'forums/testing-messages-ignore',
+       'module'     => 'forum',
+       'plid'       => $forumsID->mlid,
+       'mlid'       => NULL,
+     ),
+   );
+
+  menu_edit_item_validate(array(), $form_state);
+  $toplid = menu_link_save($form_state['values']);
 
   // Update the menu router information.
   menu_rebuild();
