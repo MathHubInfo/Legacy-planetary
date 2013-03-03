@@ -3,9 +3,11 @@
  * @file
  */
 
-// Drupal needs this blank file.
+// Drupal needs this (not quite) blank file.
 
 function planetmath_menus_menu_alter(&$items) {
-  // Example - disable the page at node/add
+
   $items['poll']['access callback'] = FALSE;
+  $items['aggregator']['hidden'] = TRUE;
+  $items['sysstats']['hidden'] = TRUE;
 }
