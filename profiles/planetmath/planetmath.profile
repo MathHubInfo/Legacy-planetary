@@ -1079,6 +1079,17 @@ function planetmath_profile_configure_blocks () {
                         ),
                   array(
                         'module' => 'system',
+                        'delta' => 'main-menu',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => 1,
+                        'region' => 'sidebar_first',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'system',
                         'delta' => 'powered-by',
                         'theme' => $theme_default,
                         'status' => 1,
@@ -1401,7 +1412,7 @@ function planetmath_profile_configure_blocks () {
                         'theme' => $theme_default,
                         'status' => 1,
                         'weight' => -32,
-                        'region' => 'frontpage_center',
+                        'region' => 'header',
                         'custom' => 1,
                         'visibility' => 2,
                         'pages' => '<?php 
@@ -2177,7 +2188,9 @@ function planetmath_profile_setup_menus () {
   dd("Profile- In planetmath_profile_setup_menus");
   set_time_limit(0);
 
-  menu_link_delete('drutexml');
+  menu_link_delete(NULL,'drutexml');
+  menu_link_delete(NULL,'poll');
+
 
   // Update the menu router information.
   menu_rebuild();
