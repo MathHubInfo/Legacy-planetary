@@ -11,7 +11,7 @@ dependencies[] = content_access
 dependencies[] = ctools
 dependencies[] = date
 dependencies[] = dhtml_menu
-dependencies[] = xdhtml_menu
+; dependencies[] = xdhtml_menu
 dependencies[] = views_content
 dependencies[] = aggregator
 dependencies[] = block
@@ -142,8 +142,9 @@ dependencies[] = planetmath_orphanage
 dependencies[] = planetmath_owner
 dependencies[] = planetmath_user
 dependencies[] = planetmath_messages
-dependencies[] = planetmath_overview
-dependencies[] = planetmath_overview_links
+dependencies[] = planetmath_sysstats
+; dependencies[] = planetmath_overview
+; dependencies[] = planetmath_overview_links
 ;; I'll like this module when it integrates with the gallery properly
 ; dependencies[] = planetmath_image
 
