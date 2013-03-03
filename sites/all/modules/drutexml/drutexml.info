@@ -4,4 +4,4 @@ core = 7.x
 package     = Planetary Modules
 dependencies[] = ctools
 dependencies[] = planetary_webglue
-stylesheets[all][] = core.css
+stylesheets[all][] = LaTeXML.css
