@@ -1050,7 +1050,7 @@ function planetmath_profile_configure_blocks () {
                         'theme' => $theme_default,
                         'status' => 1,
                         'weight' => -26,
-                        'region' => 'header',
+                        'region' => 'sidebar_first',
                         'visibility' => 0,
                         'pages' => '',
                         'cache' => -1,
@@ -1820,6 +1820,12 @@ function planetmath_profile_configure_captcha (){
 function planetmath_profile_set_misc_variables () {
   dd("Profile- In planetmath_profile_set_misc_variables");
   set_time_limit(0);
+
+  // This will prevent errors when indexing articles if the comment doesn't exist or
+  // if the user has been imported wrong.  The fact that I even have to add this 
+  // suggests that I had better check the user importing to make sure everyone comes
+  // along for the ride...
+  variable_set('apachesolr_exclude_nodeapi_types',array('article'=>array('comment'=>TRUE)));
 
   // set watchable content types
   variable_set('watcher_content_types', serialize(array(
