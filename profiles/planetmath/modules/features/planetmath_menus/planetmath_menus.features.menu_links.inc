@@ -141,25 +141,6 @@ function planetmath_menus_menu_default_menu_links() {
     'weight' => '-49',
     'parent_path' => '<front>',
   );
-  // Exported menu link: main-menu:people
-  $menu_links['main-menu:people'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'people',
-    'router_path' => 'people',
-    'link_title' => 'People',
-    'options' => array(
-      'attributes' => array(
-        'title' => 'Math for the people, by the people.',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-50',
-    'parent_path' => '<front>',
-  );
   // Exported menu link: main-menu:problems
   $menu_links['main-menu:problems'] = array(
     'menu_name' => 'main-menu',
@@ -234,25 +215,6 @@ function planetmath_menus_menu_default_menu_links() {
     'weight' => '-50',
     'parent_path' => 'problems',
   );
-  // Exported menu link: main-menu:solutions
-  $menu_links['main-menu:reviews'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'reviews',
-    'router_path' => 'reviews',
-    'link_title' => 'Reviews',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-49',
-    'parent_path' => 'problems',
-  );
   // Exported menu link: management:admin
   $menu_links['management:admin'] = array(
     'menu_name' => 'management',
@@ -275,11 +237,11 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Feed aggregator',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '0',
+    'hidden' => '1',
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '5',
+    'weight' => '-42',
   );
   // Exported menu link: navigation:aggregator/sources
   $menu_links['navigation:aggregator/sources'] = array(
@@ -289,40 +251,26 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Sources',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '0',
+    'hidden' => '1',
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
     'weight' => '0',
     'parent_path' => 'aggregator',
   );
-  // Exported menu link: navigation:connectors/php
-  $menu_links['navigation:connectors/php'] = array(
+  // Exported menu link: navigation:corrections
+  $menu_links['navigation:corrections'] = array(
     'menu_name' => 'navigation',
-    'link_path' => 'connectors/php',
-    'router_path' => 'connectors/php',
-    'link_title' => 'TNTBase Browser',
+    'link_path' => 'corrections',
+    'router_path' => 'corrections',
+    'link_title' => 'Corrections',
     'options' => array(
       'attributes' => array(
-        'title' => 'Broser TNTBase repository',
+        'title' => 'Corrections to articles',
       ),
     ),
     'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
-  );
-  // Exported menu link: navigation:drutexml
-  $menu_links['navigation:drutexml'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'drutexml',
-    'router_path' => 'drutexml',
-    'link_title' => 'LaTeX filter implemented via LaTeXML',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '0',
+    'hidden' => '-1',
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
@@ -340,7 +288,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-48',
   );
   // Exported menu link: navigation:forum
   $menu_links['navigation:forum'] = array(
@@ -354,7 +302,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-47',
   );
   // Exported menu link: navigation:node/add
   $menu_links['navigation:node/add'] = array(
@@ -368,7 +316,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-50',
   );
   // Exported menu link: navigation:node/add/article
   $menu_links['navigation:node/add/article'] = array(
@@ -568,7 +516,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-45',
   );
   // Exported menu link: navigation:search
   $menu_links['navigation:search'] = array(
@@ -582,7 +530,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-43',
   );
   // Exported menu link: navigation:userpoints
   $menu_links['navigation:userpoints'] = array(
@@ -592,11 +540,11 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Recent activity',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '0',
+    'hidden' => '1',
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-44',
   );
   // Exported menu link: user-menu:messages
   $menu_links['user-menu:messages'] = array(
@@ -678,6 +626,7 @@ function planetmath_menus_menu_default_menu_links() {
   t('Article');
   t('Articles');
   t('Basic page');
+  t('Collections');
   t('Compose tips');
   t('Correction');
   t('Corrections');
@@ -689,24 +638,23 @@ function planetmath_menus_menu_default_menu_links() {
   t('Groups');
   t('Home');
   t('Image');
-  t('LaTeX filter implemented via LaTeXML');
   t('Log out');
   t('Messages');
   t('My !points');
   t('My Watched Posts');
   t('News');
-  t('People');
   t('Poll');
   t('Polls');
   t('Problem');
   t('Problems');
+  t('Questions');
+  t('Recent activity');
   t('Search');
+  t('Site docs');
   t('Solution');
   t('Solutions');
   t('Sources');
-  t('TNTBase Browser');
   t('User account');
-  t('Users by !points');
 
 
   return $menu_links;
