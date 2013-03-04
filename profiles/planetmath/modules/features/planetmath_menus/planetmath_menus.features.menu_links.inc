@@ -26,7 +26,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '1',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-1',
+    'weight' => '-50',
   );
   // Exported menu link: main-menu:articles
   $menu_links['main-menu:articles'] = array(
@@ -44,26 +44,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '0',
-  );
-  // Exported menu link: main-menu:collections
-  $menu_links['main-menu:collections'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'collections',
-    'router_path' => 'collections',
-    'link_title' => 'Collections',
-    'options' => array(
-      'attributes' => array(
-        'title' => 'Like playlists for math content.',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
     'weight' => '-49',
-    'parent_path' => 'articles',
   );
   // Exported menu link: main-menu:corrections
   $menu_links['main-menu:corrections'] = array(
@@ -96,7 +77,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-49',
     'parent_path' => 'articles',
   );
   // Exported menu link: main-menu:problems
@@ -107,7 +88,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Problems',
     'options' => array(
       'attributes' => array(
-        'title' => 'Solve \'em here.',
+        'title' => '',
       ),
     ),
     'module' => 'menu',
@@ -115,7 +96,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-47',
   );
   // Exported menu link: main-menu:questions
   $menu_links['main-menu:questions'] = array(
@@ -125,7 +106,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Questions',
     'options' => array(
       'attributes' => array(
-        'title' => 'Ask \'em here.',
+        'title' => '',
       ),
     ),
     'module' => 'menu',
@@ -133,17 +114,17 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-48',
   );
   // Exported menu link: main-menu:site-docs
   $menu_links['main-menu:site-docs'] = array(
     'menu_name' => 'main-menu',
     'link_path' => 'site-docs',
     'router_path' => 'site-docs',
-    'link_title' => 'Site docs',
+    'link_title' => 'Site Docs',
     'options' => array(
       'attributes' => array(
-        'title' => 'PlanetMath\'s core documentation',
+        'title' => '',
       ),
     ),
     'module' => 'menu',
@@ -151,7 +132,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-50',
+    'weight' => '0',
     'parent_path' => 'questions',
   );
   // Exported menu link: main-menu:solutions
@@ -170,7 +151,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-50',
+    'weight' => '1',
     'parent_path' => 'problems',
   );
   // Exported menu link: navigation:aggregator
@@ -181,7 +162,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Feed aggregator',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '1',
+    'hidden' => '0',
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
@@ -195,7 +176,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Sources',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '1',
+    'hidden' => '0',
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
@@ -849,20 +830,6 @@ function planetmath_menus_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '0',
   );
-  // Exported menu link: navigation:userpoints
-  $menu_links['navigation:userpoints'] = array(
-    'menu_name' => 'navigation',
-    'link_path' => 'userpoints',
-    'router_path' => 'userpoints',
-    'link_title' => 'Users by !points',
-    'options' => array(),
-    'module' => 'system',
-    'hidden' => '1',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
-  );
   // Exported menu link: user-menu:messages
   $menu_links['user-menu:messages'] = array(
     'menu_name' => 'user-menu',
@@ -943,7 +910,6 @@ function planetmath_menus_menu_default_menu_links() {
   t('Articles');
   t('Basic page');
   t('Collection');
-  t('Collections');
   t('Compose tips');
   t('Correction');
   t('Corrections');
@@ -981,7 +947,7 @@ function planetmath_menus_menu_default_menu_links() {
   t('Research Topics');
   t('Review');
   t('Search');
-  t('Site docs');
+  t('Site Docs');
   t('Solution');
   t('Solutions');
   t('Sources');
@@ -990,7 +956,6 @@ function planetmath_menus_menu_default_menu_links() {
   t('The Math Pub');
   t('University/Tertiary');
   t('User account');
-  t('Users by !points');
 
 
   return $menu_links;
