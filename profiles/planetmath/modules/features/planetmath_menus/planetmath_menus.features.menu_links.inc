@@ -214,11 +214,11 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Feed aggregator',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '1',
+    'hidden' => '0',
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '-44',
+    'weight' => '5',
   );
   // Exported menu link: navigation:aggregator/sources
   $menu_links['navigation:aggregator/sources'] = array(
@@ -228,7 +228,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Sources',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '1',
+    'hidden' => '0',
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
@@ -247,7 +247,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-43',
+    'weight' => '0',
   );
   // Exported menu link: navigation:forum
   $menu_links['navigation:forum'] = array(
@@ -261,7 +261,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '-49',
+    'weight' => '0',
   );
   // Exported menu link: navigation:forum/1
   $menu_links['navigation:forum/1'] = array(
@@ -598,7 +598,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '-50',
+    'weight' => '0',
   );
   // Exported menu link: navigation:node/add/article
   $menu_links['navigation:node/add/article'] = array(
@@ -866,7 +866,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-48',
+    'weight' => '0',
   );
   // Exported menu link: navigation:search
   $menu_links['navigation:search'] = array(
@@ -880,7 +880,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-47',
+    'weight' => '0',
   );
   // Exported menu link: navigation:sysstats
   $menu_links['navigation:sysstats'] = array(
