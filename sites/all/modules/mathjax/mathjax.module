@@ -15,9 +15,12 @@ function mathjax_preprocess ( &$variables, $hook ){
   $strchrome=stristr($_SERVER["HTTP_USER_AGENT"], "Chrome");
   $strsafari=stristr($_SERVER["HTTP_USER_AGENT"], "Safari");
   $strversion=stristr($_SERVER["HTTP_USER_AGENT"], "Version");
-  // If we don't have a sufficiently big version of a MathML-compliant browser...
 
-  // print_r($strfirefox);  print_r($strchrome);  print_r($strsafari);  print_r($strversion);
+  // print_r("<b>User Agent</b>: ".$_SERVER["HTTP_USER_AGENT"]. "---");
+
+  // print_r("<b>Firefox?</b>: ". $strfirefox. "---");  print_r("<b>Chrome?</b>: ". $strchrome. "---");  print_r("<b>Safari?</b>: ". $strsafari. "---");  print_r("<b>Version:</b>" .$strversion. "---");
+
+  // If we don't have a sufficiently big version of a MathML-compliant browser...
   
   if ( !(( $strfirefox !=FALSE && 
            intval(substr($strfirefox, 
@@ -28,7 +31,7 @@ function mathjax_preprocess ( &$variables, $hook ){
            intval(substr($strchrome, 
 			 strpos($strchrome,"/")+1,
 			 strpos($strchrome, ".")-
-                         strpos($strchrome,"/")-1))>=24)||
+                         strpos($strchrome,"/")-1))==24)|| 
        ( $strsafari !=FALSE && $strversion !=FALSE &&
 	 intval(substr($strsafari, 
 		       strpos($strsafari,"/")+1,

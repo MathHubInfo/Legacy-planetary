@@ -56,6 +56,17 @@ DirectoryIndex index.php index.html index.htm
 <IfModule mod_rewrite.c>
   RewriteEngine on
 
+   # These are the two kinds of patterns we want to match:
+   # http://planetmath.org/encyclopedia/ContrageometricProportion.html
+   # http://planetmath.org/?op=getobj&id=6585&from=objects
+
+   # The first one is easy:
+   RewriteRule ^encyclopedia/([^.]*)\.html$ /$1 [R=301,L]
+   
+   # The next one is easier to deal with via Drupal custom code...
+   # see 
+
+
   # Block access to "hidden" directories whose names begin with a period. This
   # includes directories used by version control systems such as Subversion or
   # Git to store control files. Files whose names begin with a period, as well

@@ -111,7 +111,7 @@ function msc_browser_handler($cat='') {
     if (preg_match("/...[0-9][0-9]/",$cat)){
       $articles_query = "PREFIX dc:<http://purl.org/dc/terms/> ".
                         "PREFIX msc:<http://msc2010.org/resources/MSC/2010/> ".
-                        "PREFIX pm: <http://beta.planetmath.org/ns/> ".
+                        "PREFIX pm: <http://alpha.planetmath.org/ns/> ".
  	                "select ?child ?canonicalname where { ".
 	                "GRAPH <".$graph3."> {".
 	                "?child dc:subject msc:".$cat." . ".
@@ -174,7 +174,7 @@ function msc_browser_handler($cat='') {
           $count_query ="PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX pm: <http://beta.planetmath.org/ns/>
+PREFIX pm: <http://alpha.planetmath.org/ns/>
 SELECT DISTINCT ?article ?notation ?subconcept WHERE {".
 	    "{
  {
@@ -202,7 +202,7 @@ FILTER (!bound(?child))
           $count_query ="PREFIX msc: <http://msc2010.org/resources/MSC/2010/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX pm: <http://beta.planetmath.org/ns/>
+PREFIX pm: <http://alpha.planetmath.org/ns/>
 SELECT DISTINCT ?article WHERE {".
 	    " ?article dct:subject msc:".$sub_cat_code. " .".
             " ?article pm:privacy 1 . " .
