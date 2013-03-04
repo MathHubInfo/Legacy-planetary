@@ -3,11 +3,4 @@
  * @file
  */
 
-// Drupal needs this (not quite) blank file.
-
-function planetmath_menus_menu_alter(&$items) {
-
-  // $items['poll']['access callback'] = FALSE;
-  // $items['aggregator']['hidden'] = TRUE;
-  // $items['sysstats']['hidden'] = TRUE;
-}
+// Drupal needs this blank file.
