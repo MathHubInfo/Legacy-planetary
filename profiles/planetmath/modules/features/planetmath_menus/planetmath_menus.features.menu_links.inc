@@ -65,6 +65,44 @@ function planetmath_menus_menu_default_menu_links() {
     'weight' => '-50',
     'parent_path' => 'articles',
   );
+  // Exported menu link: main-menu:forum
+  $menu_links['main-menu:forum'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'forum',
+    'router_path' => 'forum',
+    'link_title' => 'Forums',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-1',
+    'parent_path' => 'sysstats',
+  );
+  // Exported menu link: main-menu:groups
+  $menu_links['main-menu:groups'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'groups',
+    'router_path' => 'groups',
+    'link_title' => 'Groups',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+    'parent_path' => 'sysstats',
+  );
   // Exported menu link: main-menu:orphanage
   $menu_links['main-menu:orphanage'] = array(
     'menu_name' => 'main-menu',
@@ -77,7 +115,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-49',
+    'weight' => '0',
     'parent_path' => 'articles',
   );
   // Exported menu link: main-menu:problems
@@ -154,6 +192,20 @@ function planetmath_menus_menu_default_menu_links() {
     'weight' => '1',
     'parent_path' => 'problems',
   );
+  // Exported menu link: main-menu:sysstats
+  $menu_links['main-menu:sysstats'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'sysstats',
+    'router_path' => 'sysstats',
+    'link_title' => 'Overview',
+    'options' => array(),
+    'module' => 'planetmath_sysstats',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '1',
+    'expanded' => '0',
+    'weight' => '1',
+  );
   // Exported menu link: navigation:aggregator
   $menu_links['navigation:aggregator'] = array(
     'menu_name' => 'navigation',
@@ -162,11 +214,11 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Feed aggregator',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '0',
+    'hidden' => '1',
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '5',
+    'weight' => '-44',
   );
   // Exported menu link: navigation:aggregator/sources
   $menu_links['navigation:aggregator/sources'] = array(
@@ -176,7 +228,7 @@ function planetmath_menus_menu_default_menu_links() {
     'link_title' => 'Sources',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '0',
+    'hidden' => '1',
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
@@ -195,7 +247,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-43',
   );
   // Exported menu link: navigation:forum
   $menu_links['navigation:forum'] = array(
@@ -209,7 +261,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-49',
   );
   // Exported menu link: navigation:forum/1
   $menu_links['navigation:forum/1'] = array(
@@ -546,7 +598,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '1',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-50',
   );
   // Exported menu link: navigation:node/add/article
   $menu_links['navigation:node/add/article'] = array(
@@ -814,7 +866,7 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-48',
   );
   // Exported menu link: navigation:search
   $menu_links['navigation:search'] = array(
@@ -828,7 +880,35 @@ function planetmath_menus_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-47',
+  );
+  // Exported menu link: navigation:sysstats
+  $menu_links['navigation:sysstats'] = array(
+    'menu_name' => 'navigation',
+    'link_path' => 'sysstats',
+    'router_path' => 'sysstats',
+    'link_title' => 'System Stats',
+    'options' => array(),
+    'module' => 'system',
+    'hidden' => '1',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-46',
+  );
+  // Exported menu link: navigation:userpoints
+  $menu_links['navigation:userpoints'] = array(
+    'menu_name' => 'navigation',
+    'link_path' => 'userpoints',
+    'router_path' => 'userpoints',
+    'link_title' => 'Users by !points',
+    'options' => array(),
+    'module' => 'system',
+    'hidden' => '1',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-45',
   );
   // Exported menu link: user-menu:messages
   $menu_links['user-menu:messages'] = array(
@@ -918,6 +998,7 @@ function planetmath_menus_menu_default_menu_links() {
   t('Forums');
   t('Graduate/Advanced');
   t('Group');
+  t('Groups');
   t('HS/Secondary');
   t('Home');
   t('Image');
@@ -933,6 +1014,7 @@ function planetmath_menus_menu_default_menu_links() {
   t('New Forum Post');
   t('News');
   t('Orphanage');
+  t('Overview');
   t('PlanetMath Comments');
   t('PlanetMath System Updates and News');
   t('PlanetMath help');
@@ -952,10 +1034,12 @@ function planetmath_menus_menu_default_menu_links() {
   t('Solutions');
   t('Sources');
   t('Strategic Communications Development');
+  t('System Stats');
   t('Testing messages (ignore)');
   t('The Math Pub');
   t('University/Tertiary');
   t('User account');
+  t('Users by !points');
 
 
   return $menu_links;

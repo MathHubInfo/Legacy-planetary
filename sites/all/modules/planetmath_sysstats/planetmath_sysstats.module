@@ -18,9 +18,9 @@ function planetmath_sysstats_menu() {
 
   $items['sysstats'] = array(
       'title' => 'System Stats',
-      'type' => MENU_CALLBACK,
+      'type' => MENU_NORMAL_ITEM,
       'page callback' => 'planetmath_sysstats_show',
-      'access arguments' => array('access comments')
+      'access arguments' => array('access content')
   );
 
   return $items;

@@ -114,8 +114,7 @@ function planetmath_orphanage_menu() {
   $items['orphanage'] = array(
       'type' => MENU_NORMAL_ITEM,
       'title' => 'Orphanage',
-      'menu_name' => 'main-menu',
-      'plid' => $articlesID->mlid,
+      'menu_name'  => 'main-menu',
       'page callback' => 'planetmath_orphanage_view_mainOrphanageList',
       'access arguments' => array('access content')
   );
