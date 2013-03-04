@@ -889,7 +889,7 @@ function planetmath_menus_menu_default_menu_links() {
     'router_path' => 'sysstats',
     'link_title' => 'System Stats',
     'options' => array(),
-    'module' => 'system',
+    'module' => 'planetmath_sysstats',
     'hidden' => '1',
     'external' => '0',
     'has_children' => '0',
