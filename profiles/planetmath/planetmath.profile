@@ -1823,7 +1823,7 @@ function planetmath_profile_configure_captcha (){
   db_merge('riddler_questions')
     ->key(array('qid'=> '1'))
     ->fields(array(
-      'question' => 'What is twice the base of the natural logarithm?',
+      'question' => 'What is twice the base of the natural logarithm? (Hint: Rhymes with "chewy".)',
       'answer' => '2e'))
     ->execute();
 }
