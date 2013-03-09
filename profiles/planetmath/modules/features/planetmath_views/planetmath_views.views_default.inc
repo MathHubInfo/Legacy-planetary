@@ -59,7 +59,7 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['empty']['area']['label'] = 'AddProblem';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Problem</a></li> 
+ <li><a href="node/add/question">Add new Question</a></li> 
 </ul> ';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   /* Relationship: Content: Author */
@@ -158,10 +158,6 @@ function planetmath_views_views_default_views() {
     t('AskQuestion'),
     t('<ul class="action-links"> 
  <li><a href="node/add/question">Ask a Question</a></li> 
-</ul> '),
-    t('AddProblem'),
-    t('<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Problem</a></li> 
 </ul> '),
     t('by'),
     t('author'),
@@ -2153,10 +2149,10 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['label'] = 'AddProblem';
+  $handler->display->display_options['empty']['area']['label'] = 'AddQuestion';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Problem</a></li> 
+ <li><a href="node/add/question">Add new Question</a></li> 
 </ul> ';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   /* Relationship: Content: Author */
@@ -2253,10 +2249,6 @@ else if (!$field_correction_closed){
 <li><a href="unanswered-questions">Unanswered questions</a></li>
 <li><a href="answered-questions">Answered questions</a></li>
  <li><a href="node/add/question">Ask a Question</a></li> 
-</ul> '),
-    t('AddProblem'),
-    t('<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Problem</a></li> 
 </ul> '),
     t('by'),
     t('author'),
@@ -2458,10 +2450,10 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['label'] = 'AddProblem';
-  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['label'] = 'AddArticle';
+  $handler->display->display_options['empty']['area']['empty'] = FALSE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Problem</a></li> 
+ <li><a href="node/add/article">Add new Article</a></li> 
 </ul> ';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   /* Relationship: Content: Author */
@@ -2554,9 +2546,9 @@ else if (!$field_correction_closed){
     t('‹ previous'),
     t('next ›'),
     t('last »'),
-    t('AddProblem'),
+    t('AddArticle'),
     t('<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Problem</a></li> 
+ <li><a href="node/add/article">Add new Article</a></li> 
 </ul> '),
     t('by'),
     t('author'),
@@ -2766,10 +2758,10 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['label'] = 'AddProblem';
+  $handler->display->display_options['empty']['area']['label'] = 'AddQuestion';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Problem</a></li> 
+ <li><a href="node/add/question">Add new Question</a></li> 
 </ul> ';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   /* Relationship: Content: Author */
@@ -2864,9 +2856,9 @@ else if (!$field_correction_closed){
     t('<ul class="action-links"> 
  <li><a href="node/add/question">Ask a Question</a></li> 
 </ul> '),
-    t('AddProblem'),
+    t('AddQuestion'),
     t('<ul class="action-links"> 
- <li><a href="node/add/problem">Add new Problem</a></li> 
+ <li><a href="node/add/question">Add new Question</a></li> 
 </ul> '),
     t('by'),
     t('author'),
