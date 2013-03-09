@@ -461,15 +461,18 @@ function planetmath_og_form_article_node_form_alter(&$form, &$form_state, $form_
   // We will filter out all irrelevant options.
   // Specifically: we preserve the "none" option...
   $filtered_group_list['_none']="- None -";
-  foreach ($form['og_group_ref']['und'][0]['default']['#options'] as $gid=>$group_title){
-    $group = node_load($gid);
-    // ... and all Teams (that they are only presented here b/c the user is a member)
-    if (isset($group->field_group_subtype['und'][0]) && 
-	$group->field_group_subtype['und'][0]['value'] == 'Team' ||
-	// ... and we preserve anything that was marked as a "default value" already
-	// which, in particular, includes anything that the item aleady belongs to
-	in_array($gid, $form['og_group_ref']['und'][0]['default']['#default_value'] )){
-      $filtered_group_list[$gid]=$group_title;
+
+  if(isset($form['og_group_ref']['und'][0]['default']['#options'])) {
+    foreach ($form['og_group_ref']['und'][0]['default']['#options'] as $gid=>$group_title){
+      $group = node_load($gid);
+      // ... and all Teams (that they are only presented here b/c the user is a member)
+      if (isset($group->field_group_subtype['und'][0]) && 
+	  $group->field_group_subtype['und'][0]['value'] == 'Team' ||
+	  // ... and we preserve anything that was marked as a "default value" already
+	  // which, in particular, includes anything that the item aleady belongs to
+	  in_array($gid, $form['og_group_ref']['und'][0]['default']['#default_value'] )){
+	$filtered_group_list[$gid]=$group_title;
+      }
     }
   }
 
