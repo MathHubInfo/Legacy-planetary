@@ -6,6 +6,7 @@
  * By: Lucas & Joe
    
  * Still to do: 
+
     - we should be able to mark garbagy questions as "Won't fix".
     - It would be nice to be able to save questions to a "dossier" of "things
       I'm working on" (integration with collections module?) -- this is related to
@@ -14,10 +15,15 @@
  * In progress: Show unanswered questions in the context where they were asked.
 
  * Things to contemplate:
+
     - Similar to StackExchange, a question could have multiple answers (NB. much
       like a problem can have multiple solutions, or a collection has multiple
       component elements).  At the moment this isn't the route we take however!
-    + we would then provide a way to rate the answers or select the best answer etc.
+
+    - Perhaps not too hard to "multiply out" the attachments and the notes, using some
+      tricky field reference stuff.  This can be left for another round of prototyping.
+
+    - we would then provide a way to rate the answers or select the best answer etc.
       (la la la!)
  */
 
@@ -32,7 +38,6 @@ function question_node_info() {
 				    'help' => '',
 				    ));
 }
-
 
 // Rather than attaching solutions, we can attach places where this question is 
 // answered.  In the "requests" case, this would be an article that fulfils the
@@ -81,6 +86,8 @@ function question_menu() {
 // Once the article that contains the answer has been selected,
 // we need to do something sensible.  In this case, what we do is
 // add values to the relevant fields on the question node.
+//
+// Note: we'll also want to interactively populate the note field...
 function question_confirm_attachment($nid_of_question,$nid_of_answer){
   global $user;
   $question_node = node_load($nid_of_question);
@@ -96,7 +103,10 @@ function question_confirm_attachment($nid_of_question,$nid_of_answer){
   // save our changes
   node_save($question_node);
 
-  drupal_set_message('Article '.$nid_of_answer.' is now attached to this question as the answer');
+  drupal_set_message('Article '.$nid_of_answer
+		     .' is now attached to this question as the answer.'
+		     .'<br><br>Do you want to '
+		     .l("add a note to the reader?",'node/'.$nid_of_question.'/edit'));
 
   db_merge('question_has_answer')
     ->key(array('qid' =>$nid_of_question , 'aid' => $nid_of_answer))
@@ -104,7 +114,7 @@ function question_confirm_attachment($nid_of_question,$nid_of_answer){
     ->execute();
 
   drupal_goto('node/'.$nid_of_question);
-  dpm($question_node);
+  // dpm($question_node);
 }
 
 function question_decouple_connection($nid_of_question,$nid_of_answer){
@@ -278,12 +288,22 @@ function question_node_view($node,$view_mode){
 // logic to what we do here (I think?), but done elsewhere (?).
 //
 function question_form_question_node_form_alter(&$form, &$form_state, $form_id) {
+  global $user;
+
+  if(isset($form['#node']->field_question_fulfiller['und'][0]['uid'])
+     && $user->uid == $form['#node']->field_question_fulfiller['und'][0]['uid'] ){
+    $userIsFulfiller = TRUE;
+  } else {
+    $userIsFulfiller = FALSE;
+  }
+
   if(isset($form['#node']->field_question_context['und'][0]['nid'])) {
     $val = $form['#node']->field_question_context['und'][0]['nid'];
   } else {
     $val = arg(3); 
   } 
   $form['field_question_context']['und'][0]['nid']['#default_value'] = $val;
+
   if($val==NULL) {
     hide($form['field_question_context']);
   }
@@ -301,7 +321,6 @@ function question_form_question_node_form_alter(&$form, &$form_state, $form_id) 
   // (Actually we might never want to see these on a *form*, since they
   // should be filled in *automatically* when the question is answered...
   // feature to be added of course!)
-  //
   if(!isset($form['#node']->field_question_closed['und'][0]['value'])) {
 
     $form['field_question_closed']['und'][0]['#value']['value'] =
@@ -316,8 +335,24 @@ function question_form_question_node_form_alter(&$form, &$form_state, $form_id) 
   }
   $default_submit=$form['#submit'];
   $form['#submit'] = array_merge(array('question_additional_submit_handler'),$default_submit);
+
+  // The fulfiller should really only be able to edit the note, but I
+  // guess we can allow them to edit the title as well...
+  if($userIsFulfiller){
+    hide($form['field_question_latex']);
+    hide($form['field_question_type']);
+  } else {
+    // The asker won't be able to edit the note
+    hide($form['field_question_note']);
+  }
   hide($form['field_question_fulfiller']);
-  hide($form['field_question_closed']);
+
+  // Unless this is un-hidden, this gives an error when going to re-edit the article
+  // -- however, we want it to be hidden, so the best solution is probably to hide it with
+  // Javascript...
+  // hide($form['field_question_closed']);
+  $path = drupal_get_path('theme','planetmath');
+  drupal_add_js("$path/js/theme_question_node.js");
 }
 
 function question_additional_submit_handler(&$form, &$form_state) {
@@ -339,7 +374,7 @@ function question_additional_submit_handler(&$form, &$form_state) {
 
 function question_node_insert($node){
   if($node->type == 'question'){
-    if(isset($node->field_question_context))
+    if(isset($node->field_question_context) && isset($node->field_question_context['und'][0]['nid']))
       {
 	db_merge('question_has_context')
 	  ->key(array('qid' =>$node->nid,

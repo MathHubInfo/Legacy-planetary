@@ -117,11 +117,6 @@ function planetmath_attachable_content_preprocess_views_view_table(&$vars){
    have a node/add/article/NID path that will add the article, AND set it up
    as the answer to the question NID.*/
 function planetmath_attachable_content_attach($nid){
-  $note = '';
-  if(node_load($nid)->type=="question"){
-    $note = "<b>Note: The way question answering works around here is that every answer is found in an encyclopedia article!  If you can't find an existing article that answers the question using the tools above, you can ".l("create one",'node/add/article/attach/'.$nid).", and it will be automatically attached as the answer when it's saved.</b>";
-  }
-  drupal_set_message($note);
   return '';
 }
 
@@ -211,10 +206,15 @@ function planetmath_attachable_content_node_view($node, $view_mode){
 // illustrates use of "render" to add a form into a block.
 function planetmath_attachable_content_block_view_alter(&$data,$block) {
   if($block->delta=='acv-attachable_content_block'){
-    // dpm($data);
-    // dpm($block);
+    $nid = arg(1);
+    $mynode=node_load($nid);
     $form = drupal_get_form('planetmath_attachable_content_article_selector');
     $data['content']['#markup'] = "Enter search terms into the first box above and hit \"Apply\" to find matching items.  Once you've found what you're looking for, click \"Attach\"!".$data['content']['#markup'];
+    if($mynode->type=='question')
+      {
+	$note = "The way question answering works around here is that answers are found in encyclopedia articles!  If you can't find an existing article that answers the question using the tools below, you can ".l("create one",'node/add/article/attach/'.$nid).", and it will be automatically attached as the answer when it's saved.<br><br>";
+	$data['content']['#markup'] = $note.$data['content']['#markup'];
+      }
     $data['content']['#markup'] .= "<br>Alternatively, search by title, and click \"Submit\" to attach that article:<br>" . render($form);
   }
 }

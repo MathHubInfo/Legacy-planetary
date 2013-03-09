@@ -106,6 +106,20 @@
       <?php print $submitted; ?>
     </div>
    <?php endif; ?>
+
+  <?php /* Only for questions!*/
+   if ($type === 'question'): ?>
+   <h2> Question </h2>
+   <?php
+     print render($content['field_question_latex']); ?>
+
+   <?php if (isset($content['field_question_note']['#items'][0]['document'])): ?>
+   <h2> Note to reader </h2>
+   <?php
+     print render($content['field_question_note']); ?>
+   <?php endif; ?>
+
+   <?php endif; ?>
   
   <?php /* Only for groups!*/
    if ($type === 'group'): ?>

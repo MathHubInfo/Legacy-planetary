@@ -85,7 +85,6 @@ return false;
 		   'pages' => $block['pages'],
 		   'cache' => $block['cache']))
     ->execute();
-
 }
 
 // NEED
@@ -122,7 +121,7 @@ function _question_installed_fields() {
 						    ),
 		  'field_question_fulfiller' => array(
 						      'field_name'  => 'field_question_fulfiller',
-						      'label'       => $t('Reference to the user who fulfilled i.e. answered the question'),
+						      'label'       => $t('The user who answered this question'),
 						      'cardinality' => 1,
 						      'type'        => 'user_reference',
 						      'settings'    => array(
@@ -181,6 +180,16 @@ function _question_installed_fields() {
 								      'filter' => 'latex',
 								      ),
 						  ),
+
+		  'field_question_note' => array(
+						  'field_name'  => 'field_question_note',
+						  'label'       => $t('Note accompanying the answer'),
+						  'cardinality' => 1,
+						  'type'        => 'field_latex',
+						  'settings' => array(
+								      'filter' => 'latex',
+								      ),
+						  ),
 		  );
   return $fields;
 }
@@ -190,7 +199,7 @@ function _question_installed_instances() {
   $instances = array(
 		     'field_question_article' => array(
 						       'field_name'  => 'field_question_article',
-						       'label'       => $t('The answer is in this article'),
+						       'label'       => $t('The detailed answer is in this article'),
 						       'cardinality' => 1,
 						       'widget'      => array(
 									      'type'          => 'node_reference_autocomplete',
@@ -232,7 +241,46 @@ function _question_installed_instances() {
 						     'field_name'  => 'field_question_latex',
 						     'label'       => $t('LaTeX field for this question'),
 						     'cardinality' => 1,
-						     'bundle' => 'problem',
+						     'bundle' => 'question',
+						     'widget' => array(
+								       'active' => 1,
+								       'module' => 'latex_field',
+								       'settings' => array(
+											   'filter' => 'tex_editor',
+											   ),
+								       'type' => 'latex_widget',
+								       ),
+						     // hoping this is the right way to make the label hidden
+						     'display' => array(
+									'default' => array(
+											   'label' => 'hidden',
+											   'module' => 'latex_field',
+											   'settings' => array(),
+											   'type' => 'latex_formatter',
+											   'weight' => '6',
+											   ),
+									'full' => array(
+											'label' => 'hidden',
+											'module' => 'latex_field',
+											'settings' => array(),
+											'type' => 'latex_formatter',
+											'weight' => '0',
+											),
+									'teaser' => array(
+											  'label' => 'above',
+											  'settings' => array(),
+											  'type' => 'hidden',
+											  'weight' => 0,
+											  ),
+									)
+						     ),
+		     // An additional field for the person who is answering the question to
+		     // add a note to the question-asker
+		     'field_question_note' => array(
+						     'field_name'  => 'field_question_note',
+						     'label'       => $t('Note accompanying the answer'),
+						     'cardinality' => 1,
+						     'bundle' => 'question',
 						     'widget' => array(
 								       'active' => 1,
 								       'module' => 'latex_field',
