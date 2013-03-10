@@ -191,6 +191,13 @@ sudo make install
 /usr/local/bin/virtuoso-t +configfile /usr/local/var/lib/virtuoso/db/virtuoso.ini -fd
 ```
 
+### Seed your triple store with the Math Subject Classification taxonomy
+
+```
+wget http://msc2010.org/mscwork/msc2010.skos
+curl -T msc2010.skos http://planetmath.org:8890/DAV/home/pm/rdf_sink/xml.rdf -H "Content-Type: application/rdf+xml" -u dav:PASSWORD
+```
+
 ## SET UP PYRDFA
 
 First of all, if you're going to use our ```pyrdfa``` module, don't forget that you'll have to patch the Drupal core (see full instructions for details)!
@@ -219,6 +226,8 @@ cd rdflib && sudo python setup.py install
 to LaTeXML and so on, but that will take a moment to set up.)
 
 ## GET THE ACE EDITOR, AND PUT IT IN YOUR LIBRARIES DIRECTORY
+
+Note that latest versions of this require a library that comes with GCC 4.7, see [these notes](http://askubuntu.com/questions/113291/how-do-i-install-gcc-4-7) on Ubuntu 12.04, including [this](http://superuser.com/a/394811/121972).
 
 ```
 git clone git://github.com/ajaxorg/ace.git
