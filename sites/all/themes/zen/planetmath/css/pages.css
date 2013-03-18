@@ -74,6 +74,8 @@ div#site-name /* The name of the website */ {
   margin: 0;
   font-size: 2em;
   line-height: 1.5em;
+  margin-left:8px;
+  margin-top:2px;
 }
 
 #site-name a:link,
@@ -88,8 +90,8 @@ div#site-name /* The name of the website */ {
 }
 
 #site-slogan /* The slogan (or tagline) of a website */ {
- margin-top: 10px;
- margin-left: 65px;
+ margin-top: 12px;
+ margin-left: 8px;
 }
 
 .region-header /* Wrapper for any blocks placed in the header region */ {
