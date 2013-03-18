@@ -1,24 +1,34 @@
 <?php
 
 
-function planetmath_enable() {
+function planetmath_migration_enable() {
   Migration::registerMigration('PMUserMigration');
   Migration::registerMigration('PMForumOPMigration');
-  Migration::registerMigration('PMForumFirstCommentMigration');
   Migration::registerMigration('PMForumCommentMigration');
   Migration::registerMigration('PMObjectMigration');
   Migration::registerMigration('PMObjectCommentMigration');
-  }
+  Migration::registerMigration('PMCollabMigration');
+  Migration::registerMigration('PMCollabCommentMigration');
+  Migration::registerMigration('PMCorrectionMigration');
+  Migration::registerMigration('PMCorrectionCommentMigration');
+  Migration::registerMigration('PMRequestMigration');
+  Migration::registerMigration('PMRequestCommentMigration');
+}
 
-function planetmath_uninstall() {
+function planetmath_migration_uninstall() {
   // 
 }
 
-function planetmath_disable() {
+function planetmath_migration_disable() {
   Migration::deregisterMigration('PMUserMigration');
   Migration::deregisterMigration('PMForumOPMigration');
-  Migration::deregisterMigration('PMForumFirstCommentMigration');
   Migration::deregisterMigration('PMForumCommentMigration');
   Migration::deregisterMigration('PMObjectMigration');
   Migration::deregisterMigration('PMObjectCommentMigration');
+  Migration::deregisterMigration('PMCollabMigration');
+  Migration::deregisterMigration('PMCollabCommentMigration');
+  Migration::deregisterMigration('PMCorrectionMigration');
+  Migration::deregisterMigration('PMCorrectionCommentMigration');
+  Migration::deregisterMigration('PMRequestMigration');
+  Migration::deregisterMigration('PMRequestCommentMigration');
 }

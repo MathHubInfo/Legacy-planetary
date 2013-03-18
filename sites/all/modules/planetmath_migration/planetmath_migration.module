@@ -4,22 +4,9 @@
  * You must implement hook_migrate_api(), setting the API level to 2, for
  * your migration classes to be recognized by the Migrate module.
  */
-function example_migrate_api() {
+function planetmath_migration_migrate_api() {
   $api = array(
     'api' => 2,
-    'migrations' => array(
-	  'PMUser'=> array('class_name' => 'PMUserMigration'),
-	  'PMForumOP'=> array('class_name' => 'PMForumOPMigration'),
-	  'PMForumComment'=> array('class_name' => 'PMForumCommentMigration'),
-	  'PMObject'=> array('class_name' => 'PMObjectMigration'),
-	  'PMObjectComment'=> array('class_name' => 'PMObjectCommentMigration'),
-	  'PMCollab'=> array('class_name' => 'PMCollabMigration'),
-	  'PMCollabComment'=> array('class_name' => 'PMCollabCommentMigration'),
-	  'PMCorrection'=> array('class_name' => 'PMCorrectionMigration'),
-	  'PMCorrectionComment'=> array('class_name' => 'PMCorrectionCommentMigration'),
-	  'PMRequest'=> array('class_name' => 'PMRequestMigration'),
-	  'PMRequestComment'=> array('class_name' => 'PMRequestCommentMigration'),
-    ),
   );
   return $api;
 }
