@@ -56,7 +56,7 @@ function planetmath_view_source_show_listing($nid) {
   //dpm($node);
   if (isset($node->field_latex)) {
     // actually it would be nice to pull in the preamble too
-    $page .= '<pre>'
+    $page .= '<pre style="white-space:pre-wrap;white-space: -moz-pre-wrap !important;white-space: -pre-wrap;white-space: -o-pre-wrap;width: 99%;">'
           . planetmath_view_source_build_short($node)
           . ' </pre>';
   }
