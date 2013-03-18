@@ -2,7 +2,12 @@
   border: 0;
   padding: 4px;
   position: relative;
-  top: -140px !important;
+  top: -176px !important;
   left: 0px;
   z-index: 100;
+}
+
+div.messages{
+  margin: 0 !important;
+  margin-top: 34px !important;
 }
