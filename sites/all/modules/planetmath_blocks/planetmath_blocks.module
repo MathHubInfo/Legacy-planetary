@@ -742,21 +742,26 @@ function planetmath_blocks_block_personalFeed() {
   );
 }
 
+//  text-shadow: 1px 1px 1px #5dd8e8; filter: dropshadow(color=#5dd8e8, offx=1, offy=1); 
 function planetmath_blocks_block_welcome() {
   return array(
       'subject' => 'Welcome!',
-      'content' => t("PlanetMath is a virtual community which aims to help make mathematical knowledge more accessible. PlanetMath's content is created collaboratively: the main feature is the mathematics encyclopedia with entries written and reviewed by members. The entries are contributed under the terms of the !ccbysa in order to preserve the rights of authors, readers and other content creators in a sensible way.  We use !latex, the
-!linguafranca of the worldwide mathematical community.  You are 
-browsing a port of PlanetMath's content into Drupal, which was developed
-as part of the Planetary project.  Some release notes are !here.", 
+      'content' => t("<p style='text-align:justify';>PlanetMath is a virtual community which aims to help make mathematical knowledge more accessible. PlanetMath's content is created collaboratively: the main feature is the mathematics encyclopedia with entries written and reviewed by members. The entries are contributed under the terms of the !ccbysa in order to preserve the rights of authors, readers and other content creators in a sensible way.  We use !latex, the
+!linguafranca of the worldwide mathematical community.</p>
+<p style='text-align:justify';>On <span style='text-shadow: 1px 1px 1px #637173;filter: dropshadow(color=#637173, offx=1, offy=1);'>February 13<sup>th</sup> 2013</span>, PlanetMath.org was updated to use the new software system !planetary.  Some release notes are !here -- please report any remaining bugs in the !bugsforum.  You can find the old Noösphere-based system on !oldsite.</p>", 
 		     array('!ccbysa' =>
 			   l("Creative Commons By/Share-Alike License",
 			     "http://creativecommons.org/licenses/by-sa/2.0/"),
 			   '!latex' => 
 			   l("LaTeX", "http://en.wikibooks.org/wiki/LaTeX"),
 			   '!linguafranca' => '<em>lingua franca</em>',
+			   '!planetary' => l('Planetary','http://trac.mathweb.org/planetary/'),
 			   '!here' => 
-			   l("here", "node/86402")
+			   l("here", "node/87277"),
+			   '!bugsforum' => 
+			   l("Planetary Bugs Forum", "forums/planetary-bugs"),
+			   '!oldsite' => 
+			   l("noosphere.planetmath.org", "http://noosphere.planetmath.org")
 			   )
 		     )
 	       );
