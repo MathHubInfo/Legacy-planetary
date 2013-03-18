@@ -1,8 +1,10 @@
 <?php
 
 function planetmath_legacy_urls_init(){
- if($_GET['op'] == 'getobj' && $_GET['from'] == 'objects' && $_GET['id']){
-    $realNid = intval($_GET['id']) + 30000;
-    drupal_goto("node/" . ($realNid), array(), '301');
+  if(isset($_GET['op'])) {
+    if($_GET['op'] == 'getobj' && $_GET['from'] == 'objects' && $_GET['id']){
+      $realNid = intval($_GET['id']) + 30000;
+      drupal_goto("node/" . ($realNid), array(), '301');
+    }
   }
 }
