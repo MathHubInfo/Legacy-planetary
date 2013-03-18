@@ -160,7 +160,7 @@ table { border-collapse:collapse; }
    { display:block; position:absolute; z-index:10; }
 
 .ltx_ERROR        { color:red; }
-.ltx_rdf          { display:none; }
+/* .ltx_rdf          { display:none; } */
 
 /*======================================================================
  Low-level Basics */
