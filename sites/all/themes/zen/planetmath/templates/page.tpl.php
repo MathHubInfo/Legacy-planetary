@@ -175,7 +175,8 @@ $jq(document).ready(function () {
       <?php print $feed_icons; ?>
     </div></div><!-- /.section, /#content -->
     <?php } else { ?>
-      <?php require_once('frontpage.tpl.php') ?>
+      <?php  print $messages;
+	     require_once('frontpage.tpl.php') ?>
     <?php } ?>
 
     <?php if ($page['navigation']): ?>
