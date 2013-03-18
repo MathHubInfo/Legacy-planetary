@@ -208,7 +208,7 @@ function planetmath_edit_article_process_metadata($node){
     }
   }
   $node->field_latex['und'][0]['metadata'] = $metadata;
-  dd("NOW Node defines metadata: ".$node->field_latex['und'][0]['metadata']);
+  //dd("NOW Node defines metadata: ".$node->field_latex['und'][0]['metadata']);
   }
 }
 
