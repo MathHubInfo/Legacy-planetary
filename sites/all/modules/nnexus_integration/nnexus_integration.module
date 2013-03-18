@@ -28,7 +28,7 @@ $nnexus_base = "http://127.0.0.1:3001";
  * $text is xhtml that has been returned from LaTeXML
  */
 function nnexus_integration_drutexml_postprocess($text) {
-  dd("Running the hook");
+  //dd("Running the hook");
   return nnexus_integration_autolink($text,'html');
 }
 
@@ -50,8 +50,8 @@ function nnexus_integration_autolink($text,$format) {
   //  dd("MY DATA IS");
   //  dd($data);
   $content = planetary_webglue_do_post($nnexus_base . '/autolink',$data);
-  dd("MY CONTENT IS");
-  dd($content);
+  //dd("MY CONTENT IS");
+  //dd($content);
   return $content;
 }
 
