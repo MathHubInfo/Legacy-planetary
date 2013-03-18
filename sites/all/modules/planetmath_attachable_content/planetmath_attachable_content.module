@@ -62,6 +62,8 @@ function planetmath_attachable_content_menu() {
 function planetmath_attachable_content_preprocess_views_view_table(&$vars){
   global $base_url;
 
+  if($vars['view']->name == 'acv'){
+
   // I think this should actually be arg(2) or arg(3)...?
   $myarg = substr(current_path(),7);
   $mybase = node_load($myarg);
@@ -78,7 +80,6 @@ function planetmath_attachable_content_preprocess_views_view_table(&$vars){
     $mypath = "/attach/confirm/";
   }
 
-  if($vars['view']->name == 'acv'){
     //dd(array_keys($vars));
     //dpm($vars);
     $newrows=array();
