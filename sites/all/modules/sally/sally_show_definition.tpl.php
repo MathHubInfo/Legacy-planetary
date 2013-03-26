@@ -11,20 +11,21 @@
 	<script src="<?php echo $sally; ?>/javascripts/communication.js"></script>
 	<script type="text/javascript">
 <![CDATA[
+	/**
+	 * On window load, initialize the Communication object, load the scripts, ask for context resources
+  	 * and add interaction to the semantic objects in the definition depending on whether the item is in the spreadsheet or not.
+	 */
 	 window.onload = function() {
 		Communication.init("<?php echo $token; ?>", function(){
-		var message = arguments[0];
+		window.message = arguments[0];// This is needed in the modules as context information (to determine which terms are in the spreadsheet and which are not)
 		$("span.omdoc-term").css("color", "#808080").css("cursor", "help").click(function(e) {
         //send an event to the window that a navigation is taking place
         cd = $(e.target).attr("omdoc:cd");
         symbol=$(e.target).attr("omdoc:name");
         window.open("http://localhost/drupal_planetary/?q=sally/showdef/" + cd + "/" + symbol + "/" + token, "_parent");
 		});
-		window.message = message;	// This is needed in the modules as context information (to determine which terms are in the spreadsheet and which are not)
 		var i=0;
-		while(true){
-		if(typeof message.context[i] == 'undefined')
-			break;
+		while(typeof message.context[i] !== 'undefined'){
 		$('span.omdoc-term[omdoc\\:cd="' + message.context[i].theory + '"][omdoc\\:name="' + message.context[i].symbol + '"]').css("color", "blue").css("cursor", "help").click(function(e) {
 			cd = $(e.target).attr("omdoc:cd");
 			symbol = $(e.target).attr("omdoc:name");
@@ -32,7 +33,6 @@
 	});
 		i++;
 	}
-	
 	});
 };
  ]]>
@@ -40,7 +40,8 @@
 	  
     <script>
 	<![CDATA[
-        window.token = "<?php echo $token; ?>";	//This is needed in the modules. This way it is set as a global variable.
+		//This is needed in the modules. This way it is set as a global variable.
+        window.token = "<?php echo $token; ?>";	
 		
          $(function(){
             tContextMenu.init({   

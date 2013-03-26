@@ -10,104 +10,124 @@ var Communication = {
 	The received variable tells us if the scripts have been loaded and, if they are we can send proto messages to sally.
 	 */
 	received : false,
-	scriptTarget : 0,
-	callback : null,
-	token : null,
+	scriptTarget : 0, // This is initialized to the number of scripts we have to load and then we decrease it when every script is loaded
+	callbackId : 0, //
+
+	/**
+	This function tells the user if the javascripts have been loaded and if it is possible to use the protobuf library to send messages
+	 */
+	isActive : function () {
+		return this.received;
+	},
 	/**
 	The scripts must be injected before the document loads.
 	 */
 	injectScripts : function () {
+		/*Create an event of type RequestScripts and dispatch it. This event is catched in main.js
+		The functionality that TheoFX has to provide is the one of catching this event, getting the source attributes of the javascripts from the communication window and dispatching an event containing the sources in this page.
+		 */
+		if (typeof(app) != 'undefined') {
+			app.injectScripts();
+			return;
+		}
+
 		var element = document.createElement("ScriptsElement");
 		document.documentElement.appendChild(element);
 		var evt = document.createEvent("Events");
 		evt.initEvent("RequestScripts", true, false);
 		element.dispatchEvent(evt);
 	},
+
 	/**
-	This function is used to request the resources. The actual handling of the resources is done in the event listener.
-	The function can be called without parameters when it is called after injecting resources or with one parameter which is a callback function.
+	Used to send events back to Sally.
 	 */
-	injectResources : function () {
-		if (arguments.lenght == 1 && isFunction(arguments[0]))
-			this.callback = arguments[0];
-		if (this.received == true) {
-			var element = document.createElement("ResourceElement");
-			document.documentElement.appendChild(element);
-			// Sally needs the context for which the resources are required i.e. document type, filename, token
-			var context = new sally.ResourceContext;
-			//This information is set when the service is initialized.
-			context.token = this.token;
-			var evt = new CustomEvent("RequestResources", {
-					detail : JSON.stringify(serialize(context)),
-					bubbles : true,
-					cancelable : false
-				});
-			element.dispatchEvent(evt);
-		}
-		
-	},
-	
-	/**
-	Used to send events back to Sally. This implementation assumes that all actions will have a theory, a symbol, an action and a token.
-	 */
-	sendMessage : function (token, theory, symbol, action) {
+	sendMessage : function (message, callback) {
 		//If the scripts have not been injected there in no point in proceeding further.
-		if (received == false)
+		var mes = "";
+		if (this.isActive() == false)
 			return;
-	//Construct the message.	
-		var term = new sally.OntologyItem;
-		term.theory = theory;
-		term.symbol = symbol;
-		var message = new sally.TheoMessage;
-		message.term = term;
-		message.token = token;
-		// Each action is represented by an integer, for now we only have NAVIGATE
-		if (action == 0)
-			message.action = sally.TheoMessage.Action.NAVIGATE;
-		else
+		if (typeof(message) == 'undefined')
 			return;
-			
+		if (typeof(callback) != 'undefined') {
+			var nameOfFunction = this.generateCallbackId(callback); //We generate a name for the callback function and attach it to Communication object.
+			mes = JSON.stringify(serialize(message, nameOfFunction));
+		} else {
+			mes = JSON.stringify(serialize(message));
+		}
 		var element = document.createElement("ResourceElement");
 		document.documentElement.appendChild(element);
-		// Sally needs the context for which the resources are required i.e. document type, filename, token
+		// We serialize and stringify the object to avoid the loss of data when dispatching the object to another window.
 		var evt = new CustomEvent("RequestResources", {
-				detail : JSON.stringify(serialize(message)),
+				detail : mes,
 				bubbles : true,
 				cancelable : false
 			});
 		element.dispatchEvent(evt);
-		
-	},
-	// This function is used to count if all the scripts have been loaded.
-	counter : function () {
-		Communication.scriptTarget--;
-		if (Communication.scriptTarget == 0) {
-			Communication.received = true;
-			if (Communication.callback !== null) {
-				Communication.injectResources();
-			}
-		}
+
 	},
 	/**
-	This function injects the scripts and requests the resources. It can be used without arguments when it doesn't inject the resources and with two arguments
+	This function generates a name for the callback and attaches it to the Communication object.
+	This is done so that when we get something from Sally we can call the appropriate function
+	 */
+	generateCallbackId : function (callback) {
+		var nameOfFunction = "";
+		if (isFunction(callback)) {
+			this.callbackId++;
+			nameOfFunction = this.callbackId;
+			try {
+				eval('Communication.fun' + nameOfFunction + ' = callback');
+			} catch (err) {
+				alert(err);
+			}
+		}
+		return nameOfFunction;
+	},
+	/**
+	This function injects the scripts and requests the resources. It can be used without arguments when it doesn't inject the resources and
+	with two arguments when it does.
 	arguments[0] - Identification string used to get the knowledge context back from sally.
 	arguments[1] - callback function to be used on the returned resources.
 	 */
 	init : function () {
 		var ref = this;
+		var callback = null;
+		var token = null;
 		if (arguments.length == 2 && isFunction(arguments[1])) {
-			ref.callback = arguments[1];
-			ref.token = arguments[0];
+			token = arguments[0];
+			callback = arguments[1];
 		}
-		//	alert(this.callback == callback); If this is true why doesn't ref.callback(evt.detail) work
-		//TODO
+		// This function is used to count if all the scripts have been loaded.
+		// Every time a script is loaded this function is called.
+		var counter = function () {
+			ref.scriptTarget--;
+			if (ref.scriptTarget == 0) {
+				ref.received = true;
+				if (callback !== null) {
+					var context = new sally.ResourceContext;
+					context.actionId = token;
+					Communication.sendMessage(context, callback);
+				}
+			}
+		};
+		/*
+		This event listener is responsible for handling responses from sally.
+		 */
 		document.addEventListener("ReceivedResources", function (evt) {
-			var callback = ref.callback;
 			var mes = JSON.parse(evt.detail);
 			var message = restore(mes);
-			callback(message);
+			if (typeof(message.msgrid) == 'undefined')
+				return;
+			else {
+
+				var callback = eval('Communication.fun' + message.msgrid);
+				//var content = eval("message." + message.type.replace(".", "_"));
+				var content = message.message;
+				callback(content);
+			}
 		}, true, true);
-		
+		/*
+		This event listener is responsible for handling the event that contains information about the scripts.
+		 */
 		document.addEventListener("ReceivedScripts", function (evt) {
 			var scriptsToLoad = evt.detail;
 			var headID = document.getElementsByTagName("head")[0];
@@ -116,7 +136,7 @@ var Communication = {
 				var newScript = document.createElement('script');
 				newScript.type = 'text/javascript';
 				newScript.src = scriptsToLoad[i];
-				newScript.onload = ref.counter;
+				newScript.onload = counter;
 				headID.appendChild(newScript);
 			}
 		}, true, true);
@@ -125,6 +145,5 @@ var Communication = {
 		 */
 		this.injectScripts();
 	}
-	
+
 };
-//window.onload = Communication.init(true, alert);

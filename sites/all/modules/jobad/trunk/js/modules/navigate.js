@@ -32,11 +32,15 @@ _newModule({
 			});
 			
 			obj.element.bind('click', function () {
-				cd = jTarget.attr("omdoc:cd");
-				symbol = jTarget.attr("omdoc:name");
-				// 0 stands for the navigate action
-				Communication.sendMessage(token, cd, symbol, 0);
-				
+				if(Communication.isActive()){
+				var term = new sally.OntologyItem;
+				term.theory  = jTarget.attr("omdoc:cd");
+				term.symbol = jTarget.attr("omdoc:name");
+				var message = new sally.TheoNavigateTo;
+				message.term = term;
+				message.actionId = token;
+				Communication.sendMessage(message);	
+			}	
 			});
 			
 			var i = 0;
