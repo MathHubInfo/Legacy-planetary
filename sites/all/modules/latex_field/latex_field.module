@@ -67,20 +67,23 @@ function latex_field_field_formatter_view($entity_type, $entity, $field, $instan
 			foreach ($items as $delta => $item) {
 				$settings = $instance['widget']['settings'];
 				$filter = $item['format'];
+
+                                // We need global variable because there is no other way to pass info to check_markup
 				global $latex_preamble;
 				global $latex_metadata;
 				global $latex_etid;
+
 				$latex_preamble = $item['preamble']; 
 				$latex_metadata = $item['metadata']; 
 				$latex_etid = $entity->nid;
-				//dd("latex_field_field_formatter_view preamble");
-				//dd($item["preamble"]);
-				//dd("latex_field_field_formatter_view metadata");
-				//dd($item["metadata"]);
-				//dd("latex_field_field_formatter_view etid");
-				//dd($entity->nid);
+
 				$fobj = check_markup($item['document'], $filter, $entity->language, true);
-				//dd($fobj, "response from filter is");
+
+                                // zap the values of the global variables to be safe
+                                $latex_preamble = ""; 
+				$latex_metadata = ""; 
+				$latex_etid = "";
+
 				$element[$delta]['#markup'] = theme("localedit",
 				array(
 										"content" => $fobj, 

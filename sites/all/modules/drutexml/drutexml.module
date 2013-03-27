@@ -286,27 +286,26 @@ function process_latexml($host, $text, $preamble, $metadata, $profile) {
 
   $data = 'profile='.$profile.'&tex=' . urlencode($text);
   if (isset($preamble) && isset($metadata)) {
-    // new format:
-    $data .= "&preamble=literal:" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
-    // old format:
-    // $data .= "&preamble=" . urlencode($preamble . "\n") . urlencode($metadata . "\n"). urlencode('\begin{document}'); 
+    $data .= "&preamble=literal:" . urlencode($preamble . "\n") . urlencode($metadata . "\n") . urlencode('\begin{document}'); 
   }
 
-  if ($debug_drutexml)
+  if ($debug_drutexml > 1)
     {
       dd("LATEXML HOST IS");
       dd($host);
       
-      dd("Preamble is");
+      dd("PREAMBLE IS");
       dd($preamble);
-      dd("Tex");
+      dd("METADATA IS");
+      dd($metadata);
+      dd("LATEX SOURCE IS");
       dd($text);
 
-      dd($data, "data is");
+      dd($data, "DATA IS");
     }
  
   $content = planetary_webglue_do_post($host,$data);
-  if ($debug_drutexml)
+  if ($debug_drutexml > 1)
     {
       dd("RESULT");
       dd($content);
@@ -340,11 +339,12 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   global $latex_etid;
   global $drutexml_node;
 
-
   if ($debug_drutexml)
     {
-      dd($latex_preamble,"received preamble");
-      dd($latex_etid,"received etid");
+      dd(substr($latex_preamble,0,15),"RECEIVED PREAMBLE");
+      dd(substr($latex_metadata,0,15),"RECEIVED PREAMBLE");
+      dd(substr($latex_etid,0,15),"RECEIVED ETID");
+      dd($drutexml_node->nid,"RECEIVED NODE (NID)");
     }
 
   // so it receives the right data
@@ -387,15 +387,8 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   if ($debug_drutexml)
     {  
       dd("LATEXML RESULT IS");
-      dd($res);
+      dd(substr($res,0,14));
     }
-
-  /* $data = array ('json_data' => json_encode(array('function'=>'linkentry', */
-  /*                                                 'body'=>$res, */
-  /*                                                 'format'=>'html', */
-  /*                                                 'domain'=>'planetmath', */
-  /*                                                 'nolink'=>'false'))); */
-  /* $res = planetary_webglue_do_post('http://127.0.0.1:3001/autolink',$data); */
 
   $nexres = module_invoke_all('drutexml_postprocess',$res);
   if (!empty($nexres)) {
@@ -406,7 +399,7 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
     }
   }
 
-  if(isset($latex_etid)) {
+  if(isset($latex_etid) && $latex_etid) {
     _drutexml_cache_set($key, $res, $latex_etid);
   } else {
     _drutexml_cache_set($key, $res);
