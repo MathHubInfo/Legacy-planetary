@@ -1,0 +1,1646 @@
+<?php
+
+
+/**
+ * Implements hook_install_tasks
+ */
+function panta_install_tasks($install_state) {
+  $tasks = array(
+		 'my_full_html_task' => array(
+                                        'display_name' => st('Create Full Html format.'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_create_full_html_format',
+                                        ),
+		 'my_filtered_html_task' => array(
+                                        'display_name' => st('Create Filtered Html format.'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_create_filtered_html_format',
+                                        ),
+                 'my_drutexml_task' => array(
+                                        'display_name' => st('Configure DruTeXML settings properly'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_drutexml_configuration',
+                                        ),
+                 'my_forum_task' => array(
+                                        'display_name' => st('Create default forums.'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_forum_creator',
+                                        ),
+                 'my_node_types_task' => array(
+                                        'display_name' => st('Configure Node Types'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_configure_node_types',
+                                        ),
+                 'my_user_fields_task' => array(
+                                        'display_name' => st('Add extra fields to user entities'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_setup_user_entities',
+                                        ),
+                 'my_email_rerouting_task' => array(
+                                        'display_name' => st('Configure Email Rerouting'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_configure_email_rerouting',
+                                        ),
+                 'my_organic_groups_task' => array(
+                                        'display_name' => st('Configure Organic Groups'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_configure_groups',
+                                        ),
+                 'my_blocks_task' => array(
+                                        'display_name' => st('Configure Blocks'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_configure_blocks',
+                                        ),
+                 'my_captcha_task' => array(
+                                        'display_name' => st('Configure site CAPTCHA'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_configure_captcha',
+                                        ),
+                 'my_set_variables_task' => array(
+                                        'display_name' => st('Set miscellaneous variables'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_set_misc_variables',
+                                        ),
+                 'my_rdf_mappings_task' => array(
+                                        'display_name' => st('Set up default RDF mappings'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_rdf_mappings',
+                                        ),
+                 'my_theme_task' => array(
+                                        'display_name' => st('Choose and install the theme'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_setup_theme',
+                                        ),
+                 'my_permissions_task' => array(
+                                        'display_name' => st('Configure permissions'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_setup_permissions',
+                                        ),
+                 'my_menus_task' => array(
+                                        'display_name' => st('Configure Menus'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_setup_menus',
+                                        ),
+                 );
+  return $tasks;
+}
+
+function panta_profile_create_full_html_format() {
+  $full_html_format = array(
+    'format' => 'full_html', 
+    'name' => 'Full HTML', 
+    'weight' => 1, 
+    'filters' => array(
+      // URL filter.
+      'filter_url' => array(
+        'weight' => 0, 
+        'status' => 1,
+      ),
+      // Line break filter. 
+      'filter_autop' => array(
+        'weight' => 1, 
+        'status' => 1,
+      ),
+      // HTML corrector filter. 
+      'filter_htmlcorrector' => array(
+        'weight' => 10, 
+        'status' => 1,
+      ),
+    ),
+  );
+  $full_html_format = (object) $full_html_format;
+  filter_format_save($full_html_format);
+}
+
+function panta_profile_create_filtered_html_format() {
+    $filtered_html_format = array(
+    'format' => 'filtered_html',
+    'name' => 'Filtered HTML',
+    'weight' => 0,
+    'filters' => array(
+      
+      // URL filter.
+      'filter_url' => array(
+        'weight' => 0,
+        'status' => 1,
+      ),
+      
+      // HTML filter.
+      'filter_html' => array(
+        'weight' => 1,
+        'status' => 1,
+      ),
+      
+      // Line break filter.
+      'filter_autop' => array(
+        'weight' => 2,
+        'status' => 1,
+      ),
+      
+      // HTML corrector filter.
+      'filter_htmlcorrector' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+    ),
+  );
+  $filtered_html_format = (object) $filtered_html_format;
+  filter_format_save($filtered_html_format);
+}
+
+/* Sets up a latex field
+*
+* Note: The user will still have to go to
+*  admin/config/content/formats/tex_editor
+* to specify their LaTeXML daemon URL if they don't want to use the default.
+* (That could be changed and added to this configuration script.)
+*
+* What the function does:
+*
+* - create a LaTeX-filter-enabled Content Type (AKA Text format) --
+*  name it "TeX Editor"
+*
+* - Indicate that the TeX Editor text format should enable the "latex" filter format
+*   with the default settings
+*
+* - select CodeMirror as the TeX Editor modality,
+*   and set it up for editing "stex" content
+*
+* - Finally, select TeX Editor as the "Filter to be used" for on a LATEX FIELD
+*   (and adjust the other settings of that field).
+*/
+function panta_profile_drutexml_configuration() {
+  dd("Profile- In panta_profile_drutexml_configuration");
+  set_time_limit(0);
+
+  $tex_format = array(
+                        'format' => 'tex_editor',
+                        'name' => 'TeX Editor',
+                        'weight' => 0,
+                        'filters' => array('latex_filter' => array(
+                                                                   'weight' => 0,
+                                                                   'status' => 1,
+                                                                   ),),
+                      );
+  $tex_format = (object) $tex_format;
+  filter_format_save($tex_format);
+
+  db_merge('filter')
+    ->key(array('format'=> 'tex_editor', 'name'=> 'latex'))
+    ->fields(array(
+      'format' => 'tex_editor',
+      'module' => 'drutexml',
+      'name' => 'latex',
+      'weight' => 0,
+      'status' => 1,
+      'settings' => serialize(array (
+			       'latexml_url' => 'http://latexml.mathweb.org/convert',
+   			       'latexml_preamble' => '%none for now',
+				     )
+			      )))
+    ->execute();
+
+  $vals = array(
+      'default' => 1,
+      'user_choose' => 0,
+      'show_toggle' => 1,
+      'theme' => 'advanced',
+      'language' => 'en',
+      'buttons' =>
+      array(
+          'default' =>
+          array(
+              'stex' => 1,
+          ),
+      ),
+      'toolbar_loc' => 'top',
+      'toolbar_align' => 'left',
+      'path_loc' => 'bottom',
+      'resizing' => 1,
+      'verify_html' => 1,
+      'preformatted' => 0,
+      'convert_fonts_to_spans' => 1,
+      'remove_linebreaks' => 1,
+      'apply_source_formatting' => 0,
+      'paste_auto_cleanup_on_paste' => 0,
+      'block_formats' => 'p,address,pre,h2,h3,h4,h5,h6,div',
+      'css_setting' => 'theme',
+      'css_path' => '',
+      'css_classes' => '',
+  );
+
+  $query = db_merge('wysiwyg')
+           ->key(array('format'=> 'tex_editor'))
+           ->fields(array('format'=>'tex_editor',
+			  'editor'=>'codemirror2',
+			  'settings' => serialize($vals)))
+           ->execute();
+
+  $fl = db_query("SELECT * FROM  `field_config_instance` WHERE  `field_name` LIKE  'field_latex' LIMIT 0 , 30")
+        ->fetchObject();
+
+  $fl->data = serialize(array (
+                               'default_value' => NULL,
+                               'description' => 'A multi-part field for LaTeX documents (source and preamble).',
+                               'display' =>
+                               array (
+                                      'default' =>
+                                      array (
+                                             'label' => 'hidden',
+                                             'type' => 'latex_formatter',
+                                             'weight' => '0',
+                                             'settings' => array (
+                                                                  ),
+                                             'module' => 'latex_field',
+                                             ),
+
+                                      'teaser' =>
+                                      array (
+                                             'label' => 'hidden',
+                                             'settings' => array (
+                                                                  ),
+                                             'type' => 'hidden',
+                                             'weight' => '0',
+                                             ),
+
+                                      'full' =>
+                                      array (
+                                             'label' => 'hidden',
+                                             'type' => 'latex_formatter',
+                                             'weight' => '11',
+                                             'settings' => array (
+                                                                  ),
+                                             'module' => 'latex_field',
+                                             ),
+                                      ),
+                               'label' => 'LaTeX',
+                               'required' => 0,
+                               'settings' =>
+                               array (
+                                      'user_register_form' => false,
+                                      ),
+                               'widget' => array (
+                                                  'weight' => 0,
+                                                  'type' => 'latex_widget',
+                                                  'module' => 'latex_field',
+                                                  'active' => 1,
+                                                  // This is the main thing that we're trying to set here!!
+                                                  'settings' => array (
+                                                                       'filter' => 'tex_editor',
+                                                                       ),
+                                                  ),
+                               ));
+
+  db_merge('field_config_instance')->key(array('id' => $fl->id))->fields((array)$fl)->execute();
+
+
+  return NULL;
+}
+
+function panta_profile_forum_creator() {
+  dd("Profile- In panta_profile_forum_creator");
+  set_time_limit(0);
+
+  // Note that there will already be a "general discussion" forum created out of
+  // the box.
+
+  dd("Revising definition of Forum 1");
+
+  $firstForum = taxonomy_term_load(1);
+  $firstForum->name = 'Panta System Updates and News';
+  $firstForum->description = 'Site news and updates not major enough for the main page.';
+  taxonomy_term_save($firstForum);
+
+  /* $forum_topic_fields = array(); */
+  /* $forum_topic_fields['values']['name'] = 'Panta System Updates and News'; */
+  /* $forum_topic_fields['values']['description'] = 'Site news and updates not major enough for the main page.'; */
+  /* $forum_topic_fields['values']['parent'][0] = array(0); */
+  /* $forum_topic_fields['values']['weight'] = 0; */
+  /* $forum_topic_fields['values']['vid'] = 1; */
+
+  /* $forum = forum_form_forum($forum_topic_fields); */
+  /* forum_form_submit($forum,$forum_topic_fields); */
+
+  // Introducing this because otherwise we get messages complaining
+  // that we don't provide it, even though the reason seems 
+  // particularly silly, since the argument isn't used in the
+  // function that requires it, see discussion at http://drupal.org/node/1748044
+
+  $form_state_req = array();
+
+  dd("creating Forum 2");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Panta Comments';
+  $forum_topic_fields['values']['description'] = 'Talk about the web site itself here; comments, suggestions, complaints.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+  dd("creating Forum 3");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Math Competitions';
+  $forum_topic_fields['values']['description'] = 'For discussing problems from mathematics competitions.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+  dd("creating Forum 4");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'High School/Secondary';
+  $forum_topic_fields['values']['description'] = 'For discussing questions from any discipline at high school/secondary school level.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+  dd("creating Forum 5");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Math Humor';
+  $forum_topic_fields['values']['description'] = 'The zingiest of zingers...';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+  dd("creating Forum 6");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'University/Tertiary';
+  $forum_topic_fields['values']['description'] = 'Questions from any subject, at the university/tertiary/4-year college level.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
+  dd("creating Forum 7");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Testing messages (ignore)';
+  $forum_topic_fields['values']['description'] = 'This forum is for testing of message functionality.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
+  dd("creating Forum 8");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'LaTeX help';
+  $forum_topic_fields['values']['description'] = 'This is the place for asking TeX/LaTeX questions in regards to writing Panta entries.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
+  dd("creating Forum 9");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Panta help';
+  $forum_topic_fields['values']['description'] = 'This is the place to get assistance with tasks on Panta.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
+  dd("creating Forum 10");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'The Math Pub';
+  $forum_topic_fields['values']['description'] = "A catch-all discussion area; for math news and current events, discussion of philosophy of mathematics, math and society, and in general the kind of casual banter you'd find in an appropriately nerdy watering hole.";
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
+  dd("creating Forum 11");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Graduate/Advanced';
+  $forum_topic_fields['values']['description'] = 'Questions aimed at the post- or advanced undergrad level.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
+  dd("creating Forum 12");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Research Topics';
+  $forum_topic_fields['values']['description'] = 'Questions at the active research level.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
+  dd("creating Forum 13");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Industry/Practice';
+  $forum_topic_fields['values']['description'] = 'Questions arising from real-world applications.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+  dd("creating Forum 14");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Math History';
+  $forum_topic_fields['values']['description'] = 'Discussion of the history of mathematics.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
+  dd("creating Forum 15");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Strategic Communications Development';
+  $forum_topic_fields['values']['description'] = 'Discuss strategic communications development for Panta.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+  dd("creating Forum 16");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Panta.ORG';
+  $forum_topic_fields['values']['description'] = 'Official chatter for the Panta nonprofit organization, including discussion with and regarding the board and official business.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+  dd("creating Forum 17");
+
+  $forum_topic_fields = array();
+  $forum_topic_fields['values']['name'] = 'Planetary Bugs';
+  $forum_topic_fields['values']['description'] = 'A place to report and discuss issues with the new software.';
+  $forum_topic_fields['values']['parent'][0] = array(0);
+  $forum_topic_fields['values']['weight'] = 0;
+  $forum_topic_fields['values']['vid'] = 1;
+  $forum_topic_fields['form_id']['#value'] = 'forum';
+
+  $forum = forum_form_forum($forum_topic_fields,$form_state_req);
+  forum_form_submit($forum,$forum_topic_fields);
+
+
+  return NULL;
+}
+
+/* Configure node types:
+*
+*           Article, Basic page, Forum topic, News,
+*          Correction, Group, Image, Poll, Problem, Request, Solution 
+*
+* everything in the SECOND line above can be created by the corresponding module. */
+
+function panta_profile_configure_node_types () {
+  set_time_limit(0);
+
+  // We treat articles slightly differently (they don't get a body field).
+  $articleDefaults = node_type_set_defaults(array(
+						  'type' => 'article',
+						  'name' => st('Article'),
+						  'base' => 'node_content',
+						  'description' => st('Use <em>articles</em> for encyclopedia content.'),
+						  'custom' => 1,
+						  'modified' => 1,
+						  'locked' => 0,
+						  ));
+  node_type_save($articleDefaults);
+
+  $pageDefaults = node_type_set_defaults(array(
+					       'type' => 'page',
+					       'name' => st('Basic page'),
+					       'base' => 'node_content',
+					       'description' => st("Use <em>basic pages</em> for your static content, like the 'About us' page."),
+					       'custom' => 1,
+					       'modified' => 1,
+					       'locked' => 0,
+					       ));
+  node_type_save($pageDefaults);
+  node_add_body_field($pageDefaults);
+
+  $newsDefaults = node_type_set_defaults(array(
+					       'type' => 'news',
+					       'name' => st('News'),
+					       'base' => 'node_content',
+					       'description' => st('Use <em>news</em> for updates on site, organization, or community activity.'),
+					       'custom' => 1,
+					       'modified' => 1,
+					       'locked' => 0,
+					       ));
+  node_type_save($newsDefaults);
+  node_add_body_field($newsDefaults);
+
+ /* NOTE: This part would ideally be done in the module itself
+    to make the module self-contained. */
+
+  $imageDefaults = node_type_set_defaults(array(
+						'type' => 'image',
+						'name' => st('Image'),
+						'base' => 'node_content',
+						'description' => st('Use <em>images</em> in the gallery.'),
+						'custom' => 1,
+						'modified' => 1,
+						'locked' => 0,
+					       ));
+
+  node_type_save($imageDefaults);
+
+  $newfield=array(
+                  'field_name' => 'gallery_image',
+                  'type' => 'image'
+                  );
+  field_create_field($newfield);
+  $newfield_instance=array(
+                           'field_name' => 'gallery_image',
+                           'entity_type' => 'node',
+                           'bundle' => 'image',
+                           'label' => t('Image'),
+                           'description' => t('The image'),
+			   'display' => array(
+					      'default' => array(
+								 'label' => 'above',
+								 'module' => 'shadowbox',
+								 'settings' => array(
+										     'compact' => 0,
+										     'gallery' => '',
+										     'image_link' => '',
+										     'image_style' => '',
+										     'title' => '',
+										     ),
+								 'type' => 'shadowbox',
+								 'weight' => '0',
+								 ),
+					      'teaser' => array(
+								'label' => 'above',
+								'settings' => array(),
+								'type' => 'hidden',
+								'weight' => 0,
+								),
+					      ),
+                           'widget' => array(
+                                             'type' => 'image_image'
+                                             )
+                           );
+  field_create_instance($newfield_instance);
+
+  return NULL;
+}
+
+/* Define some custom fields for users
+  */
+function panta_profile_setup_user_entities () {
+  set_time_limit(0);
+    panta_profile_docreate_user_field('user_forename', 'Forename');
+    panta_profile_docreate_user_field('user_surname', 'Surname');
+    panta_profile_docreate_user_field('user_city', 'City');
+    panta_profile_docreate_user_field('user_state', 'State');
+    panta_profile_docreate_user_field('user_country', 'Country');
+    panta_profile_docreate_user_field('user_homepage', 'Homepage');
+    panta_profile_docreate_user_field_long('user_preamble', 'Preamble', 'If you want to use a custom LaTeX preamble, enter it here, otherwise the site default will be used.');
+    panta_profile_docreate_user_field_long_html('user_bio', 'Bio', 'Tell us who you are!');
+    panta_profile_docreate_user_buddy_list_field();
+
+    return NULL;
+}
+
+function panta_profile_configure_email_rerouting () {
+  // need to figure out what goes here! 
+  module_enable('reroute_email');
+  variable_set(REROUTE_EMAIL_ENABLE, 1);
+  variable_set(REROUTE_EMAIL_ADDRESS, "tothedarktowercame@gmail.com");
+
+  return NULL;
+}
+
+/* Configure groups - Set up with PlanetMath stuff at the moment
+* sets up a world writable group as Group #1
+* it is created by and owned by user 1
+* (Other modules will maintain the membership of this group.)
+*/
+function panta_profile_configure_groups () {
+  dd("Profile- In panta_profile_configure_groups");
+  set_time_limit(0);
+
+  // It is important to set this or authenticated users won't be able
+  // to "create article content" (i.e. add articles to groups).
+  // (Similarly with commenting on a group.)
+  // Note that if we wanted to make it so that only group members could
+  // post comments, that would be a different story.  There's a module for
+  // that, though I don't know if it is currently working.
+
+  og_role_grant_permissions(2, array("post comments",
+				     "create article content",
+                                     "update own article content",
+                                     "update any article content",
+                                     "delete own article content"));
+
+  /* See installation notes, I couldn't get this working from within the profile -jac */
+
+  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
+  /* $og_field['field']['settings']['target_type'] = 'node'; */
+  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
+  /*   'status' => TRUE, */
+  /*   'action' => 'none', */
+  /*   'fallback' => 'none', */
+  /*   'skip_perm' => FALSE, */
+  /* ); */
+  /* og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field); */
+
+  /* $og_field = og_fields_info(OG_AUDIENCE_FIELD); */
+  /* $og_field['field']['settings']['target_type'] = 'node'; */
+  /* $og_field['instance']['settings']['behaviors']['prepopulate'] = array( */
+  /*   'status' => TRUE, */
+  /*   'action' => 'none', */
+  /*   'fallback' => 'none', */
+  /*   'skip_perm' => FALSE, */
+  /* ); */
+  /* og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field); */
+  /*??*/
+
+  panta_og_group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
+
+  return NULL;
+}
+
+function panta_profile_configure_blocks () {
+  dd("Profile- In panta_profile_configure_blocks");
+  set_time_limit(0);
+  // this is just copied from the standard installation for now...
+  // in a moment, it should have the new Panta blocks set up
+  module_enable('panta_blocks');
+
+  // Since this is set up to run AFTER the theme has been selected,
+  // these variables should be set properly.
+  $theme_default = variable_get('theme_default');
+  $admin_theme = variable_get('admin_theme');
+
+  $blocks = array(
+		  // note that visibility => 0 is "all pages except those listed"
+		  // note that visibility => 1 is "Only the listed pages"
+		  // note that visibility => 2 is what you use for custom PHP logic
+                  array(
+                        'module' => 'user',
+                        'delta' => 'login',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -27,
+                        'region' => 'header',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'system',
+                        'delta' => 'main',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => 0,
+                        'region' => 'content',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'search',
+                        'delta' => 'form',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -26,
+                        'region' => 'sidebar_first',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'node',
+                        'delta' => 'recent',
+                        'theme' => $admin_theme,
+                        'status' => 1,
+                        'weight' => 10,
+                        'region' => 'dashboard_main',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'system',
+                        'delta' => 'navigation',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => 1,
+                        'region' => 'sidebar_first',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'system',
+                        'delta' => 'main-menu',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => 0,
+                        'region' => 'sidebar_first',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'system',
+                        'delta' => 'powered-by',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => 10,
+                        'region' => 'footer',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'system',
+                        'delta' => 'help',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  // turn some stuff off
+                  array(
+                        'module' => 'system',
+                        'delta' => 'navigation',
+                        'theme' => $admin_theme,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'sidebar_first',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  array(
+                        'module' => 'user',
+                        'delta' => 'online',
+                        'theme' => $admin_theme,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  array(
+                        'module' => 'system',
+                        'delta' => 'management',
+                        'theme' => $admin_theme,
+                        'status' => 0,
+                        'weight' => -5,
+                        'region' => -1,
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'user',
+                        'delta' => 'new',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'dashboard_sidebar',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'user',
+                        'delta' => 'new',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'dashboard_sidebar',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'node',
+                        'delta' => 'recent',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 10,
+                        'region' => 'dashboard_main',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'devel_node_access',
+                        'delta' => 'dna_node',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'forum',
+                        'delta' => 'active',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'forum',
+                        'delta' => 'active',
+                        'theme' => $admin_theme,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'forum',
+                        'delta' => 'new',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'forum',
+                        'delta' => 'new',
+                        'theme' => $admin_theme,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  array(
+                        'module' => 'comment',
+                        'delta' => 'recent',
+                        'theme' => $admin_theme,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  array(
+                        'module' => 'comment',
+                        'delta' => 'recent',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  array(
+                        'module' => 'forum',
+                        'delta' => 'new',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  // might be reasonable to show this on the "People" page, ... which
+		  // I'm realizing didn't make it through the migration for some
+		  // reason.
+		  array(
+                        'module' => 'user',
+                        'delta' => 'online',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  array(
+                        'module' => 'relation_entity_collector',
+                        'delta' => 'block',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  array(
+                        'module' => 'relation_entity_collector',
+                        'delta' => 'block',
+                        'theme' => $admin_theme,
+                        'status' => 0,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  // it might be good to enable a second block below
+		  // the main menu (for admin-level tasks) but let's skip
+		  // that for now
+                  array(
+                        'module' => 'system',
+                        'delta' => 'management',
+                        'theme' => $theme_default,
+                        'status' => 0,
+                        'weight' => -5,
+                        'region' => -1,
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'system',
+                        'delta' => 'main',
+                        'theme' => $admin_theme,
+                        'status' => 1,
+                        'weight' => 0,
+                        'region' => 'content',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'system',
+                        'delta' => 'help',
+                        'theme' => $admin_theme,
+                        'status' => 1,
+                        'weight' => 0,
+                        'region' => 'help',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'user',
+                        'delta' => 'login',
+                        'theme' => $admin_theme,
+                        'status' => 1,
+                        'weight' => 10,
+                        'region' => 'header',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'user',
+                        'delta' => 'new',
+                        'theme' => $admin_theme,
+                        'status' => 1,
+                        'weight' => 0,
+                        'region' => 'dashboard_sidebar',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+                  array(
+                        'module' => 'search',
+                        'delta' => 'form',
+                        'theme' => $admin_theme,
+                        'status' => 0,
+                        'weight' => -26,
+                        'region' => 'header',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => -1,
+                        ),
+		  // Configure the custom blocks that are supposed to
+		  // appear in the sidebar.  This could presumably be
+		  // done from within the panta_blocks module itself
+                  // but no harm prototyping here.
+                  array('module' => 'panta_blocks',
+                        'delta' => 'revision',
+                        'theme' => variable_get('theme_default'),
+                        'status' => 1,
+                        'weight' => 0,
+                        'region' => 'sidebar_second',
+                        'visibility' => 1,
+                        'pages' => '<front>',
+                        'cache' => 1,
+                        ),
+                  array('module' => 'panta_blocks',
+                        'delta' => 'everything-else',
+                        'theme' => variable_get('theme_default'),
+                        'status' => 1,
+                        'weight' => 10,
+                        'region' => 'sidebar_first',
+                        'visibility' => 0,
+                        'pages' => '',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'news',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -32,
+                        'region' => 'sidebar_second',
+                        'visibility' => 1,
+                        'pages' => '<front>',
+                        'cache' => 1,
+                        ),
+		  // Try to get a little welcome message showing up
+                  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'welcome',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -32,
+                        'region' => 'header',
+                        'custom' => 1,
+                        'visibility' => 2,
+                        'pages' => '<?php 
+  global $user;
+  if (drupal_is_front_page()) {
+  return !((bool) $user->uid);
+  } ; 
+?>',
+                        'cache' => 1,
+                        ),
+		  // this is giving an error claiming that
+		  // `field_data_field_correction_article' doesn't exist
+		  // commenting out for now
+                  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'correction',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -29,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return panta_blocks_countCorrectionsPerArticle(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+		  array('module'=> 'panta_blocks',
+			'delta' => 'provenance',
+			'theme' => $theme_default,
+			'delta' => 'provenance',
+			'status' => 1,
+			'weight' => -36,
+			'region' => 'sidebar_second',
+			'visibility' => 2,
+			'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ $node=node_load(arg(1));
+ if(   $node->type == "article" 
+    || $node->type == "group"
+    || $node->type == "problem"
+    || $node->type == "solution"
+    || $node->type == "question"
+    || $node->type == "collection")
+  return true;
+else
+ return false;
+}
+return false;
+?>',
+			'cache'=>1,
+			),
+		  // This causes version information to show up on forum posts,
+		  // I'm not sure we want that, but we can think more about it
+                  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'pversion',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -28,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return panta_blocks_countVersionsPerArticle(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'problem',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -30,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return panta_blocks_countProblems(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'reverseproblem',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -30,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return panta_blocks_countReverseProblems(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'childarticles',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -31,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return panta_blocks_countChildArticles(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'solution',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -30,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return panta_blocks_countSolutions(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+                  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'review',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -30,
+                        'region' => 'sidebar_second',
+                        'visibility' => 2,
+                        'pages' => '<?php 
+if(drupal_is_front_page()){
+  return false;
+}
+if(arg(0) == "node"){
+ return panta_blocks_countReviews(arg(1));
+}
+return false;
+?>',
+                        'cache' => 1,
+                        ),
+		  array(
+                        'module' => 'panta_blocks',
+                        'delta' => 'userlist',
+                        'theme' => $theme_default,
+                        'status' => 1,
+                        'weight' => -33,
+                        'region' => 'sidebar_second',
+                        'visibility' => 1,
+                        'pages' => '<front>',
+                        'cache' => 1,
+                        ),
+
+                  );
+  foreach ($blocks as $block) {
+    //dd($block, "CONFIGURING... ");
+    db_merge('block')
+      ->key(array('module'=>$block['module'],
+		  'theme'=>$block['theme'],
+		  'delta' => $block['delta']))
+      ->fields(array('module'=> $block['module'],
+		     'theme' => $block['theme'],
+		     'delta' => $block['delta'],
+		     'status' => $block['status'],
+		     'weight' => $block['weight'],
+		     'region' => $block['region'],
+		     'visibility' => $block['visibility'],
+		     'pages' => $block['pages'],
+		     'cache' => $block['cache']))
+      ->execute();
+  }
+
+  return NULL;
+}
+
+function panta_profile_configure_captcha (){
+  db_merge('captcha_points')
+    ->key(array('form_id'=> 'user_register_form'))
+    ->fields(array(
+      'module' => 'riddler',
+      'captcha_type' => 'Riddler'))
+    ->execute();
+
+  db_merge('riddler_questions')
+    ->key(array('qid'=> '1'))
+    ->fields(array(
+      'question' => 'What is twice the base of the natural logarithm? (Hint: Rhymes with "chewy".)',
+      'answer' => '2e'))
+    ->execute();
+}
+
+function panta_profile_set_misc_variables () {
+  dd("Profile- In panta_profile_set_misc_variables");
+  set_time_limit(0);
+
+  // This will prevent errors when indexing articles if the comment doesn't exist or
+  // if the user has been imported wrong.  The fact that I even have to add this 
+  // suggests that I had better check the user importing to make sure everyone comes
+  // along for the ride...
+  variable_set('apachesolr_exclude_nodeapi_types',array('article'=>array('comment'=>TRUE)));
+
+  // set watchable content types
+  variable_set('watcher_content_types', serialize(array(
+							"article"=> "article",
+							"page"=> 0,
+							"collection"=> 0,
+							"correction"=> "correction",
+							"forum"=> 0,
+							"group"=> 0,
+							"image"=> 0,
+							"news"=> 0,
+							"poll"=> 0,
+							"problem"=> "problem",
+							"question"=> "question",
+							"review"=> 0,
+							"solution"=> 0,
+							)));
+
+  variable_set('watcher_default_settings',
+	       serialize(array(
+			       'watcher_automatic_enable_notifications' => 1,
+			       'watcher_notifications_updates' => 1,
+			       'watcher_notifications_new_comments' => 1,
+			       'watcher_autowatch_commented_on' => 0,
+			       'watcher_autowatch_posted' => 1,
+			       'watcher_share_binder' => 0,
+			       )));
+
+  // Default "Basic page" to not be promoted and have comments disabled.
+  variable_set('node_options_page', array('status'));
+  variable_set('comment_page', COMMENT_NODE_HIDDEN);
+
+  variable_set('dhtml_menu_settings', array (
+                                             'nav' => "open",
+                                             'animation' => array (
+								   // slide in horizontally, not vertically	
+                                                                   'effects' => array (
+                                                                                       'height' => 0,
+                                                                                       'opacity' => "opacity",
+                                                                                       'width' => "width"
+                                                                                       ),
+                                                                   'speed' => "500"
+                                                                   ),
+                                             'effects' => array (
+                                                                 'siblings' => "close-same-tree",
+                                                                 'children' => "none",
+                                                                 'remember' => ""
+                                                                 ),
+                                             'filter' => array (
+                                                                'type' => "blacklist",
+                                                                'list' => array(
+                                                                         'devel' => 1,
+                                                                         'main-menu' => 1,
+                                                                         'management' => 1,
+                                                                         'navigation' => 0,
+                                                                         'shortcut-set-1' => 1,
+                                                                         'user-menu' => 1
+                                                                    ))
+                                             ));
+
+  // this seems to be a way to make it so that articles are always versioned.
+  variable_set('node_options_article', array (
+					      0 => 'status',
+					      1 => 'revision',
+					      ));
+
+  // And similarly for other vaguely "article like" node types...
+
+  variable_set('node_options_correction', array (
+						 0 => 'status',
+						 1 => 'revision',
+						 ));
+  variable_set('node_options_problem', array (
+					      0 => 'status',
+					      1 => 'revision',
+					      ));
+  variable_set('node_options_solution', array (
+					       0 => 'status',
+					       1 => 'revision',
+					       ));
+  variable_set('node_options_review', array (
+					     0 => 'status',
+					     1 => 'revision',
+					     ));
+
+  // Don't display date and author information for "Basic page" nodes by default.
+  variable_set('node_submitted_page', FALSE);
+
+  // Enable user picture support and set the default to a square thumbnail option.
+  variable_set('user_pictures', '1');
+  variable_set('user_picture_dimensions', '1024x1024');
+  variable_set('user_picture_file_size', '800');
+  variable_set('user_picture_style', 'thumbnail');
+
+  // Allow visitor account creation with administrative approval.
+  variable_set('user_register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL);
+
+  // some settings for pathauto - note that in some sense this "should"
+  // imply that all content types have a canonical name field.
+  // In fact, what seems to happen, is that the replacement is made whenever
+  // there actually is a canonical name field.  Which for the moment is just
+  // with articles (IIRC).
+  variable_set('pathauto_node_pattern', "[node:field_canonicalname]");
+  variable_set('pathauto_user_pattern', "users/[user:name]");
+  variable_set('pathauto_taxonomy_term_pattern', "[term:vocabulary]/[term:name]");
+  variable_set('pathauto_forum_pattern', "[term:vocabulary]/[term:name]");
+
+  return NULL;
+}
+
+/* Insert default pre-defined RDF mapping into the database.
+  */
+function panta_profile_rdf_mappings () {
+  set_time_limit(0);
+  $rdf_mappings = array(
+    array(
+      'type' => 'node',
+      'bundle' => 'page',
+      'mapping' => array(
+        'rdftype' => array('foaf:Document'),
+      ),
+    ),
+    array(
+      'type' => 'node',
+      'bundle' => 'article',
+      'mapping' => array(
+        'field_image' => array(
+          'predicates' => array('og:image', 'rdfs:seeAlso'),
+          'type' => 'rel',
+        ),
+        'field_tags' => array(
+          'predicates' => array('dc:subject'),
+          'type' => 'rel',
+        ),
+      ),
+    ),
+  );
+  foreach ($rdf_mappings as $rdf_mapping) {
+    rdf_mapping_save($rdf_mapping);
+  }
+  return NULL;
+*}
+
+function panta_profile_setup_theme () {
+  dd("Profile- In panta_profile_setup_theme");
+  set_time_limit(0);
+
+  $enable = array(
+                  'theme_default' => 'panta',
+                  'admin_theme' => 'seven',
+                  );
+
+  theme_enable($enable);
+
+  // important not to get these screwed around backwards
+  variable_set('theme_default', 'panta');
+  variable_set('admin_theme', 'seven');
+
+  // Disable the default Bartik theme
+  theme_disable(array('bartik'));
+
+  // adjust the theme settings to use our logo etc.
+  variable_set('site_slogan', 'Coursename goes here.');
+  variable_set('theme_settings', array (
+					'toggle_logo' => 1,
+					'toggle_name' => 1,
+					'toggle_slogan' => 0,
+					'toggle_node_user_picture' => 1,
+					'toggle_comment_user_picture' => 1,
+					'toggle_comment_user_verification' => 1,
+					'toggle_favicon' => 1,
+					'toggle_main_menu' => 1,
+					'toggle_secondary_menu' => 1,
+					'default_logo' => 0,
+					'logo_path' => 'public://alpha.png',
+					'logo_upload' => '',
+					'default_favicon' => 0,
+					'favicon_path' => 'public://planetary.ico',
+					'favicon_upload' => '',
+					'favicon_mimetype' => 'image/png',
+					));
+
+  return NULL;
+}
+
+function panta_profile_setup_permissions () {
+  set_time_limit(0);
+
+ // Create a default role for site administrators, with all available permissions assigned.
+  $admin_role = new stdClass();
+  $admin_role->name = 'administrator';
+  $admin_role->weight = 2;
+  user_role_save($admin_role);
+
+  user_role_grant_permissions($admin_role->rid,
+			      array_keys(module_invoke_all('permission')));
+  // Set this as the administrator role.
+  variable_set('user_admin_role', $admin_role->rid);
+
+  // Assign user 1 the "administrator" role.
+  db_insert('users_roles')
+    ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
+    ->execute();
+
+  // For whatever reason, it seems that we need to set this explicitly (maybe?)
+  variable_set('nodeaccess-types', array('group'=>TRUE,
+					 'poll'=>TRUE,
+					 'problem'=>TRUE,
+					 'forum'=>TRUE,
+					 'article'=>TRUE,
+					 'correction'=>TRUE,
+					 'image'=>TRUE,
+					 'news'=>TRUE,
+					 'page'=>TRUE,
+					 'review'=>TRUE,
+					 'solution'=>TRUE));
+
+  //$install_directory = '/home/planetary/drupal_planetary/';
+  //chdir($install_directory);
+
+  // panta_user_default_permissions();
+  dd("ENABLING PERMISSIONS");
+  //dd(shell_exec('drush -y en panta_permissions'));
+
+  // Ah, OK this is the way to do it! ('cause this way works)
+  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search'));
+
+  // Run  SELECT * FROM role_permission;  in mysql to see the
+  // list of available permissions
+
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','cancel account','use text format tex_editor', 'use text format filtered_html', 'create article content', 'create correction content', 'create forum content', 'create group content', 'create image content', 'create problem content', 'create review content', 'create solution content', 'create question content', 'create collection content', 'edit own article content', 'edit own correction content', 'edit own forum content', 'edit own group content', 'edit own image content', 'edit own problem content', 'edit own review content', 'edit own solution content', 'edit own question content', 'edit own collection content', 'delete own article content', 'delete own correction content', 'delete own group content', 'delete own image content', 'delete own problem content', 'delete own review content', 'delete own solution content', 'delete own question content', 'delete own correction content', 'read privatemsg', 'write privatemsg', 'post comments', 'skip comment approval', 'edit own comments', 'view own userpoints', 'view userpoints', 'use watcher', 'change own user settings', 'access help page'));
+
+  return NULL;
+}
+
+function panta_profile_setup_menus () {
+  dd("Profile- In panta_profile_setup_menus");
+  set_time_limit(0);
+
+  module_load_include('inc', 'menu', 'menu.admin');
+
+  menu_link_delete(NULL,'drutexml');
+  // Update the menu router information.
+  menu_rebuild();
+  return NULL;
+}
