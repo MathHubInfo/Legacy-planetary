@@ -1,0 +1,121 @@
+<?php
+
+/* The original version of this module just imploded the list of links
+   and stuck it into the theme as-is.  A rewrite would change this so
+   that the links show up in a block instead.  Let's see if we can,
+   for now, just define a block, and get it to show up at all... */
+
+function planetmath_authorlinks_theme($existing, $type, $theme, $path) {
+  return array(
+      'planetary_links' => array(
+          'variables' => array('links' => array()),
+      ),
+  );
+}
+
+function theme_planetary_links($variables) {
+  return implode(' <br> ', $variables['links']);
+}
+
+// This function sets up the contents of the author interaction block.
+// Looks pretty good for demo content at the moment, but it's still tricky
+// to see how we're going to get the links in there...
+function planetmath_authorlinks_block($nid) {
+  $node = node_load($nid);
+  //dpm($node);
+  return array(
+      'subject' => 'Interact',
+      'content' => "Somehow we have to get the links to show up here.  We currently have the node, but not rendered content... " . '``' . $node->title . "''"
+  );
+}
+
+/* Implements hook_block_view 
+ * This works in combination with the block defined in planetmath_authorlinks.install
+ * and the contents defined just above in planetmath_authorlinks_block
+ * However, for better functioning, we need to sue hook_page_build, see below
+ */
+function planetmath_authorlinks_block_view($delta = '') {
+  $block = array();
+
+  if ($delta == 'authorlinks') {
+    $block = planetmath_authorlinks_block(arg(1));
+  }
+
+  return $block;
+}
+
+// This should reach inside the node and get the # of links back out
+// in particular, the function should return TRUE iff there's more than zero links...
+// however, since the list of links is currently constructed at node view time,
+// I don't know a good way to do that starting with only the $nid!
+// So instead, we fake it.
+//
+// Further note: the "interact" box should display different contents for authors/owners
+// and for casual users.  (In general this will be determined by the links, of course,
+// but note that if there are zero links, then the box will not show up at all.  I guess
+// maybe there will always an "add to a collection" link, for logged in users...)
+function planetmath_authorlinks_countLinks($nid){
+  if (user_is_logged_in()) {
+  $node = node_load($nid);
+  // We *should* actually be able to interact with quite a few more types
+  // of nodes, but we can come back to that.
+  if($node){
+    if ($node->type == 'article' 
+	|| $node->type == 'group'
+	|| $node->type == 'problem'
+	|| $node->type == 'solution'
+	|| $node->type == 'question'
+        || $node->type == 'collection') {
+      return TRUE;
+    }
+  }
+  }
+  return FALSE;
+}
+
+/* Implements hook_page_build
+ * See comments at http://drupal.stackexchange.com/questions/31488/using-hook-page-alter-to-move-node-render-items-into-blocks
+ *
+ * NOTE: the operation of "sticking contents into the block" is only meaningful if
+ * the block exists.  Currently, it always exists for the given node types, but in
+ * the future it may not.  See comments on function above.
+ */
+function planetmath_authorlinks_page_build(&$page){
+  //dd("hook runs");
+  if (user_is_logged_in()) {
+    $node = node_load(arg(1));
+    if(is_object($node) && ($node->type == 'article' 
+			    || $node->type == 'group'
+			    || $node->type == 'problem'
+			    || $node->type == 'solution'
+			    || $node->type == 'question'
+			    || $node->type == 'collection')) {
+      //dd("we have a node");
+      if(isset($page['content']['system_main']['nodes'][$node->nid]['planetary_links'])){
+	// grab the original set of links from the node object
+	$links = $page['content']['system_main']['nodes'][$node->nid]['planetary_links']['#links'];
+	if(!empty($links)) {
+	  // concatenate them
+	  $catted_links = '<ul><li>' . implode(' <br><li> ', $links) . '</ul>';
+	  // stick that into the block
+	  $page['sidebar_second']['planetmath_authorlinks_authorlinks']['#markup'] = $catted_links;
+	} 
+	// get rid of the block 
+	else {
+	  unset($page['sidebar_second']['planetmath_authorlinks_authorlinks']);
+	}
+      }
+      // get rid of the block (hackish)
+      // Note that this means that we don't have the "Interact" menu when viewing source
+      else {
+	unset($page['sidebar_second']['planetmath_authorlinks_authorlinks']);
+      }
+    }
+  }
+  // ditch the representation on the node (we do this without
+  // compunction if the user isn't logged in!)
+  if (isset($node->nid) &&
+      isset($page['content']['system_main']['nodes'][$node->nid]['planetary_links'])) {
+    unset($page['content']['system_main']['nodes'][$node->nid]['planetary_links']);
+  }
+}
