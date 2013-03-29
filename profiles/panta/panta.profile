@@ -62,13 +62,22 @@ function panta_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'panta_profile_configure_groups',
                                         ),
-                 'my_blocks_task' => array(
+                /* This needs to happen befole block configuration*/
+                 'my_theme_task' => array(
+                                        'display_name' => st('Choose and install the theme'),
+                                        'display' => TRUE,
+                                        'type' => 'normal',
+                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+                                        'function' => 'panta_profile_setup_theme',
+                                        ),
+        /* skip block configuration for now */
+        /*         'my_blocks_task' => array(
                                         'display_name' => st('Configure Blocks'),
                                         'display' => TRUE,
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'panta_profile_configure_blocks',
-                                        ),
+                                        ),   */
                  'my_captcha_task' => array(
                                         'display_name' => st('Configure site CAPTCHA'),
                                         'display' => TRUE,
@@ -90,13 +99,6 @@ function panta_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'panta_profile_rdf_mappings',
                                         ),
-                 'my_theme_task' => array(
-                                        'display_name' => st('Choose and install the theme'),
-                                        'display' => TRUE,
-                                        'type' => 'normal',
-                                        'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
-                                        'function' => 'panta_profile_setup_theme',
-                                        ),
                  'my_permissions_task' => array(
                                         'display_name' => st('Configure permissions'),
                                         'display' => TRUE,
@@ -104,13 +106,14 @@ function panta_install_tasks($install_state) {
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'panta_profile_setup_permissions',
                                         ),
-                 'my_menus_task' => array(
+      /* Skipping for now */
+    /* 'my_menus_task' => array(
                                         'display_name' => st('Configure Menus'),
                                         'display' => TRUE,
                                         'type' => 'normal',
                                         'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
                                         'function' => 'panta_profile_setup_menus',
-                                        ),
+                                        ), */
                  );
   return $tasks;
 }
@@ -321,7 +324,8 @@ function panta_profile_drutexml_configuration() {
                                                   ),
                                ));
 
-  db_merge('field_config_instance')->key(array('id' => $fl->id))->fields((array)$fl)->execute();
+ /* This gave an error when I ran it just now, investigate later. -jac March 29, 2013*/
+//  db_merge('field_config_instance')->key(array('id' => $fl->id))->fields((array)$fl)->execute();
 
 
   return NULL;
@@ -330,6 +334,7 @@ function panta_profile_drutexml_configuration() {
 function panta_profile_forum_creator() {
   dd("Profile- In panta_profile_forum_creator");
   set_time_limit(0);
+ module_load_include('inc', 'forum', 'forum.admin');
 
   // Note that there will already be a "general discussion" forum created out of
   // the box.
@@ -751,7 +756,50 @@ function panta_profile_configure_groups () {
   /* og_create_field(OG_AUDIENCE_FIELD, 'user', 'user', $og_field); */
   /*??*/
 
-  panta_og_group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit.");
+  /* This function doesn't exist b/c it was a PlanetMath custom thing.  If you want to create groups automatically, check out
+    planetmath_og and maybe we can make a more generic planetary_og - jac */
+  /* panta_og_group_add_programmatic("World Writable", 1, "World writable articles - everyone has permission to edit."); */ 
+
+  return NULL;
+}
+
+function panta_profile_setup_theme () {
+  set_time_limit(0);
+
+  $enable = array(
+                  'theme_default' => 'panta_rhei_theme',
+                  'admin_theme' => 'seven',
+                  );
+
+  theme_enable($enable);
+
+  // important not to get these screwed around backwards
+  variable_set('theme_default', 'panta');
+  variable_set('admin_theme', 'seven');
+
+  // Disable the default Bartik theme
+  theme_disable(array('bartik'));
+
+  // adjust the theme settings to use our logo etc.
+  variable_set('site_slogan', 'Coursename.');
+  variable_set('theme_settings', array (
+					'toggle_logo' => 1,
+					'toggle_name' => 1,
+					'toggle_slogan' => 0,
+					'toggle_node_user_picture' => 1,
+					'toggle_comment_user_picture' => 1,
+					'toggle_comment_user_verification' => 1,
+					'toggle_favicon' => 1,
+					'toggle_main_menu' => 1,
+					'toggle_secondary_menu' => 1,
+					'default_logo' => 0,
+					'logo_path' => 'public://panta_logo.png',
+					'logo_upload' => '',
+					'default_favicon' => 0,
+					'favicon_path' => 'public://planet-alpha.ico',
+					'favicon_upload' => '',
+					'favicon_mimetype' => 'image/png',
+					));
 
   return NULL;
 }
@@ -761,10 +809,12 @@ function panta_profile_configure_blocks () {
   set_time_limit(0);
   // this is just copied from the standard installation for now...
   // in a moment, it should have the new Panta blocks set up
+
   module_enable('panta_blocks');
 
   // Since this is set up to run AFTER the theme has been selected,
   // these variables should be set properly.
+
   $theme_default = variable_get('theme_default');
   $admin_theme = variable_get('admin_theme');
 
@@ -1430,34 +1480,6 @@ function panta_profile_set_misc_variables () {
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
 
-  variable_set('dhtml_menu_settings', array (
-                                             'nav' => "open",
-                                             'animation' => array (
-								   // slide in horizontally, not vertically	
-                                                                   'effects' => array (
-                                                                                       'height' => 0,
-                                                                                       'opacity' => "opacity",
-                                                                                       'width' => "width"
-                                                                                       ),
-                                                                   'speed' => "500"
-                                                                   ),
-                                             'effects' => array (
-                                                                 'siblings' => "close-same-tree",
-                                                                 'children' => "none",
-                                                                 'remember' => ""
-                                                                 ),
-                                             'filter' => array (
-                                                                'type' => "blacklist",
-                                                                'list' => array(
-                                                                         'devel' => 1,
-                                                                         'main-menu' => 1,
-                                                                         'management' => 1,
-                                                                         'navigation' => 0,
-                                                                         'shortcut-set-1' => 1,
-                                                                         'user-menu' => 1
-                                                                    ))
-                                             ));
-
   // this seems to be a way to make it so that articles are always versioned.
   variable_set('node_options_article', array (
 					      0 => 'status',
@@ -1539,48 +1561,6 @@ function panta_profile_rdf_mappings () {
     rdf_mapping_save($rdf_mapping);
   }
   return NULL;
-*}
-
-function panta_profile_setup_theme () {
-  dd("Profile- In panta_profile_setup_theme");
-  set_time_limit(0);
-
-  $enable = array(
-                  'theme_default' => 'panta',
-                  'admin_theme' => 'seven',
-                  );
-
-  theme_enable($enable);
-
-  // important not to get these screwed around backwards
-  variable_set('theme_default', 'panta');
-  variable_set('admin_theme', 'seven');
-
-  // Disable the default Bartik theme
-  theme_disable(array('bartik'));
-
-  // adjust the theme settings to use our logo etc.
-  variable_set('site_slogan', 'Coursename goes here.');
-  variable_set('theme_settings', array (
-					'toggle_logo' => 1,
-					'toggle_name' => 1,
-					'toggle_slogan' => 0,
-					'toggle_node_user_picture' => 1,
-					'toggle_comment_user_picture' => 1,
-					'toggle_comment_user_verification' => 1,
-					'toggle_favicon' => 1,
-					'toggle_main_menu' => 1,
-					'toggle_secondary_menu' => 1,
-					'default_logo' => 0,
-					'logo_path' => 'public://alpha.png',
-					'logo_upload' => '',
-					'default_favicon' => 0,
-					'favicon_path' => 'public://planetary.ico',
-					'favicon_upload' => '',
-					'favicon_mimetype' => 'image/png',
-					));
-
-  return NULL;
 }
 
 function panta_profile_setup_permissions () {
@@ -1598,29 +1578,18 @@ function panta_profile_setup_permissions () {
   variable_set('user_admin_role', $admin_role->rid);
 
   // Assign user 1 the "administrator" role.
-  db_insert('users_roles')
-    ->fields(array('uid' => 1, 'rid' => $admin_role->rid))
-    ->execute();
+  db_insert('users_roles')->fields(array('uid' => 1, 'rid' => $admin_role->rid))->execute();
 
   // For whatever reason, it seems that we need to set this explicitly (maybe?)
   variable_set('nodeaccess-types', array('group'=>TRUE,
 					 'poll'=>TRUE,
-					 'problem'=>TRUE,
 					 'forum'=>TRUE,
 					 'article'=>TRUE,
-					 'correction'=>TRUE,
 					 'image'=>TRUE,
 					 'news'=>TRUE,
-					 'page'=>TRUE,
-					 'review'=>TRUE,
-					 'solution'=>TRUE));
+					 'page'=>TRUE));
 
-  //$install_directory = '/home/planetary/drupal_planetary/';
-  //chdir($install_directory);
-
-  // panta_user_default_permissions();
   dd("ENABLING PERMISSIONS");
-  //dd(shell_exec('drush -y en panta_permissions'));
 
   // Ah, OK this is the way to do it! ('cause this way works)
   user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search'));
@@ -1628,7 +1597,28 @@ function panta_profile_setup_permissions () {
   // Run  SELECT * FROM role_permission;  in mysql to see the
   // list of available permissions
 
-  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access comments','access content','access news feeds','access user profiles','search content','use advanced search','cancel account','use text format tex_editor', 'use text format filtered_html', 'create article content', 'create correction content', 'create forum content', 'create group content', 'create image content', 'create problem content', 'create review content', 'create solution content', 'create question content', 'create collection content', 'edit own article content', 'edit own correction content', 'edit own forum content', 'edit own group content', 'edit own image content', 'edit own problem content', 'edit own review content', 'edit own solution content', 'edit own question content', 'edit own collection content', 'delete own article content', 'delete own correction content', 'delete own group content', 'delete own image content', 'delete own problem content', 'delete own review content', 'delete own solution content', 'delete own question content', 'delete own correction content', 'read privatemsg', 'write privatemsg', 'post comments', 'skip comment approval', 'edit own comments', 'view own userpoints', 'view userpoints', 'use watcher', 'change own user settings', 'access help page'));
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID,
+array('access comments',
+'access content',
+'access news feeds',
+'access user profiles',
+'search content',
+'use advanced search',
+'cancel account',
+'use text format tex_editor',
+'use text format filtered_html',
+'create article content',
+'create forum content',
+'edit own article content',
+'edit own forum content',
+'delete own article content',
+'delete own forum content',
+'post comments',
+'skip comment approval',
+'edit own comments',
+'use watcher',
+'change own user settings',
+'access help page'));
 
   return NULL;
 }
@@ -1639,8 +1629,143 @@ function panta_profile_setup_menus () {
 
   module_load_include('inc', 'menu', 'menu.admin');
 
-  menu_link_delete(NULL,'drutexml');
   // Update the menu router information.
   menu_rebuild();
   return NULL;
+}
+
+/* Utility functions */
+
+function panta_profile_docreate_field ($machine_name, $bundle, $description) {
+  dd("Profile- In panta_profile_docreate_field");
+  set_time_limit(0);
+
+  $newfield=array(
+                  'field_name' => $machine_name,
+                  'type' => 'text'
+                  );
+  field_create_field($newfield);
+  $newfield_instance=array(
+                           'field_name' => $machine_name,
+                           'entity_type' => 'node',
+                           'bundle' => $bundle,
+                           'label' => t($label),
+                           'description' => t($description),
+                           'widget' => array(
+                                             'type' => 'text_textfield'
+                                             )
+                           );
+  field_create_instance($newfield_instance);
+}
+
+function panta_profile_docreate_user_field ($myField_name, $label){
+
+    if(!field_info_field($myField_name)) // check if the field already exists.
+    {
+        $field = array(
+            'field_name'    => $myField_name,
+            'type'          => 'text',
+        );
+        field_create_field($field);
+
+        $field_instance = array(
+            'field_name'    => $myField_name,
+            'entity_type'   => 'user',
+            'bundle'        => 'user',
+            'label'         => t($label),
+            'description'   => "",
+            'widget'        => array(
+                'type'      => 'text_textfield',
+                'weight'    => 10,
+            ),
+            'formatter'     => array(
+                'label'     => t($label),
+                'format'    => 'text_default'
+            ),
+            'settings'      => array(
+            )
+        );
+        field_create_instance($field_instance);
+    }
+}
+
+function panta_profile_docreate_user_field_long ($myField_name, $label, $desc)
+{
+        $field = array(
+            'field_name'    => $myField_name,
+            'type'          => 'text_long',
+        );
+        field_create_field($field);
+
+        $field_instance = array(
+            'field_name'    => $myField_name,
+            'entity_type'   => 'user',
+            'bundle'        => 'user',
+            'label'         => t($label),
+            'description'   => t($desc),
+            'widget'        => array(
+                'type'      => 'text_textarea',
+                'weight'    => 10,
+            ),
+            'formatter'     => array(
+                'label'     => t($label),
+                'format'    => 'text_default'
+            ),
+            'settings'      => array(
+            )
+        );
+        field_create_instance($field_instance);
+}
+
+function panta_profile_docreate_user_field_long_html ($myField_name, $label, $desc)
+{
+        $field = array(
+            'field_name'    => $myField_name,
+            'type'          => 'text_long',
+        );
+        field_create_field($field);
+
+        $field_instance = array(
+            'field_name'    => $myField_name,
+            'entity_type'   => 'user',
+            'bundle'        => 'user',
+            'label'         => t($label),
+            'description'   => t($desc),
+            'widget'        => array(
+                'type'      => 'text_textarea',
+                'weight'    => 10,
+            ),
+            'formatter'     => array(
+                'label'     => t($label),
+                'format'    => 'filtered_html'
+            ),
+            'settings'      => array(
+            )
+        );
+        field_create_instance($field_instance);
+}
+
+function panta_profile_docreate_user_buddy_list_field ()
+{
+        $field = array(
+            'field_name'    => "buddy_list",
+            'type'          => 'node_reference',
+        );
+        field_create_field($field);
+
+        $field_instance = array(
+            'field_name'    => "buddy_list",
+            'entity_type'   => 'user',
+            'bundle'        => 'user',
+            'label'         => t("Buddy List"),
+            'cardinality'   => 1,
+            'description'   => t("People in the buddy list have permission to edit all of your articles!  You can use this, for example, to make everything you submit to the site world writable."),
+            'widget'        => array(
+                'type'      => 'node_reference_autocomplete',
+                'weight'    => 10,
+            ),
+            'settings'      => array(
+				     ),
+        );
+        field_create_instance($field_instance);
 }
