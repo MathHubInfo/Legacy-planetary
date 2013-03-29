@@ -11,11 +11,17 @@ Questions or ideas?  Get in touch via the [Google group](http://groups.google.co
 
 ## Summary/TOC
 
+### Basic
+
 1. [Grab the code](https://github.com/cdavid/drupal_planetary/#grab-the-code-from-this-repository)
 1. [Install drush](https://github.com/cdavid/drupal_planetary/#install-drush)
 1. [Create database](https://github.com/cdavid/drupal_planetary/#create-database)
 1. [Configure Apache](https://github.com/cdavid/drupal_planetary/#configure-apache)
 1. [Install required modules](https://github.com/cdavid/drupal_planetary/#install-required-modules)
+1. [Run profile](https://github.com/cdavid/drupal_planetary/#run-profile)
+
+### Extras
+
 1. [Install LaTeXML](https://github.com/cdavid/drupal_planetary/#install-latexml)
 1. [Set up Virtuoso](https://github.com/cdavid/drupal_planetary/#set-up-virtuoso)
 1. [Set up PyRDFa](https://github.com/cdavid/drupal_planetary/#set-up-pyrdfa)
@@ -111,6 +117,14 @@ drush -y dl og-7.x-2.x-dev entityreference-7.x-1.x-dev entity-7.x-1.x-dev \
 
 ```
 
+## RUN PROFILE
+
+Supported profiles are `planetmath`  and `panta`:
+
+```
+drush site-install PROFILENAME --db-url=mysql://DBUSER:DBPASS@localhost/DBNAME \
+  --site-name=SITENAME  --account-name=ADMINNAME --account-pass=ADMINPASS
+```
 
 ## INSTALL LATEXML
 
