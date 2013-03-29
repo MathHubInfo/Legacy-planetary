@@ -1,11 +1,8 @@
 # Our development style
 
-We will be making some very small milestones, picking no more than 10
-issues at a time and moving them into the [Hotfix issue queue](https://github.com/cdavid/drupal_planetary/issues?labels=&milestone=4&page=1&state=open).  This
-would roughly simulate the "velocity" (tickets per iteration) measure
-used by e.g.  the [Pivotal tracker](http://www.pivotaltracker.com/help/faq#whatisvelocity).  I
-don't quite know what velocity we'll be able to maintain - but we'd
-find out!
+We have relatively small [milestones](https://github.com/KWARC/drupal_planetary/issues/milestones), due approximately every two months.
+
+We're happy to mentor newcomers - pick a [minor issue](https://github.com/KWARC/drupal_planetary/issues?labels=minor&milestone=&page=1&state=open) and we'll walk you through the steps to solve it.
 
 Questions or ideas?  Get in touch via the [Google group](http://groups.google.com/group/planetary-dev).
 
@@ -22,11 +19,11 @@ Questions or ideas?  Get in touch via the [Google group](http://groups.google.co
 
 ### Extras
 
+1. [Get the ACE Editor](https://github.com/cdavid/drupal_planetary/#get-the-ace-editor-and-put-it-in-your-libraries-directory)
+1. [Get the ShareJS repository](https://github.com/cdavid/drupal_planetary/#get-the-sharejs-repository)
 1. [Install LaTeXML](https://github.com/cdavid/drupal_planetary/#install-latexml)
 1. [Set up Virtuoso](https://github.com/cdavid/drupal_planetary/#set-up-virtuoso)
 1. [Set up PyRDFa](https://github.com/cdavid/drupal_planetary/#set-up-pyrdfa)
-1. [Get the ACE Editor](https://github.com/cdavid/drupal_planetary/#get-the-ace-editor-and-put-it-in-your-libraries-directory)
-1. [Get the ShareJS repository](https://github.com/cdavid/drupal_planetary/#get-the-sharejs-repository)
 1. [Install Apache Solr](https://github.com/cdavid/drupal_planetary/#install-apache-solr)
 1. [LaTeX integration](https://github.com/cdavid/drupal_planetary/#latex-integration-to-generate-pdfs)
 1. [Install NNexus](https://github.com/cdavid/drupal_planetary/#install-nnexus)
@@ -125,138 +122,6 @@ Supported profiles are `planetmath`  and `panta`:
 drush site-install PROFILENAME --db-url=mysql://DBUSER:DBPASS@localhost/DBNAME \
   --site-name=SITENAME  --account-name=ADMINNAME --account-pass=ADMINPASS
 ```
-
-## INSTALL LATEXML
-
-```
-svn co https://svn.mathweb.org/repos/LaTeXML/branches/arXMLiv
-
-apt-get install perlmagick libxml2 libxml2-dev libxslt1.1 libxslt1-dev \
-libxml-libxml-perl libclone-perl libdata-compare-perl libio-prompt-perl \
-libparse-recdescent-perl libxml-libxslt-perl libdb5.1 libdb5.1-dev \
-libgdbm-dev libarchive-zip-perl unzip
-
-sudo perl -MCPAN -e shell
-install Parse::RecDescent XML::LibXSLT DB_File Data::Compare File::Which \
- Marpa::R2 Test::LeakTrace
-quit
-```
-
-You should grab and install a current version of Mojolicious:
-
-```
-wget -O mojo.tar.gz https://github.com/kraih/mojo/tarball/master
-tar -zvxf mojo.tar.gz
-```
-Change to the directory that was unpacked and do:
-```
-perl Makefile.PL
-make
-sudo make install
-```
-
-Once you've gotten all that sorted out, you can go to the arXMLiv directory and, again,
-```
-perl Makefile.PL
-make
-sudo make install
-```
-
-### CONFIGURE LATEXML TO RUN UNDER APACHE
-
-```
-sudo apt-get install libapache2-mod-perl2 libplack-perl
-
-sudo chgrp -R www-data /path/to/LaTeXML/webapp
-sudo chmod -R g+w /path/to/LaTeXML/webapp
-```
-
-Create a "latexml" file in ```/etc/apache2/sites-available``` like this:
-
-```
-<VirtualHost *:80>
-    ServerName latexml.example.com 
-    DocumentRoot /path/to/LaTeXML/webapp
-    Header set Access-Control-Allow-Origin * 
-    <Perl>
-      $ENV{PLACK_ENV} = 'production';
-      $ENV{MOJO_HOME} = '/path/to/LaTeXML/webapp';
-    </Perl>
-
-    <Location />
-      SetHandler perl-script
-      PerlHandler Plack::Handler::Apache2
-      PerlSetVar psgi_app /path/to/LaTeXML/webapp/ltxmojo
-    </Location>
-
-    ErrorLog /var/log/apache2/latexml.error.log
-    LogLevel warn
-    CustomLog /var/log/apache2/latexml.access.log combined
-</VirtualHost>
-```
-
-and turn it on.
-
-## SET UP VIRTUOSO
-
-```
-drush dl libraries rdfx sparql_views
-drush -y en libraries
-drush -y en rdfx sparql_views views_ui rdfui
-```
-
-```
-sudo aptitude install dpkg-dev build-essential autoconf automake \
- libtool flex bison gperf gawk m4 make odbcinst libxml2-dev libssl-dev \
- libreadline-dev
-
-wget http://downloads.sourceforge.net/project/virtuoso/virtuoso/6.1.5/virtuoso-opensource-6.1.5.tar.gz
-tar -zxvf virtuoso-opensource-6.1.5.tar.gz
-cd virtuoso-opensource-6.1.5
-
-./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-v/"
-nice make
-sudo make install
-```
-
-### Invoke via screen
-```
-/usr/local/bin/virtuoso-t +configfile /usr/local/var/lib/virtuoso/db/virtuoso.ini -fd
-```
-
-### Seed your triple store with the Math Subject Classification taxonomy
-
-```
-wget http://msc2010.org/mscwork/msc2010.skos
-curl -T msc2010.skos http://planetmath.org:8890/DAV/home/pm/rdf_sink/xml.rdf -H "Content-Type: application/rdf+xml" -u dav:PASSWORD
-```
-
-## SET UP PYRDFA
-
-First of all, if you're going to use our ```pyrdfa``` module, don't forget that you'll have to patch the Drupal core (see full instructions for details)!
-
-```
-git clone git://github.com/RDFLib/PyRDFa.git
-cd PyRDFa
-sudo python setup.py install
-```
-
-The relevant executable is in ```./scripts/localRDFa.py```.  You can test it by pulling down some RDFa enhanced webpage and running
-
-```
-python /path/to/PyRDFa/scripts/localRDFa.py -x in.html > out.xml
-```
-
-If you run into trouble it may be because you don't have the right versions of required libraries installed.  I solved these problems with the following commands (obtaining rdflib version 3.4.0-dev and html5lib version 0.95) and then rebuilt/reinstalled PyRDFa as above.
-
-```
-sudo pip install markdown
-git clone git://github.com/RDFLib/rdflib.git
-cd rdflib && sudo python setup.py install
-```
-
-(Further note: ideally this would be set up to run as a web service, similar
-to LaTeXML and so on, but that will take a moment to set up.)
 
 ## GET THE ACE EDITOR, AND PUT IT IN YOUR LIBRARIES DIRECTORY
 
@@ -395,6 +260,139 @@ drush -y en apachesolr_views
 (PlanetMath will depend on this stuff, so I'll get as much of it as possible into the profile...)
 
 There are some additional plugins but details on those will follow later.  See this ticket [#141](https://github.com/cdavid/drupal_planetary/issues/141) for some further notes.
+
+
+## INSTALL LATEXML
+
+```
+svn co https://svn.mathweb.org/repos/LaTeXML/branches/arXMLiv
+
+apt-get install perlmagick libxml2 libxml2-dev libxslt1.1 libxslt1-dev \
+libxml-libxml-perl libclone-perl libdata-compare-perl libio-prompt-perl \
+libparse-recdescent-perl libxml-libxslt-perl libdb5.1 libdb5.1-dev \
+libgdbm-dev libarchive-zip-perl unzip
+
+sudo perl -MCPAN -e shell
+install Parse::RecDescent XML::LibXSLT DB_File Data::Compare File::Which \
+ Marpa::R2 Test::LeakTrace
+quit
+```
+
+You should grab and install a current version of Mojolicious:
+
+```
+wget -O mojo.tar.gz https://github.com/kraih/mojo/tarball/master
+tar -zvxf mojo.tar.gz
+```
+Change to the directory that was unpacked and do:
+```
+perl Makefile.PL
+make
+sudo make install
+```
+
+Once you've gotten all that sorted out, you can go to the arXMLiv directory and, again,
+```
+perl Makefile.PL
+make
+sudo make install
+```
+
+### CONFIGURE LATEXML TO RUN UNDER APACHE
+
+```
+sudo apt-get install libapache2-mod-perl2 libplack-perl
+
+sudo chgrp -R www-data /path/to/LaTeXML/webapp
+sudo chmod -R g+w /path/to/LaTeXML/webapp
+```
+
+Create a "latexml" file in ```/etc/apache2/sites-available``` like this:
+
+```
+<VirtualHost *:80>
+    ServerName latexml.example.com 
+    DocumentRoot /path/to/LaTeXML/webapp
+    Header set Access-Control-Allow-Origin * 
+    <Perl>
+      $ENV{PLACK_ENV} = 'production';
+      $ENV{MOJO_HOME} = '/path/to/LaTeXML/webapp';
+    </Perl>
+
+    <Location />
+      SetHandler perl-script
+      PerlHandler Plack::Handler::Apache2
+      PerlSetVar psgi_app /path/to/LaTeXML/webapp/ltxmojo
+    </Location>
+
+    ErrorLog /var/log/apache2/latexml.error.log
+    LogLevel warn
+    CustomLog /var/log/apache2/latexml.access.log combined
+</VirtualHost>
+```
+
+and turn it on.
+
+## SET UP VIRTUOSO
+
+```
+drush dl libraries rdfx sparql_views
+drush -y en libraries
+drush -y en rdfx sparql_views views_ui rdfui
+```
+
+```
+sudo aptitude install dpkg-dev build-essential autoconf automake \
+ libtool flex bison gperf gawk m4 make odbcinst libxml2-dev libssl-dev \
+ libreadline-dev
+
+wget http://downloads.sourceforge.net/project/virtuoso/virtuoso/6.1.5/virtuoso-opensource-6.1.5.tar.gz
+tar -zxvf virtuoso-opensource-6.1.5.tar.gz
+cd virtuoso-opensource-6.1.5
+
+./configure --prefix=/usr/local/ --with-readline --program-transform-name="s/isql/isql-v/"
+nice make
+sudo make install
+```
+
+### Invoke via screen
+```
+/usr/local/bin/virtuoso-t +configfile /usr/local/var/lib/virtuoso/db/virtuoso.ini -fd
+```
+
+### Seed your triple store with the Math Subject Classification taxonomy
+
+```
+wget http://msc2010.org/mscwork/msc2010.skos
+curl -T msc2010.skos http://planetmath.org:8890/DAV/home/pm/rdf_sink/xml.rdf -H "Content-Type: application/rdf+xml" -u dav:PASSWORD
+```
+
+## SET UP PYRDFA
+
+First of all, if you're going to use our ```pyrdfa``` module, don't forget that you'll have to patch the Drupal core (see full instructions for details)!
+
+```
+git clone git://github.com/RDFLib/PyRDFa.git
+cd PyRDFa
+sudo python setup.py install
+```
+
+The relevant executable is in ```./scripts/localRDFa.py```.  You can test it by pulling down some RDFa enhanced webpage and running
+
+```
+python /path/to/PyRDFa/scripts/localRDFa.py -x in.html > out.xml
+```
+
+If you run into trouble it may be because you don't have the right versions of required libraries installed.  I solved these problems with the following commands (obtaining rdflib version 3.4.0-dev and html5lib version 0.95) and then rebuilt/reinstalled PyRDFa as above.
+
+```
+sudo pip install markdown
+git clone git://github.com/RDFLib/rdflib.git
+cd rdflib && sudo python setup.py install
+```
+
+(Further note: ideally this would be set up to run as a web service, similar
+to LaTeXML and so on, but that will take a moment to set up.)
 
 ## LATEX INTEGRATION TO GENERATE PDFs
 
