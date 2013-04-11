@@ -127,8 +127,8 @@ function init(js) {
 			style.cursor = 'pointer';
 			domElement.innerHTML = node.name;
 				domElement.onclick = function() {
-				http://localhost/drupal_planetary/index.php?q=sally/json/timeinterval/timeinterval
-				$.getJSON("http://localhost/drupal_planetary/index.php?q=sally/json/"+ parseURL(node.id), function(data) {
+				//http://localhost/drupal_planetary/index.php?q=sally/json/timeinterval/timeinterval
+				$.getJSON("http://localhost/drupal_planetary/index.php?q=sally/services/json/"+ parseURL(node.id), function(data) {
 					rgraph.op.sum(data, {
 						'type' : 'fade:con',
 						duration : 1500, // What does this do?
