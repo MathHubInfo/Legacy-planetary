@@ -1,5 +1,12 @@
 /*======================================================================
  Core CSS for LaTeXML documents converted to (X)HTML */
+
+/*Customizations for PlanetMath*/
+math {
+       font-size:110%;
+       font-family: Verdana,Arial,sans-serif;
+}
+
 /* Generic Page layout */
 .ltx_page_header,
 .ltx_page_footer { font-size:0.8em; }
@@ -65,6 +72,7 @@ h6 + p { display:inline; }
 .ltx_align_bottom   {vertical-align:bottom; }
 .ltx_align_middle   {vertical-align:middle; }
 .ltx_align_baseline {vertical-align:baseline; }
+.ltx_caption        {font-weight:bold; }
 
 td.ltx_align_left,   th.ltx_align_left,
 td.ltx_align_right,  th.ltx_align_right,
