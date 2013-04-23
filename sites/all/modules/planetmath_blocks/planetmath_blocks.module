@@ -518,6 +518,46 @@ function planetmath_blocks_blockThemeUserListResults($results) {
   return $html;
 }
 
+/**
+ * Implements hook_date_format_types().
+ */
+function planetmath_blocks_date_format_types() {
+  return array(
+    'planetmath_blocks_current_day' => t('Planetmath_Blocks: Current day'),
+    'planetmath_blocks_current_year' => t('Planetmath_Blocks: Current year'),
+    'planetmath_blocks_years' => t('Planetmath_Blocks: Other years'),
+  );
+}
+
+/**
+ * Formats a timestamp according to the defines rules.
+ *
+ * Examples/Rules:
+ *
+ * Current hour: 25 min ago
+ * Current day (but not within the hour): 10:30 am
+ * Current year (but not on the same day): Nov 25
+ * Prior years (not the current year): 11/25/08
+ *
+ * @param $timestamp
+ *   UNIX Timestamp.
+ *
+ * @return
+ *   The formatted date.
+ */
+function planetmath_blocks_format_date($timestamp) {
+  if ($timestamp > ((int)(REQUEST_TIME / 3600)) * 3600) {
+    return t('@interval ago', array('@interval' => format_interval(abs(REQUEST_TIME - $timestamp), 1)));
+  }
+  if ($timestamp > ((int)(REQUEST_TIME / 86400)) * 86400) {
+    return format_date($timestamp, 'planetmath_blocks_current_day');
+  }
+  if ($timestamp > mktime(0, 0, 0, 1, 0, date('Y'))) {
+    return format_date($timestamp, 'planetmath_blocks_current_year');
+  }
+  return format_date($timestamp, 'planetmath_blocks_years');
+}
+
 function planetmath_blocks_blockThemeMessagesResults($results) {
   if (empty($results)) {
     return '<h4>No results found</h4>';
@@ -545,7 +585,8 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
                . '</span>'
                . '&nbsp;'
                . '<span class="block-day-date" style="text-align:right;">' 
-               . date('Y-m-d', $result->changed) 
+	// . date('Y-m-d', $result->changed) 
+               . planetmath_blocks_format_date($result->changed)
                . '</span>'
                . '<br />';
   } 
@@ -560,7 +601,8 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
                . '</span>'
                . '&nbsp;'
                . '<span class="block-day-date" style="text-align:right;">'
-               . date('Y-m-d', $result->changed) 
+	// . date('Y-m-d', $result->changed)
+               . planetmath_blocks_format_date($result->changed)
                . '</span>'
                . '<br />' ;
     }
