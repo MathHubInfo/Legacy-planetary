@@ -90,6 +90,9 @@ function planetmath_edit_article_node_update($node){
 }
 
 function planetmath_edit_article_process_metadata($node){
+
+  global $user;
+
   // The following debugging message shows how to access the metadata field.
   //dd("Node defines metadata: ".$node->field_latex['und'][0]['metadata']);
 
@@ -97,7 +100,7 @@ function planetmath_edit_article_process_metadata($node){
      routine go better.  Metadata processing seems fine in normal use,
      but we get all kinds of warning messages at import time... */
   if(isset($node->field_latex)){
-  $metadata = $node->field_latex['und'][0]['metadata'];
+  // $metadata = $node->field_latex['und'][0]['metadata'];
   $now = date('o-m-d G:i:s');
   $metadata =  "\\pmcanonicalname{".$node->field_canonicalname['und'][0]['value']."}\n";
 
@@ -115,7 +118,7 @@ function planetmath_edit_article_process_metadata($node){
   $metadata .= "\\pmcreated{".$time_created."}\n";
   $metadata .= "\\pmmodified{".$now."}\n";
 
-  global $user;
+
   // This will get mapped to dct:creator, which isn't quite right but what's better?
   $metadata .= "\\pmowner{".$node->name."}{".$node->uid."}\n";
   // Currently active user is the "modifier", clearly
@@ -157,53 +160,64 @@ function planetmath_edit_article_process_metadata($node){
     }
   }
 	
-  if (isset($node->field_parent['und'][0])){
+  if (isset($node->field_parent['und'][0]['value'])){
     $field_parent = $node->field_parent['und'][0]['value'];
-    if (isset($field_parent)) $metadata .= "%\\pmparent{".$field_parent."}\n";
+    if (isset($field_parent)){
+      $metadata .= "%\\pmparent{".$field_parent."}\n";
+    }
   }
 
-  if (isset($node->field_synonym['und'][0])){
+  if (isset($node->field_synonym['und'][0]['value'])){
     $field_synonym = $node->field_synonym['und'][0]['value'];
     if (isset($field_synonym)) {
       $synonym = explode(",",$field_synonym);
       foreach($synonym as $s){
 	$ss = trim($s);
-	$metadata .= "\\pmsynonym{".$ss."}{".$node->field_canonicalname['und'][0]['value']."}\n";
+	if($ss){
+	  $metadata .= "\\pmsynonym{".$ss."}{".$node->field_canonicalname['und'][0]['value']."}\n";
+	}
       }
     }
   }
 
-  if (isset($node->field_keywords['und'][0])){
+  if (isset($node->field_keywords['und'][0]['value'])){
     $field_keywords = $node->field_keywords['und'][0]['value'];
     //do we need to split by colon :   ??
     if (isset($field_keywords)) {
       $keywords = explode(",",$field_keywords);
       foreach($keywords as $k){
 	$kk = trim($k);
-	$metadata .= "%\\pmkeywords{".$kk."}\n";
+	if($kk){
+	  // jac - I'm not sure why we put this in commented out?
+	  $metadata .= "%\\pmkeywords{".$kk."}\n";
+	}
       }
     }
   }
 	
 
-  if (isset($node->field_related['und'][0])){
+  if (isset($node->field_related['und'][0]['value'])){
     $field_related = $node->field_related['und'][0]['value'];
     if (isset($field_related)){
       $related = explode(",",$field_related);
       foreach($related as $r){
 	$rr = trim($r);
-	$metadata .= "\\pmrelated{".$rr."}\n";
+	if($rr){
+	  $metadata .= "\\pmrelated{".$rr."}\n";
+	}
       }
     }
   }
 
-  if (isset($node->field_defines['und'][0])){
+  if (isset($node->field_defines['und'][0]['value'])){
     $field_defines = $node->field_defines['und'][0]['value'];
     if (isset($field_defines)){ 
       $defines = explode(",",$field_defines);
       foreach($defines as $d){
 	$dd = trim($d);
-	$metadata .= "\\pmdefines{".$dd."}\n";
+	if($dd){
+	  $metadata .= "\\pmdefines{".$dd."}\n";
+	}
       }
     }
   }
