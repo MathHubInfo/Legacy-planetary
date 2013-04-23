@@ -83,5 +83,6 @@
 <?php
   //dd("USER_PROFILE");
   //dd($user_profile);
+         hide($user_profile['user_track_reading']);
          print render($user_profile); ?>
 </div>
