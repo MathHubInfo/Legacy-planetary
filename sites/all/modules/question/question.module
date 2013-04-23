@@ -405,7 +405,7 @@ function question_unanswered_block($nid) {
 	}
       }
   return array(
-	       'subject' => 'Burning Questions',
+	       'subject' => 'Current Questions',
 	       'content' => $html
 	       );
 }
