@@ -694,6 +694,13 @@ function hook_node_presave($node) {
 }
 
 /**
+ * Respond to updates to a node after the transaction is over
+ */
+
+function hook_node_postsave($node){
+}
+
+/**
  * Respond to updates to a node.
  *
  * This hook is invoked from node_save() after the database query that will
