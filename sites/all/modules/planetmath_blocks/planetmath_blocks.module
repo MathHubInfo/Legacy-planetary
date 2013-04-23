@@ -161,14 +161,14 @@ UNION ALL
     INNER JOIN users u ON u.uid = n.uid
     WHERE n.`type` = 'forum' ORDER BY n.changed DESC LIMIT 0," */
 function planetmath_blocks_queryMessages() {
-  $results = db_query("(SELECT n.nid AS nid, n.title AS title, n.uid AS uid, n.changed AS changed, n.created AS created, u.name AS username, n.nid AS nid, n.type AS type, fdb.body_value AS body
+  $results = db_query("(SELECT NULL AS cid, n.nid AS nid, n.title AS title, n.uid AS uid, n.changed AS changed, n.created AS created, u.name AS username, n.type AS type, fdb.body_value AS body, NULL as parenttitle
 FROM node n
 LEFT OUTER JOIN field_data_body fdb ON n.nid = fdb.entity_id
 INNER JOIN users u ON u.uid = n.uid
 WHERE (type = 'forum')
 ORDER BY created DESC)
 UNION ALL
-(SELECT c.cid AS nid, c.subject AS title, c.uid AS uid, c.changed AS changed, c.created AS created, c.name AS username, n.nid AS nid, n.type AS type, fcb.comment_body_value AS body
+(SELECT c.cid AS cid, n.nid AS nid, c.subject AS title, c.uid AS uid, c.changed AS changed, c.created AS created, c.name AS username, n.type AS type, fcb.comment_body_value AS body, n.title as parenttitle
 FROM comment c
 INNER JOIN node n ON n.nid = c.nid
 LEFT OUTER JOIN field_data_comment_body fcb ON c.cid = fcb.entity_id
@@ -525,18 +525,19 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
   $html = "";// '<div style="padding-left:7%;padding-right:10%;padding-bottom:10%;"><br />';
 
   foreach ($results as $result) {
-    if (isset($result->cid)) {
+    // This gives some small visual indication of article nodes vs forum nodes.
+    if ($result->type == 'article') {
+      $code = 'P';
+    } else {
+      $code = 'p';
+    }
 
-      // This gives some small visual indication of article nodes vs forum nodes.
-      if ($result->type == 'article') {
-        $code = 'P';
-      } else {
-        $code = 'p';
-      }
-
+    // if we have a result with entity type "comment", we should link to it as a comment
+    // http://planetmath.org/comment/19394#comment-19394
+    if ($result->cid) {
       $html .= '<span class="message-block-item" style="text-align:left;">'
-               . ' [' . l($code, 'node/' . $result->nid) . '] ' 
-               . '<b>' . l($result->subject, 'node/' . $result->nid, 
+	. ' [' . l($code, 'node/' . $result->nid, array('attributes'=>array('title' => $result->parenttitle))) . '] ' 
+               . '<b>' . l($result->title, 'comment/' . $result->cid, 
                           array('fragment' => 'comment-' . $result->cid))
                . '</b>' 
                . ' by ' 
@@ -547,7 +548,9 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
                . date('Y-m-d', $result->changed) 
                . '</span>'
                . '<br />';
-    } else {
+  } 
+  // otherwise we link to it as a node
+  else {
       $html .= '<span class="message-block-item" style="text-align:left;">' 
                . '<b>'
                . l($result->title, 'node/' . $result->nid)
@@ -643,8 +646,13 @@ function planetmath_blocks_block_versions($nid) {
 function planetmath_blocks_block_provenance($nid) {
   $node=node_load($nid);
   //dpm($node);
+  if($node->type=='article'){
+    $attribution="Owner: ";
+  } else {
+    $attribution="Submitted by: ";
+  }
   $owner=user_load($node->uid);
-  $provenance = "Owner: " . l($owner->name,'user/'.$node->uid)
+  $provenance = $attribution . l($owner->name,'user/'.$node->uid)
                .'<br> '  
                .'Added: ' . date('Y-m-d - H:i',$node->created);
 
