@@ -1,5 +1,0 @@
-name = "Planetary AuthorLinks"
-description = "Helps author add content easier by providing methods of interacting with the content"
-package = "Planetary Modules"
-core = "7.x"
-version = "7.x-1.0"

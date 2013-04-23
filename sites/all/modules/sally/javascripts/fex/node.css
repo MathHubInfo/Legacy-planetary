@@ -1,0 +1,145 @@
+.nodes{
+background-color:#95B3D7;
+border:2px solid #385D8A;
+border-radius: 15px;
+-webkit-border-radius:15px;
+-moz-border-radius:15px;
+width: 200px;
+min-height:100px;
+position:relative;
+left:-5px;
+top:-5px;
+color:#000000
+}
+
+.title {
+text-align:center;
+}
+.title-text{
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 12pt;
+	font-weight:bold;
+}
+.title-dependency{
+position:relative;
+left:-20px;
+color:#595985;
+text-align: left;
+ font-size:12pt;;
+}
+
+.cell-container{
+clear: both;
+height:30px;
+width:100%;
+border-top:1px solid #6F98C9;
+border-bottom:1px solid #6F98C9;
+}
+
+
+.value-container{
+ float:left;
+ height: 90%;
+ width:100px;
+ text-align: center;
+ border-right:2px solid #6F98C9;
+
+}
+
+.cell-value{
+position:relative;
+top:30%;
+width:50%;
+background-color:#B9CDE5;
+margin:0 auto 0 auto;
+font-size: 10pt;
+}
+.cell-iterator{
+position:relative;
+top:30%;
+float:right;
+ height: 90%;
+ width:95px;
+ text-align: center;
+ font-size: 10pt;
+
+}
+
+.definition-container{
+	width:100%;
+	min-height:30px;
+	position:relative;
+}
+
+.definition{
+    margin:0 auto 0 auto;
+    width: 190px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+	background-color:#D9D9D9;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	top:5px;
+    position: relative; 
+    z-index:9999;
+	height:20px;
+}
+
+
+.definition:hover{
+
+    width: 190px;  
+   overflow: visible; 
+   word-wrap:break-word;
+	white-space: pre-line;      /* CSS3 */   
+    white-space: -moz-pre-line; /* Firefox */    
+    white-space: -pre-line;
+    background-color:#D9D9D9;
+	position: absolute; 
+	z-index:9999;	
+    margin:0 auto 0 auto;
+	left:5px;
+	min-height:20px;
+	height:auto;
+
+}
+
+.formula-container{
+	width:100%;
+	min-height:30px;
+	position:relative;
+	
+}
+.formula{
+	position: relative; 
+	z-index:0;
+	margin:0 auto 0 auto;
+    width: 95%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+	background-color:#FFFFFF;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	top:5px;
+	height:20px;
+}
+
+
+.formula:hover{
+    width: 190px;
+    overflow: visible; 
+    white-space: pre-line;      /* CSS3 */   
+    white-space: -moz-pre-line; /* Firefox */    
+    white-space: -pre-line;
+    background-color:#FFFFFF;
+	position: absolute; 
+	z-index:0;
+    margin:0 auto 0 auto;
+	left:5px;
+	min-height:20px;
+	height:auto;
+}

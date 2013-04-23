@@ -1,0 +1,112 @@
+name = Panta Rhei profile
+description = This file sets up a Drupal installation with support for courses.
+core = 7.x
+
+;; Note that I have commented out everything related to "migration" which can be
+;; done separately by those who know how!
+
+;; Core
+
+dependencies[] = aggregator
+dependencies[] = block
+dependencies[] = captcha
+dependencies[] = color
+dependencies[] = comment
+dependencies[] = contextual
+dependencies[] = dashboard
+dependencies[] = dblog
+dependencies[] = field
+dependencies[] = field_sql_storage
+dependencies[] = field_ui
+dependencies[] = file
+dependencies[] = filter
+dependencies[] = forum
+dependencies[] = help
+dependencies[] = image
+dependencies[] = list
+dependencies[] = locale
+dependencies[] = menu
+dependencies[] = node
+dependencies[] = node_reference
+dependencies[] = number
+dependencies[] = options
+dependencies[] = overlay
+dependencies[] = path
+dependencies[] = php
+dependencies[] = poll
+dependencies[] = rdf
+dependencies[] = search
+dependencies[] = shortcut
+dependencies[] = statistics
+dependencies[] = subform
+dependencies[] = system
+dependencies[] = taxonomy
+dependencies[] = text
+dependencies[] = token
+dependencies[] = toolbar
+dependencies[] = update
+dependencies[] = user
+
+;; Standard "Contrib" modules that we need
+
+dependencies[] = apachesolr
+dependencies[] = apachesolr_search
+dependencies[] = apachesolr_views
+dependencies[] = backup_migrate
+dependencies[] = commentrss
+dependencies[] = ctools
+dependencies[] = date
+dependencies[] = delete_all
+dependencies[] = devel
+dependencies[] = devel_generate
+dependencies[] = devel_node_access
+dependencies[] = efq_views
+dependencies[] = entity
+dependencies[] = entity_token
+dependencies[] = entityreference
+dependencies[] = features
+dependencies[] = nodeaccess
+dependencies[] = og
+dependencies[] = og_access
+dependencies[] = og_context
+dependencies[] = og_register
+dependencies[] = og_ui
+dependencies[] = pathauto
+; dependencies[] = pm_email_notify
+; dependencies[] = privatemsg
+dependencies[] = relation
+dependencies[] = relation_dummy_field
+dependencies[] = relation_endpoint
+dependencies[] = relation_entity_collector
+dependencies[] = relation_select
+dependencies[] = reroute_email
+dependencies[] = riddler
+dependencies[] = shadowbox
+dependencies[] = views
+dependencies[] = views_bulk_operations
+dependencies[] = views_content
+dependencies[] = views_php
+dependencies[] = views_ui
+dependencies[] = watcher
+dependencies[] = wysiwyg
+
+;; custom
+dependencies[] = curli
+dependencies[] = references
+dependencies[] = latex_field
+dependencies[] = drutexml
+dependencies[] = mathjax
+dependencies[] = wysiwyg_codemirror
+dependencies[] = wysiwyg_ace
+
+dependencies[] = sharejsservices
+dependencies[] = planetary_apachesolr
+
+;; features
+;; Add features here, N.B. permissions are dealt with in the profile itself
+
+;; theme
+; dependencies[] = panta_rhei_theme
+
+files[] = panta.profile
+files[] = panta.inc.profile

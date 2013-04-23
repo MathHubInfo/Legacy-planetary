@@ -1,6 +1,0 @@
-name = "PlanetMath Image"
-description = "Allows users to attach image nodes to article nodes"
-package = "Planetary Modules"
-version = "7.x-1.0"
-core = "7.x"
-

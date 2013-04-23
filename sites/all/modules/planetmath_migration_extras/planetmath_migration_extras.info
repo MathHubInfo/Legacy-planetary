@@ -1,5 +1,0 @@
-name = "PlanetMath Migration extras"
-package = "Planetary"
-description = "Migrates user and correction data"
-version = "7.x - 1.0"
-core = "7.x"

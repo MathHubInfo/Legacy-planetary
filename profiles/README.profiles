@@ -1,0 +1,70 @@
+There is a possibility to set up a sub-profile, so that could be used to create 
+a configuration for Phanta Rhei as well as for PlanetMath.  If we can get to the
+level of site logos and such, then we can e.g. make a configuration for
+PlanetPhysics.
+
+description of parameters for arrays in `hook_install_tasks' (implemented below)
+
+`display' determines whether to show this task in the
+list of installation tasks on the side of the
+installation screens. If display_name is not given or
+display is FALSE, the task does not appear in the
+list of installation tasks on the side of the
+installation screens. display is useful if you want
+to conditionally display a task; for example, you
+might want to display a configuration form for a
+module that the user chose to enable in a previous
+step, but skip that form if the module was not
+enabled.
+
+`type' can be one of "normal," "batch," or "form."
+
+"Normal" tasks can return HTML that will be displayed
+as a page in the installer or NULL to indicate that
+the task is completed.  This is the default.
+Remember to provide some way to go on to the next
+step, such as a "continue" button.
+
+"Batch" tasks return a batch array to be processed by
+the Batch API, which is useful for example if you
+want to import something that could take awhile. The
+task will be considered complete when the batch
+finishes processing.
+
+"Form" tasks return a Form API structured array which
+will be displayed as a form on a page in the
+installer. The installer will take care of moving the
+user to the next task when the form is submitted.
+You can see more specifically what happens for each
+type in install_run_task(). 
+
+run should be one of INSTALL_TASK_RUN_IF_REACHED,
+INSTALL_TASK_RUN_IF_NOT_COMPLETED, or
+INSTALL_TASK_SKIP.
+
+INSTALL_TASK_RUN_IF_REACHED means the task will run
+at each stage of the installation that reaches
+it. This is mainly used by core to include important
+resources on each page of the installer.
+
+INSTALL_TASK_RUN_IF_NOT_COMPLETED means the task will
+run once during the installation process. This is the
+default, and it is useful for things like displaying
+instructions and configuration forms, or for
+inserting content into the database.
+
+INSTALL_TASK_SKIP means the task will not be
+run. This is usually set conditionally, since you may
+want to skip tasks depending on the options the user
+chose in previous steps. Typically a task will be
+skipped when display is set to FALSE, but it is also
+possible to display a task in the list without
+executing it.
+
+function is the name of the function that will be run
+when the task is executed.  If not set, this is the
+same as the machine_name of the task. You may want to
+set it to something else if you want to use the same
+function for multiple tasks, or if you want to
+conditionally choose a function depending on the
+options the user chose in previous steps.

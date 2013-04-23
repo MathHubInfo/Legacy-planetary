@@ -18,6 +18,10 @@ function sally_menu() {
 		"page callback" => "sally_show_graph",
 		"access callback" => true,
 	);
+	$item["sally/fex"] = array(
+		"page callback" => "sally_formula_explorer",
+		"access callback" => true,
+	);
 
 	
 	return $item;
@@ -32,6 +36,10 @@ function sally_theme($existing, $type, $theme, $path) {
 			'sally_show_graph' => array(
 					'variables' => array('content' => NULL),
 					'template' => "sally_show_graph"
+			),
+			'sally_formula_explorer' => array(
+					'variables' => array('content' => NULL),
+					'template' => "sally_formula_explorer"
 			),
 			'sally_return_json' => array(
 			)
@@ -64,6 +72,16 @@ function sally_show_graph($cd, $name, $token) {
 	$sally = url("<front>", array("absolute"=>true)).drupal_get_path("module","sally");
 	echo theme("sally_show_graph", array("content"=>$result, "jobad"=>$jobad, "sally"=>$sally, "token"=>$token));
 }
+
+/*
+ * Returns a page that gives the formula explorer graph
+ * $token - token used for setting the context of the request
+ */
+function sally_formula_explorer($token) {
+	$sally = url("<front>", array("absolute"=>true)).drupal_get_path("module","sally");
+	echo theme("sally_formula_explorer", array("sally"=>$sally, "token"=>$token));
+}
+
 /*
  * This is used to extend the dependency graph from a certain ontology term.
  *
