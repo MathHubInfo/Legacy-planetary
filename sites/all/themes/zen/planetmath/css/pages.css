@@ -515,8 +515,8 @@ h2.block-title{
 
 #block-system-main{
   border: 0;
-  background: rgb(255, 250, 250);
-  background: rgba(255, 250, 250, 1.0);
+  /* background: rgba(255, 250, 250, 1.0); */
+  background: #FFFFFF;
   margin-top: 15px;
 }
 
