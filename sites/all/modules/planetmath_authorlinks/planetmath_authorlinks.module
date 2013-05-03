@@ -22,11 +22,13 @@ function theme_planetary_links($variables) {
 // to see how we're going to get the links in there...
 function planetmath_authorlinks_block($nid) {
   $node = node_load($nid);
+  if(is_object($node)){
   //dpm($node);
-  return array(
-      'subject' => 'Interact',
-      'content' => "Somehow we have to get the links to show up here.  We currently have the node, but not rendered content... " . '``' . $node->title . "''"
-  );
+    return array(
+		 'subject' => 'Interact',
+		 'content' => "Somehow we have to get the links to show up here.  We currently have the node, but not rendered content... " . '``' . $node->title . "''"
+		 );
+  }
 }
 
 /* Implements hook_block_view 
