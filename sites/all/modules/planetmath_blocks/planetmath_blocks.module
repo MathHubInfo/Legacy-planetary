@@ -432,7 +432,7 @@ function planetmath_blocks_blockThemeResultsWithDate($results, $sortBy = 'create
   if ($sortBy == 'created') {
     $html .= '<div style="text-align:right;">' . l('more', 'articles') . '</div>';
   } else if ($sortBy == 'changed') {
-    $html .= '<div style="text-align:right;">' . l('more', 'revisions') . '</div>';
+    $html .= '<div style="text-align:right;">' . l('more', 'revisions', array('query'=>array('section'=>'All'))) . '</div>';
   }
   return $html;
 }
