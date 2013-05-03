@@ -453,7 +453,8 @@ function planetmath_blocks_blockThemeResultsWithDateBold($results, $sortBy = 'cr
 	strcmp($dates[count($dates) - 1], date('Y-m-d',$result->$sortBy)) != 0)
       {
 	array_push($dates,date('Y-m-d',$result->$sortBy));
-	$html .= '<span class="block-day-date">'.date('Y-m-d',$result->$sortBy).'</span><br />';
+	$html .= '<span class="block-day-date">'.planetmath_blocks_format_date($result->$sortBy)
+	  .'</span><br />';
       }
 
     $html .= '<span >' . '<b>'.l($result->title . ' ' . $result->version, 'node/' . $result->nid).'</b>' . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
@@ -481,8 +482,11 @@ function planetmath_blocks_blockThemeEverythingElseWithDate($results, $sortBy = 
     if ((count($dates) === 0) || 
 	strcmp($dates[count($dates) - 1], date('Y-m-d',$result->$sortBy)) != 0)
       {
-	array_push($dates,date('Y-m-d',$result->$sortBy));
-	$html .= '<span class="block-day-date">'.date('Y-m-d',$result->$sortBy).'</span><br />';
+	array_push($dates, date('Y-m-d',$result->$sortBy));
+	$html .= '<span class="block-day-date">'.
+	  planetmath_blocks_format_date($result->$sortBy)
+	  //date('Y-m-d',$result->$sortBy)
+	  .'</span><br />';
       }
 
     // It would be nice to include the "parent" in some fashion, when it exists, i.e.

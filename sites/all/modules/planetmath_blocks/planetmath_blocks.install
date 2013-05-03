@@ -1,3 +1,4 @@
+<?php
 function planetmath_blocks_install() {
   // Define default formats for date format types.
   variable_set("date_format_planetmath_blocks_current_day", 'g:i a');
