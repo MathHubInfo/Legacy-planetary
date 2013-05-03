@@ -195,15 +195,16 @@ function planetmath_orphanage_view_mainOrphanageList() {
 
   if ($user->uid == 0){
     $message_anon = "<p><b>Log in to claim any of these articles.</b></p>";
-  } else {
-    $claim_link = l('Claim this article', 'node/' . $orphan->nid . '/claim');
   }
 
   $orphans = planetmath_orphanage_model_getOrphanedNodes();
   $items = array();
 
   foreach ($orphans as $orphan) {
-    $items[] = l($orphan->title, 'node/' . $orphan->nid) . ' orphaned on ' . date("d-m-Y", $orphan->changed) . "<span style='float:right'>" . $claim_link . '</span>';
+   if ($user->uid != 0) {
+     $claim_link = l('Claim this article', 'node/' . $orphan->nid . '/claim');
+   }
+   $items[] = l($orphan->title, 'node/' . $orphan->nid) . ' orphaned on ' . date("d-m-Y", $orphan->changed) . "<span style='float:right'>" . $claim_link . '</span>';
   }
   return $message_anon.'<div style="width:420px">' . theme('item_list', array('items' => $items, 'attributes' => array())) .
           theme('pager') . '</div>';
