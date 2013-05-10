@@ -184,13 +184,14 @@ function planetmath_attachable_content_add_links($node) {
     return $links;
 }
 
-// show the "attach" link on *collections*, *groups*, and *unanswered questions*.
+// show the "attach" link on *collections*, *unanswered questions*,
+// *groups that the user is a member of*
 function planetmath_attachable_content_node_view($node, $view_mode){
   if($view_mode!='content'){
   if( ($node->type == 'question' 
         && !isset($node->field_question_closed['und'][0]['value']))
-    ||$node->type == 'collection'
-    ||$node->type == 'group') {
+    || $node->type == 'collection'
+    || ($node->type == 'group' && planetmath_og_attach_is_member($node->nid))) {
 
       $newlinks = planetmath_attachable_content_authorlinks_assemble($node);
 

@@ -88,15 +88,24 @@ function planetmath_og_attach_content($nid){
 }
 
 function planetmath_og_attach_confirm($gid_of_group,$nid_of_content){
- // drupal_set_message('Node '.$nid_of_content.' is now attached to this group (needs to be implemented)');
- 
-  //dd($gid_of_group);
-  //dd($nid_of_content);
+  global $user;
 
-  //og_membership_save
-  og_membership_create('node',$gid_of_group,'node',$nid_of_content,'og_group_ref')->save();
-
-  drupal_goto('node/'.$gid_of_group);
+  $content_group = planetmath_og_model_getNodeEditingGroup($nid_of_content);
+  $content_itself = node_load($nid_of_content);
+  
+  // You can only add something to a group (1) if you're in the group; AND (2) you're the
+  // owner of the object you want to add; OR (3) you're in the editing group for the object
+  // you want to add. 
+  if(planetmath_og_model_isUserMemberOfGroup($user->uid,node_load($gid_of_group)) 
+     && ( $user->uid == $content_itself->uid || 
+	  (is_object($content_group) 
+	   && planetmath_og_model_isUserMemberOfGroup($user->uid,$content_group)))) {
+    og_membership_create('node',$gid_of_group,'node',$nid_of_content,'og_group_ref')->save();
+    drupal_goto('node/'.$gid_of_group);
+  } else {
+    drupal_set_message("You don't have permission to edit <em>".l($content_itself->title,'node/'.$content_itself->nid)."</em>, so you can't add it to a group.");
+    drupal_goto('attach/'.$gid_of_group);
+  }
 }
 
 function planetmath_og_attach_decouple($gid_of_group,$nid_of_content){
@@ -151,18 +160,5 @@ function planetmath_og_attach_theme($existing, $type, $theme, $path){
   );
 }
 
-// Main point of entry
-function planetmath_og_attach_node_view($node){
-  if($node->type == 'group' && planetmath_og_attach_is_member($node->nid)){
+// Main point of entry is planetmath_attachable_content_node_view
 
-    // make use of the dependency on planetmath_attachable_content
-    $newlinks = planetmath_attachable_content_authorlinks_assemble($node);
-
-    $node->content['planetary_links'] = array(
-						'#markup' => '',
-						'#weight' => 10,
-						'#theme' => 'planetary_links',
-						'#links' => $newlinks
-						);
-  }
-}

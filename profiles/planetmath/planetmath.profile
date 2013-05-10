@@ -2095,6 +2095,8 @@ function planetmath_profile_setup_user_entities () {
     planetmath_profile_docreate_user_field_long_html('user_bio', 'Bio', 'Tell us who you are!');
     planetmath_profile_docreate_user_buddy_list_field();
 
+    planetmath_profile_docreate_user_field_binary('user_track_reading', "Uncheck to opt out of tracking reads.", "This field controls whether or not we keep track of the pages you've read.  It's on by default because we find this to be a useful feature when used in combination with the new collections feature.");
+
     // Let's not port the score for now, they are being re-calculated; if we really
     // need to get the old score properly, it can be fixed up after the install 
     // profile finishes
@@ -2347,3 +2349,43 @@ function planetmath_profile_docreate_user_buddy_list_field ()
         field_create_instance($field_instance);
 }
 
+function planetmath_profile_docreate_user_field_binary($myField_name, $label, $desc)
+{
+        $field = array(
+            'field_name'    => $myField_name,
+	    'module'        => 'list',
+	    'cardinality'   => 1,
+	    'active'        => 1,
+	    'locked'        => 0,
+            'type'          => 'list_boolean',
+            'settings'      => array(
+				     'allowed_values' => array(
+							       0 => '',
+							       1 => '',
+							       ),
+				     'allowed_values_function' => ''
+				     ),
+        );
+        field_create_field($field);
+
+        $field_instance = array(
+            'field_name'    => $myField_name,
+            'entity_type'   => 'user',
+            'bundle'        => 'user',
+            'label'         => t($label),
+            'description'   => t($desc),
+	    'default_value' => array(0=>array('value'=>1)),
+	    'widget' => array(
+			      'active' => 1,
+			      'module' => 'options',
+			      'settings' => array(
+						  'display_label' => 1,
+						  ),
+			      'type' => 'options_onoff',
+			      ),
+	    'settings' => array(
+				'user_register_form' => 1,
+				)
+        );
+        field_create_instance($field_instance);
+}

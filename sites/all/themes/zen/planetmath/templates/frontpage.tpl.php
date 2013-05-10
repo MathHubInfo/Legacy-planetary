@@ -59,7 +59,7 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
    var min_line_height = 10;
    // console.log("look inside");
    // look inside each block
-   jQuery('.tab-contents').each( function(){
+   jQuery('#front-left-block-tabs').each( function(){
        // look inside each span
        var num_lines =1;
        var this_line_height =10;
@@ -74,10 +74,24 @@ $personal_feed = (object) planetmath_blocks_block_view('personal-feed');
        // we set the line height in this block accordingly
        jQuery(this).css('line-height',this_line_height+'px')
       });
-   // now that we know the maximum number of lines used on any block,
-   // we set the height of all blocks based on that value
    jQuery('#front-left-block-tabs').css('height',Math.ceil((max_lines*min_line_height*3.0))+'px');
-   jQuery('#front-left-mid-block-tabs').css('height',Math.ceil((max_lines*min_line_height*3.0))+'px');
+   jQuery('#front-left-mid-block-tabs').each( function(){
+       // look inside each span
+       var num_lines =1;
+       var this_line_height =10;
+       jQuery(this).find('span').each( function(){
+	   // count the number of lines in this span
+	   num_lines += Math.ceil(jQuery(this).text().length/84);
+	   max_lines = Math.max(max_lines,num_lines);
+         });
+       this_line_height = (780/num_lines);
+       min_line_height = Math.min(this_line_height,min_line_height);
+       // now that we know how many lines in THIS block
+       // we set the line height in this block accordingly
+       jQuery(this).css('line-height',this_line_height+'px')
+      });
+   // we can actually set the block heights differently now b/c they stack
+   jQuery('#front-left-mid-block-tabs').css('height',Math.ceil((max_lines*min_line_height*1.65))+'px');
 
     })
   })(jQuery);

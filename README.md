@@ -1,8 +1,8 @@
 # Our development style
 
-We have relatively small [milestones](https://github.com/KWARC/drupal_planetary/issues/milestones), due approximately every two months.
+We have relatively small [milestones](https://github.com/KWARC/planetary/issues/milestones), due approximately every two months.
 
-We're happy to mentor newcomers - pick a [minor issue](https://github.com/KWARC/drupal_planetary/issues?labels=minor&milestone=&page=1&state=open) and we'll walk you through the steps to solve it.
+We're happy to mentor newcomers - pick a [minor issue](https://github.com/KWARC/planetary/issues?labels=minor&milestone=&page=1&state=open) and we'll walk you through the steps to solve it.
 
 Questions or ideas?  Get in touch via the [Google group](http://groups.google.com/group/planetary-dev).
 
@@ -10,23 +10,23 @@ Questions or ideas?  Get in touch via the [Google group](http://groups.google.co
 
 ### Basic
 
-1. [Grab the code](https://github.com/KWARC/drupal_planetary/#grab-the-code-from-this-repository)
-1. [Install drush](https://github.com/KWARC/drupal_planetary/#install-drush)
-1. [Create database](https://github.com/KWARC/drupal_planetary/#create-database)
-1. [Configure Apache](https://github.com/KWARC/drupal_planetary/#configure-apache)
-1. [Install required modules](https://github.com/KWARC/drupal_planetary/#install-required-modules)
-1. [Run profile](https://github.com/KWARC/drupal_planetary/#run-profile)
+1. [Grab the code](https://github.com/KWARC/planetary/#grab-the-code-from-this-repository)
+1. [Install drush](https://github.com/KWARC/planetary/#install-drush)
+1. [Create database](https://github.com/KWARC/planetary/#create-database)
+1. [Configure Apache](https://github.com/KWARC/planetary/#configure-apache)
+1. [Install required modules](https://github.com/KWARC/planetary/#install-required-modules)
+1. [Run profile](https://github.com/KWARC/planetary/#run-profile)
 
 ### Extras
 
-1. [Get the ACE Editor](https://github.com/KWARC/drupal_planetary/#get-the-ace-editor-and-put-it-in-your-libraries-directory)
-1. [Get the ShareJS repository](https://github.com/KWARC/drupal_planetary/#get-the-sharejs-repository)
-1. [Install LaTeXML](https://github.com/KWARC/drupal_planetary/#install-latexml)
-1. [Set up Virtuoso](https://github.com/KWARC/drupal_planetary/#set-up-virtuoso)
-1. [Set up PyRDFa](https://github.com/KWARC/drupal_planetary/#set-up-pyrdfa)
-1. [Install Apache Solr](https://github.com/KWARC/drupal_planetary/#install-apache-solr)
-1. [LaTeX integration](https://github.com/KWARC/drupal_planetary/#latex-integration-to-generate-pdfs)
-1. [Install NNexus](https://github.com/KWARC/drupal_planetary/#install-nnexus)
+1. [Get the ACE Editor](https://github.com/KWARC/planetary/#get-the-ace-editor-and-put-it-in-your-libraries-directory)
+1. [Get the ShareJS repository](https://github.com/KWARC/planetary/#get-the-sharejs-repository)
+1. [Install LaTeXML](https://github.com/KWARC/planetary/#install-latexml)
+1. [Set up Virtuoso](https://github.com/KWARC/planetary/#set-up-virtuoso)
+1. [Set up PyRDFa](https://github.com/KWARC/planetary/#set-up-pyrdfa)
+1. [Install Apache Solr](https://github.com/KWARC/planetary/#install-apache-solr)
+1. [LaTeX integration](https://github.com/KWARC/planetary/#latex-integration-to-generate-pdfs)
+1. [Install NNexus](https://github.com/KWARC/planetary/#install-nnexus)
 
 # Brief installation instructions
 
@@ -38,9 +38,9 @@ To get a minimal working "Math enhanced Drupal", you only need to do the first f
 It's Drupal with our custom extensions.
 
 ```
-git clone git://github.com/KWARC/drupal_planetary.git
-ln -s /home/planetary/drupal_planetary /var/www/drupal
-cd drupal_planetary
+git clone git://github.com/KWARC/planetary.git
+ln -s /home/planetary/planetary /var/www/drupal
+cd planetary
 chmod a+w sites/default/files
 cp sites/default/default.settings.php sites/default/settings.php
 chmod a+w sites/default/settings.php
@@ -82,7 +82,7 @@ TO 'planetary'@'localhost' IDENTIFIED BY 'make-something-up';
 
 ## INSTALL REQUIRED MODULES
 
-(By the way, you'll probably want to look through the [extended installation instructions](https://github.com/KWARC/drupal_planetary/wiki/Installation-instructions---details) to make sure you have all the necessary configuration steps sorted out.)
+(By the way, you'll probably want to look through the [extended installation instructions](https://github.com/KWARC/planetary/wiki/Installation-instructions---details) to make sure you have all the necessary configuration steps sorted out.)
 
 ### For PlanetMath profile
 
@@ -170,7 +170,7 @@ This module ships with Planetary.  If you haven't already turned it on, do so no
 drush -y en sharejsservices
 ```
 
-And enable the ACE 2.0 editor at ```admin/config/content/wysiwyg```.
+And enable the ACE 2.0 editor at `admin/config/content/wysiwyg`.  Make sure that the ShareJsServices button is ticked at `admin/config/content/wysiwyg/profile/tex_editor/edit`.
 
 ## INSTALL APACHE SOLR
 
@@ -203,7 +203,7 @@ mv solr/example/solr/conf/schema.xml solr/example/solr/conf/schema.bak
 mv solr/example/solr/conf/solrconfig.xml solr/example/solr/conf/solrconfig.bak
 mv solr/example/solr/conf/protwords.txt solr/example/solr/conf/protwords.bak
 
-cd ../drupal_planetary
+cd ../planetary
 drush dl apachesolr
 
 cp sites/all/modules/apachesolr/solr-conf/solr-3.x/schema.xml \
@@ -259,7 +259,7 @@ drush -y en apachesolr_views
 
 (PlanetMath will depend on this stuff, so I'll get as much of it as possible into the profile...)
 
-There are some additional plugins but details on those will follow later.  See this ticket [#141](https://github.com/KWARC/drupal_planetary/issues/141) for some further notes.
+There are some additional plugins but details on those will follow later.  See this ticket [#141](https://github.com/KWARC/planetary/issues/141) for some further notes.
 
 
 ## INSTALL LATEXML

@@ -1020,6 +1020,7 @@ function node_submit($node) {
   return $node;
 }
 
+
 /**
  * Save changes to a node or add a new node.
  *
@@ -1028,6 +1029,12 @@ function node_submit($node) {
  *   omitted (or $node->is_new is TRUE), a new node will be added.
  */
 function node_save($node) {
+  node_save_transactional($node);
+  module_invoke_all('node_postsave', $node);
+}
+
+function node_save_transactional($node) {
+
   $transaction = db_transaction();
 
   try {

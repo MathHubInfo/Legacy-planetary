@@ -121,8 +121,8 @@ $jq(document).ready(function () {
         <?php endif; ?>
       </div><!-- /#name-and-slogan -->
     <?php endif; ?>
-
-    <ul id="secondary-menu" class="links inline clearfix">
+    
+      <ul id="secondary-menu" class="links inline clearfix" <?php if(!$logged_in): ?> style="visibility:hidden;" <?php endif;?> >
     <?php $user_menu = menu_navigation_links('user-menu');
 		  print theme('links',
 			      array(

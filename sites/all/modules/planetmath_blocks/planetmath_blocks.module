@@ -12,7 +12,7 @@
  */
 define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_NUMBER_OF_ITEMS_ON_BLOCK', 10);
 define('PLANETMATH_BLOCKS_NUMBER_OF_ITEMS_ON_BLOCK', 7);
-define('PLANETMATH_BLOCKS_NUMBER_OF_MESSAGES_ON_BLOCK', 7);
+define('PLANETMATH_BLOCKS_NUMBER_OF_MESSAGES_ON_BLOCK', 14);
 define('PLANETMATH_BLOCKS_NUMBER_OF_USERS_ON_BLOCK', 7);
 define('PLANETMATH_BLOCKS_NUMBER_OF_CORRECTIONS_ON_BLOCK', 5);
 define('PLANETMATH_BLOCKS_NUMBER_OF_CHILDREN_ON_BLOCK', 10);
@@ -22,6 +22,7 @@ define('PLANETMATH_BLOCKS_NUMBER_OF_REVIEWS_ON_BLOCK', 5);
 
 define('PLANETMATH_BLOCKS_EVERYTHING_ELSE_TYPES',
        serialize(array('correction', 
+                       'collection', 
 		       'question',
 		       'image',
 		       'group',
@@ -160,14 +161,14 @@ UNION ALL
     INNER JOIN users u ON u.uid = n.uid
     WHERE n.`type` = 'forum' ORDER BY n.changed DESC LIMIT 0," */
 function planetmath_blocks_queryMessages() {
-  $results = db_query("(SELECT n.nid AS nid, n.title AS title, n.uid AS uid, n.changed AS changed, n.created AS created, u.name AS username, n.nid AS nid, n.type AS type, fdb.body_value AS body
+  $results = db_query("(SELECT NULL AS cid, n.nid AS nid, n.title AS title, n.uid AS uid, n.changed AS changed, n.created AS created, u.name AS username, n.type AS type, fdb.body_value AS body, NULL as parenttitle
 FROM node n
 LEFT OUTER JOIN field_data_body fdb ON n.nid = fdb.entity_id
 INNER JOIN users u ON u.uid = n.uid
 WHERE (type = 'forum')
 ORDER BY created DESC)
 UNION ALL
-(SELECT c.cid AS nid, c.subject AS title, c.uid AS uid, c.changed AS changed, c.created AS created, c.name AS username, n.nid AS nid, n.type AS type, fcb.comment_body_value AS body
+(SELECT c.cid AS cid, n.nid AS nid, c.subject AS title, c.uid AS uid, c.changed AS changed, c.created AS created, c.name AS username, n.type AS type, fcb.comment_body_value AS body, n.title as parenttitle
 FROM comment c
 INNER JOIN node n ON n.nid = c.nid
 LEFT OUTER JOIN field_data_comment_body fcb ON c.cid = fcb.entity_id
@@ -431,7 +432,7 @@ function planetmath_blocks_blockThemeResultsWithDate($results, $sortBy = 'create
   if ($sortBy == 'created') {
     $html .= '<div style="text-align:right;">' . l('more', 'articles') . '</div>';
   } else if ($sortBy == 'changed') {
-    $html .= '<div style="text-align:right;">' . l('more', 'revisions') . '</div>';
+    $html .= '<div style="text-align:right;">' . l('more', 'revisions', array('query'=>array('section'=>'All'))) . '</div>';
   }
   return $html;
 }
@@ -452,7 +453,8 @@ function planetmath_blocks_blockThemeResultsWithDateBold($results, $sortBy = 'cr
 	strcmp($dates[count($dates) - 1], date('Y-m-d',$result->$sortBy)) != 0)
       {
 	array_push($dates,date('Y-m-d',$result->$sortBy));
-	$html .= '<span class="block-day-date">'.date('Y-m-d',$result->$sortBy).'</span><br />';
+	$html .= '<span class="block-day-date">'.planetmath_blocks_format_date($result->$sortBy)
+	  .'</span><br />';
       }
 
     $html .= '<span >' . '<b>'.l($result->title . ' ' . $result->version, 'node/' . $result->nid).'</b>' . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
@@ -480,8 +482,11 @@ function planetmath_blocks_blockThemeEverythingElseWithDate($results, $sortBy = 
     if ((count($dates) === 0) || 
 	strcmp($dates[count($dates) - 1], date('Y-m-d',$result->$sortBy)) != 0)
       {
-	array_push($dates,date('Y-m-d',$result->$sortBy));
-	$html .= '<span class="block-day-date">'.date('Y-m-d',$result->$sortBy).'</span><br />';
+	array_push($dates, date('Y-m-d',$result->$sortBy));
+	$html .= '<span class="block-day-date">'.
+	  planetmath_blocks_format_date($result->$sortBy)
+	  //date('Y-m-d',$result->$sortBy)
+	  .'</span><br />';
       }
 
     // It would be nice to include the "parent" in some fashion, when it exists, i.e.
@@ -517,6 +522,46 @@ function planetmath_blocks_blockThemeUserListResults($results) {
   return $html;
 }
 
+/**
+ * Implements hook_date_format_types().
+ */
+function planetmath_blocks_date_format_types() {
+  return array(
+    'planetmath_blocks_current_day' => t('Planetmath_Blocks: Current day'),
+    'planetmath_blocks_current_year' => t('Planetmath_Blocks: Current year'),
+    'planetmath_blocks_years' => t('Planetmath_Blocks: Other years'),
+  );
+}
+
+/**
+ * Formats a timestamp according to the defines rules.
+ *
+ * Examples/Rules:
+ *
+ * Current hour: 25 min ago
+ * Current day (but not within the hour): 10:30 am
+ * Current year (but not on the same day): Nov 25
+ * Prior years (not the current year): 11/25/08
+ *
+ * @param $timestamp
+ *   UNIX Timestamp.
+ *
+ * @return
+ *   The formatted date.
+ */
+function planetmath_blocks_format_date($timestamp) {
+  if ($timestamp > ((int)(REQUEST_TIME / 3600)) * 3600) {
+    return t('@interval ago', array('@interval' => format_interval(abs(REQUEST_TIME - $timestamp), 1)));
+  }
+  if ($timestamp > ((int)(REQUEST_TIME / 86400)) * 86400) {
+    return format_date($timestamp, 'planetmath_blocks_current_day');
+  }
+  if ($timestamp > mktime(0, 0, 0, 1, 0, date('Y'))) {
+    return format_date($timestamp, 'planetmath_blocks_current_year');
+  }
+  return format_date($timestamp, 'planetmath_blocks_years');
+}
+
 function planetmath_blocks_blockThemeMessagesResults($results) {
   if (empty($results)) {
     return '<h4>No results found</h4>';
@@ -524,18 +569,46 @@ function planetmath_blocks_blockThemeMessagesResults($results) {
   $html = "";// '<div style="padding-left:7%;padding-right:10%;padding-bottom:10%;"><br />';
 
   foreach ($results as $result) {
-    if (isset($result->cid)) {
-
-      // This gives some small visual indication of article nodes vs forum nodes.
-      if ($result->type == 'article') {
-        $code = 'P';
-      } else {
-        $code = 'p';
-      }
-
-      $html .=  '<span class="block-day-date">' . date('Y-m-d', $result->changed) . '</span>'. '<br /><span class="message-block-item">'. ' [' . l($code, 'node/' . $result->nid) . "] " . '<b>'.l($result->subject, 'node/' . $result->nid, array('fragment' => 'comment-' . $result->cid)).'</b>' . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
+    // This gives some small visual indication of article nodes vs forum nodes.
+    if ($result->type == 'article') {
+      $code = 'P';
     } else {
-      $html .= '<span class="block-day-date">'. date('Y-m-d', $result->changed) . '</span>' . '<br /><span class="message-block-item">' . '<b>'.l($result->title, 'node/' . $result->nid).'</b>' . ' by ' . l($result->username, 'user/' . $result->uid) . '</span><br />';
+      $code = 'p';
+    }
+
+    // if we have a result with entity type "comment", we should link to it as a comment
+    // http://planetmath.org/comment/19394#comment-19394
+    if ($result->cid) {
+      $html .= '<span class="message-block-item" style="text-align:left;">'
+	. ' [' . l($code, 'node/' . $result->nid, array('attributes'=>array('title' => $result->parenttitle))) . '] ' 
+               . '<b>' . l($result->title, 'comment/' . $result->cid, 
+                          array('fragment' => 'comment-' . $result->cid))
+               . '</b>' 
+               . ' by ' 
+               . l($result->username, 'user/' . $result->uid) 
+               . '</span>'
+               . '&nbsp;'
+               . '<span class="block-day-date" style="text-align:right;">' 
+	// . date('Y-m-d', $result->changed) 
+               . planetmath_blocks_format_date($result->changed)
+               . '</span>'
+               . '<br />';
+  } 
+  // otherwise we link to it as a node
+  else {
+      $html .= '<span class="message-block-item" style="text-align:left;">' 
+               . '<b>'
+               . l($result->title, 'node/' . $result->nid)
+               . '</b>' 
+               . ' by ' 
+               . l($result->username, 'user/' . $result->uid) 
+               . '</span>'
+               . '&nbsp;'
+               . '<span class="block-day-date" style="text-align:right;">'
+	// . date('Y-m-d', $result->changed)
+               . planetmath_blocks_format_date($result->changed)
+               . '</span>'
+               . '<br />' ;
     }
   }
   // jac - link to see more
@@ -619,9 +692,15 @@ function planetmath_blocks_block_versions($nid) {
 function planetmath_blocks_block_provenance($nid) {
   $node=node_load($nid);
   //dpm($node);
+  if($node->type=='article'){
+    $attribution="Owner: ";
+  } else {
+    $attribution="Submitted by: ";
+  }
   $owner=user_load($node->uid);
-  $provenance = "Submitted by: " . l($owner->name,'user/'.$node->uid)
-               .'<br> '. date('D, Y-m-d - H:i',$node->created);
+  $provenance = $attribution . l($owner->name,'user/'.$node->uid)
+               .'<br> '  
+               .'Added: ' . date('Y-m-d - H:i',$node->created);
 
   if($node->type=='article') {
     $links = array(
@@ -752,7 +831,7 @@ function planetmath_blocks_block_welcome() {
 			   '!linguafranca' => '<em>lingua franca</em>',
 			   '!planetary' => l('Planetary','http://trac.mathweb.org/planetary/'),
 			   '!here' => 
-			   l("here", "node/87277"),
+			   l("here", "planetaryreleasenotes"),
 			   '!bugsforum' => 
 			   l("Planetary Bugs Forum", "forums/planetary-bugs"),
 			   '!oldsite' => 

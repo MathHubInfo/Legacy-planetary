@@ -1,0 +1,13 @@
+<?php
+function planetmath_blocks_install() {
+  // Define default formats for date format types.
+  variable_set("date_format_planetmath_blocks_current_day", 'g:i a');
+  variable_set("date_format_planetmath_blocks_current_year", 'M j');
+  variable_set("date_format_planetmath_blocks_years", 'y-m-d');
+}
+
+function planetmath_blocks_uninstall() {
+  variable_del("date_format_planetmath_blocks_current_day");
+  variable_del("date_format_planetmath_blocks_current_year");
+  variable_del("date_format_planetmath_blocks_years");
+}

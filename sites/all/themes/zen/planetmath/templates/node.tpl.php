@@ -213,17 +213,18 @@
     print render($content);
 ?> 
   <?php if(isset($node->field_msc['und'][0]['value'])): ?>  
-  <h2>Mathematics Subject Classification</h2>
-  <?php $codes=explode(",",$node->field_msc['und'][0]['value']); 
-  foreach($codes as $code){
-    $code = trim($code);
-    $label=msc_browser_get_label($code);
-    if($label){
-    print $code . " " . l($label,"msc_browser/".$code) . "<br/>";
-    } else {
-      print $code . " " . "<em>no label found</em>";
-    }
-  }
+     <h2>Mathematics Subject Classification</h2>
+     <?php
+     $codes=explode(",",$node->field_msc['und'][0]['value']); 
+     foreach($codes as $code){
+       $code = trim($code);
+       $label=msc_browser_get_label($code);
+       if($label){
+       print $code . " " . l($label,"msc_browser/".$code) . "<br/>";
+       } else {
+	 print $code . " " . "<em>no label found</em>";
+       }
+     }
    endif; ?>
 
  </div> <?php /* End of content div */ ?>

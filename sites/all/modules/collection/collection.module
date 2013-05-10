@@ -467,6 +467,8 @@ function collection_user_add_links($node){
 function collection_node_view($node, $view_mode){
   if($view_mode!='content'){
   global $user;
+
+  $track_reading = db_query('SELECT user_track_reading_value AS val FROM field_data_user_track_reading WHERE entity_id=' . $user->uid)->fetchObject()->val;
  
   // assuming we're looking at a *collection*
   if ($node->type == 'collection') {
@@ -521,15 +523,20 @@ function collection_node_view($node, $view_mode){
            corresponding logging "opt-in". */
 
 	else if ($content_item->type=='article') {
-	  $sql = "select count(*) AS count from userpoints_txn ".
-	    "WHERE uid=:uid AND entity_id=:nid AND points=0";
-	  $article_read = db_query($sql,array(':nid'=>$content_item->nid,
-					      ':uid'=>$user->uid))->fetchObject();
+	  
+	  if($track_reading){
+	    $sql = "select count(*) AS count from userpoints_txn ".
+	      "WHERE uid=:uid AND entity_id=:nid AND points=0";
+	    $article_read = db_query($sql,array(':nid'=>$content_item->nid,
+						':uid'=>$user->uid))->fetchObject();
 
-	  if ($article_read->count>0) {
-	    $paradataColumn .= "article read already";
+	    if ($article_read->count>0) {
+	      $paradataColumn .= "article read";
+	    } else {
+	      $paradataColumn .= "not yet read";
+	    } 
 	  } else {
-	    $paradataColumn .= "not yet read";
+	    $paradataColumn .= "not tracked";
 	  }
 	}  /* end of element-is-article case */
 
@@ -612,6 +619,8 @@ function collection_node_view($node, $view_mode){
   
   /* implement page view tracking using the userpoints API */
   if(user_is_logged_in() && $node->type=='article'){
+    $track_reading = db_query('SELECT user_track_reading_value AS val FROM field_data_user_track_reading WHERE entity_id=' . $user->uid)->fetchObject()->val;
+    if($track_reading) {
     // dd("ABOUT TO ADD POINTS");
     $points_params = array('uid' => $user->uid,
 			   'points' => 0,
@@ -625,6 +634,7 @@ function collection_node_view($node, $view_mode){
 			   'entity_type' => 'node'
 			   );
     userpoints_userpointsapi($points_params);
+    }
   }
 
   /* Code to add links for non-owner logged in users (on various types of nodes) */
