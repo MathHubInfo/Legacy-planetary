@@ -393,7 +393,7 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   $nexres = module_invoke_all('drutexml_postprocess',$res);
   if (!empty($nexres)) {
     $nexres= $nexres[0];
-    $nexres = trim(json_decode($nexres)->{'result'});  
+    $nexres = trim(json_decode($nexres)->{'payload'});  
     if (strlen($nexres)>strlen($res)) {
       $res = $nexres;
     }
