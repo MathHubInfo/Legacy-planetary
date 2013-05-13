@@ -1,0 +1,338 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function planetary_libs_menu() {
+
+  // Main menu item.
+  $items['admin/appearance/planetary_libraries'] = array(
+    'title' => 'Planetary Library Settings',
+    'description' => 'Load libraries',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('planetary_libs_settings'),
+    'access arguments' => array('administer themes'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 100,
+  );
+
+  // Global library configuration tab.
+  $items['admin/appearance/planetary_libraries/global'] = array(
+    'title' => 'Global settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -1,
+  );
+
+  // Add a local task for each available theme.
+  foreach (list_themes() as $theme) {
+    $items['admin/appearance/planetary_libraries/' . $theme->name] = array(
+      'title' => $theme->info['name'],
+      'page arguments' => array('planetary_libs_settings', $theme->name),
+      'type' => MENU_LOCAL_TASK,
+      'access callback' => '_system_themes_access',
+      'access arguments' => array($theme),
+    );
+  }
+
+  // Return the menu item definitions.
+  return $items;
+}
+
+/**
+ * Implements hook_init().
+ */
+function planetary_libs_init() {
+
+  // Retrieve the current theme name.
+  $current_theme = variable_get('theme_default', 'none');
+
+  // Retrieve the settings for all themes.
+  $all_settings = variable_get('planetary_libs_settings');
+
+  // Get the settings for a specific theme
+  if (isset($all_settings[$current_theme])) {
+    $settings = $all_settings[$current_theme];
+  }
+  else {
+    $settings = array();
+  }
+
+  // Get all the currently registered libraries.
+  $libraries = array();
+  foreach (libraries_info() as $name => $info) {
+    $libraries[$name] = libraries_detect($name);
+  }
+
+  // Sort the libraries by their array key.
+  ksort($libraries);
+
+  // Go through each library and load the ones chosen.
+  foreach ($libraries as $machine_name => $library) {
+    // Check to see if the library should be loaded.
+    if (isset($settings['libraries'][$machine_name]['load']) && $settings['libraries'][$machine_name]['load'] == 1) {
+      // Make sure the library still exists.
+      if (($library2 = libraries_detect($machine_name)) && !empty($library2['installed'])) {
+        // Load the library or speicifed variant.
+        libraries_load($machine_name);
+      }
+    }
+  }
+}
+
+/*
+ * Build the settings form.
+ *
+ * @param array $form
+ *   Nested array of form elements that comprise the form.
+ * @param array $form_state
+ *   A keyed array containing the current state of the form.
+ */
+function planetary_libs_settings($form, &$form_state, $key = 'global') {
+
+  // Save the current theme name in the form state.
+  $form_state['theme_key'] = $key;
+
+  // Retrieve the settings for all themes.
+  $all_settings = variable_get('planetary_libs_settings');
+
+  // Get the settings for a specific theme
+  if (isset($all_settings[$key])) {
+    $settings = $all_settings[$key];
+  }
+  else {
+    $settings = array();
+  }
+
+  // Libraries section title.
+  $form['libraries-title'] = array(
+    '#type' => 'item',
+    '#title' => 'Available Libraries',
+    '#description' => 'Below are all the libraries registered with your site, you can load a particular library by checking the box and choosing a variant.',
+  );
+
+  // Create a table for all the possible touch icons, the children of this
+  // element will not be rendered directly but will be referenced by each row of
+  // the table.
+  $form['libraries'] = array(
+    '#theme' => 'table',
+    '#header' => array(t('Load'), t('Library'), t('Status'), t('Version'), t('Variant'), t('Actions')),
+    '#rows' => array(),
+    '#tree' => TRUE,
+  );
+
+  // Get all the currently registered libraries.
+  $libraries = array();
+  foreach (libraries_info() as $name => $info) {
+    $libraries[$name] = libraries_detect($name);
+  }
+
+  // Sort the libraries by array key.
+  ksort($libraries);
+
+  // Generate the field markup for each library
+  foreach ($libraries as $machine_name => $library) {
+
+    $form['libraries'][$machine_name]['load'] = array(
+      '#type' => 'checkbox',
+      '#description' => '',
+      '#default_value' => (isset($settings['libraries'][$machine_name]['load']) ? $settings['libraries'][$machine_name]['load'] : 0),
+    );
+
+    // Build the variants options array.
+    $variants = array('default' => 'default');
+    $variants += array_keys($library['variants']);
+
+
+    $form['libraries'][$machine_name]['variant'] = array(
+      '#type' => 'select',
+      '#description' => '',
+      '#options' => $variants,
+      '#default_value' => (isset($settings['libraries'][$machine_name]['variant']) ? $settings['libraries'][$machine_name]['variant'] : 'default')
+    );
+
+    // If the library isnt present then you can t load it.
+    if (!$library['installed']) {
+      $form['libraries'][$machine_name]['load']['#disabled'] = TRUE;
+      $form['libraries'][$machine_name]['variant']['#disabled'] = TRUE;
+    }
+
+    // Add a table row.
+    $form['libraries']['#rows'][] = array(
+      'data' => array(
+        array('data' => &$form['libraries'][$machine_name]['load']),
+        t('@name<br />@file', array(
+          '@name' => $library['name'],
+          '@file' => 'sites/all/libraries/' . $machine_name . '/' . $library['version arguments']['file'],
+        )),
+        ($library['installed'] ? t('OK') : drupal_ucfirst($library['error'])),
+        (isset($library['version']) ? $library['version'] : ''),
+        array('data' => &$form['libraries'][$machine_name]['variant']),
+        t('<a href="@vendor-url">Homepage</a>&nbsp;|&nbsp;<a href="@download-url">Download</a>', array(
+          '@vendor-url' => $library['vendor url'],
+          '@download-url' => $library['download url'],
+            )
+        )
+      ),
+      'class' => array(
+        ($library['installed'] ? 'ok' : 'warning')
+      )
+    );
+  }
+
+  // Library download instructions.
+  $form['libraries-make'] = array(
+    '#type' => 'item',
+    '#title' => 'Download all libraries with drush',
+    '#description' => 'You can download libaries using the following drush command.',
+  );
+
+  // Library download drush make command.
+  $form['libraries-command'] = array(
+    '#markup' => '<pre>drush make ' . drupal_get_path('module', 'planetary_libs') . '/planetary_libs.make --no-core</pre>',
+  );
+
+  // Libraries block tutorial.
+  $form['libraries-attach'] = array(
+    '#type' => 'item',
+    '#title' => 'Attaching Library files to a block.',
+    '#description' => 'You dont have to load a library on every page to use it, you can attach it to a block definition to use it only when that block is in use.',
+  );
+
+  // Libraries block tutorial example.
+  $form['libraries-attach-example'] = array(
+    '#markup' => '<pre>libraries_load(\'mylibrary\');
+$block[\'#attached\'][\'libraries_load\'][] = array(\'mylibrary\');</pre>',
+  );
+
+  // Submit button.
+  $form['actions']['#type'] = 'actions';
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save configuration'),
+  );
+
+  // Display an error message if the settings cant be saved
+  if (!empty($_POST) && form_get_errors()) {
+    drupal_set_message(t('The settings have not been saved because of the errors.'), 'error');
+  }
+
+  // Add a submit handler to save the settings.
+  $form['#submit'][] = 'planetary_libs_theme_settings_submit';
+
+  // Render the form using theme_system_settings_form().
+  $form['#theme'] = 'system_settings_form';
+
+  return $form;
+}
+
+/**
+ * Custom Submit handler for the theme settings form.
+ *
+ * @param array $form
+ *   Nested array of form elements that comprise the form.
+ * @param array $form_state
+ *   A keyed array containing the current state of the form.
+ */
+function planetary_libs_theme_settings_submit($form, &$form_state) {
+
+  $data_to_save = variable_get('planetary_libs_settings');
+
+  // Remove internal Form API values.
+  unset($form_state['values']['form_id'], $form_state['values']['form_token'], $form_state['values']['form_build_id'], $form_state['values']['op'], $form_state['values']['submit']
+  );
+
+  // Retrieve the current theme name that was saved when the form was defined.
+  $theme = $form_state['theme_key'];
+
+  // Wipe the settings.
+  $data_to_save[$theme] = array();
+
+  foreach ($form_state['values'] as $key => $value) {
+    if (is_array($value) && isset($form_state['values']['array_filter'])) {
+      $value = array_keys(array_filter($value));
+    }
+    $data_to_save[$theme][$key] = $value;
+  }
+
+  // Save the settings.
+  variable_set('planetary_libs_settings', $data_to_save);
+
+  drupal_set_message(t('The configuration options have been saved.'));
+}
+
+function planetary_libs_libraries_info() {
+
+  // Underscore Javascript Library
+  $libraries['underscore'] = array(
+    'name' => 'Underscore',
+    'vendor url' => 'https://github.com/documentcloud/underscore',
+    'download url' => 'https://github.com/documentcloud/underscore/zipball/master',
+    'version arguments' => array(
+      'file' => 'underscore.js',
+      'pattern' => '/Underscore.js (\d+)/',
+      'lines' => 1,
+    ),
+    'files' => array(
+      'js' => array(
+        'underscore.js',
+      )
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array(
+            'underscore.min.js',
+          )
+        ),
+      ),
+    ),
+  );
+
+  // Underscore Javascript Library
+  $libraries['jobad'] = array(
+    'name' => 'JOBAD',
+    'vendor url' => 'https://github.com/KWARC/jobad',
+    'download url' => 'https://github.com/KWARC/jobad/zipball/master',
+    'version arguments' => array(
+      'file' => 'build/release/JOBAD.min.js',
+      'pattern' => '/JOBAD v(\d+)/',
+      'lines' => 2,
+    ),
+    'files' => array(
+      'js' => array(
+        'build/release/JOBAD.js',
+      ),
+      'css' => array(
+        'css/JOBAD.css',
+      )
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array(
+            'build/release/JOBAD.min.js',
+          ),
+          'css' => array(
+            'css/JOBAD.css',
+          )       
+        ),
+      ),
+    ),
+  );
+  
+  return $libraries;
+}
+
+
+/**
+ *
+ * @param type $library
+ * @param type $options
+ * @return type 
+ */
+function _planetary_libs_force_version($library,$options) {
+  $file = DRUPAL_ROOT . '/' . $library['library path'] . '/' . $options['file'];
+  if (empty($options['file']) || !file_exists($file)) {
+    return;
+  }
+  return $library['version arguments']['force'];
+}
