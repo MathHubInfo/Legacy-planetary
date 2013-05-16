@@ -42,17 +42,29 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
 	  
   	jQuery(obj).after(editordiv);
   	var editor = ace.edit("ace_"+params.field);
-	  window.ace_toolbar.initToolbar(editor);
 	  editor.getSession().setValue(obj.value);
 	  editor.setTheme("ace/theme/textmate");
 	  editor.getSession().setMode("ace/mode/"+cSettings["mode"]);
-	  
-	  window.aceEmacs.prepareEmacsMode(editor, settings);
-	  if (cSettings["ShareJS"]) {
-	    var docName = generateDocName(getDocumentID(), params);
-	    var sharejs = new Drupal.ShareJS(editor, docName, "ace");
-	    sharejs.initToolbar();
-	  }
+    window.editor = editor;
+
+    require.config({ baseUrl: Drupal.settings.editor_tools.editor_tools_path }),
+
+    require(["editor_tools/main"], function(main) {
+      handlers = main.enrich_editor(editor, "#ace_"+params.field, {root_path: Drupal.settings.editor_tools.editor_tools_path+"/"});
+
+      toolbar = handlers.toolbar;
+      interpretter = handlers.interpretter;
+      
+      jQuery.get(Drupal.settings.editor_tools.editor_tools_path+"/macros/menu_layout.json", function (data) {
+        toolbar.loadLayout(JSON.parse(data));
+        jQuery(handlers.header).find(".ribbon").ribbon(); 
+      });
+
+      jQuery.get(Drupal.settings.editor_tools.editor_tools_path+"/macros/preferences.json", function (data) {
+        interpretter.loadAPI(JSON.parse(data));
+        jQuery(handlers.header).find(".ribbon").ribbon(); 
+      });
+    });
 	  jQuery.data(obj, 'editor', editor);
   });
 };

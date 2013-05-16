@@ -81,22 +81,23 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 			));
 	drupal_add_css($plugin_path."/editors/js/select_widget.css", array("type"=>"internal"));
 
-	#foreach ($plugins as $plugin=>$p) {
-	#	drupal_add_css($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.css');
-	#	drupal_add_js($editor['library path'] . '/mode/'.$plugin.'/'.$plugin.'.js');
-	#}
+	foreach ($plugins as $plugin=>$p) {
+		$pp = str_replace("_", "-", $plugin);
+		drupal_add_js($editor['library path'] . '/build/src-min-noconflict/'.$pp.".js");
+	}
 	$cpath = url("", array("absolute"=>true)).drupal_get_path("module", "wysiwyg_ace")."/editors/js/";
+	drupal_add_library('system', 'ui');
 	drupal_add_library('system', 'ui.button');
 	drupal_add_library('system', 'ui.dialog');
-	drupal_add_js($cpath."exhibit/exhibit-api.js?autoCreate=false", array("external"=>true));
-	drupal_add_js($cpath."text-prefix-complete.js", array("external"=>true));
-	drupal_add_js($cpath."emacs.js", array("external"=>true));
-	drupal_add_html_head_link(array(
-      'rel' => 'exhibit-data',
-      'type' => 'application/json',
-      'href' => $cpath."/environments.js",
-    ));
+	libraries_load("jobad");
+	libraries_load("jquery.layout");
+	libraries_load("jquery.terminal");
+	libraries_load("office-ribbon");
+	libraries_load("underscore");
+	libraries_load("requirejs");
+	libraries_load("editor_tools");
 
+	drupal_add_js(array('editor_tools' => array('editor_tools_path' => libraries_get_path("editor_tools", true))), 'setting');
 
 	return array('default');
 }
@@ -165,7 +166,6 @@ function wysiwyg_ace_ace_plugins($editor) {
 		}	
 		
 	}
-	$plugins["ShareJS_true"] = "ShareJS Services";
 	return array(
 		'default' => array(
 			'buttons' => $plugins,

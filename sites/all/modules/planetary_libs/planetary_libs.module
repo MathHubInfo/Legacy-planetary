@@ -318,6 +318,95 @@ function planetary_libs_libraries_info() {
       ),
     ),
   );
+
+  // RequireJS
+  $libraries['requirejs'] = array(
+    'name' => 'requirejs',
+    'vendor url' => 'http://requirejs.org/',
+    'download url' => 'http://requirejs.org/docs/release/2.1.5/minified/require.js',
+    'version arguments' => array(
+      'file' => 'require.js',
+      'pattern' => '/RequireJS ([0-9a-zA-Z\.-]+)/',
+    ),
+    'files' => array(
+      'js' => array(
+        'require.js',
+      ),
+    )
+  );
+
+  // jQuery Terminal
+  $libraries['jquery.terminal'] = array(
+    'name' => 'jquery.terminal',
+    'vendor url' => 'http://terminal.jcubic.pl/',
+    'download url' => 'https://github.com/jcubic/jquery.terminal/tarball/master',
+    'version arguments' => array(
+      'file' => 'terminal.jquery.json',
+      'pattern' => '/"version": "([0-9a-zA-Z\.-]+)"/',
+    ),
+    'files' => array(
+      'js' => array(
+        'jquery.terminal-min.js',
+      ),
+      'css' => array(
+        'css/jquery.terminal.css',
+      ),
+    ),
+  );
+
+  // jQuery UI Layout
+  $libraries['jquery.layout'] = array(
+    'name' => 'jquery.layout',
+    'vendor url' => 'http://layout.jquery-dev.net/',
+    'download url' => 'http://layout.jquery-dev.net/lib/js/jquery.layout-latest.min.js',
+    'version arguments' => array(
+      'file' => 'jquery.layout-latest.min.js',
+      'pattern' => '/jquery.layout ([0-9a-zA-Z\.-]+)/',
+    ),
+    'files' => array(
+      'js' => array(
+        'jquery.layout-latest.min.js',
+      ),
+      'css' => array(
+        'layout-default-latest.css'
+      )
+    ),
+  );
+
+  // jQuery UI Layout
+  $libraries['editor_tools'] = array(
+    'name' => 'Editor tools',
+    'vendor url' => 'https://github.com/jucovschi/EditorTools',
+    'download url' => 'https://github.com/jucovschi/EditorTools/archive/master.zip',
+    'version arguments' => array(
+      'file' => 'editor_utils.json',
+      'pattern' => '/"version": "([0-9a-zA-Z\.-]+)"/',
+    ),
+    'files' => array(
+      'js' => array(
+        'editor_utils.min.js',
+      ),
+    ),
+    
+  );
+
+  // jQuery UI Layout
+  $libraries['office-ribbon'] = array(
+    'name' => 'office-ribbon',
+    'vendor url' => 'https://github.com/jucovschi/Office-Ribbon-2010',
+    'version arguments' => array(
+      'file' => 'ribbon/jquery.tooltip.min.js',
+      'pattern' => '/plugin ([0-9\.]+)/',
+    ),
+    'files' => array(
+      'js' => array(
+        'ribbon/ribbon.js',
+      ),
+      'css' => array(
+        'ribbon/ribbon.css'
+      )
+    ),
+  );
   
   return $libraries;
 }
