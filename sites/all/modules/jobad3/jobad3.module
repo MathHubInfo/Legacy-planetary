@@ -1,0 +1,81 @@
+<?php
+
+
+function jobad3_boot() {
+	variable_set('JOBADLoaded', false);
+	variable_set('JOBADInstances', 0);
+    variable_set('JOBADModulesArray', array());
+}
+
+function jobad3_init_JOBAD() {
+    if (! variable_get('JOBADLoaded')) {
+		jobad3_init_JOBAD_Libs();
+		variable_set('JOBADLoaded', true);
+	}  
+	$nr = variable_get('JOBADInstances') + 1;
+	$inst_id = jobad3_init_JOBAD_Instance($nr);
+	variable_set('JOBADInstances', $nr);
+	return $inst_id;
+}
+
+function jobad3_init_JOBAD_Libs() {
+    $jobadPath = drupal_get_path('module', 'jobad3');
+    /**
+     * CSS
+     */
+    drupal_add_css($jobadPath . '/lib/css/jquery-ui.css');
+    drupal_add_css($jobadPath . '/lib/css/jquery-ui.theme.css');
+    drupal_add_css($jobadPath . '/lib/build/release/JOBAD.css');
+    /**
+     * JavaScript
+     */
+    //jquery
+	drupal_add_js($jobadPath . '/lib/js/deps/jquery/jquery-2.0.0.min.js', 'file');
+	drupal_add_js($jobadPath . '/lib/js/deps/jquery/jquery-ui-1.10.3.js', 'file');
+    //underscore
+    drupal_add_js($jobadPath . '/lib/js/deps/underscore/underscore-min.js', 'file');    
+    //jobad
+    drupal_add_js($jobadPath . '/lib/build/release/JOBAD.js', 'file', array('cache' => false));
+    //modules
+    $modules = variable_get('JOBADModulesArray');
+    foreach($modules as $id => $file) {
+		jobad3_register_JOBAD_module($file);
+    }
+    
+}
+
+function jobad3_add_JOBAD_module($file, $id) {
+	$modules_array = variable_get('JOBADModulesArray');
+	$modules_array[$id] = $file;
+    variable_set('JOBADModulesArray', $modules_array);
+}
+
+function jobad3_register_JOBAD_module($file) {
+	drupal_add_js($file, 'file', array('cache' => false));
+}
+
+function jobad3_load_JOBAD_module($jobad_instance, $module_id) {
+	return $jobad_instance . '.modules.load("' . $module_id . '", []);
+			';
+}
+
+function jobad3_init_JOBAD_Instance($nr) {
+    //inline
+	$name = 'JOBAD' . $nr;
+    $str = 'var ' . $name . ';
+		$(function(){	
+		' . $name . ' = new JOBAD($("#' . $name . '"));	
+		';
+
+	//loading modules	
+	$modules = variable_get('JOBADModulesArray');
+    foreach($modules as $id => $file) {
+		$str = $str . jobad3_load_JOBAD_module($name, $id);
+	}
+	$str = $str. '
+		' . $name . '.Setup();
+		});';
+
+    drupal_add_js($str, 'inline');
+	return $name;
+}

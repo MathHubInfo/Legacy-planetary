@@ -1,0 +1,198 @@
+<?php
+
+variable_set('mmtUrl', "http://localhost:8080");
+
+
+function mmt_menu() {
+    $items['mmt'] = array(
+      'page callback' => 'mmt_toplevel_view',
+      'access callback' => true
+    );
+    $items['mmtLoadModules'] = array(
+	  'page callback' => 'mmtLoadModules',
+	  'access callback' => true	
+	);
+    return $items;
+  }
+
+function mmt_init() {
+	/**
+     * CSS
+     */
+    $mmtPath = drupal_get_path('module', 'mmt');
+    $mmtUrl = variable_get('mmtUrl');  
+ 
+    //drupal_add_css($mmtPath . '/resources/mmt-web/css/omdoc/omdoc-default.css');
+    drupal_add_css($mmtPath . '/resources/mmt-web/css/mmt.css', array('weight' => PHP_INT_MAX, 'every_page' => false));
+    drupal_add_css($mmtPath . '/resources/mmt-web/css/browser.css');
+    drupal_add_css($mmtPath . '/resources/mmt-web/script/codemirror2/lib/codemirror.css');
+    drupal_add_css($mmtPath . '/resources/mmt-web/css/JOBAD.css');
+    drupal_add_css($mmtPath . '/resources/mmt-web/css/jquery/jquery-ui.css');
+    
+    /**
+     * JavaScript
+     */
+    drupal_add_js('var mmtUrl = "' . $mmtUrl . '";', 'inline');
+    
+  
+// don't  need to load navigation, planetary will handle that
+//  drupal_add_js($mmtPath . '/resources/mmt-web/script/jobad/modules/navigation.js', 'file', array('cache' => false));
+    jobad3_add_JOBAD_module($mmtPath . '/resources/mmt-web/script/jobad/modules/hovering.js', "kwarc.mmt.hovering");
+    jobad3_add_JOBAD_module($mmtPath . '/resources/mmt-web/script/jobad/modules/interactive-viewing.js', "kwarc.mmt.intvw");
+    jobad3_add_JOBAD_module($mmtPath . '/resources/mmt-web/script/jobad/modules/edit.js', "kwarc.mmt.editing");
+    jobad3_add_JOBAD_module($mmtPath . '/resources/mmt-web/script/jobad/modules/folding.js', "kwarc.mmt.folding");
+    jobad3_init_JOBAD();
+  //codemirror (editor)
+    drupal_add_js($mmtPath . '/resources/mmt-web/script/codemirror2/lib/codemirror.js', 'file');
+    drupal_add_js($mmtPath . '/resources/mmt-web/script/codemirror2/mode/lf/lf.js', 'file');  
+    //tree 
+    drupal_add_js($mmtPath . '/resources/mmt-web/script/tree/jquery.hotkeys.js', 'file');
+    drupal_add_js($mmtPath . '/resources/mmt-web/script/tree/jquery.jstree.js', 'file');
+    //mmt js libs
+    drupal_add_js($mmtPath . '/resources/mmt-web/script/jobad/mmt-html.js', 'file', array('cache' => false));
+    drupal_add_js($mmtPath . '/resources/mmt-web/script/jobad/mathml.js', 'file', array('cache' => false));
+    //modules
+}
+
+
+function mmt_toplevel_view() {
+  	jobad3_init_JOBAD();
+    // Set some parameters for sending request.
+    $url = 'http://localhost:8080/:mmt????_present_http://cds.omdoc.org/styles/lf/mathml.omdoc?twelf';
+    // Send the request.
+    $result = file_get_contents($url);
+    return $result;
+}
+
+
+function mmt_block_info() {
+  $blocks['menu'] = array(
+   'info' => t('MMT Menu')
+  );
+  return $blocks;
+}
+
+function mmt_block_view($delta='menu') {
+  $mmtUrl = variable_get('mmtUrl');  	
+  $block = array();
+  $content = "";
+  switch ($delta) {
+    case 'menu':
+   	  $url = 'http://localhost:8080/:tree?:root';
+      $result = file_get_contents($url);
+      $xml_result = simplexml_load_string($result);
+      foreach ($xml_result->item as $item) {
+        $name = $item->content->name;
+        $id = $item['id'];
+        $content .= '<li onclick="latin_navigate(\'' . $id . '\')">' . $name . "</li>";
+      }
+      $content = "<ul>" . $content . "</ul>";
+	  break;
+  }
+  $block['content'] = $content;
+  $block['subject'] = t("MMT Menu");
+  return $block;
+}
+
+function mmt_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'mmt_module_node_form' || $form_id == 'mmt_document_node_form') {
+    $form['uri'] = array(
+      '#type' => 'textfield',
+      '#title' => t('MMT URI'),
+	);
+
+	if(array_key_exists('nid', $form_state['node'])) { //editing existing node
+		$nid = $form_state['node']->nid;
+		$result = db_select('mmturi', 'm')->fields('m',array('uri'))->condition('nid', $nid, '=')->execute()->fetchAssoc();
+		$uri = $result['uri'];
+		$form['uri']['#default_value'] = $uri;
+		$form['uri']['#disabled'] = TRUE;
+	}
+  }
+}
+
+function mmt_node_insert($node) {
+  if ($node->type == 'mmt_module' || $node->type == 'mmt_document') {
+    db_insert('mmturi')->fields(array('nid' => $node->nid, 'uri' => $node->uri))->execute();
+  }
+}
+
+function mmt_node_load($nodes, $types) {
+  $mmtNodes = array();
+  foreach ($nodes as $node) {
+    if ($node->type == 'mmt_module' || $node->type == 'mmt_document') {
+      $mmtNodes[$node->nid] = $node;
+    }
+  }
+  if (count($mmtNodes) > 0) { //something to do	
+    $result = db_query('SELECT nid,uri FROM {mmturi} WHERE nid IN (:nids)', array(':nids' => array_keys($mmtNodes)));
+    foreach ($result as $record) {
+      $nodes[$record->nid]->uri = $record->uri; 
+    }
+  }
+}
+
+function mmt_node_view($node, $view_mode, $langcode) {
+
+  if ($node->type == 'mmt_module' || $node->type == 'mmt_document') {
+	$inst_id = jobad3_init_JOBAD();
+    $mmtUrl = variable_get('mmtUrl');  
+    $style = 'http://cds.omdoc.org/styles/lf/mathml.omdoc?twelf'; //TODO make also global and/or configurable
+    $postPath = '???'; //default-for documents
+
+	if ($node->type == 'mmt_module') {
+		$postPath = '??';
+    }
+
+    $url = $mmtUrl . '/:mmt?' . $node->uri . $postPath . '_present_' . $style;
+    $mmt_content = file_get_contents($url);
+	//print($mmt_content);
+    $node->content['mathml_body'] = array(
+      '#markup' => '<div id=' . $inst_id . '>' . $mmt_content . '</div>',
+      '#weight' => 10,
+    );
+  }
+}
+
+
+/** 
+*  hook_install   
+*  - node_type_save -> save node types (refreshes on reinstall) 
+*  hook_node_load  -> preload data 
+*  hook_node_view  -> render node
+*/
+
+
+function mmtLoadModules() {
+  $mmtUrl = variable_get('mmtUrl');
+  $qUrl = $mmtUrl . '/:planetary/listModules';
+  $result = file_get_contents($qUrl);
+  load_modules($result);
+  drupal_set_message("Success");
+  return "";
+}
+
+
+function load_modules($modulesStr) {
+  $decl_uris = explode("\n", $modulesStr);
+  
+  foreach ($decl_uris as $uri) {
+   $newnode = (object) array(
+     'type' => 'mmt_module',
+     'uid' => 0,
+     'created' => strtotime("now"),
+     'changed' => strtotime("now"),
+     'status' => 1,
+	 'comment' => 1,
+ 	 'promote' => 0,
+     'moderate' => 0,
+     'sticky' => 0,
+     'language' => 'und'    
+   );
+   $comps = explode('?', $uri);
+   $newnode->title = end($comps); //use last name as URI
+   $newnode->uri = $uri;
+   node_object_prepare($newnode);//necessary ?
+   node_save($newnode);
+  }
+}

@@ -1,0 +1,80 @@
+<?php
+
+function mmt_install() {
+  /** declaring node types */
+  // Module
+  $module_info = (object) array(
+    'type' => 'mmt_module',
+    'name' => 'MMT Module',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal MMT Module',
+    'body_label' => 'Module Body',
+    'has_title' => true,
+  ); 
+  node_type_save($module_info);
+
+  // Document
+  $module_info = (object) array(
+    'type' => 'mmt_document',
+    'name' => 'MMT Document',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal MMT Document',
+    'body_label' => 'Document Body',
+    'has_title' => true,
+  ); 
+  node_type_save($module_info);
+
+
+  drupal_set_message("installed");
+}
+
+function delete_node_type($node_type_name) {
+  // deleting all node instances
+  $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+  node_delete_multiple($nids);
+  //deleting node type
+  node_type_delete($node_type_name);
+
+}
+
+function mmt_uninstall() {
+  //deleting node types
+  delete_node_type('mmt_module');
+  delete_node_type('mmt_document');	
+
+  drupal_set_message("uninstalled");
+}
+
+/** declares tables for MMT-specific content */ 
+function mmt_schema() {
+  $schema['mmturi'] = array(
+    'description' => 'the base table for URIs',
+    'fields' => array(
+	  'uid' => array(
+	    'description' => 'The primary identifier of a uri',
+        'type' => 'serial', 
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'nid' => array(
+	    'description' => 'The node id',
+        'type' => 'int', 
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uri' => array(
+        'description' => 'The MMT URI',
+        'type' => 'varchar',
+        'length' => 511,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('uid'),	
+  );
+  return $schema;
+  
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path="resources/script/jquery/jquery-ui-1.8.23.custom/development-bundle/demos/autocomplete"/>
+	<buildpathentry kind="src" path="resources/script/jquery/jquery-ui-1.8.23.custom/development-bundle/demos/tabs/ajax"/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+</buildpath>
