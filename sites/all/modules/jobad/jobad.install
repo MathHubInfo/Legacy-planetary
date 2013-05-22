@@ -1,10 +1,10 @@
 <?php
 
-function jobad3_install() {
+function jobad_install() {
   drupal_set_message("installed");
 }
 
-function jobad3_uninstall() {
+function jobad_uninstall() {
   drupal_set_message("uninstalled");
 }
 

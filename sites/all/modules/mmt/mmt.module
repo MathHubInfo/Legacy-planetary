@@ -2,7 +2,9 @@
 
 variable_set('mmtUrl', "http://localhost:8080");
 
-
+/**
+ * Implementing hook_menu()
+ */
 function mmt_menu() {
     $items['mmt'] = array(
       'page callback' => 'mmt_toplevel_view',
@@ -15,7 +17,10 @@ function mmt_menu() {
     return $items;
   }
 
-function mmt_init() {
+/**
+ * Initialize MMT, loads css and js files and uses jobad API
+ */
+function mmt_initialize() {
 	/**
      * CSS
      */
@@ -26,7 +31,7 @@ function mmt_init() {
     drupal_add_css($mmtPath . '/resources/mmt-web/css/mmt.css', array('weight' => PHP_INT_MAX, 'every_page' => false));
     drupal_add_css($mmtPath . '/resources/mmt-web/css/browser.css');
     drupal_add_css($mmtPath . '/resources/mmt-web/script/codemirror2/lib/codemirror.css');
-    drupal_add_css($mmtPath . '/resources/mmt-web/css/JOBAD.css');
+    //drupal_add_css($mmtPath . '/resources/mmt-web/css/JOBAD.css');
     drupal_add_css($mmtPath . '/resources/mmt-web/css/jquery/jquery-ui.css');
     
     /**
@@ -37,12 +42,12 @@ function mmt_init() {
   
 // don't  need to load navigation, planetary will handle that
 //  drupal_add_js($mmtPath . '/resources/mmt-web/script/jobad/modules/navigation.js', 'file', array('cache' => false));
-    jobad3_add_JOBAD_module($mmtPath . '/resources/mmt-web/script/jobad/modules/hovering.js', "kwarc.mmt.hovering");
-    jobad3_add_JOBAD_module($mmtPath . '/resources/mmt-web/script/jobad/modules/interactive-viewing.js', "kwarc.mmt.intvw");
-    jobad3_add_JOBAD_module($mmtPath . '/resources/mmt-web/script/jobad/modules/edit.js', "kwarc.mmt.editing");
-    jobad3_add_JOBAD_module($mmtPath . '/resources/mmt-web/script/jobad/modules/folding.js', "kwarc.mmt.folding");
-    jobad3_init_JOBAD();
-  //codemirror (editor)
+    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/hovering.js', "kwarc.mmt.hovering");
+    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/interactive-viewing.js', "kwarc.mmt.intvw");
+    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/edit.js', "kwarc.mmt.editing");
+    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/folding.js', "kwarc.mmt.folding");
+    $instName = jobad_initialize();
+    //codemirror (editor)
     drupal_add_js($mmtPath . '/resources/mmt-web/script/codemirror2/lib/codemirror.js', 'file');
     drupal_add_js($mmtPath . '/resources/mmt-web/script/codemirror2/mode/lf/lf.js', 'file');  
     //tree 
@@ -52,19 +57,24 @@ function mmt_init() {
     drupal_add_js($mmtPath . '/resources/mmt-web/script/jobad/mmt-html.js', 'file', array('cache' => false));
     drupal_add_js($mmtPath . '/resources/mmt-web/script/jobad/mathml.js', 'file', array('cache' => false));
     //modules
+    return $instName;
 }
 
-
+/**
+ * view mmt docs by loading html directly (obsolete)
+ */
 function mmt_toplevel_view() {
-  	jobad3_init_JOBAD();
+  	$instName = mmt_initialize();
     // Set some parameters for sending request.
     $url = 'http://localhost:8080/:mmt????_present_http://cds.omdoc.org/styles/lf/mathml.omdoc?twelf';
     // Send the request.
-    $result = file_get_contents($url);
+    $result = '<div id="' . $instName . '">' . file_get_contents($url) . '</div>';
     return $result;
 }
 
-
+/**
+ * implements hook_block_info
+ */
 function mmt_block_info() {
   $blocks['menu'] = array(
    'info' => t('MMT Menu')
@@ -72,6 +82,9 @@ function mmt_block_info() {
   return $blocks;
 }
 
+/**
+ * implements hook_block_view
+ */
 function mmt_block_view($delta='menu') {
   $mmtUrl = variable_get('mmtUrl');  	
   $block = array();
@@ -94,6 +107,9 @@ function mmt_block_view($delta='menu') {
   return $block;
 }
 
+/**
+ * implements hook_form_alter, adds URI field to mmt-specific forms
+ */
 function mmt_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'mmt_module_node_form' || $form_id == 'mmt_document_node_form') {
     $form['uri'] = array(
@@ -111,12 +127,17 @@ function mmt_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
+/**
+ * implements hook_node_insert, inserts URI to mmturi table, for mmt-specific nodes
+ */
 function mmt_node_insert($node) {
   if ($node->type == 'mmt_module' || $node->type == 'mmt_document') {
     db_insert('mmturi')->fields(array('nid' => $node->nid, 'uri' => $node->uri))->execute();
   }
 }
-
+/**
+ * implements hook_node_load, loads URI from mmturi table, for mmt-specific nodes
+ */
 function mmt_node_load($nodes, $types) {
   $mmtNodes = array();
   foreach ($nodes as $node) {
@@ -132,10 +153,12 @@ function mmt_node_load($nodes, $types) {
   }
 }
 
+/**
+ * implements hook_node_view, renders mmt-specific nodes by loading html from MMT instance
+ */
 function mmt_node_view($node, $view_mode, $langcode) {
-
   if ($node->type == 'mmt_module' || $node->type == 'mmt_document') {
-	$inst_id = jobad3_init_JOBAD();
+	$inst_id = mmt_initialize();
     $mmtUrl = variable_get('mmtUrl');  
     $style = 'http://cds.omdoc.org/styles/lf/mathml.omdoc?twelf'; //TODO make also global and/or configurable
     $postPath = '???'; //default-for documents
@@ -154,15 +177,9 @@ function mmt_node_view($node, $view_mode, $langcode) {
   }
 }
 
-
-/** 
-*  hook_install   
-*  - node_type_save -> save node types (refreshes on reinstall) 
-*  hook_node_load  -> preload data 
-*  hook_node_view  -> render node
-*/
-
-
+/**
+ * helper function to automatically create nodes in drupal by loading from an MMT instance (currently hardcoded)
+ */
 function mmtLoadModules() {
   $mmtUrl = variable_get('mmtUrl');
   $qUrl = $mmtUrl . '/:planetary/listModules';
@@ -172,10 +189,11 @@ function mmtLoadModules() {
   return "";
 }
 
-
+/**
+ * helper function for mmtLoadModules, splits uri list and adds individual nodes
+ */
 function load_modules($modulesStr) {
   $decl_uris = explode("\n", $modulesStr);
-  
   foreach ($decl_uris as $uri) {
    $newnode = (object) array(
      'type' => 'mmt_module',

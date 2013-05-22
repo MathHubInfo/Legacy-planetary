@@ -1,4 +1,0 @@
-name = JOBADv3
-description = JOBAD js library plus utility functions for deployment in drupal
-core = 7.x
-package  = Planetary Modules
