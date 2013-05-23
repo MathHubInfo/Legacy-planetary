@@ -1,0 +1,12 @@
+name = SallyRPC
+description = Defines RPC interface for Semantic Ally
+core = 7.x
+package = Features
+version = 7.x-1.0
+project = sallyrpc
+dependencies[] = ctools
+dependencies[] = services
+features[ctools][] = services:services:3
+features[features_api][] = api:1
+features[services_endpoint][] = sallyrpc
+project path = sites/all/modules
