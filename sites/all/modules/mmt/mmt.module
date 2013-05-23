@@ -135,6 +135,7 @@ function mmt_node_insert($node) {
     db_insert('mmturi')->fields(array('nid' => $node->nid, 'uri' => $node->uri))->execute();
   }
 }
+
 /**
  * implements hook_node_load, loads URI from mmturi table, for mmt-specific nodes
  */
