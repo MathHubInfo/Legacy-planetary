@@ -48,7 +48,6 @@ function jobad_init_libs() {
      * CSS
      */
     drupal_add_css($jobadPath . '/lib/css/jquery-ui.css');
-    drupal_add_css($jobadPath . '/lib/css/jquery-ui.theme.css');
     drupal_add_css($jobadPath . '/lib/build/release/JOBAD.css');
     /**
      * JavaScript

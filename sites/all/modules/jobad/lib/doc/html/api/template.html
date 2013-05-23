@@ -458,7 +458,24 @@
 		.vg { color: #008080 } /* Name.Variable.Global */
 		.vi { color: #008080 } /* Name.Variable.Instance */
 		.il { color: #009999 } /* Literal.Number.Integer.Long */
-		</style>
+		</style><!--
+	Copyright (C) 2013 KWARC Group <kwarc.info>
+	
+	This file is part of JOBAD.
+	
+	JOBAD is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	JOBAD is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
+-->
 	</head>
 	<body>
 <p><a href="../index.html">Start</a> &gt; <a href="index.html">API Documentation</a> &gt; <strong>template</strong></p>
@@ -469,6 +486,7 @@
 <ul>
 <li><strong>Object</strong> <code>template.info</code> Module information namespace. </li>
 <li><strong>String</strong> <code>template.info.identifier</code> A unique identifier for the module. </li>
+<li><strong>String</strong> <code>template.info.title</code> Module title</li>
 <li><strong>String</strong> <code>template.info.author</code> The module author. </li>
 <li><strong>String</strong> <code>template.info.description</code> A human readable description of the module. </li>
 <li><strong>String</strong> <code>template.info.version</code> String containing the version number. May be omitted. </li>
@@ -484,6 +502,16 @@
 <li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
 <li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
 <li><strong>Mixed</strong> <code>*param</code> Initial parameters passed to <a href="JOBAD/JOBADInstance/modules.html"><code>JOBADInstance.modules.load</code></a>. </li>
+</ul></li>
+<li><strong>Function</strong> <code>template.activate(JOBADInstance)</code> Called whenever the module is activated. 
+<ul>
+<li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
+<li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
+</ul></li>
+<li><strong>Function</strong> <code>template.deactivate(JOBADInstance)</code> Called whenever the module is deactivated. 
+<ul>
+<li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
+<li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
 </ul></li>
 <li><strong>Function</strong> <code>template.onSideBarUpdate(target, JOBADInstance)</code> Called every time the sidebar is updated. May be ommitted. 
 <ul>

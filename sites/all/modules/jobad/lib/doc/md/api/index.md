@@ -25,7 +25,3 @@ The following types are available:
 	* `JOBAD` is the same as `Instance[JOBAD]`
 * `Array[`**Type**`][`**Length**`]` Array of specefied type and length. Unless specefied otherwise, this may be empty. If length is omitted, the array can have any length. 
 * `Mixed` May be any of the types specefied above. May be further restricted by the appopriate description.  
-
-## See also
-
-* [Module](../modules/index.md) - A list of all available modules. 

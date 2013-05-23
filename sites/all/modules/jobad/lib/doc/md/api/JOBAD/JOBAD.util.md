@@ -19,4 +19,5 @@
 	* **Object** `obj` Configuration Object
 	* **String** `key` Key to get. 
 	* **returns** object
+* **Function** `JOBAD.util.UID()` Gets a unique id which can be used as identifier. 
 

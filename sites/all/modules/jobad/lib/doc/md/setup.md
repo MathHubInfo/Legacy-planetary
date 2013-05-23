@@ -15,8 +15,8 @@ in order to check out the build dependencies.
 To include JOBAD in your website, you will have to include several files in your HTML document. 
 JOBAD itself depends on: 
 
-* [jQuery](http://jquery.com) - tested with version 1.9.0
-* [jQuery UI](http://jqueryui.com/) - tested with version 1.10.1
+* [jQuery](http://jquery.com) - tested with version 2.0.0
+* [jQuery UI](http://jqueryui.com/) - tested with version 1.10.3
 * [UNDERSCORE.JS](http://underscorejs.org/) - tested with version 1.4.4
 
 All 3 dependencies are bundled with JOBAD. You can include them in your HTML document header like so:
@@ -24,10 +24,10 @@ All 3 dependencies are bundled with JOBAD. You can include them in your HTML doc
 ```html
 <head>
 	<!-- other header tags -->
-	<script src="./js/deps/jquery/jquery-1.9.1.min.js"></script>
-	<script src="./js/deps/jquery/jquery-ui-1.10.1.js"></script>
-	<script src="./js/deps/underscore/underscore-min.js"></script>
-	<link href="./css/jquery-ui-1.10.1.min.css" rel="stylesheet">
+	<script src="js/deps/jquery/jquery-2.0.0.min.js"></script>
+	<script src="js/deps/jquery/jquery-ui-1.10.3.js"></script>
+	<script src="js/deps/underscore/underscore-min.js"></script>
+	<link href="css/jquery-ui.css" rel="stylesheet">
 	<!-- More files to include -->
 </head>
 ```
@@ -39,6 +39,7 @@ As a developer who wants to work on the JOBAD core you can load the JOBAD Core f
 
 ```html
 	<script src='js/JOBAD.core.js'></script>
+	<script src='js/JOBAD.config.js'></script>
 	<script src='js/JOBAD.utils.js'></script>
 	<script src='js/JOBAD.core.modules.js'></script>
 	<script src='js/JOBAD.core.events.js'></script>
@@ -63,7 +64,7 @@ If you want to minimize bandwith and just want to embed JOBAD onto your webpage,
 Finally, you should include the JOBAD CSS file in your website: 
 
 ```html
-	<link href="./css/JOBAD.css" rel="stylesheet">
+	<link href="./build/release/JOBAD.css" rel="stylesheet">
 ```
 
 That's it. JOBAD is now included in your web page. Additionally you should include some modules by loading their files as well, see the individual modules. 
@@ -93,4 +94,3 @@ _ //contains whatever it contained before Underscore was loaded
 ## See also
 
 * [API Documentation](api/index.md)
-* [Module Index](modules/index.md) - A list of all available modules. 

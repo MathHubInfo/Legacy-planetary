@@ -458,7 +458,24 @@
 		.vg { color: #008080 } /* Name.Variable.Global */
 		.vi { color: #008080 } /* Name.Variable.Instance */
 		.il { color: #009999 } /* Literal.Number.Integer.Long */
-		</style>
+		</style><!--
+	Copyright (C) 2013 KWARC Group <kwarc.info>
+	
+	This file is part of JOBAD.
+	
+	JOBAD is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	JOBAD is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
+-->
 	</head>
 	<body>
 <p><a href="index.html">Start</a> &gt; <strong>Setting up JOBAD</strong></p>
@@ -487,8 +504,8 @@ To get the code use </p>
 JOBAD itself depends on: </p>
 
 <ul>
-<li><a href="http://jquery.com">jQuery</a> - tested with version 1.9.0</li>
-<li><a href="http://jqueryui.com/">jQuery UI</a> - tested with version 1.10.1</li>
+<li><a href="http://jquery.com">jQuery</a> - tested with version 2.0.0</li>
+<li><a href="http://jqueryui.com/">jQuery UI</a> - tested with version 1.10.3</li>
 <li><a href="http://underscorejs.org/">UNDERSCORE.JS</a> - tested with version 1.4.4</li>
 </ul>
 
@@ -496,10 +513,10 @@ JOBAD itself depends on: </p>
 
 <div class="codehilite"><pre><code><span class="nt">&lt;head&gt;</span>
     <span class="c">&lt;!-- other header tags --&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;./js/deps/jquery/jquery-1.9.1.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;./js/deps/jquery/jquery-ui-1.10.1.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;./js/deps/underscore/underscore-min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;./css/jquery-ui-1.10.1.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/deps/jquery/jquery-2.0.0.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/deps/jquery/jquery-ui-1.10.3.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/deps/underscore/underscore-min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/jquery-ui.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
     <span class="c">&lt;!-- More files to include --&gt;</span>
 <span class="nt">&lt;/head&gt;</span>
 </code></pre></div>
@@ -510,6 +527,7 @@ It is also possible to include each file individually. </p>
 <p>As a developer who wants to work on the JOBAD core you can load the JOBAD Core files: </p>
 
 <div class="codehilite"><pre><code>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/JOBAD.core.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/JOBAD.config.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/JOBAD.utils.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/JOBAD.core.modules.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/JOBAD.core.events.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
@@ -531,7 +549,7 @@ It is also possible to include each file individually. </p>
 
 <p>Finally, you should include the JOBAD CSS file in your website: </p>
 
-<div class="codehilite"><pre><code>    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;./css/JOBAD.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+<div class="codehilite"><pre><code>    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;./build/release/JOBAD.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
 </code></pre></div>
 
 <p>That's it. JOBAD is now included in your web page. Additionally you should include some modules by loading their files as well, see the individual modules. 
@@ -559,7 +577,6 @@ Then you can start JOBAD: </p>
 
 <ul>
 <li><a href="api/index.html">API Documentation</a></li>
-<li><a href="modules/index.html">Module Index</a> - A list of all available modules. </li>
 </ul>
 
 	</body>

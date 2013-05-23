@@ -39,6 +39,7 @@ A `JOBAD.modules.loadedModule` instance also contains all non-standard propertie
 that any JSON-style objects are referenced (and thus shared among all instances of this module) and everything else 
 is copied. 
 
+* **Function** `.isActive()` Checks if this module is active. 
 * **Function** `.activate()` Activates this module. 
 * **Function** `.deactivate()` Deactivates this module
 

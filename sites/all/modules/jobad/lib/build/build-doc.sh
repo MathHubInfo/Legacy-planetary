@@ -38,6 +38,6 @@ rm -r ../doc/html
 echo "OK"
 echo "Building JOBAD Doc ..."
 
-python deps/PythonMarkdownCompiler/md-render2.py --render md  -t "[%] - JOBAD Documentation" -s sitemap.md -st "Index" -sh ../doc/md ../doc/html
+python deps/PythonMarkdownCompiler/md-render2.py --render md  -t "[%] - JOBAD Documentation" -s sitemap.md --header config/doc_header.txt -st "Index" -sh ../doc/md ../doc/html
 echo "OK"
 exit 0

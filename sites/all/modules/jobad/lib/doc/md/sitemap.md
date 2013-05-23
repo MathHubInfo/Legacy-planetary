@@ -41,7 +41,6 @@
 * [Modules](dev/modules.md) (dev/modules.md)
 * [The JOBAD Structure](dev/structure.md) (dev/structure.md)
 * [Start](index.md) (index.md)
-* [Module Index](modules/index.md) (modules/index.md)
 * [Setting up JOBAD](setup.md) (setup.md)
 * [Index](sitemap.md) (sitemap.md)
 * [Known Issues & TODO](todo.md) (todo.md)

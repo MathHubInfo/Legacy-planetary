@@ -1,6 +1,24 @@
 /*
 	JOBAD.css
 	Contains JOBAD UI CSS Data
+	
+	Copyright (C) 2013 KWARC Group <kwarc.info>
+	
+	This file is part of JOBAD.
+	
+	JOBAD is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	JOBAD is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
+
 */
 
 /* general */
@@ -97,9 +115,14 @@
 	vertical-align: top; 
 }
 
+/* Infobox */
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_subtabs {
+	font-size: 70%;
+}
+
 /*
 	JOBAD jQuery UI CSS compatibility fixes
 */
 
 /* fix for bad size */
-.ui-widget { font-size: 62.5%; }
+.ui-widget { font-size: 70%; }

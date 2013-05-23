@@ -4,6 +4,7 @@ This object can be used as a termplate for module objects. **Note:** The code fo
 
 * **Object** `template.info` Module information namespace. 
 * **String** `template.info.identifier` A unique identifier for the module. 
+* **String** `template.info.title` Module title
 * **String** `template.info.author` The module author. 
 * **String** `template.info.description` A human readable description of the module. 
 * **String** `template.info.version` String containing the version number. May be omitted. 
@@ -16,6 +17,12 @@ This object can be used as a termplate for module objects. **Note:** The code fo
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
 	* **Mixed** `*param` Initial parameters passed to [`JOBADInstance.modules.load`](JOBAD/JOBADInstance/modules.md). 
+* **Function** `template.activate(JOBADInstance)` Called whenever the module is activated. 
+	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
+	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
+* **Function** `template.deactivate(JOBADInstance)` Called whenever the module is deactivated. 
+	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
+	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
 * **Function** `template.onSideBarUpdate(target, JOBADInstance)` Called every time the sidebar is updated. May be ommitted. 
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 

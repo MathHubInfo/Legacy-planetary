@@ -113,4 +113,3 @@ If you want to use the '$' inside your code you can use the following code. You 
 ## See also
 * [Example Module](example_module.md) - Example Modules. 
 * [Module Template API](../api/template.md) - API for module. Contains the API documentation for the template. 
-* [Module Index](../modules/index.md) - A list of available modules. 
