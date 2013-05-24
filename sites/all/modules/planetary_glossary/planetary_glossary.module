@@ -1,0 +1,68 @@
+<?php
+
+function planetary_glossary_field_widget_info() {
+  return array(
+    'glossary_widget' => array(
+      'label' => t('Glossary Widget'),
+      'field types' => array('vfs_file'),
+    ),
+  );
+}
+
+function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+
+  switch ($instance['widget']['type']) {
+    case 'glossary_widget':
+      $lang = $form["language"]["#value"];
+      $path = isset($items[$delta]['path']) ? $items[$delta]['path'] : '';
+
+      $filter = isset($items[$delta]['filter']) ? $items[$delta]['filter'] : '';
+      $widget = $element;
+      $widget['#delta'] = $delta;
+	  $content = planetary_repo_load_file($lang."_".$path.".tex");
+
+      $widget['#element_validate'] = array('planetary_glossary_field_widget_validate');
+      $widget["#type"] = "fieldset";
+      $widget["data"] = array(
+             "path" => array(
+               "#type" => "textfield",
+               "#title" => "Glossary ID",
+               "#default_value" => $path
+             ),
+             "lang" => array(
+               "#type" => "hidden",
+               "#default_value" => $lang
+             ),             
+              "content" => array(
+              '#title' => t('Editor'),
+              '#type' => 'text_format',
+              '#tree' => true,
+              '#default_value' => $content,
+              '#rows' => 20,
+              '#format' => $filter,
+              )
+        );
+      $widget["filter"] = array(
+              '#type' => 'hidden',
+              );
+      $widget["path"] = array(
+              '#type' => 'hidden',
+              );
+      break;
+  }
+
+  return $widget;
+}
+
+function planetary_glossary_field_widget_validate($element, &$form_state) {
+  $delta = $element['#delta']; // TODO: Isn't there a better way to find out which element?
+  $field = $form_state['field'][$element['#field_name']][$element['#language']]['field'];
+  $field_name = $field['field_name'];
+  if (isset($form_state['values'][$field_name][$element['#language']][$delta])) {
+    $values = $form_state['values'][$field_name][$element['#language']][$delta];
+    $lang = $values["data"]["lang"];
+    planetary_repo_save_file($lang."_".$values["data"]["path"].".tex", $values["data"]["content"]["value"]);
+    form_set_value($element["filter"], $values["data"]["content"]["format"], $form_state);
+    form_set_value($element["path"], $values["data"]["path"], $form_state);
+  }
+}

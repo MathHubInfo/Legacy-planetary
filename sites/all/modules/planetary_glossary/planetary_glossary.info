@@ -1,0 +1,4 @@
+name = Planetary Glossary
+description = Allows a communication between Drupal and Virtual File System
+core = 7.x
+package = Planetary Modules
