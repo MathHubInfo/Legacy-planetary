@@ -24,6 +24,7 @@
 /* general */
 .JOBAD {
 	/* general JOBAD class applied to all JOBAD items */
+	z-index: 100;
 }
 
 /* JOBAD Hover */
@@ -125,4 +126,4 @@
 */
 
 /* fix for bad size */
-.ui-widget { font-size: 70%; }
+.ui-widget { font-size: 100%; }
