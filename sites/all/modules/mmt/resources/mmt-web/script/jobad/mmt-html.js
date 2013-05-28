@@ -24,16 +24,16 @@ var mmt = {
 	currentPosition : null, 
 	
 	setCurrentPosition : function (elem){
-		console.log(elem);
+
 		var math = $(elem).closest('math');
 		//console.log(math.wrap("<span></span>").parent().html());
 		this.currentElement = math.attr('jobad:owner');
 		this.currentComponent = math.attr('jobad:component');
 		this.currentPosition = this.getSelectedParent(elem).getAttribute('jobad:mmtref');
 		
-		console.log(this.currentElement);
-		console.log(this.currentComponent);
-		console.log(this.currentPosition);
+//		console.log(this.currentElement);
+//		console.log(this.currentComponent);
+//		console.log(this.currentPosition);
 	},
 	
     makeURL : function(relUrl) {
@@ -59,7 +59,7 @@ var mmt = {
 		else
 			var pres = '';
  		var relativeURI = '/:mmt?' + doc + '?' + mod + '?' + sym + '?' + act + pres;
-        return makeURL(relativeURI);
+        return this.makeURL(relativeURI);
 	},
 
     ajaxReplaceIn : function (url, targetid) {
@@ -89,13 +89,13 @@ var mmt = {
 
 	/** opens current URI in a new window as OMDoc */
 	openCurrentOMDoc : function () {
-		var url = this.adaptMMTURI(currentURI, 'xml', false);  
+		var url = this.adaptMMTURI(this.currentURI, 'xml', false);  
 		window.open(url, '_blank', '', false);
 	},
 	
 	/** opens current MMT URI in a new window */
 	openCurrent : function () {
-		var url = this.adaptMMTURI(currentURI, '', true);
+		var url = this.adaptMMTURI(this.currentURI, '', true);
 		window.open(url, '_blank', '', false);
 	},
 	

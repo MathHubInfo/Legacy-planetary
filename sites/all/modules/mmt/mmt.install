@@ -11,6 +11,7 @@ function mmt_install() {
     'body_label' => 'Module Body',
     'has_title' => true,
   ); 
+
   node_type_save($module_info);
 
   // Document
@@ -22,8 +23,12 @@ function mmt_install() {
     'body_label' => 'Document Body',
     'has_title' => true,
   ); 
+  
   node_type_save($module_info);
-
+  
+  variable_set('mmtUrl', "http://localhost:8080");
+  variable_set('mmt_menu_items', array());
+  variable_set('mmt_mlids', array());
 
   drupal_set_message("installed");
 }
@@ -45,6 +50,10 @@ function mmt_uninstall() {
   //deleting node types
   delete_node_type('mmt_module');
   delete_node_type('mmt_document');	
+  $mlids = variable_get('mmt_mlids');
+  foreach ($mlids as $mlid) {
+	menu_link_delete($mlid);
+  }
 
   drupal_set_message("uninstalled");
 }

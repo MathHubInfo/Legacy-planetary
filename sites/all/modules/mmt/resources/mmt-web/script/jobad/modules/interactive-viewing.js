@@ -21,16 +21,16 @@ var interactiveViewing = {
 			mmt.focus = mmt.getSelectedParent(target)
 			var me = this;
 			res["infer type"] = function() {me.inferType()};
-	  		return res;
-			if (target.hasAttribute("jobad:href")) {
-				mmt.currentURI = target.getAttribute('jobad:href');
-				res["show type"] =  this.showComp('type');
-				res["show definition"] =  this.showComp('definition');
-				res["(un)mark occurrences"] =  this.showOccurs();
-				res["open in new window"] = mmt.openCurrent();
-				res["show URI"] =  alert(currentURI);
-				res["get OMDoc"] = mmt.openCurrentOMDoc();
+	  		if (target.hasAttribute("jobad:href")) {
+				mmt.currentURI = target.attr('jobad:href');
+				res["show type"] =  function() {me.showComp('type')};
+				res["show definition"] =  function() {me.showComp('definition')};
+				res["(un)mark occurrences"] =  function() {me.showOccurs()};
+				res["open in new window"] = function() {mmt.openCurrent()};
+				res["show URI"] =  function() {alert(mmt.currentURI)};
+				res["get OMDoc"] = function() {mmt.openCurrentOMDoc()};
 			}
+			return res;
 		} else if ($(target).hasClass('folder') || mmt.focusIsMath) {
 			return res;
 		} else {

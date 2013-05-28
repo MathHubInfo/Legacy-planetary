@@ -12,7 +12,7 @@ var hovering = {
 
 
 	hoverText: function(target, JOBADInstance) {
-		//handling clicks on parts of the document - active only for elements that have jobad:href
+		//handling hovers on parts of the document - active only for elements that have jobad:href
 		if (target.hasAttribute('jobad:href')) {			
 			var mr = $(target).closest('mrow');
 			var select = (mr.length == 0) ? target : mr[0];

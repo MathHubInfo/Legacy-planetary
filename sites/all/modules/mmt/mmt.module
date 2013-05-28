@@ -1,21 +1,29 @@
 <?php
 
-variable_set('mmtUrl', "http://localhost:8080");
-
 /**
  * Implementing hook_menu()
  */
 function mmt_menu() {
-    $items['mmt'] = array(
-      'page callback' => 'mmt_toplevel_view',
-      'access callback' => true
-    );
-    $items['mmtLoadModules'] = array(
-	  'page callback' => 'mmtLoadModules',
-	  'access callback' => true	
+    $items['mmt/setup'] = array(
+	  'title' => "Setup MMT",
+	  'page callback' => 'mmt_setup',
+	  'access callback' => true,
+	  'menu_name' => 'navigation'
 	);
+
+  $items['mmt/archives'] = array(
+      'title' => "Archive Callback",
+	  'page callback' => 'mmt_archives',
+	  'access callback' => true,
+      'type' => MENU_CALLBACK,
+	);
+
     return $items;
   }
+
+function mmt_archives() {
+  return "Nothing here yet";
+}
 
 /**
  * Initialize MMT, loads css and js files and uses jobad API
@@ -29,7 +37,7 @@ function mmt_initialize() {
  
     //drupal_add_css($mmtPath . '/resources/mmt-web/css/omdoc/omdoc-default.css');
     drupal_add_css($mmtPath . '/resources/mmt-web/css/mmt.css', array('weight' => PHP_INT_MAX, 'every_page' => false));
-    drupal_add_css($mmtPath . '/resources/mmt-web/css/browser.css');
+   // drupal_add_css($mmtPath . '/resources/mmt-web/css/browser.css');
     drupal_add_css($mmtPath . '/resources/mmt-web/script/codemirror2/lib/codemirror.css');
     //drupal_add_css($mmtPath . '/resources/mmt-web/css/JOBAD.css');
     drupal_add_css($mmtPath . '/resources/mmt-web/css/jquery/jquery-ui.css');
@@ -40,12 +48,11 @@ function mmt_initialize() {
     drupal_add_js('var mmtUrl = "' . $mmtUrl . '";', 'inline');
     
   
-// don't  need to load navigation, planetary will handle that
-//  drupal_add_js($mmtPath . '/resources/mmt-web/script/jobad/modules/navigation.js', 'file', array('cache' => false));
+    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
     jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/hovering.js', "kwarc.mmt.hovering");
     jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/interactive-viewing.js', "kwarc.mmt.intvw");
-    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/edit.js', "kwarc.mmt.editing");
-    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/folding.js', "kwarc.mmt.folding");
+  //  jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/edit.js', "kwarc.mmt.editing");
+  //  jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/folding.js', "kwarc.mmt.folding");
     $instName = jobad_initialize();
     //codemirror (editor)
     drupal_add_js($mmtPath . '/resources/mmt-web/script/codemirror2/lib/codemirror.js', 'file');
@@ -68,7 +75,7 @@ function mmt_toplevel_view() {
     // Set some parameters for sending request.
     $url = 'http://localhost:8080/:mmt????_present_http://cds.omdoc.org/styles/lf/mathml.omdoc?twelf';
     // Send the request.
-    $result = '<div id="' . $instName . '">' . file_get_contents($url) . '</div>';
+    $result = '<div id="' . $instName . '" style="overflow:auto">' . file_get_contents($url) . '</div>';
     return $result;
 }
 
@@ -172,7 +179,7 @@ function mmt_node_view($node, $view_mode, $langcode) {
     $mmt_content = file_get_contents($url);
 	//print($mmt_content);
     $node->content['mathml_body'] = array(
-      '#markup' => '<div id=' . $inst_id . '>' . $mmt_content . '</div>',
+      '#markup' => '<div id=' . $inst_id . ' style="overflow:auto">' . $mmt_content . '</div>',
       '#weight' => 10,
     );
   }
@@ -181,37 +188,88 @@ function mmt_node_view($node, $view_mode, $langcode) {
 /**
  * helper function to automatically create nodes in drupal by loading from an MMT instance (currently hardcoded)
  */
-function mmtLoadModules() {
+function mmt_setup() {
   $mmtUrl = variable_get('mmtUrl');
-  $qUrl = $mmtUrl . '/:planetary/listModules';
+  $qUrl = $mmtUrl . '/:planetary/getPaths';
   $result = file_get_contents($qUrl);
-  load_modules($result);
+  mmt_load_nodes($result);
+//  menu_build_tree('navigation');
   drupal_set_message("Success");
   return "";
 }
 
+
+function mmt_load_nodes($pathsStr) {
+  $lines = explode("\n", $pathsStr);
+  $uri = array("mmt","archives");
+  $plids_stack = array();
+  $mlids = variable_get('mmt_mlids');
+  $arch_item = array(
+	  'link_path' => drupal_get_normal_path('mmt/archives'),
+	  'link_title' => "Archives",
+	  'menu_name' => 'navigation'
+	);
+  $id = menu_link_save($arch_item);
+  $plids_stack[] = $id;
+  $mlids[] = $id;
+  foreach ($lines as $line) {
+    if ($line == "") {
+  	  array_pop($uri); //reset uri
+      array_pop($plids_stack); //reset plids  	  
+	} else {
+	  $pair = explode(" ", $line);
+	  $uri[] = $pair[0];
+	  $nid = mmt_make_node($pair[1], $pair[0]); //$node->nid
+      //path from url 
+      $alias = $pair[1];  
+      $pathOpt = array(
+		'source' => 'node/' . $nid,
+		'alias' => $alias,
+	  );
+	  path_save($pathOpt);
+      //link for tree menu
+      $menuOpt = array (
+		'link_path' => drupal_get_normal_path($alias),
+        'link_title' => $uri[count($uri) - 1],
+        'plid' => $plids_stack[count($plids_stack) - 1],
+        'menu_name' => 'navigation',
+	  );
+      $id = menu_link_save($menuOpt);
+	  $mlids[] = $id;
+	  $plids_stack[] = $id;
+  	}
+  }
+  variable_set('mmt_mlids', $mlids);
+  menu_cache_clear_all();
+}
+
 /**
- * helper function for mmtLoadModules, splits uri list and adds individual nodes
+ * helper function for mmt_load_nodes, adds individual node
  */
-function load_modules($modulesStr) {
-  $decl_uris = explode("\n", $modulesStr);
-  foreach ($decl_uris as $uri) {
-   $newnode = (object) array(
-     'type' => 'mmt_module',
+function mmt_make_node($uri, $name) {
+  $comps = explode('?', $uri);
+  $node_type = 'mmt_document';
+  if (count($comps) > 1) { //module
+	$node_type = 'mmt_module';
+  }
+  
+  $newnode = (object) array(
+     'type' => $node_type,
      'uid' => 0,
      'created' => strtotime("now"),
      'changed' => strtotime("now"),
      'status' => 1,
-	 'comment' => 1,
+	 'comment' => 2,
  	 'promote' => 0,
      'moderate' => 0,
      'sticky' => 0,
      'language' => 'und'    
    );
-   $comps = explode('?', $uri);
-   $newnode->title = end($comps); //use last name as URI
+   $newnode->title = $name;
    $newnode->uri = $uri;
    node_object_prepare($newnode);//necessary ?
    node_save($newnode);
-  }
+   return $newnode->nid;
 }
+
+
