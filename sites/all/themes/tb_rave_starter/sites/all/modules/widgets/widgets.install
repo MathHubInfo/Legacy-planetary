@@ -1,0 +1,191 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the widgets module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function widgets_schema() {
+  $schema = array();
+
+  $schema['cache_widgets'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_widgets']['description'] = 'Cache table used to store information about widgets manipulations that are in-progress.';
+
+  $schema['widgets_sets'] = array(
+    'description' => 'Stores configuration options for widget sets.',
+    'fields' => array(
+      'wsid' => array(
+        'description' => 'The primary identifier for a widget sets.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'The set name.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'data' => array(
+        'description' => 'The configuration data for the set.',
+        'type' => 'blob',
+        'not null' => TRUE,
+        'size' => 'big',
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('wsid'),
+    'unique keys' => array(
+      'name' => array('name'),
+    ),
+  );
+
+  $schema['widgets_elements'] = array(
+    'description' => 'Stores configuration options for widgets.',
+    'fields' => array(
+      'weid' => array(
+        'description' => 'The primary identifier for an widgets.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'wsid' => array(
+        'description' => 'The {widgets_sets}.wsid for an widget style.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'weight' => array(
+        'description' => 'The weight of the effect in the style.',
+        'type' => 'int',
+        'unsigned' => FALSE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'name' => array(
+        'description' => 'The unique name of the effect to be executed.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'data' => array(
+        'description' => 'The configuration data for the element.',
+        'type' => 'blob',
+        'not null' => TRUE,
+        'size' => 'big',
+        'serialize' => TRUE,
+      ),
+    ),
+    'primary key' => array('weid'),
+    'indexes' => array(
+      'wsid' => array('wsid'),
+      'weight' => array('weight'),
+    ),
+    'foreign keys' => array(
+      'widgets_set' => array(
+        'table' => 'widgets_sets',
+        'columns' => array('wsid' => 'wsid'),
+      ),
+    ),
+  );
+  $schema['widgets_definitions'] = array(
+    'description' => 'Stores data for widget definitions.',
+    'fields' => array(
+      'name' => array(
+        'description' => 'The definition name.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'data' => array(
+        'description' => 'The configuration data for the element.',
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('name'),
+  );
+  $schema['widgets_visibility'] = array(
+    'description' => 'Stores widget set and element visibility settings',
+    'fields' => array(
+      'wsid' => array(
+        'description' => 'widget set id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'weid' => array(
+        'description' => 'widget element id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'token' => array(
+        'description' => 'if widget available as token',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'block' => array(
+        'description' => 'if widget available as block',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'unique keys' => array(
+      'weid' => array('weid'),
+      'wsid' => array('wsid')
+    ),
+  );
+  $schema['widgets_visibility_type'] = array(
+    'description' => 'Stores widget visibility for content types',
+    'fields' => array(
+      'wsid' => array(
+        'description' => 'widget set id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'weid' => array(
+        'description' => 'widget element id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ),
+      'type' => array(
+        'description' => 'content type',
+        'type' => 'varchar',
+        'length' => '32',
+        'not null' => TRUE,
+      ),
+      'links_full' => array(
+        'description' => 'if displayed in node link on full nodes.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+      ),
+      'links_teaser' => array(
+        'description' => 'if displayed in node links on teasers.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'type' => array('type'),
+    ),
+  );
+  
+  
+  
+
+  return $schema;
+}

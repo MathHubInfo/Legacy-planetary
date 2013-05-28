@@ -1,0 +1,41 @@
+.quicktabs_main.quicktabs-style-blog {
+  border: 0;
+  border-top: none;
+  clear: both;
+  padding: 10px 0;
+}
+
+ul.quicktabs-tabs.quicktabs-style-blog {
+  border-bottom: 1px solid #aaa;
+  font-weight: bold;
+  margin: 0;
+  padding: 0 5px 0 0;
+}
+
+ul.quicktabs-tabs.quicktabs-style-blog a {
+  color: #666;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+ul.quicktabs-tabs.quicktabs-style-blog a:hover {
+  color: #555  !important;
+}
+
+ul.quicktabs-tabs.quicktabs-style-blog li {
+  margin: 0 8px 0 0;
+  padding: 2px 0;
+  position: relative;
+}
+
+ul.quicktabs-tabs.quicktabs-style-blog li:hover {
+  border-bottom: none;
+}
+
+ul.quicktabs-tabs.quicktabs-style-blog li.active {
+  border-bottom: 1px solid #f3686d;
+}
+
+ul.quicktabs-tabs.quicktabs-style-blog li.active a {
+  color: #f3686d;
+}

@@ -1,0 +1,183 @@
+/**
+ * Common View Elements
+ */
+
+/* --- Views Field --- */
+.views-field {
+}
+
+.field-content {
+}
+
+/* Views Field Title */
+.views-field-title {
+}
+
+.views-field-title .field-content {
+}
+
+/* Views Field Image */
+.views-field-field-image {
+}
+
+.views-field-field-image .field-content {
+}
+
+/* Views Field Body */
+.views-field-body {
+}
+
+.views-field-body .field-content {
+}
+
+/* Views Field Changed */
+.views-field-changed {
+}
+
+.views-field-changed .field-content {
+}
+
+/* --- Views Inline Grid --- */
+.views-row {
+}
+
+.views-row-odd {
+}
+
+.views-row-even {
+}
+
+.views-col {
+}
+
+.cols-1 .views-col {
+  width: 100%;
+}
+
+.cols-2 .views-col {
+  width: 50%;
+}
+
+.cols-3 .views-col {
+  width: 33.33%;
+}
+
+.cols-4 .views-col {
+  width: 25%;
+}
+
+.cols-5 .views-col {
+  width: 20%;
+}
+
+.cols-6 .views-col {
+  width: 16.66%;
+}
+
+/**
+ * Supported Views Formats
+ */
+/* --- Slideshow --- */
+#slideshow-wrapper .container {
+}
+
+#slideshow-wrapper .block-content {
+  padding: 0;
+}
+
+#slideshow-wrapper .region-slideshow {
+  position: relative;
+}
+
+/* Titles */
+#slideshow-wrapper .views-field-title {
+  background: #333;
+  bottom: 0;
+  color: #fff;
+  display: none; /* Hide the title . Remove this line to show. */
+  font-size: 0.875em;
+  left: 0;
+  position: absolute;
+  text-transform: uppercase;
+}
+
+#slideshow-wrapper .views-field-title .field-content {
+  display: block;
+  padding: .25em 2em;
+}
+
+#slideshow-wrapper .views-field-title a {
+  color: #fff;
+}
+
+#slideshow-wrapper .views-field-title a:hover,
+#slideshow-wrapper .views-field-title a:active,
+#slideshow-wrapper .views-field-title a:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Slideshow Navigator */
+#slideshow-wrapper .views-slideshow-controls-bottom {
+  bottom: 0;
+  display: none;
+  font-size: .92em;
+  height: auto;
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}
+
+#slideshow-wrapper .region-slideshow:hover .views-slideshow-controls-bottom {
+  display: block;
+}
+
+#slideshow-wrapper .views-slideshow-controls-top {
+  display: none;
+}
+
+#slideshow-wrapper .views_slideshow_controls_text {
+  background: #333;
+  color: #ccc;
+  float: left;
+}
+
+#slideshow-wrapper .views_slideshow_controls_text span {
+  cursor: pointer;
+  display: inline-block;
+  padding: .25em 1em;
+}
+
+#slideshow-wrapper .views_slideshow_controls_text span:hover {
+  background: #666;
+  color: #fff;
+}
+
+#slideshow-wrapper .views_slideshow_slide_counter {
+  background: #c00;
+  color: #fff;
+  float: left;
+  margin-left: 1px;
+  padding: .25em 1em;
+}
+
+/* Slideshow Full Pager */
+#slideshow-wrapper .view > .pager {
+  bottom: 0;
+  height: auto;
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}
+
+/* Slideshow Mini Pager */
+#slideshow-wrapper .views-mini-pager {
+  bottom: 0;
+  height: auto;
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}

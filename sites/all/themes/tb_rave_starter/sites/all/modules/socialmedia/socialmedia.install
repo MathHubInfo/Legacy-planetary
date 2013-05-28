@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the widgets module.
+ */
+
+/**
+ * Implements hook_uninstall()
+ */
+function socialmedia_uninstall() {
+  variable_del('socialmedia_platforms_site');
+  variable_del('socialmedia_platforms_user');
+  variable_del('socialmedia_default_color_body_background');
+  variable_del('socialmedia_default_color_body_linktext');
+  variable_del('socialmedia_default_color_body_text');
+  variable_del('socialmedia_default_color_border');
+  variable_del('socialmedia_default_color_header_background');
+  variable_del('socialmedia_default_color_header_text');
+  variable_del('socialmedia_default_height');
+  variable_del('socialmedia_default_width');
+  variable_del('socialmedia_icon_default_style');
+  variable_del('socialmedia_widget_set_default_profile');
+  variable_del('socialmedia_widget_set_default_share');
+}
+
+/**
+ * Implements hook_schema().
+ */
+function socialmedia_schema() {
+  $schema = array();
+
+  $schema['socialmedia_profile'] = array(
+    'description' => 'Stores social media profile data',
+    'fields' => array(
+      'smid' => array(
+        'description' => 'Primary id',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'platform' => array(
+        'description' => 'machine name identifier of the platform of the profile',
+        'type' => 'varchar',
+        'length' => '128',
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'User id the profile belongs to. Site profiles have a uid of 0',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'data' => array(
+        'description' => 'Profile data',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('smid'),
+    'indexes' => array(
+      'platform' => array('platform', 'uid'),
+    ),
+  );
+
+  return $schema;
+}

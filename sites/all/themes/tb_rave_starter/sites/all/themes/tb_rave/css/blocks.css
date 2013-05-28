@@ -1,0 +1,564 @@
+/**
+ * Common Block
+ */
+
+/* --- Blocks --- */
+.block {
+  margin: 0;
+}
+
+.block-inner {
+  padding: 10px 20px;
+}
+
+.block-title {
+}
+
+.block-content {
+}
+
+/* --- Block Lists --- */
+.block ul {
+}
+
+.block ul li {
+  margin: 0 0 0 0.5em;
+}
+
+.block ol {
+}
+
+.block ol li {
+}
+
+/* Block Item list */
+.block .item-list ul {
+}
+
+.block .item-list ul li {
+}
+
+/* Block Links List */
+.block ul.links {
+}
+
+.block ul.links li {
+}
+
+/* Block More Links */
+.block .more-link {
+  margin-top: 5px;
+}
+
+.block .more-link a {
+}
+
+/* --- Sidebar Blocks --- */
+.sidebar .block {
+  margin-bottom: 20px;
+}
+
+.sidebar .block-inner {
+  padding: 0;
+}
+
+.sidebar .block-title {
+  color: #333;
+  background: url(../images/line-bg.gif) 0 100% repeat-x;
+  margin-bottom: 10px;
+  margin-top: 0;
+  padding: 0 0 15px;  
+  font-family:Georgia, "Times New Roman", Times, serif;
+  font-size: 1em;
+  text-shadow: 0 1px 0 #ddd;
+  text-transform: uppercase; 
+  font-weight: normal; 
+}
+
+.sidebar .block-content {
+}
+
+/* First Sidebar Blocks */
+#sidebar-first .block {
+}
+
+#sidebar-first .block-inner {
+}
+
+#sidebar-first .block-title {
+}
+
+#sidebar-first .block-content {
+}
+
+/* Second Sidebar Blocks */
+#sidebar-second .block {
+}
+
+#sidebar-second .block-inner {
+}
+
+#sidebar-second .block-title {
+}
+
+#sidebar-second .block-content {
+}
+
+/* --- Header Blocks --- */
+#header-wrapper .block {
+}
+
+/* ---- Footer Blocks --- */
+#footer-wrapper .block {
+}
+
+/* --- First Panels Blocks --- */
+#panel-first-wrapper .block {
+}
+
+/* --- Second Panels Blocks --- */
+#panel-second-wrapper .block {
+}
+
+/**
+ * Specfic Blocks
+ */
+
+/* --- Menu Block --- */
+.block-menu {
+}
+
+.block-menu ul.menu {
+  margin-bottom: 0;
+  margin-left: 0;
+}
+
+.block-menu ul.menu ul {
+}
+
+/* --- Node Blocks --- */
+.block-node .block-content {
+}
+
+.block-node table {
+  overflow: hidden;
+  width: 100%;
+}
+
+.block-node tbody {
+  border-top: 0;
+}
+
+.block-node table tr td {
+  border-bottom: 1px dotted #ccc;
+}
+
+.block-node table .title-author {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.block-node table .node-title {
+  font-size: 1em;
+}
+
+.block-node table .node-title a {
+  color: #666;
+}
+
+.block-node table .node-title a:hover,
+.block-node table .node-title a:active,
+.block-node table .node-title a:focus {
+  color: #fff;
+}
+
+.block-node table .node-author {
+  color: #999;
+  font-size: 1em;
+}
+
+body.not-logged-in .block-node table td.edit,
+body.not-logged-in .block-node table td.delete {
+  display: none; /* Hide Edit & Delete TD if not log-in */
+}
+
+/* --- Forums Block --- */
+.block-forum .item-list ul {
+  margin: 0;
+  padding: 0;
+}
+
+.block-forum .item-list ul li {
+}
+
+.block-forum .item-list ul li:first-child {
+}
+
+.block-forum .item-list ul li a {
+}
+
+.block-forum .item-list ul li a:hover,
+.block-forum .item-list ul li a:active,
+.block-forum .item-list ul li a:focus {
+}
+
+.block-forum .more-link {
+}
+
+.block-forum .contextual-links-wrapper {
+  display: none; /* Drupal Bug. Temporary hiding this link */
+}
+
+/* --- Comment Blocks --- */
+.block-comment {
+}
+
+/* --- Aggregator Blocks --- */
+block-aggregator {
+}
+
+.block-aggregator .item-list ul {
+  margin: 0;
+  padding: 0;
+}
+
+.block-aggregator .item-list ul li {
+  background-image: none;
+  border-bottom: 1px dotted #ccc;
+  padding: .5em 0;
+}
+
+.block-aggregator .item-list ul li:first-child {
+  padding-top: 0;
+}
+
+.block-aggregator .item-list ul li a {
+  color: #666;
+}
+
+.block-aggregator .item-list ul li a:hover,
+.block-aggregator .item-list ul li a:active,
+.block-aggregator .item-list ul li a:focus {
+  background: #333;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* --- Search Blocks --- */
+.block-search {
+}
+
+/* Search blocks in header */
+#header .block-search .block-inner,
+#header .block-search .form-item,
+#header #search-block-form {
+  margin: 0;
+  padding: 0;
+}
+
+#header #search-block-form {
+  border: 1px solid #ddd;
+  height: 25px;
+  margin: 0;
+  padding: 5px 0 5px 10px;
+}
+
+#header .block-search .container-inline div {
+  display: block;
+  float: left;
+}
+
+#header #search-block-form .form-text {
+  background: #fff;
+  border: none;
+  color: #999;
+  font-style: italic;
+  height: 25px;
+  line-height: 25px;
+  padding: 0;
+  width: 265px;
+}
+
+#header #search-block-form .form-submit {
+  border: 0;
+  color: #7B7B7B;
+  font-size: 1em;
+  height: 25px;
+  line-height: 25px;
+  padding: 0;  
+}
+
+/* --- User Blocks --- */
+.block-user {
+}
+
+.block-user .form-item {
+}
+
+.block-user .form-item label {
+}
+
+.block-user .form-item-name {
+}
+
+.block-user .form-item-name input {
+  width: 90%;
+}
+
+.block-user .form-item-pass {
+}
+
+.block-user .form-item-pass input {
+  width: 90%;
+}
+
+.block-user .item-list li {
+  background-position: 0 9px;
+}
+
+.block-user p {
+  margin: 0;
+}
+
+/* --- Poll Blocks --- */
+.block-poll {
+}
+
+.block-poll .poll {
+}
+
+.block-poll .title {
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.block-poll .links {
+  margin-top: .5em;
+}
+
+/* --- Book Blocks --- */
+.block-book {
+}
+
+/* --- Quicktabs Blocks --- */
+.block-quicktabs {
+}
+
+.block-quicktabs .block-inner .block-inner {
+  margin: 0; /* Prevent extra padding in nested blocks */
+  padding: 0;
+}
+
+/* --- Views Blocks --- */
+.block-views {
+}
+
+/**
+ * Misc.
+ */
+
+/* Login Block - horizontal (theme setting) basic styles */
+.lb-h {
+  margin-top: 1px;
+  min-width: 320px;
+}
+
+.region-header .lb-h {
+  float: right;
+}
+
+.lb-h .block-inner,
+.lb-h .block-content {
+  background: none;
+  padding: 0;
+}
+
+.lb-h #user-login-form {
+  margin: 0;
+}
+
+.lb-h #user-login-form label {
+  line-height: 1.2;
+}
+
+.lb-h .form-item {
+  float: left;
+  margin: 0;
+}
+
+.lb-h input.form-text {
+  margin: 0 3px 0 0;
+  width: 110px;
+}
+
+.lb-h #edit-actions {
+  margin: 0;
+}
+
+.lb-h input.form-submit {
+  margin: 0;
+  position: absolute;
+  top: 1.2em;
+}
+
+.lb-h .form-required,
+.lb-h .item-list {
+  display: none;
+}
+
+.lb-h h2 {
+  display: none;
+}
+
+/* Skinr block title alignment */
+.ta-l .block-title,
+.ta-l .mini-panel-title {
+  text-align: left;
+}
+
+.ta-r .block-title,
+.ta-r .mini-panel-title {
+  text-align: right;
+}
+
+.ta-c .block-title,
+.ta-c .mini-panel-title {
+  text-align: center;
+}
+
+/* Mini panels */
+.mini-panel-title {
+  margin: 0 10px;
+}
+
+/* Gpanel blocks */
+.gpanel .block-inner {
+}
+
+.gpanel .block-title {
+}
+
+.gpanel .block-content {
+}
+
+#main-content .gpanel .block-inner {
+}
+
+#main-content .gpanel .block-title {
+}
+
+#main-content .gpanel .block-content {
+}
+
+/* Block wrapper for Mini Panels */
+.block-panels_mini {
+}
+
+.block-panels_mini .block-inner {
+}
+
+.block-panels_mini .block-content {
+}
+
+.block-panels_mini .mini-panel-title {
+  margin: 0 10px;
+}
+
+/* Tweeter */
+.twtr-hd,
+.twtr-ft {
+  display: none;
+}
+
+/*panel first */
+#panel-first-wrapper .block-title {
+  color: #888;
+  text-shadow: 0 1px 0 #111;
+  font-size: 1em;
+  text-transform: uppercase;
+}
+
+#panel-first-wrapper p {
+  color: #fff;
+}
+
+.colors-link {
+  color: #888 !important;
+}
+
+.colors-link a {
+  color: #888;
+}
+
+.colors-link a:hover,
+.colors-link a:active,
+.colors-link a:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* multi menu */
+.menu-styles {
+  margin: 0 !important;
+  list-style: none;
+}
+
+.menu-styles li {
+  background: url(../images/bullet-2.png) 0 6px no-repeat;
+  margin: 0 0 5px 0 !important;
+  padding: 0 0 0 10px;
+}
+
+.menu-styles li a {
+  color: #888;
+}
+
+.menu-styles li a:hover,
+.menu-styles li a:active,
+.menu-styles li a:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* contact us */
+.contact-info {
+  margin: 0 !important;
+  list-style: none;
+}
+
+.contact-info li {
+  background: url(../images/bullet-2.png) 0 7px no-repeat;
+  color: #fff;
+  margin: 0 0 5px 0 !important;
+  padding: 0 0 0 10px;
+}
+
+.contact-info li a {
+  color: #888;
+}
+
+.contact-info li a:hover,
+.contact-info li a:active,
+.contact-info li a:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Twitter */
+.block-widgets .twtr-doc {
+  width: 100% !important;
+}
+
+.block-widgets .twtr-hd,
+.block-widgets .twtr-ft {
+  display: none;
+}
+
+.block-widgets .twtr-widget em, 
+.block-widgets .twtr-widget .twtr-new-results {
+  font-size: 11px !important;
+}
+
+.block-widgets .twtr-widget {
+  font-family: Arial,Helvetica,sans-serif !important;
+}

@@ -1,0 +1,124 @@
+/**
+ * Font-Family Presets
+ */
+
+/* sans-serif small */
+body.bf-sss,
+.bf-sss .form-text,
+.snf-sss .site-name,
+.ssf-sss .site-slogan,
+.ptf-sss #page-title,
+.ntf-sss .node-title,
+.ctf-sss .comment-title,
+.btf-sss .block-title {
+  font-family: Calibri, Candara, "Helvetica Neue", "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+
+/* sans-serif large */
+body.bf-ssl,
+.bf-ssl .form-text,
+.snf-ssl .site-name,
+.ssf-ssl .site-slogan,
+.ptf-ssl #page-title,
+.ntf-ssl .node-title,
+.ctf-ssl .comment-title,
+.btf-ssl .block-title {
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+/* sans-serif arial/helvitica */
+body.bf-a,
+.bf-a .form-text,
+.snf-a .site-name,
+.ssf-a .site-slogan,
+.ptf-a #page-title,
+.ntf-a .node-title,
+.ctf-a .comment-title,
+.btf-a .block-title {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* serif small */
+body.bf-ss,
+.bf-ss .form-text,
+.snf-ss .site-name,
+.ssf-ss .site-slogan,
+.ptf-ss #page-title,
+.ntf-ss .node-title,
+.ctf-ss .comment-title,
+.btf-ss .block-title {
+  font-family: Garamond, Perpetua, "Times New Roman", serif;
+}
+
+/* serif large */
+body.bf-sl,
+.bf-sl .form-text,
+.snf-sl .site-name,
+.ssf-sl .site-slogan,
+.ptf-sl #page-title,
+.ntf-sl .node-title,
+.ctf-sl .comment-title,
+.btf-sl .block-title {
+  font-family: Georgia, Baskerville, Palatino, "Palatino Linotype", "Book Antiqua", "Times New Roman", serif;
+}
+
+/* modern */
+body.bf-m,
+.bf-m .form-text,
+.snf-m .site-name,
+.ssf-m .site-slogan,
+.ptf-m #page-title,
+.ntf-m .node-title,
+.ctf-m .comment-title,
+.btf-m .block-title {
+  font-family: "Segoe UI", "Myriad Pro", Myriad, Arial, Helvetica, sans-serif;
+}
+
+/* lucida */
+body.bf-l,
+.bf-l .form-text,
+.snf-l .site-name,
+.ssf-l .site-slogan,
+.ptf-l #page-title,
+.ntf-l .node-title,
+.ctf-l .comment-title,
+.btf-l .block-title {
+  font-family: "Lucida Sans Unicode", "Lucida Sans", "Lucida Grande", Verdana, Geneva, sans-serif;
+}
+
+/* mono */
+body.bf-ms,
+.bf-ms .form-text,
+.snf-ms .site-name,
+.ssf-ms .site-slogan,
+.ptf-ms #page-title,
+.ntf-ms .node-title,
+.ctf-ms .comment-title,
+.btf-ms .block-title {
+  font-family: Consolas, Monaco, "Courier New", Courier, monospace;
+}
+
+/*
+ * Base Font Sizes
+ */
+
+/* Base fontsize is 62.5% = 10px. Change the value in html-elements.css */
+.fs-smallest {
+  font-size: 1.0em;
+}
+
+.fs-small {
+  font-size: 1.1em;
+}
+
+.fs-medium {
+  font-size: 1.2em;
+}
+
+.fs-large {
+  font-size: 1.3em;
+}
+
+.fs-largest {
+  font-size: 1.4em;
+}

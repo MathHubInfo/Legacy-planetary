@@ -1,0 +1,41 @@
+.fluid-grid .panel-column-last,
+.fluid-grid .grid-last {
+  float: none !important;
+  width: auto !important;
+}
+
+.views-view-grid .col-last {
+  float: none !important;
+  width: auto !important;
+}
+
+.nucleus-page-preview-container .hidden-region .rb-setting-title {
+  color: #959595;
+}
+
+.nucleus-page-preview-container .vertical-tabs-panes legend,
+div.vertical-tabs .vertical-tabs-panes .fieldset-wrapper legend {
+  width: 0 !important; /* Need for IE 7 */
+  zoom: 1;
+}
+
+.nucleus-page-preview-container #disabled-region .region-preview-wrapper {
+  border: 1px dashed #cccccc;
+  display: block;
+  margin-bottom: 8px;
+  zoom: 1;
+}
+
+.nucleus-page-preview-container .hidden-region .region-title {
+  -ms-filter: "progid: DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  filter: alpha(opacity=50);
+  zoom: 1;
+}
+
+.nucleus-page-preview-container .hidden-region .region-title h4 {
+  margin-top: 0px;
+}
+
+.nucleus-page-preview-container .hidden-region .hidden-zone-title {
+  margin-bottom: 10px;
+}

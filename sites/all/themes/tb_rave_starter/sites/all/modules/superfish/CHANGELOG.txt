@@ -1,0 +1,63 @@
+Version 1.8, 20110-03-27
+----------------------
+- #1104154: [Fixed]
+- #1104194: [Fixed]
+- #1104520: [Fixed]
+- #1104616: [Fixed]
+
+Version 1.9-beta, 2011-03-23
+----------------------
+- #714624, #717862, #790576: [Improvement] Superfish.css
+- #798722: [New feature] Path to Superfish library.
+- #801238: [Improvement] "middle" class added.
+- #849566: [Improvement] "neutral" style added.
+- #866006: [New feature] jQuery Supposition plugin added and heavily heavily modified.
+- #906038: [New feature] Multi-column sub-menus.
+- #913548: Admin form tweaks.
+- #929146: [Fixed]
+- #959210, #1031024 [New feature] jQuery sf-Touchscreen plugin, built and added.
+- #975182: [Improvement] hook_uninstall added.
+- #993322, #1002766: [Improvement] "Item depth" class added.
+- [New feature] New slide-in effects.
+- [Improvement] Menu caching added using a patch originally provided for NiceMenus.
+- [Improvement] hoverIntent moved to block settings.
+- [Improvement] Superfish.css
+- [Improvement] Blocks number in the admin form.
+- [Improvement] Usability improvements in block settings.
+- [Improvement] Supersubs now workgin with NavBar.
+- [Improvement] Speed option now accepting time in milliseconds.
+- [Improvement] Superfish admin form.
+
+Version 1.6, 2010-04-12
+----------------------
+- #764152 + 741528 : [Bug fixed] A previous modification to the links was causing problems regarding the <front> tag.
+- #761446: [Improvement] More space for HTML wrappers.
+
+Version 1.5, 2010-04-02
+----------------------
+- #758148: [Bug fixed] Fade in\out effect is enabled by default and could not be disabled hence removed from SF block settings; It should be noted that any trick for disabling the fade effect (jQuery .animate Opacity) was causing JavaScript errors.
+- #753412: [New feature] HTML Wrapper for Main UL.
+
+Version 1.4, 2010-03-27
+----------------------
+- #748474: [New features] New classes added: first\last, zebra striping, item count.
+- #743164 + 718676: [Bug fixed] Active tab in NavBar menus.
+- #741528: [New feature] HTML Wrappers for hyperlinks, and link texts.
+- #716622: [New feature] Path for extra CSS files.
+
+Version 1.3, 2010-02-15
+----------------------
+- #715110: [Bug fixed] Supersubs disabled for NavBar menus.
+- [New feature] RTL (Right to left) styles added. Thanks to Chad Kieffer.
+
+Version 1.2, 2010-02-12
+----------------------
+- A few files were left out!
+
+Version 1.1, 2010-02-12
+----------------------
+- A few CSS tweaks to the NavBar.
+
+Version 1.0, 2010-02-12
+---------------------
+- Initial release.

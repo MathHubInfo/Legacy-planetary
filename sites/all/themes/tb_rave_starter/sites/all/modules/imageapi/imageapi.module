@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @file
+ *
+ * An ImageAPI supporting additional image plugins as modules.
+ * Images are treated as objects, and images are not written per
+ * manipulation as Drupal's core image handling works.
+ *
+ *
+ * imageapi image api workflow...
+ * $image = imageapi_image_open($path) to get an image object for $path...
+ * image_X($image, $arg1, $arg2)  to manipulate image object...
+ * imageapi_image_close($image) to overwrite original image.
+ *
+ */
+
+/**
+ * Sharpen an image given some sharpening parameters.
+ *
+ * NOTE: These parameters only have an effect when Imagemagick is used.
+ *       GD will used a fixed convolution matrix as described in imageapi_gd.module
+ *
+ * @param $image
+ *   An imageapi image object returned by imageapi_image_open().
+ * @param $radius
+ *   The radius of the gaussian, in pixels, not counting the center pixel. (default 0.5)
+ * @param $sigma
+ *   The standard deviation of the gaussian, in pixels. (default 0.5)
+ * @param $amount
+ *   The percentage of the difference between the original and the blur image that is
+ *   added back into the original. (default 100)
+ * @param $threshold
+ *   The threshold, as a fraction of max RGB levels, needed to apply the difference
+ *   amount. (default 0.05)
+ * @return
+ *   True or false, based on success.
+ */
+function image_sharpen(&$image, $radius, $sigma, $amount, $threshold) {
+  return image_toolkit_invoke('sharpen', $image, array($radius, $sigma, $amount, $threshold));
+}
+
+/**
+ * Convert a hex string to its RGBA (Red, Green, Blue, Alpha) integer
+ * components.
+ *
+ * @param $hex
+ *   A string specifing an RGB color in the formats:
+ *   '#ABC','ABC','#ABCD','ABCD','#AABBCC','AABBCC','#AABBCCDD','AABBCCDD'
+ * @return
+ *   An array with four elements for red, green, blue, and alpha.
+ */
+function imageapi_hex2rgba($hex) {
+  $hex = ltrim($hex, '#');
+  if (preg_match('/^[0-9a-f]{3}$/i', $hex)) {
+    // 'FA3' is the same as 'FFAA33' so r=FF, g=AA, b=33
+    $r = str_repeat($hex{0}, 2);
+    $g = str_repeat($hex{1}, 2);
+    $b = str_repeat($hex{2}, 2);
+    $a = '0';
+  }
+  elseif (preg_match('/^[0-9a-f]{6}$/i', $hex)) {
+    // #FFAA33 or r=FF, g=AA, b=33
+    list($r, $g, $b) = str_split($hex, 2);
+    $a = '0';
+  }
+  elseif (preg_match('/^[0-9a-f]{8}$/i', $hex)) {
+    // #FFAA33 or r=FF, g=AA, b=33
+    list($r, $g, $b, $a) = str_split($hex, 2);
+  }
+  elseif (preg_match('/^[0-9a-f]{4}$/i', $hex)) {
+    // 'FA37' is the same as 'FFAA3377' so r=FF, g=AA, b=33, a=77
+    $r = str_repeat($hex{0}, 2);
+    $g = str_repeat($hex{1}, 2);
+    $b = str_repeat($hex{2}, 2);
+    $a = str_repeat($hex{3}, 2);
+  }
+  else {
+    //error: invalide hex string, TODO: set form error..
+    return false;
+  }
+
+  $r = hexdec($r);
+  $g = hexdec($g);
+  $b = hexdec($b);
+  $a = hexdec($a);
+  return array($r, $g, $b, $a);
+}
+

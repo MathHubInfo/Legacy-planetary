@@ -1,0 +1,68 @@
+/* hard reset for now sorry*/
+.galleryformatter { margin: 0 auto; }
+.galleryformatter * { padding: 0; margin: 0; }
+.galleryformatter li {
+  margin-left: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.galleryformatter .gallery-slides,
+.galleryformatter .gallery-thumbs { margin: 0 auto; }
+.galleryformatter .gallery-slides ul,
+.galleryformatter .gallery-thumbs ul { margin: 0; }
+
+/** css gallery */
+li.gallery-slide { display: block; }
+
+.gallery-thumbs .wrapper,
+.gallery-slides { overflow: hidden; position: relative; }
+.gallery-frame { width: 99999px; }
+
+.gallery-slides .gallery-slide { float: left; position: relative; }
+
+.gallery-thumbs { position: relative; }
+.galleryformatter .gallery-slides ul,
+.galleryformatter .gallery-thumbs ul {
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  margin: 0; padding: 0;
+}
+.gallery-thumbs ul li {
+  display:block;
+  float:left;
+  padding: 0 4px 0 0;
+}
+.gallery-thumbs li a { outline: none; }
+/*** end css gallery ****/
+
+/** buttons **/
+.galleryformatter .view-full {
+ position: absolute;
+}
+.galleryformatter .slide-button {
+  top: 42%;
+  position: absolute;
+  display: block;
+  cursor: pointer;
+}
+.galleryformatter .prev-slide {
+  left: 0;
+}
+.galleryformatter .next-slide {
+  right: 0;
+}
+.galleryformatter .gallery-thumbs .arrow {
+ cursor:pointer;
+}
+
+/*** js enabled gallery css **/
+.gallery-processed .gallery-frame { position:relative; }
+.gallery-processed .gallery-slides .gallery-slide  {
+  float: none;
+  position: absolute;
+  top: 0; left: 0;
+}
+
+

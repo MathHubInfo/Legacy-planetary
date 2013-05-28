@@ -1,0 +1,150 @@
+;Theme info
+name = 'nucleus_starter'
+description = 'Starter theme for nucleus base theme.'
+core = '7.x'
+engine = 'phptemplate'
+base theme = 'nucleus'
+screenshot = 'screenshot.png'
+
+;Stylesheets
+stylesheets[all][] = 'css/html-elements.css'
+stylesheets[all][] = 'css/forms.css'
+stylesheets[all][] = 'css/page.css'
+stylesheets[all][] = 'css/articles.css'
+stylesheets[all][] = 'css/comments.css'
+stylesheets[all][] = 'css/forum.css'
+stylesheets[all][] = 'css/fields.css'
+stylesheets[all][] = 'css/blocks.css'
+stylesheets[all][] = 'css/panel-panes.css'
+stylesheets[all][] = 'css/navigation.css'
+stylesheets[all][] = 'css/fonts.css'
+stylesheets[print][] = 'css/print.css'
+
+;Core regions
+regions[content] = 'Main content'
+regions[header] = 'Header'
+regions[menu_bar] = 'Menu bar'
+regions[slideshow] = 'Slideshow'
+regions[highlighted] = 'Highlighted'
+regions[footer] = 'Footer'
+regions[help] = 'Help'
+regions[page_top] = 'Page top'
+regions[page_bottom] = 'Page bottom'
+
+;Sidebar regions
+regions[sidebar_first] = 'Sidebar first'
+regions[sidebar_second] = 'Sidebar second'
+
+;panel regions
+regions[panel_first_1] = 'Panel first column 1'
+regions[panel_first_2] = 'Panel first column 2'
+regions[panel_first_3] = 'Panel first column 3'
+regions[panel_first_4] = 'Panel first column 4'
+
+regions[panel_second_1] = 'Panel second column 1'
+regions[panel_second_2] = 'Panel second column 2'
+regions[panel_second_3] = 'Panel second column 3'
+regions[panel_second_4] = 'Panel second column 4'
+
+;Layout
+;pages[main-left] = 'Second layout style'
+;pages[main-right] = 'Third layout style'
+
+;Features (core settings)
+features[] = 'logo'
+features[] = 'name'
+features[] = 'slogan'
+features[] = 'node_user_picture'
+features[] = 'comment_user_picture'
+features[] = 'comment_user_verification'
+features[] = 'favicon'
+features[] = 'go_to_top_button'
+features[] = 'secondary_menu'
+
+;Breadcrumb
+settings[breadcrumb_display] = 'yes'
+settings[breadcrumb_separator] = ' &#187; '
+settings[breadcrumb_home] = 1
+
+;Default settings
+settings[grid] = 'fluid-grid-24'
+settings[layout_width] = '960px'
+settings[page_layout] = 'default'
+
+;Sidebar width settings
+settings[sidebar_first_width] = 6
+settings[sidebar_second_width] = 6
+
+;Panel width settings
+settings[panel_first_1_width] = 6
+settings[panel_first_2_width] = 6
+settings[panel_first_3_width] = 6
+settings[panel_first_4_width] = 6
+
+settings[panel_second_1_width] = 6
+settings[panel_second_2_width] = 6
+settings[panel_second_3_width] = 6
+settings[panel_second_4_width] = 6
+
+;Fonts
+settings[base_font] = 'bf-sss'
+settings[site_name_font] = 'snf-sl'
+settings[site_slogan_font] = 'ssf-sl'
+settings[page_title_font] = 'ptf-sl'
+settings[node_title_font] = 'ntf-sl'
+settings[comment_title_font] = 'ctf-sl'
+settings[block_title_font] = 'btf-sl'
+settings[font_size] = 'fs-medium'
+
+; Default fonts family
+default_fonts[sss] = 'Calibri, Candara, Helvetica Neue, Trebuchet MS, Arial, Helvetica, sans-serif'
+default_fonts[ssl] = 'Verdana, Geneva, Arial, Helvetica, sans-serif'
+default_fonts[a] = 'Arial, Helvetica, sans-serif'
+default_fonts[ss] = 'Garamond, Perpetua, Times New Roman, serif'
+default_fonts[sl] = 'Georgia, Baskerville, Palatino, Palatino Linotype, Book Antiqua, Times New Roman, serif'
+default_fonts[m] = 'Segoe UI, Myriad Pro, Myriad, Arial, Helvetica, sans-serif;'
+default_fonts[l] = 'Lucida Sans Unicode, Lucida Sans, Lucida Grande, Verdana, Geneva, sans-serif'
+default_fonts[ms] = 'Consolas, Monaco, Courier New, Courier, monospace'
+
+;Block styles list
+;block_styles[raw] = 'Raw'
+;block_styles[rounded] = 'Rounded'
+;block_styles[xhtml] = 'XHTML'
+;block_styles[badge] = 'Badge'
+
+;Extend classes list
+;block_extend_classes[badge-hot] = 'Badge Hot'
+;block_extend_classes[badge-new] = 'Badge New'
+;block_extend_classes[badge-pick] = 'Badge Pick'
+;block_extend_classes[badge-top] = 'Badge Top'
+;block_extend_classes[black-color] = 'Black Color'
+;block_extend_classes[gray-color] = 'Gray Color'
+;block_extend_classes[no-padding] = 'No Padding'
+
+;Group extend classes list
+;block_extended_class_groups[group_1][group_title] = 'Badge Block Styles'
+;block_extended_class_groups[group_1][supported_styles] = 'badge'
+;block_extended_class_groups[group_1][classes] = 'badge-hot, badge-new, badge-pick, badge-top'
+
+;block_extended_class_groups[group_2][group_title] = 'All Block Styles'
+;block_extended_class_groups[group_2][classes] = 'black-color, gray-color, no-padding'
+
+;Superfish Styles
+superfish_styles[starter] = 'Starter Style for Superfish'
+
+;Quicktabs Styles
+quicktabs_styles[starter] = 'Starter style for Quicktabs'
+
+; Information added by drupal.org packaging script on 2012-11-15
+version = "7.x-1.2"
+core = "7.x"
+project = "nucleus"
+datestamp = "1353011329"
+
+
+; Information added by drupal.org packaging script on 2013-02-21
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "tb_blog_starter"
+datestamp = "1361455198"
+

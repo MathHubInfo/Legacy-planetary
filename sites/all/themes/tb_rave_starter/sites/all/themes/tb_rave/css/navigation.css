@@ -1,0 +1,647 @@
+/* --- Common Links --- */
+a {
+  color: #9a2016;
+  text-decoration: none;
+}
+
+a:visited {
+}
+
+a:hover {
+  color: #9a2016;
+  text-decoration: underline;
+}
+
+a:active,
+a:focus {
+  text-decoration: underline;
+}
+
+/* Any menu block in the menu-bar region */
+.nav {
+  clear: both;
+  margin: 0;
+}
+
+.nav li,
+.nav .menu li {
+  display: inline;
+  float: left;
+  list-style: none;
+}
+
+.nav li a,
+.nav .menu li a {
+  display: block;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.nav ul,
+.nav ul.menu,
+.nav ul.menu li {
+  margin: 0;
+  padding: 0;
+}
+
+.nav .block {
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Default Drupal Menu --- */
+.block ul.menu {
+}
+
+.block ul.menu ul {
+}
+
+.block ul.menu li {
+  list-style-image: none;
+  list-style-type: none;
+  margin: 0;
+}
+
+ul.menu li.expanded,
+ul.menu li.collapsed,
+ul.menu li.leaf {
+}
+
+.block ul.menu li {
+  border-bottom: 1px dotted #ccc;
+  padding: 0;
+}
+
+.block ul.menu li a {
+  background: url(../images/arrow-4.png) 100% 12px no-repeat;
+  color: #353535;
+  display: block;
+  padding: 6px 10px 6px 0;
+}
+
+.block ul.menu li ul {
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.block ul.menu li li {
+  border-bottom: none;
+}
+
+.block ul.menu li li a {
+  background: url(../images/arrow-4.png) 0 8px no-repeat;
+  padding: 2px 0 2px 10px;
+}
+
+.block ul.menu li a:visited {
+}
+
+.block ul.menu li a:hover,
+.block ul.menu li a:focus,
+.block ul.menu li a:active {
+  background: url(../images/arrow-5.png) 100% 12px no-repeat;
+  color: #9a2016;
+  text-decoration: none;
+}
+
+.block ul.menu li li a:hover,
+.block ul.menu li li a:focus,
+.block ul.menu li li a:active,
+.block ul.menu li li.active-trail > a, 
+.block ul.menu li li > a.active {
+  background: url(../images/arrow-5.png) 0 8px no-repeat;
+}
+
+/* Expanded Items */
+.block ul.menu li.expanded {
+}
+
+.block ul.menu li.expanded li.expanded {
+}
+
+.block ul.menu li.expanded li.expanded a {
+}
+
+.block ul.menu li.expanded ul {
+}
+
+.block ul.menu li.expanded ul ul {
+}
+
+/* Collapsed Item */
+.block ul.menu li.collapsed {
+}
+
+.block ul.menu li li.collapsed a,
+.block ul.menu li.expanded li.collapsed a {
+}
+
+/* Leaf Items */
+.block ul.menu li.leaf a {
+}
+
+.block ul.menu li.expanded li.leaf a {
+}
+
+/* Active Items */
+.block ul.menu li.active-trail > a,
+.block ul.menu li > a.active {
+  background: url(../images/arrow-5.png) 100% 12px no-repeat;
+  color: #9a2016;
+  font-weight: bold;
+}
+
+.block ul.menu li.leaf a.active {
+}
+
+.block ul.menu li li a.active {
+  background: url(../images/arrow-5.png) 0 8px no-repeat;
+}
+
+.block ul.menu li li li a.active {
+}
+
+/* Misc. Items */
+.block ul.menu li.first {
+}
+
+.block ul.menu li.last {
+  border-bottom: 0;
+}
+
+.block ul.menu li.content {
+  padding: 0;
+}
+
+/* --- Breadcrumb --- */
+#breadcrumb-wrapper {
+  margin-bottom: 0;
+}
+
+#breadcrumb-wrapper .grid-inner {  
+  border-top: 1px solid #ddd;
+  padding-bottom: 7px;
+  padding-top: 7px;
+}
+
+#breadcrumb-wrapper h2 {
+  clip: auto;
+  display: block;
+  float: left;
+  font-size: 1em;
+  font-weight: normal;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 17px;
+  margin: 0 10px 0 0;
+  position: relative !important;
+}
+
+#breadcrumb-wrapper ol {
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+#breadcrumb-wrapper ol li {
+  display: block;
+  float: left;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#breadcrumb-wrapper ol li span {
+  background: url(../images/arrow-5.png) 50% 7px no-repeat;
+  display: block;
+  float: left;
+  overflow: hidden;
+  text-indent: -999em;
+  text-align: center;
+  width: 20px;
+}
+
+#breadcrumb-wrapper ol li a {
+  display: block;
+  float: left;
+}
+
+.btn-top {
+  float: right;
+}
+
+/* --- Seconday Menu (User Menu) --- */
+#secondary-menu {
+  clear: right;
+  display: block;
+  float: right;
+  padding-top: .75em;
+  text-align: right;
+}
+
+#secondary-menu ul {
+  margin: .5em 0 0 0;
+}
+
+#secondary-menu ul li {
+  display: inline;
+  margin: 0;
+  padding: 0 0 0 .5em;
+}
+
+#secondary-menu ul li a {
+}
+
+#secondary-menu ul li a:hover,
+#secondary-menu ul li a:active,
+#secondary-menu ul li a:focus {
+}
+
+/* --- Footer Menu --- */
+#footer ul.menu {
+  margin: 0;
+  padding: 0;
+}
+
+#footer ul.menu li {
+  background: url(../images/line-footer.gif) 100% 50% no-repeat;
+  display: block;
+  float: left;
+  margin: 0 10px 0 0;
+  padding: 0 13px 0 0;
+}
+
+#footer ul.menu li.last {
+  background: none;
+  margin-right: 0;
+}
+
+#footer ul.menu li a {
+  color: #888;
+}
+
+#footer ul.menu li a:hover,
+#footer ul.menu li a:active,
+#footer ul.menu li a:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+#footer ul.menu li a.active {
+  color: #fff;
+}
+
+/* --- Pager --- */
+div.pager {
+}
+
+ul.pager {
+  clear: both;
+  margin: 0;
+  text-align: right;
+}
+
+.item-list .pager {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.item-list ul.pager li {
+  margin: 0 0 0 3px;
+  padding: 3px 6px;
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+}
+
+ul.pager li {
+  background-image: none;
+  display: inline;
+  font-size: .92em;
+  line-height: normal;
+  list-style-type: none;
+}
+
+ul.pager li a,
+ul.pager li span {
+}
+
+ul.pager li a {  
+  color: #888;
+}
+
+ul.pager li a:visited {
+}
+
+ul.pager li a:hover,
+ul.pager li a:active,
+ul.pager li a:focus {
+  background: #333;
+  color: #fff;
+  text-decoration: none;
+}
+
+ul.pager li a.active {
+}
+
+ul.pager li.pager-item {
+}
+
+ul.pager li.first {
+}
+
+ul.pager li.last {
+}
+
+ul.pager li.pager-current span {
+  background: #c00;
+  color: #fff;
+}
+
+ul.pager li.pager-first {
+}
+
+ul.pager li.pager-previous {
+}
+
+ul.pager li.pager-next {
+}
+
+ul.pager li.pager-last {
+}
+
+/* Pager List */
+ul.pager-list {
+}
+
+/* Pager Links */
+ul.pager-links {
+  margin-top: 5px;
+}
+
+/* --- Items List --- */
+.item-list ul {
+  margin: 0;
+  padding: 0;
+}
+
+.item-list ul li {
+  background: url(../images/bullet.png) no-repeat 0 8px;
+  list-style: none;
+  margin: 0;
+  padding: 3px 0 3px 15px;
+}
+
+.item-list ul li a {
+  color: #353535;
+}
+
+.item-list ul li a:hover,
+.item-list ul li a:active,
+.item-list ul li a:focus {
+  background: none;
+  color: #9a2016;
+  text-decoration: none;
+}
+
+.item-list ul.pager li.pager-current {
+  background: none;
+  color: #9a2016;
+  font-weight: normal;
+}
+
+/* --- Links --- */
+.links a {
+}
+
+ul.links {
+}
+
+ul.links li {
+}
+
+ul.links li a {
+}
+
+/* --- Action Links --- */
+ul.action-links {
+  list-style: none;
+  margin: 5px;
+  padding: 0.5em 1em;
+}
+
+ul.action-links li {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+ul.action-links li a {
+  background: url(../images/plus.png) no-repeat left center;
+  margin: 0 10px 0 0;
+  padding-left: 15px;
+}
+
+/* --- More Links --- */
+.more-link {
+}
+
+.more-link a {
+}
+
+/* SUPERFISH
+----------------------------------------------------*/
+.sf-menu {
+}
+
+.sf-menu a {
+  padding: .5em 1em;
+  text-decoration: none;
+}
+
+.sf-menu > li > a {
+}
+
+.sf-menu li {
+  background: transparent;
+}
+
+.sf-menu li li {
+}
+
+.sf-menu li li li {
+}
+
+.sf-menu li li li li {
+}
+
+.sf-menu li:hover,
+.sf-menu li.sfHover,
+.sf-menu a:focus,
+.sf-menu a:hover,
+.sf-menu a:active {
+  outline: 0;
+}
+
+/* --- Supperfish --- */
+.block-superfish .block-inner,
+.block-superfish .block-inner .block-content {
+  margin: 0;
+  padding: 0;
+}
+
+.block-superfish ul,
+.block-superfish ul ul,
+.block-superfish ul ul ul,
+.block-superfish ul ul ul ul,
+.block-superfish li {
+  margin: 0;
+  padding: 0;
+}
+
+.sf-vertical,
+.sf-vertical li {
+  width: 100%;
+}
+
+.sf-vertical li:hover ul,
+.sf-vertical li.sfHover ul {
+  left: 100%; /* match ul width */
+  margin: 0;
+  padding: 0;
+  top: 0;
+}
+
+ul.sf-navbar {
+  padding-bottom: 38px !important; /* Height for navbar */
+}
+
+/**
+ * Tabs
+ */
+
+/* --- System Tabs --- */
+ul.primary {
+  border-bottom-color: #ddd;
+  line-height: normal;
+  margin: 0 0 1em;
+  padding: 0;
+  overflow: hidden;
+}
+
+ul.primary li {
+  margin: 0 1px 0 0;
+  display: block;
+  float: left;
+}
+
+ul.primary li a {
+  background-color: #ddd;
+  border: 1px solid #ddd;
+  color: #7b7b7b;
+  margin-right: .08em;
+  padding: 5px 10px 3px 10px;
+  display: block;
+  float: left;
+}
+
+ul.primary li a:hover {
+  background-color: #ddd;
+  border-color: #ddd;
+  color: #9A2016;
+}
+
+ul.primary li.active a {
+  background-color: #fff;
+  border-bottom-color: #fff;
+  border-color: #ddd;
+  border-bottom: none;
+  color: #333;
+  padding-bottom: 4px;
+}
+
+.local-tasks ul.primary li a:hover {
+  background-color: transparent;
+  border-color: #ddd;
+  color: #c00;
+}
+
+.local-tasks ul.primary li.active a {
+  background-color: #fff;
+  border-bottom-color: #ccc;
+}
+
+ul.secondary {
+  border-bottom: 1px solid #ccc;
+  margin: 1em 0 0;
+  padding: 0 .3em 1em;
+}
+
+ul.secondary li {
+  border-right: 0;
+  list-style: none;
+  padding: 0 2em 0 0;
+}
+
+ul.secondary li a:hover,
+ul.secondary li a.active {
+  border-bottom: none;
+  text-decoration: underline;
+}
+
+/**
+ * Misc.
+ */
+
+#tasks {
+  margin-bottom: 1em;
+}
+
+/* Skip Navigation */
+#skip-link {
+}
+
+#skip-link a,
+#skip-link a:visited {
+}
+
+#skip-link a:hover,
+#skip-link a:active,
+#skip-link a:focus {
+}
+
+/* Back To Top */
+a.btn-btt {
+  background: #ddd;
+  color: #7b7b7b;
+  line-height: normal;
+  padding: 3px 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+a.btn-btt:hover,
+a.btn-btt:active,
+a.btn-btt:focus {
+  background: #333;
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Contextual Links */
+.contextual-links-wrapper ul {
+}
+
+.contextual-links-wrapper ul li {
+  background-image: none;
+}
+
+/* Feed Icon */
+a.feed-icon {
+  display: inline-block;
+  margin-top: 1.5em;
+}
+
+a.feed-icon img {
+  margin: 0;
+  padding: 0;
+}

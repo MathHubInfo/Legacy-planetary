@@ -1,0 +1,241 @@
+/**
+* Common views elements
+*/
+
+/* --- Views Field --- */
+.views-field {
+}
+
+.field-content {
+}
+
+/* Views Field Title */
+.views-field-title {
+}
+
+.views-field-title .field-content {
+}
+
+/* Views Field Image */
+.sidebar .views-field-field-image {
+  float: left;
+  margin-right: 10px;
+}
+
+.sidebar .views-field-field-image img {
+  border: 1px solid #eee;
+  margin-top: 5px;
+  padding: 4px;
+}
+
+.views-field-field-image .field-content {
+}
+
+/* Views Field Body */
+.views-field-body {
+}
+
+.views-field-body .field-content {
+}
+
+/* Views Field Changed */
+.views-field-changed {
+}
+
+.views-field-changed .field-content {
+}
+
+/* --- Views Inline Grid --- */
+.cols-1 .views-col {
+  width: 100%;
+}
+
+.cols-2 .views-col {
+  width: 50%;
+}
+
+.cols-3 .views-col {
+  width: 33.33%;
+}
+
+.cols-4 .views-col {
+  width: 25%;
+}
+
+.cols-5 .views-col {
+  width: 20%;
+}
+
+.cols-6 .views-col {
+  width: 16.66%;
+}
+
+/* View latest item */
+.quicktabs_main .block-inner {
+  padding: 0;
+}
+
+.block-content .view-latest-article ul,
+.block-content .view-popular-article ul {
+  list-style: none;
+  margin: 0;
+}
+
+.block-content li.views-row {
+  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #fff;
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  padding: 10px 0;
+  position: relative;
+}
+
+.block-content li.views-row-first {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.block-content .views-field-title {
+  font-size: 110%;
+  font-weight: normal;
+}
+
+.block-content .views-field-field-avatar {
+  display: block;
+  float: left;
+  margin-right: 10px;
+}
+
+.block-content .views-field-field-avatar img,
+.block-content .views-field-field-avatar img {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 4px;
+}
+
+.block-content .view-latest-article a,
+.block-content .view-popular-article a {
+  color: #333;
+  font-size: 1.1em;
+  line-height: 1.3;
+}
+
+.block-content .view-latest-article a:hover,
+.block-content .view-latest-article a:focus,
+.block-content .view-latest-article a:active,
+.block-content .view-popular-article a:hover,
+.block-content .view-popular-article a:focus,
+.block-content .view-popular-article a:active {
+  color: #f3686d;
+}
+
+.block-content .view-latest-article .views-field-created,
+.block-content .view-popular-article .views-field-created {
+  color: #999;
+  font-size: 0.9em;
+}
+
+/* Panel */
+.panel-second .item-list ul {
+  margin-left: 0;
+}
+
+.panel-second .item-list ul li {
+  border-bottom: 1px dotted #444;
+  border-top: 0;
+  list-style: none;
+  margin: 0;
+  padding: 8px 0;
+}
+
+.panel-second .item-list .views-field-created {
+  color: #444;
+  font-size: 0.9em;
+  margin-top: 2px;
+}
+
+.panel-second .item-list .views-field-created .views-label-created {
+  font-weight: bold;
+}
+
+/* --- Tag --- */
+.block-content .view-tags-list ul li {
+  border: 0;
+  margin: 0 3px 3px 0;
+  overflow: visible;
+  padding: 0;
+}
+
+/* --- Portfolio page --- */
+.view-portfolio .view-content .item-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.view-portfolio .view-content .item-list .views-row {
+  background: url("../images/article-sep.gif") repeat-x scroll left bottom;
+  margin: 0 0 40px;
+  padding: 0 0 40px;
+}
+
+.view-portfolio .view-content .item-list .views-row .views-field-title {
+  font-family: 'BebasNeueRegular',sans-serif;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.view-portfolio .view-content .item-list .views-row .views-field-title a {
+  color: #333;
+}
+
+.view-portfolio .view-content .item-list .views-row .views-field-title a:hover,
+.view-portfolio .view-content .item-list .views-row .views-field-title a:focus,
+.view-portfolio .view-content .item-list .views-row .views-field-title a:active {
+  color: #f3686d;
+}
+
+.view-portfolio .view-content .views-field-field-portfolio-image img {
+  border: 1px solid #eee;
+  margin-bottom: 20px;
+  padding: 4px;
+}
+
+/* Grallery */
+.galleryformatter-greenarrows {
+  background: #f0f0f0;
+  margin-bottom: 20px;
+  padding: 5px 0;
+}
+
+.galleryformatter-greenarrows .gallery-thumbs {
+  margin-top: 10px;
+  padding: 0;
+}
+
+.galleryformatter-greenarrows .gallery-thumbs .wrapper {
+  background: none;
+}
+
+.galleryformatter-greenarrows .gallery-thumbs li {
+  border: 3px solid #fff;
+  margin: 2px;
+  padding: 0;
+}
+
+.galleryformatter-greenarrows .gallery-thumbs li.slide-0 {
+  margin-left: 0;
+}
+.galleryformatter-greenarrows .gallery-thumbs li.slide-4 {
+  margin-right: 0;
+}
+
+.galleryformatter-greenarrows .gallery-thumbs li.active {
+  border-color: #f3686d;
+}
+
+.galleryformatter-greenarrows .gallery-thumbs li a {
+  background: none;
+  padding: 0;
+}

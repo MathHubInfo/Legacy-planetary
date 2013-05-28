@@ -1,0 +1,149 @@
+<?php // $Id$
+
+/**
+ * @file
+ * GD2 toolkit functions
+ */
+
+function imageapi_gd_image_sharpen(stdImage $image, $radius, $sigma, $amount, $threshold) {
+  $threshold = round($threshold * 255);
+  $image->resource = imageapi_gd_unsharp_mask($image->resource, $radius, $sigma, $amount, $threshold);
+  return TRUE;
+}
+
+// Provide a implementation of imagerotate() and imagefilter() if they
+// weren't compiled into PHP.
+if (!function_exists('imagerotate')) {
+  require_once drupal_get_path('module', 'imageapi') .'/imagerotate.inc';
+}
+if (!function_exists('imagefilter')) {
+  require_once drupal_get_path('module', 'imageapi') .'/imagefilter.inc';
+}
+
+/**
+ * $sigma is currently unused for _gd_sharp_mask due to 3x3 convolution matrix limit.
+ * we should explore properly implementing sigma.
+ */
+function imageapi_gd_unsharp_mask($img, $radius, $sigma, $amount, $threshold)    {
+
+  //////////////////////////////////////////////////////////////
+  ////
+  ////                  Unsharp Mask for PHP - version 2.1.1
+  ////
+  ////    Unsharp mask algorithm by Torstein H�nsi 2003-07.
+  ////             thoensi_at_netcom_dot_no.
+  ////               Please leave this notice.
+  ////
+  //////////////////////////////////////////////////////////////
+
+  // http://vikjavev.no/computing/ump.php
+
+  // $img is an image that is already created within php using
+  // imgcreatetruecolor. No url! $img must be a truecolor image.
+
+  // Attempt to calibrate the parameters to Photoshop:
+  if ($amount > 500) $amount = 500;
+  $amount = $amount * 0.016;
+  if ($radius > 50) $radius = 50;
+  $radius = $radius * 2;
+  if ($threshold > 255) $threshold = 255;
+
+  $radius = abs(round($radius)); // Only integers make sense.
+  if ($radius == 0) {
+    return $img; imagedestroy($img);
+    break;
+  }
+
+  $w = imagesx($img); $h = imagesy($img);
+  $img_canvas = imagecreatetruecolor($w, $h);
+  $img_blur = imagecreatetruecolor($w, $h);
+
+  // Gaussian blur matrix:
+  //
+  //    1    2    1
+  //    2    4    2
+  //    1    2    1
+  //
+  //////////////////////////////////////////////////
+
+  $matrix = array(
+    array( 1, 2, 1 ),
+    array( 2, 4, 2 ),
+    array( 1, 2, 1 )
+    );
+
+  imagecopy($img_blur, $img, 0, 0, 0, 0, $w, $h);
+  imageconvolution($img_blur, $matrix, 16, 0);
+
+  if ($threshold > 0) {
+    // Calculate the difference between the blurred pixels and the original
+    // and set the pixels
+    for ($x = 0; $x < $w-1; $x++)    { // each row
+      for ($y = 0; $y < $h; $y++)    { // each pixel
+
+        $rgb_orig = imagecolorat($img, $x, $y);
+        $r_orig = (($rgb_orig >> 16) & 0xFF);
+        $g_orig = (($rgb_orig >> 8) & 0xFF);
+        $b_orig = ($rgb_orig & 0xFF);
+
+        $rgb_blur = imagecolorat($img_blur, $x, $y);
+
+        $r_blur = (($rgb_blur >> 16) & 0xFF);
+        $g_blur = (($rgb_blur >> 8) & 0xFF);
+        $b_blur = ($rgb_blur & 0xFF);
+
+        // When the masked pixels differ less from the original
+        // than the threshold specifies, they are set to their original value.
+        $r_new = (abs($r_orig - $r_blur) >= $threshold)
+          ? max(0, min(255, ($amount * ($r_orig - $r_blur)) + $r_orig))
+          : $r_orig;
+        $g_new = (abs($g_orig - $g_blur) >= $threshold)
+          ? max(0, min(255, ($amount * ($g_orig - $g_blur)) + $g_orig))
+          : $g_orig;
+        $b_new = (abs($b_orig - $b_blur) >= $threshold)
+          ? max(0, min(255, ($amount * ($b_orig - $b_blur)) + $b_orig))
+          : $b_orig;
+
+        if (($r_orig != $r_new) || ($g_orig != $g_new) || ($b_orig != $b_new)) {
+          $pix_col = imagecolorallocate($img, $r_new, $g_new, $b_new);
+          imagesetpixel($img, $x, $y, $pix_col);
+        }
+      }
+    }
+  }
+  else{
+    for ($x = 0; $x < $w; $x++)    { // each row
+      for ($y = 0; $y < $h; $y++)    { // each pixel
+        $rgb_orig = imagecolorat($img, $x, $y);
+        $r_orig = (($rgb_orig >> 16) & 0xFF);
+        $g_orig = (($rgb_orig >> 8) & 0xFF);
+        $b_orig = ($rgb_orig & 0xFF);
+
+        $rgb_blur = imagecolorat($img_blur, $x, $y);
+
+        $r_blur = (($rgb_blur >> 16) & 0xFF);
+        $g_blur = (($rgb_blur >> 8) & 0xFF);
+        $b_blur = ($rgb_blur & 0xFF);
+
+        $r_new = ($amount * ($r_orig - $r_blur)) + $r_orig;
+        if ($r_new>255) $r_new=255;
+        elseif ($r_new<0) $r_new=0;
+
+        $g_new = ($amount * ($g_orig - $g_blur)) + $g_orig;
+        if ($g_new>255) $g_new=255;
+        elseif ($g_new<0) $g_new=0;
+
+        $b_new = ($amount * ($b_orig - $b_blur)) + $b_orig;
+        if ($b_new>255) $b_new=255;
+        elseif ($b_new<0) $b_new=0;
+
+        $rgb_new = ($r_new << 16) + ($g_new <<8) + $b_new;
+        imagesetpixel($img, $x, $y, $rgb_new);
+      }
+    }
+  }
+  imagedestroy($img_canvas);
+  imagedestroy($img_blur);
+
+  return $img;
+}

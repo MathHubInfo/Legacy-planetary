@@ -1,0 +1,175 @@
+; Theme info
+name = 'Tb Rave'
+description = TB Rave is a theme of choice for building a magazine, news site. The clean and simple design along with many supported modules and features, this theme gives great articles and photos viewing. Explore and experience it yourself. Requires <a href="http://drupal.org/project/nucleus">Nucleus</a> base theme.
+core = '7.x'
+engine = 'phptemplate'
+base theme = 'nucleus'
+screenshot = 'screenshot.png'
+
+; Stylesheets
+stylesheets[all][] = 'css/html-elements.css'
+stylesheets[all][] = 'css/forms.css'
+stylesheets[all][] = 'css/page.css'
+stylesheets[all][] = 'css/articles.css'
+stylesheets[all][] = 'css/comments.css'
+stylesheets[all][] = 'css/forum.css'
+stylesheets[all][] = 'css/fields.css'
+stylesheets[all][] = 'css/blocks.css'
+stylesheets[all][] = 'css/navigation.css'
+stylesheets[all][] = 'css/fonts.css'
+
+; Seperate CSS3 to css3.css
+stylesheets[all][] = 'css/css3.css'
+
+; Stylesheets for Print Media
+stylesheets[print][] = 'css/print.css'
+
+; Conditional Stylesheets for IE
+stylesheets-conditional[IE][all][] = css/ie.css
+stylesheets-conditional[IE 9][all][] = css/ie7.css
+stylesheets-conditional[IE 7][all][] = css/ie7.css
+
+scripts[] = 'js/tb_rave.js'
+
+; Core regions
+regions[content] = 'Main content'
+regions[header] = 'Header'
+regions[menu_bar] = 'Menu bar'
+regions[slideshow] = 'Slideshow'
+regions[feature] = 'Feature'
+regions[highlighted] = 'Highlighted'
+regions[footer] = 'Footer'
+regions[help] = 'Help'
+regions[page_top] = 'Page top'
+regions[page_bottom] = 'Page bottom'
+
+; Sidebar regions
+regions[sidebar_first] = 'Sidebar first'
+regions[sidebar_second] = 'Sidebar second'
+
+; panel regions
+regions[panel_first_1] = 'Panel first column 1'
+regions[panel_first_2] = 'Panel first column 2'
+regions[panel_first_3] = 'Panel first column 3'
+regions[panel_first_4] = 'Panel first column 4'
+
+; Features (core settings)
+features[] = 'logo'
+features[] = 'name'
+features[] = 'slogan'
+features[] = 'node_user_picture'
+features[] = 'comment_user_picture'
+features[] = 'comment_user_verification'
+features[] = 'favicon'
+features[] = 'go_to_top_button'
+features[] = 'secondary_menu'
+
+; Breadcrumb
+settings[breadcrumb_display] = 'yes'
+settings[breadcrumb_separator] = ' &#187; '
+settings[breadcrumb_home] = 1
+
+; Back to top
+settings[back_to_top_display] = 1
+
+; Layouts
+pages[default] = 'Normal page'
+
+; Default settings
+settings[grid] = 'fixed-grid-24'
+settings[layout_width] = '960px'
+settings[layout_debug_grid] = 0
+settings[page_layout] = 'default'
+
+; Sidebar width settings
+settings[sidebar_first_width] = 8
+settings[sidebar_second_width] = 5
+
+; Panel width settings
+settings[panel_first_1_width] = 6
+settings[panel_first_2_width] = 6
+settings[panel_first_3_width] = 6
+settings[panel_first_4_width] = 6
+
+; Fonts
+settings[base_font] = 'bf-a'
+settings[site_name_font] = ''
+settings[site_slogan_font] = ''
+settings[page_title_font] = ''
+settings[node_title_font] = ''
+settings[comment_title_font] = ''
+settings[block_title_font] = ''
+settings[font_size] = 'fs-small'
+
+; Extra Typo
+settings[load_extra_typo_styles] = 1
+
+; Default fonts family
+default_fonts[sss] = 'Calibri, Candara, Helvetica Neue, Trebuchet MS, Arial, Helvetica, sans-serif'
+default_fonts[ssl] = 'Verdana, Geneva, Arial, Helvetica, sans-serif'
+default_fonts[a] = 'Arial, Helvetica, sans-serif'
+default_fonts[ss] = 'Garamond, Perpetua, Times New Roman, serif'
+default_fonts[sl] = 'Georgia, Baskerville, Palatino, Palatino Linotype, Book Antiqua, Times New Roman, serif'
+default_fonts[m] = 'Segoe UI, Myriad Pro, Myriad, Arial, Helvetica, sans-serif;'
+default_fonts[l] = 'Lucida Sans Unicode, Lucida Sans, Lucida Grande, Verdana, Geneva, sans-serif'
+default_fonts[ms] = 'Consolas, Monaco, Courier New, Courier, monospace'
+
+block_styles[raw] = 'Raw'
+
+; Supported Skins
+skins[blue] = 'Blue Style'
+skins[green] = 'Green Style'
+skins[orange] = 'Orange Style'
+
+; Slideshow
+block_styles[slideshow] = 'Slideshow'
+block_extend_classes[slideshow] = 'Main Slideshow'
+
+block_extended_class_groups[slideshow_group][group_title] = 'Slideshow Group'
+block_extended_class_groups[slideshow_group][supported_styles] = 'slideshow'
+block_extended_class_groups[slideshow_group][classes] = 'slideshow'
+
+; Superfish Styles
+superfish_styles[rave] = 'Rave Style for Superfish'
+settings[superfish_extend_style_1] = 'rave'
+superfish_styles[rave] = 'Rave Style for Navbar'
+settings[superfish_extend_style_2] = 'rave'
+
+; Quicktabs Styles
+quicktabs_styles[rave] = 'Rave Style for Quicktabs'
+settings[quicktabs_extend_style_quicktabs] = 'rave'
+
+settings[default_region_footer_style] = 'raw'
+settings[default_region_header_style] = 'raw'
+settings[default_region_slideshow_style] = 'slideshow'
+settings[default_region_slideshow_extend_class] = 'slideshow_group slideshow'
+
+settings[toggle_logo] = 1
+settings[toggle_name] = 0
+settings[toggle_slogan] = 0
+settings[toggle_node_user_picture] = 1
+settings[toggle_comment_user_picture] = 1
+settings[toggle_comment_user_verification] = 1
+settings[toggle_favicon] = 1
+settings[toggle_secondary_menu] = 0
+settings[default_logo] = 1
+settings[default_favicon] = 1
+
+settings[default_logo] = 1
+settings[logo_path] = ''
+settings[default_favicon] = 1
+settings[favicon_path] = ''
+
+; Information added by drupal.org packaging script on 2012-11-22
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "tb_rave"
+datestamp = "1353586728"
+
+
+; Information added by drupal.org packaging script on 2013-02-21
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "tb_rave_starter"
+datestamp = "1361455337"
+

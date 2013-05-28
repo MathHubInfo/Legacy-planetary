@@ -1,0 +1,133 @@
+.sf-menu.sf-style-starter {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.sf-menu.sf-style-starter ul {
+  padding-left: 0;
+}
+
+.sf-menu.sf-style-starter li {
+  margin: 0;
+}
+
+.sf-menu.sf-style-starter a {
+  padding: .75em 1.5em;
+}
+
+/* "Have child" Item */
+.sf-menu.sf-style-starter li.menuparent {
+}
+
+.sf-menu.sf-style-starter a.menuparent {
+}
+
+/* Child Menu */
+.sf-menu.sf-style-starter ul {
+}
+
+.sf-menu.sf-style-starter ul li {
+}
+
+/* Hover Links */
+.sf-menu.sf-style-starter li:hover,
+.sf-menu.sf-style-starter li.sfHover,
+.sf-menu.sf-style-starter a:hover,
+.sf-menu.sf-style-starter a:focus,
+.sf-menu.sf-style-starter a:active {
+}
+
+/* Child Menu Items Hover */
+.sf-menu.sf-style-starter ul li:hover,
+.sf-menu.sf-style-starter ul li.sfHover,
+.sf-menu.sf-style-starter ul li a:focus,
+.sf-menu.sf-style-starter ul li a:hover,
+.sf-menu.sf-style-starter ul li a:active {
+}
+
+/* Active Links */
+.sf-menu.sf-style-starter a.active {
+}
+
+.sf-menu.sf-style-starter .active-trail .sf-depth-1 {
+}
+
+/* Child Menu Items Active */
+.sf-menu.sf-style-starter ul li a.active {
+}
+
+/* Navbar */
+.sf-menu.sf-style-starter.sf-navbar {
+  width: 100%;
+}
+
+/* MegaMenu */
+.sf-menu.sf-style-starter span.sf-description {
+  display: block;
+}
+
+.sf-menu.sf-style-starter a.sf-with-ul {
+  padding-right: 2.25em;
+}
+
+.sf-menu.sf-style-starter.rtl a.sf-with-ul { /* RTL */
+  padding-left: 2.25em;
+  padding-right: 1em;
+}
+
+.sf-menu.sf-style-starter ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+  display: inline;
+  float: left;
+  width: 12em;
+}
+
+.sf-menu.sf-style-starter.rtl ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+  float: right; /* RTL */
+}
+
+.sf-menu.sf-style-starter ul.sf-megamenu li.sf-megamenu-wrapper ol,
+.sf-menu.sf-style-starter ul.sf-megamenu li.sf-megamenu-wrapper ol li {
+  margin: 0;
+  padding: 0;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-1 ul.sf-megamenu {
+  width: 12em;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-10 ul.sf-megamenu {
+  width: 120em;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-2 ul.sf-megamenu {
+  width: 24em;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-3 ul.sf-megamenu {
+  width: 36em;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-4 ul.sf-megamenu {
+  width: 48em;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-5 ul.sf-megamenu {
+  width: 60em;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-6 ul.sf-megamenu {
+  width: 72em;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-7 ul.sf-megamenu {
+  width: 84em;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-8 ul.sf-megamenu {
+  width: 96em;
+}
+
+.sf-menu.sf-style-starter li.sf-parent-children-9 ul.sf-megamenu {
+  width: 108em;
+}

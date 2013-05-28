@@ -1,0 +1,114 @@
+;Theme info
+name = 'nucleus'
+description = 'Base theme for Drupal'
+core = '7.x'
+engine = 'phptemplate'
+screenshot = 'screenshot.png'
+;hidden = 'TRUE'
+
+;Stylesheets
+stylesheets[all][] = 'css/messages.css'
+;Scripts
+scripts[] = 'js/jquery.cookie.js'
+
+; Conditional Stylesheets for IE
+stylesheets-conditional[IE 7][all][] = css/ie7.css
+stylesheets-conditional[IE][all][] = css/ie.css
+
+;Core regions
+regions[content] = 'Main content'
+regions[header] = 'Header'
+regions[menu_bar] = 'Menu bar'
+regions[highlighted] = 'Highlighted'
+regions[slideshow] = 'Slideshow'
+regions[footer] = 'Footer'
+regions[help] = 'Help'
+regions[page_top] = 'Page top'
+regions[page_bottom] = 'Page bottom'
+
+;Sidebar regions
+regions[sidebar_first] = 'Sidebar first'
+regions[sidebar_second] = 'Sidebar second'
+
+;panel regions
+regions[panel_first_1] = 'Panel first column 1'
+regions[panel_first_2] = 'Panel first column 2'
+regions[panel_first_3] = 'Panel first column 3'
+regions[panel_first_4] = 'Panel first column 4'
+
+regions[panel_second_1] = 'Panel second column 1'
+regions[panel_second_2] = 'Panel second column 2'
+regions[panel_second_3] = 'Panel second column 3'
+regions[panel_second_4] = 'Panel second column 4'
+
+;Features (core settings)
+features[] = 'logo'
+features[] = 'name'
+features[] = 'slogan'
+features[] = 'node_user_picture'
+features[] = 'comment_user_picture'
+features[] = 'comment_user_verification'
+features[] = 'favicon'
+features[] = 'go_to_top_button'
+features[] = 'secondary_menu'
+
+;Breadcrumb
+settings[breadcrumb_display] = 'yes'
+settings[breadcrumb_separator] = ' &#187; '
+settings[breadcrumb_home] = 1
+
+;Layouts
+pages[default] = 'Normal page'
+
+;Default settings
+settings[grid] = 'fluid-grid-24'
+settings[layout_width] = '960px'
+settings[page_layout] = 'default'
+
+;Sidebar width settings
+settings[sidebar_first_width] = 6
+settings[sidebar_second_width] = 6
+
+;Panel width settings
+settings[panel_first_1_width] = 6
+settings[panel_first_2_width] = 6
+settings[panel_first_3_width] = 6
+settings[panel_first_4_width] = 6
+
+settings[panel_second_1_width] = 6
+settings[panel_second_2_width] = 6
+settings[panel_second_3_width] = 6
+settings[panel_second_4_width] = 6
+
+;Fonts
+settings[base_font] = 'bf-sss'
+settings[site_name_font] = 'snf-sl'
+settings[site_slogan_font] = 'ssf-sl'
+settings[page_title_font] = 'ptf-sl'
+settings[node_title_font] = 'ntf-sl'
+settings[comment_title_font] = 'ctf-sl'
+settings[block_title_font] = 'btf-sl'
+settings[font_size] = 'fs-medium'
+
+supported_grids[12] = 12 columns
+supported_grids[16] = 16 columns
+supported_grids[24] = 24 columns
+supported_grids[min] = 2
+supported_grids[max] = 100
+supported_grids[delta] = 2
+
+settings[show_skins_menu] = 1
+
+; Information added by drupal.org packaging script on 2012-11-15
+version = "7.x-1.2"
+core = "7.x"
+project = "nucleus"
+datestamp = "1353011329"
+
+
+; Information added by drupal.org packaging script on 2013-02-21
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "tb_blog_starter"
+datestamp = "1361455198"
+

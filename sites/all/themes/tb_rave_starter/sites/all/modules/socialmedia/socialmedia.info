@@ -1,0 +1,24 @@
+; $Id$
+; Read more about Drupal 7 .info files here: http://drupal.org/node/542202
+name = Social media
+description = Example module to demonstrate module socialmedia.
+package = Social media
+core = 7.x
+php = 5.1
+configure = admin/config/media/socialmedia
+files[] = socialmedia.module
+files[] = socialmedia.admin.inc
+files[] = socialmedia.widgetx_elements.inc
+; Information added by drupal.org packaging script on 2012-09-04
+version = "7.x-1.0-beta13"
+core = "7.x"
+project = "socialmedia"
+datestamp = "1346720845"
+
+
+; Information added by drupal.org packaging script on 2013-02-21
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "tb_rave_starter"
+datestamp = "1361455337"
+

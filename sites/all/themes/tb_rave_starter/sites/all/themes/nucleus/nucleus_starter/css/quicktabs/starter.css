@@ -1,0 +1,116 @@
+/* --- Quicktabs ---*/
+.quicktabs_wrapper {
+}
+
+.quicktabs_main {
+  padding-top: 1em;
+}
+
+.quicktabs-style-starter ul.quicktabs-tabs {
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.quicktabs-style-starter ul.quicktabs-tabs li {
+  background: none;
+  display: block;
+  float: left;
+  list-style: none;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.quicktabs-style-starter ul.quicktabs-tabs li a {
+  display: block;
+  float: left;
+  padding: .25em .75em;
+}
+
+.quicktabs-style-starter ul.quicktabs-tabs li a:hover,
+.quicktabs-style-starter ul.quicktabs-tabs li a:active,
+.quicktabs-style-starter ul.quicktabs-tabs li a:focus {
+}
+
+.quicktabs-style-starter ul.quicktabs-tabs li.active a {
+}
+
+/* --- Arcodion --- */
+.quick-accordion-starter {
+  font-size: 1em; /* Ensure font size is approriate with the container */
+}
+
+/* Accordion Header */
+.quick-accordion-starter .ui-accordion-header {
+}
+
+.quick-accordion-starter .ui-accordion-header a {
+  padding: 0.25em 0.5em 0.25em 2em;
+}
+
+.quick-accordion-starter .ui-state-default .ui-icon {
+}
+
+/* Hover Accordion Header */
+.quick-accordion-starter .ui-state-hover {
+}
+
+.quick-accordion-starter .ui-state-hover a {
+}
+
+.quick-accordion-starter .ui-state-hover .ui-icon {
+}
+
+/* Active Accordion Header */
+.quick-accordion-starter .ui-state-active {
+}
+
+.quick-accordion-starter .ui-state-active a {
+}
+
+.quick-accordion-starter .ui-state-active .ui-icon {
+}
+
+/* Accordion Content */
+.quick-accordion-starter .ui-accordion-content {
+  padding: .5em;
+}
+
+/* --- UI Tabs --- */
+.quicktabs-ui-starter {
+  padding: 0;
+}
+
+/* Tabs */
+.quicktabs-ui-starter .ui-tabs-nav {
+  margin: 0;
+  padding: .25em .25em 0;
+}
+
+.quicktabs-ui-starter .ui-tabs-nav li {
+}
+
+.quicktabs-ui-starter .ui-tabs-nav li a {
+  padding: .375em .75em;
+}
+
+/* Hover Tabs */
+.quicktabs-ui-starter .ui-tabs-nav li.ui-state-hover {
+}
+
+.quicktabs-ui-starter .ui-tabs-nav li.ui-state-hover a {
+}
+
+/* Selected Tabs */
+.quicktabs-ui-starter .ui-tabs-nav li.ui-tabs-selected {
+}
+
+.quicktabs-ui-starter .ui-tabs-nav li.ui-tabs-selected a {
+}
+
+/* Tabs Content */
+.quicktabs-ui-starter .ui-tabs-panel {
+  padding: .5em;
+}

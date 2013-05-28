@@ -1,0 +1,232 @@
+/**
+ * Common View Elements
+ */
+
+/* --- Views Field --- */
+.views-field {
+}
+
+.field-content {
+}
+
+/* Views Field Title */
+.views-field-title {
+}
+
+.views-field-title .field-content {
+}
+
+/* Views Field Image */
+.views-field-field-image {
+}
+
+.views-field-field-image .field-content {
+}
+
+/* Views Field Body */
+.views-field-body {
+}
+
+.views-field-body .field-content {
+}
+
+/* Views Field Changed */
+.views-field-changed {
+}
+
+.views-field-changed .field-content {
+}
+
+/* --- Views Inline Grid --- */
+.views-row {
+}
+
+.views-row-odd {
+}
+
+.views-row-even {
+}
+
+.views-col {
+}
+
+.cols-1 .views-col {
+  width: 100%;
+}
+
+.cols-2 .views-col {
+  width: 50%;
+}
+
+.cols-3 .views-col {
+  width: 33.33%;
+}
+
+.cols-4 .views-col {
+  width: 25%;
+}
+
+.cols-5 .views-col {
+  width: 20%;
+}
+
+.cols-6 .views-col {
+  width: 16.66%;
+}
+
+/**
+ * Supported Views Formats
+ */
+/* --- Slideshow --- */
+.slideshow .container {
+}
+
+.slideshow .region-slideshow {
+  position: relative;
+}
+
+/* Titles */
+.slideshow .views-field-title {
+  background: #000114;
+  border-top: 1px solid #fff;
+  bottom: 0;
+  color: #fff;
+  left: 0;
+  position: absolute;
+  text-transform: uppercase;
+  opacity: 0.8;
+  filter: alpha(opacity = 80);
+  width: 100%;
+}
+
+.slideshow .views-field-title .field-content {
+  display: block;
+  padding: 20px 0 20px 20px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 1.66em;
+  text-shadow: 0 1px 0 #111;
+  width: 76%;
+  text-transform: none;
+}
+
+.slideshow .views-field-title a {
+  color: #fff;
+}
+
+.slideshow .views-field-title a:hover,
+.slideshow .views-field-title a:active,
+.slideshow .views-field-title a:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Slideshow Navigator */
+.slideshow .block-content {
+  position: relative;
+}
+
+.slideshow .views-slideshow-controls-bottom {
+  bottom: 20px;
+  font-size: .92em;
+  height: auto;
+  position: absolute;
+  right: 20px;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}
+
+.slideshow .views-slideshow-controls-top {
+  display: none;
+}
+
+.slideshow .views_slideshow_controls_text {
+  float: left;
+}
+
+.slideshow .views_slideshow_controls_text span {
+  display: block;
+  float: left;
+  margin: 0 0 0 10px; 
+}
+
+.slideshow .views_slideshow_controls_text span a {
+  background: url(../images/controls.png) 0 0 no-repeat;
+  display: block;
+  height: 30px;  
+  overflow: hidden;
+  text-indent: -999em;
+  width: 30px;
+}
+
+.slideshow .views_slideshow_controls_text span a:hover {
+  background-position: 0 -60px;
+}
+
+.slideshow .views_slideshow_controls_text .views-slideshow-controls-text-previous a {
+  background-position: 0 -30px;
+}
+
+.slideshow .views_slideshow_controls_text .views-slideshow-controls-text-previous a:hover {
+  background-position: 0 -90px;
+}
+
+.slideshow .views_slideshow_controls_text .views-slideshow-controls-text-pause {
+  display: none;
+}
+
+.slideshow .views_slideshow_slide_counter {
+  color: #fff;
+  float: left;
+  margin-left: 10px;
+  padding: 6px 0 0 0;
+}
+
+/* Slideshow Full Pager */
+#slideshow-wrapper .view > .pager {
+  bottom: 0;
+  height: auto;
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}
+
+/* Slideshow Mini Pager */
+#slideshow-wrapper .views-mini-pager {
+  bottom: 0;
+  height: auto;
+  position: absolute;
+  right: 0;
+  width: auto;
+  z-index: 20; /* if you have more than 18 images in slideshow, increase this value */
+}
+
+/* --- Sidebar --- */
+.view-custom-view .views-field-field-image {  
+  float: right;
+  margin-left: 5px;  
+}
+
+.view-custom-view .views-field-field-image img {
+  border: 1px solid #dedede;
+  padding: 3px;
+}
+
+.view-custom-view .views-field-view-node {
+  font-size: 0.912em;
+}
+
+/* --- Photo Stream --- */
+.view-photos-galerry .grid-inner {
+  border-right: none;
+  padding: 0;
+}
+
+.view-photos-galerry .views-field-field-photosgallery-images {
+  background: #f2f2f2;
+  border: 1px solid #ddd;
+  margin: 0 0 15px 10px;  
+  overflow: hidden;
+  padding: 4px;
+  width: 70px;
+}

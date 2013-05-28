@@ -1,0 +1,21 @@
+name = ImageAPI GD2
+description = Provides additional operations for PHP's built-in GD2 image processing support.
+package = ImageAPI
+core = 7.x
+files[] = imageapi_gd.install
+files[] = imageapi_gd.module
+files[] = imagefilter.inc
+files[] = imagerotate.inc
+; Information added by drupal.org packaging script on 2011-02-25
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "imageapi"
+datestamp = "1298619411"
+
+
+; Information added by drupal.org packaging script on 2013-02-21
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "tb_rave_starter"
+datestamp = "1361455337"
+

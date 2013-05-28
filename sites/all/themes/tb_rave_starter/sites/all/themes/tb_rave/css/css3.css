@@ -1,0 +1,27 @@
+/**
+ * CSS3
+ */
+
+/* Child Menu */
+.sf-menu.sf-style-rave ul,
+.sf-menu.sf-style-rave.sf-navbar li ul ul {
+  box-shadow: -2px 2px 0 rgba(221, 221, 221, 0.4);
+  -webkit-box-shadow: -2px 2px 0 rgba(221, 221, 221, 0.4);
+}
+
+.sf-shadow ul {
+  border-radius: 0;
+}
+
+.sf-menu.sf-style-rave.sf-navbar li > ul {
+  box-shadow : none;
+  margin-top: 25px;
+}
+
+.wrapper > .container {
+  box-shadow: 0 0 4px #c5c5c5, -1px 0 4px #c5c5c5;
+}
+
+#header-wrapper .container {
+  box-shadow: 0 -4px 4px #c5c5c5, -1px -4px 4px #c5c5c5;
+}

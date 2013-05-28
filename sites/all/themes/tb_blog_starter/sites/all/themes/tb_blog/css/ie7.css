@@ -1,0 +1,7 @@
+.poll .vote-form .choices .form-item.form-type-radio {
+  padding-left: 20px !important;
+}
+
+.poll .vote-form .choices .form-item input.form-radio {
+  top: 0px;
+}

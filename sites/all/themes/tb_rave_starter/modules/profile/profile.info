@@ -1,0 +1,25 @@
+name = Profile
+description = Supports configurable user profiles.
+package = Core
+version = VERSION
+core = 7.x
+files[] = profile.test
+configure = admin/config/people/profile
+; The Profile module is deprecated, and included in Drupal 7 for legacy
+; purposes only. By default, the module will be hidden from the UI unless you
+; are upgrading a site that uses the Profile module to extend user profiles.
+; See user_system_info_alter().
+hidden = TRUE
+
+; Information added by drupal.org packaging script on 2013-01-16
+version = "7.19"
+project = "drupal"
+datestamp = "1358374870"
+
+
+; Information added by drupal.org packaging script on 2013-02-21
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "tb_rave_starter"
+datestamp = "1361455337"
+

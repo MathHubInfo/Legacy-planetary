@@ -1,0 +1,35 @@
+/**
+ * IE Compatibility Tweaks
+ */
+
+/* blocks.css */
+.block-user .item-list li {
+  zoom: 1;
+}
+
+#user-login-form .item-list li {
+}
+
+/* forms.css */
+input.form-submit {
+  overflow: visible; /* IE Fix */
+}
+
+input.form-submit,
+a.button {
+  padding: 3px 10px;
+}
+
+#comment-form .filter-wrapper {
+  padding-top: 1em;
+}
+
+#edit-openid-identifier {
+  width: 95%;
+}
+
+/* fields.css */
+.field-type-taxonomy-term-reference ul li {
+  display: inline;
+  zoom: 1;
+}

@@ -1,0 +1,26 @@
+
+/**
+ * Image style configuration pages.
+ */
+table#socialmedia-iconsets th {
+  padding: 3px 2px;
+  width: 34px;
+}
+
+table#socialmedia-iconsets td {
+  padding: 5px 2px;
+  width: 34px;
+}
+
+/**
+ * Setup wizard styling
+ */
+#socialmedia-setup-4-form #preview {
+  float: left;
+  width: 50%
+}
+
+#socialmedia-setup-4-form #settings {
+  float: right;
+  width: 50%
+}

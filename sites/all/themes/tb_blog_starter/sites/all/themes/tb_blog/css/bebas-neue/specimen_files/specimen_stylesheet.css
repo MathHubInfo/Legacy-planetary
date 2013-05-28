@@ -1,0 +1,510 @@
+@import url('grid_12-825-55-15.css');
+
+/*
+CSS Reset by Eric Meyer - Released under Public Domain
+http://meyerweb.com/eric/tools/css/reset/
+*/
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  background: transparent;
+  border: 0;
+  font-size: 100%;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+:focus {
+  outline: 0;
+}
+ins {
+  text-decoration: none;
+}
+del {
+  text-decoration: line-through;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+body {
+  background-color: #dcdcdc;
+  color: #000;
+}
+
+a {
+  color: #1883ba;
+  text-decoration: none;
+}
+
+h1 {
+  font-size: 32px;
+  font-style: normal;
+  font-weight: normal;
+  margin-bottom: 18px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+#container {
+  margin: 0px auto;
+  width: 865px;
+}
+
+#header {
+  background-color: #000;
+  color: #fff;
+  font-size: 36px;
+  padding: 20px;
+}
+
+#header span {
+  color: #666;
+}
+#main_content {
+  background-color: #fff;
+  padding: 60px 20px 20px;
+}
+
+#footer p {
+  color: #333;
+  font: 10px Arial, sans-serif;
+  margin: 0;
+  padding-bottom: 50px;
+  padding-top: 10px;
+}
+
+.tabs {
+  background-color: #444;
+  height: 31px;
+  width: 100%;
+}
+.tabs li {
+  background-color: #444;
+  float: left;
+  margin: 0;
+  overflow: hidden;
+}
+.tabs li a {
+  border-right: 1px solid #fff;
+  color: #fff;
+  display: block;
+  font: bold 11px/11px 'Arial';
+  padding: 10px 15px;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.tabs li a:hover {
+  background-color: #00b3ff;
+}
+
+.tabs li.active a {
+  background-color: #fff;
+  color: #000;
+}
+
+div.huge {
+  font-size: 300px;
+  letter-spacing: -.02em;
+  line-height: 1em;
+  overflow: hidden;
+  padding: 0;
+}
+div.glyph_range {
+  font-size: 72px;
+  line-height: 1.1em;
+}
+
+.size10 {
+  font-size: 10px;
+}
+.size11 {
+  font-size: 11px;
+}
+.size12 {
+  font-size: 12px;
+}
+.size13 {
+  font-size: 13px;
+}
+.size14 {
+  font-size: 14px;
+}
+.size16 {
+  font-size: 16px;
+}
+.size18 {
+  font-size: 18px;
+}
+.size20 {
+  font-size: 20px;
+}
+.size24 {
+  font-size: 24px;
+}
+.size30 {
+  font-size: 30px;
+}
+.size36 {
+  font-size: 36px;
+}
+.size48 {
+  font-size: 48px;
+}
+.size60 {
+  font-size: 60px;
+}
+.size72 {
+  font-size: 72px;
+}
+.size90 {
+  font-size: 90px;
+}
+
+.psample_row1 {
+  height: 120px;
+}
+.psample_row1 {
+  height: 120px;
+}
+.psample_row2 {
+  height: 160px;
+}
+.psample_row3 {
+  height: 160px;
+}
+.psample_row4 {
+  height: 160px;
+}
+
+.psample {
+  overflow: hidden;
+  position: relative;
+}
+.psample p {
+  display: block;
+  line-height: 1.3em;
+  margin: 0;
+  overflow: hidden;
+}
+
+.psample span {
+  margin-right: .5em;
+}
+
+.white_blend {
+  background-image: url(data: image/png;
+  base64,iVBORw0KGgoAAAANSUhEUgAAAVkAAAA9CAYAAAAH4BojAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAO1JREFUeNrs3TsKgFAMRUE/eer+NxztxMYuEWQG3ECKwwUF58ycAKixOAGAyAKILAAiCyCyACILgMgCiCyAyAIgsgAiCyCyAIgsgMgCiCwAIgsgsgAiC4DIAogsACIL0CWuZ3UGgLrIhjMA1EV2OAOAJQtgyQLwjOzmDAAiCyCyAIgsQFtkd2cAEFkAkQVAZAHaIns4A4AlC2DJAiCyACILILIAiCzAV5H1dQGAJQsgsgCILIDIAvwisl58AViyAJYsACILILIAIgvAe2T9EhxAZAFEFgCRBeiL7HAGgLrIhjMAWLIAliwAt1OAAQDwygTBulLIlQAAAABJRU5ErkJggg==);
+  bottom: 0;
+  height: 61px;
+  position: absolute;
+  width: 100%;
+}
+.black_blend {
+  background-image: url(data: image/png;
+  base64,iVBORw0KGgoAAAANSUhEUgAAAVkAAAA9CAYAAAAH4BojAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPJJREFUeNrs3TEKhTAQRVGjibr/9QoxhY2N3Ywo50A28IrLwP9g6b1PAMSYTQAgsgAiC4DIAogsgMgCILIAIgsgsgCILIDIAogsACILILIAIguAyAKILIDIAiCyACILgMgCZCnjLWYAiFGvB0BQZJsZAFyyAC5ZAO6RXc0AILIAIguAyAKkRXYzA4DIAogsACILkBbZ3QwALlkAlywAIgsgsgAiC4DIArwVWf8uAHDJAogsACILILIAv4isH74AXLIALlkARBZAZAFEFoDnyPokOIDIAogsACILkBfZZgaAuMhWMwC4ZAE+p4x3mAEgxinAAJ+XBbPWGkwAAAAAAElFTkSuQmCC);
+  bottom: 0;
+  height: 61px;
+  position: absolute;
+  width: 100%;
+}
+.fullreverse {
+  background: #000 !important;
+  color: #fff !important;
+  margin-bottom: 0;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.sample_table td {
+  line-height: 1.2em;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-top: 3px;
+  vertical-align: middle;
+}
+
+.sample_table td:first-child {
+  background-color: #eee;
+  font: 11px/12px "Courier New", Courier, mono;
+  padding: 5px;
+  padding-left: 0;
+  padding-right: 5px;
+  text-align: right;
+}
+
+code {
+  background-color: #eee;
+  display: block;
+  margin-bottom: 18px;
+  overflow: auto;
+  padding: 10px;
+  white-space: pre;
+}
+
+.bottom,
+.last {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.box {
+  background: #eee;
+  margin-bottom: 18px;
+  padding: 18px;
+}
+
+.reverse,
+.reversed {
+  background: #000 !important;
+  border: none !important;
+  color: #fff !important;
+}
+
+#bodycomparison {
+  font-size: 72px;
+  height: 90px;
+  overflow: hidden;
+  position: relative;
+  white-space: nowrap;
+}
+
+#bodycomparison div {
+  display: inline;
+  font-size: 72px;
+  line-height: 90px;
+  margin: 0 15px 0 0;
+  padding: 0;
+}
+
+#bodycomparison div span {
+  font: 10px Arial;
+  left: 0;
+  position: absolute;
+}
+#xheight {
+  color: #d9f3ff;
+  float: none;
+  font-size: 72px;
+  line-height: 90px;
+  position: absolute;
+}
+
+.fontbody {
+  position: relative;
+}
+.arialbody {
+  font-family: Arial;
+  position: relative;
+}
+.verdanabody {
+  font-family: Verdana;
+  position: relative;
+}
+.georgiabody {
+  font-family: Georgia;
+  position: relative;
+}
+
+/* @group Layout page
+*/
+
+#layout h1 {
+  font-size: 36px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 42px;
+}
+
+#layout h2 {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 23px;
+}
+
+#layout h3 {
+  font-size: 22px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.4em;
+  margin-top: 1em;
+}
+
+#layout p.byline {
+  font-size: 12px;
+  line-height: 12px;
+  margin-bottom: 0;
+  margin-top: 18px;
+}
+#layout p {
+  font-size: 14px;
+  line-height: 21px;
+  margin-bottom: .5em;
+}
+
+#layout p.large {
+  font-size: 18px;
+  line-height: 26px;
+}
+
+#layout .sidebar p {
+  font-size: 12px;
+  line-height: 1.4em;
+}
+
+#layout p.caption {
+  font-size: 10px;
+  margin-bottom: 18px;
+  margin-top: -16px;
+}
+
+/* @end */
+
+/* @group Glyphs */
+
+#glyph_chart div {
+  background-color: #d9f3ff;
+  color: black;
+  float: left;
+  font-size: 36px;
+  height: 1.2em;
+  line-height: 1.2em;
+  margin-bottom: 1px;
+  margin-right: 1px;
+  padding: .6em .2em .2em;
+  position: relative;
+  text-align: center;
+  width: 1.2em;
+}
+
+#glyph_chart div p {
+  background-color: #3a768f;
+  color: #fff;
+  display: block;
+  font: bold 9px Arial, sans-serif;
+  left: 0;
+  padding: 2px 0;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 100%;
+}
+
+#glyphs h1 {
+  font-family: Arial, sans-serif;
+}
+/* @end */
+
+/* @group Installing */
+
+#installing {
+  font: 13px Arial, sans-serif;
+}
+
+#installing p,
+#glyphs p {
+  font: 13px Arial, sans-serif;
+  line-height: 1.2em;
+  margin-bottom: 18px;
+}
+
+#installing h3 {
+  font-size: 15px;
+  margin-top: 18px;
+}
+
+/* @end */
+
+#rendering h1 {
+  font-family: Arial, sans-serif;
+}
+.render_table td {
+  font: 11px "Courier New", Courier, mono;
+  vertical-align: middle;
+}

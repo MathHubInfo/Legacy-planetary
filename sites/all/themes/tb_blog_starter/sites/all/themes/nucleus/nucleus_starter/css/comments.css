@@ -1,0 +1,156 @@
+/**
+ * TODO: check classes still apply in D7 - in particular the unpublished classes and the extra classes.
+ */
+
+/* Comments wrapper*/
+#comments {
+}
+
+#comments > h2 {
+  margin-bottom: .5em;
+}
+
+/* Individual comment */
+.comment {
+  margin-bottom: 1em;
+}
+
+/* Indentation */
+#comments .indented {
+  margin-left: 2em;
+}
+
+#comments .indented .comment {
+}
+
+/* Comment Title */
+.comment > .header {
+}
+
+.comment-title {
+  margin: 0;
+  padding: 0;
+}
+
+.comment-title a {
+  text-decoration: none;
+}
+
+.comment-title a:hover,
+.comment-title a:active,
+.comment-title a:focus {
+  text-decoration: underline;
+}
+
+/* Skinr comment title alignment. */
+.ta-l .comment-title {
+  text-align: left;
+}
+
+.ta-r .comment-title {
+  text-align: right;
+}
+
+.ta-c .comment-title {
+  text-align: center;
+}
+
+/* Comment "new" title */
+.comment-title .new {
+  color: #f80;
+}
+
+/* User Picture */
+.comment .user-picture {
+}
+
+.comment .user-picture img {
+}
+
+/* Comment Content */
+.comment-content {
+}
+
+/* Submitted */
+.comment > .footer {
+  margin: .5em 0 1em;
+}
+
+.comment > .footer .username {
+}
+
+.comment > .footer .time {
+}
+
+.comment > .footer a {
+}
+
+.comment > .footer a:hover,
+.comment > .footer a:active,
+.comment > .footer a:focus {
+}
+
+/* Links */
+.comment .comment-links {
+}
+
+.comment ul.links {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.comment ul.links li {
+}
+
+.comment ul.links li a {
+}
+
+/* Core comment link classes. */
+ul.links li.comment-reply a {
+}
+
+ul.links li.comment-edit a {
+}
+
+ul.links li.comment-delete a {
+}
+
+.comment ul.links li.first {
+}
+
+.comment ul.links li.last {
+}
+
+/**
+ * Different status for comments
+ */
+
+/* Author */
+.comment-by-anonymous {
+}
+
+.comment-by-node-author {
+}
+
+.comment-by-viewer {
+}
+
+/* New */
+.comment-new {
+}
+
+/* Unpublished */
+.comment-unpublished {
+}
+.comment-unpublished .unpublished {
+}
+
+/**
+ * Comment Form
+ */
+.comment-form-wrapper h2 {
+}
+
+.comment-form-wrapper form#comment-form {
+}

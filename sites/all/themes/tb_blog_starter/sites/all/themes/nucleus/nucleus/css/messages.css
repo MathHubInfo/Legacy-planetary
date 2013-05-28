@@ -1,0 +1,48 @@
+/* Messages */
+div.messages {
+  margin: 10px 0;
+}
+
+#block-system-help {
+  background: url(images/help.png) no-repeat 17px 22px #f2f2f2;
+  border: none;
+  margin: 6px 0;
+  padding: 10px 10px 10px 50px;
+}
+
+#block-system-help code,
+div.messages code {
+  font-weight: 700;
+}
+
+div.help p:last-child,
+div.help ul:last-child {
+  margin-bottom: 0;
+}
+
+.block-region {
+  background-color: #f7f7f7;
+  border: 2px dashed #ddd;
+  clear: both;
+  color: #666;
+  font-family: Consolas, "Courier News", monospace;
+  font-size: 1.077em;
+  font-weight: 400;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  padding: 3px 6px 1px;
+}
+
+div#acquia-agent-no-search {
+  margin: 8px 0;
+  padding-left: 3em !important;
+}
+
+a.block-demo-backlink,
+a.block-demo-backlink:link,
+a.block-demo-backlink:visited {
+  left: 50%;
+  margin-left: -9em;
+  text-align: center;
+  width: 18em;
+}

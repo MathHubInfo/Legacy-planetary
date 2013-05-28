@@ -1,0 +1,527 @@
+/**
+ * Common Styles
+ */
+
+.grid-inner {
+  padding: 0 10px;
+}
+
+.grid .right {
+  float: right;
+}
+
+.grid .left {
+  float: left;
+}
+
+div.vertical-tabs {
+  z-index: 2; /* Ensure popup windows on this area is on top of other fieldsets */
+}
+
+div.vertical-tabs .vertical-tabs-panes {
+  min-height: 300px;
+  position: relative;
+}
+
+div.vertical-tabs .vertical-tabs-panes legend {
+  display: block;
+  height: 0;
+  visibility: hidden; /* Fix IE8 Fieldset border bug when hide Legend */
+  width: 0; /* Need for IE 7 */
+}
+
+div.vertical-tabs .vertical-tabs-panes .fieldset-wrapper fieldset {
+  margin: 1em 0;
+  padding-top: 2.5em;
+}
+
+div.vertical-tabs .vertical-tabs-panes .fieldset-wrapper legend {
+  visibility: visible;
+}
+
+.vertical-tabs-panes .form-item {
+  clear: both;
+}
+
+.vertical-tabs-panes label {
+  float: left;
+  width: 14em;
+}
+
+.vertical-tabs-panes select {
+  width: 16em;
+}
+
+#edit-breadcrumb select#edit-breadcrumb-display,
+#edit-breadcrumb input#edit-breadcrumb-separator {
+  width: auto;
+}
+
+.vertical-tabs-panes .form-type-checkbox label,
+.vertical-tabs-panes .form-type-radios label {
+  float: none;
+  width: auto;
+}
+
+.vertical-tabs-panes fieldset fieldset {
+  background: #f2f2f2;
+  border: 1px solid #ccc;
+  overflow: auto;
+}
+
+/* description */
+.vertical-tabs-panes .description {
+  margin-bottom: 12px;
+}
+
+/* Reset Button */
+.form-actions .form-reset {
+  float: right;
+}
+
+/* --- Form Headings --- */
+.form-header {
+  background: #f2f2f2;
+  border: 1px solid #ccc;
+}
+
+.form-subheader {
+}
+
+/* --- Popup --- */
+.tb-popup-wrap {
+  -moz-box-shadow: 2px 2px 5px rgba(0,0,0,.5);
+  -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,.5);
+  background: #fff;
+  border: 1px solid #aaa;
+  box-shadow: 2px 2px 5px rgba(0,0,0,.5);
+  min-width: 180px;
+  position: absolute;
+  top: auto;
+  z-index: 999;
+  display: none;
+}
+
+.tb-popup {
+}
+
+.tb-popup-ct,
+.tb-popup-actions {
+  clear: both;
+  display: block;
+}
+
+.tb-popup .popup-title {
+  clear: both;
+  display: block;
+  font-size: .9em;
+  margin: 0;
+}
+
+.tb-popup .block-styles-wrapper,
+.tb-popup .rb-styles-wrapper {
+  padding: 10px;
+}
+
+.goto-block {
+  padding: 10px 10px 0;
+}
+
+.tb-popup-actions {
+  background: #f2f2f2;
+  border-top: 1px solid #ccc;
+  padding: 5px;
+}
+
+/* --- Form Button --- */
+.tb-form-btn {
+  background: #ccc;
+  border: 1px solid #aaa;
+  color: #333;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1em;
+  margin: 0 0 0 5px;
+  padding: 1px 8px;
+}
+
+.tb-form-btn:hover,
+.tb-form-btn:active,
+.tb-form-btn:focus,
+.tb-form-btn.active {
+  background: #666;
+  border: 1px solid #444;
+  color: #fff;
+  text-decoration: none;
+}
+
+.hidden-region .tb-form-btn {
+  filter: alpha(opacity = 50);
+  opacity: 0.5;
+}
+
+.save-btn {
+  background: #060;
+  border-color: #030;
+  color: #fff;
+}
+
+.edit-btn {
+}
+
+/**
+ * Specfic Settings Styles
+ */
+
+/* --- Layout Settings --- */
+#edit-layout .fieldset-wrapper {
+  padding: 5px 12px;
+}
+
+#edit-layout .fieldset-wrapper .form-item {
+  margin-bottom: 10px;
+  padding: 0;
+}
+
+#edit-layout .form-item-grid label,
+#edit-layout .form-item-layout-width label,
+#edit-layout .form-item-layout-width-selector label,
+#edit-layout .form-item-skin label,
+#edit-layout .form-item-layout-width-custom label {
+  width: 8em;
+}
+
+#edit-layout .form-item-layout-width input {
+  width: 8em;
+}
+
+#edit-layout .form-text {
+  width: auto;
+}
+
+#edit-layout .panel-settings-wrapper {
+  margin-bottom: 12px;
+}
+
+#edit-layout .fieldset-wrapper {
+  padding: 0 0 15px;
+}
+
+#edit-layout .form-wrapper {
+  clear: both;
+  padding: 0;
+}
+
+#edit-layout .form-item {
+  clear: none;
+  margin: 0;
+}
+
+#edit-layout .form-header {
+  border-width: 1px 0 1px 0;
+}
+
+#edit-layout label {
+  margin-right: 10px;
+  width: 200px;
+}
+
+#edit-layout .form-subheader label {
+  font-size: 0.92em;
+  font-weight: normal;
+}
+
+#edit-layout #edit-default-subform-wrapper {
+  border: 1px solid #ccc;
+  margin-top: 0;
+  padding: 0;
+}
+
+#edit-layout .layout-element-wrapper {
+  background: #666;
+  color: #fff;
+}
+
+#edit-layout .global-block-styles-wrapper {
+  background: #ffc;
+  border: 0;
+}
+
+/* --- Extend Classes --- */
+#edit-layout .tb-popup label {
+  margin-bottom: 5px;
+}
+
+#edit-layout .tb-popup-ct {
+  border: 1px dotted #ccc;
+  padding: 10px;
+}
+
+#edit-layout .extend-class-group {
+  float: left;
+  margin-top: 0;
+  width: 50%;
+}
+
+#edit-layout .extend-class-group label {
+  float: none;
+  font-size: 0.92em;
+  font-weight: normal;
+  width: auto;
+}
+
+#edit-layout .tb-extend-class-shower {
+  font-size: 0.92em;
+}
+
+/* --- Navigation Settings --- */
+#edit-navigation .form-text {
+  width: auto;
+}
+
+#edit-third-parties .form-header {
+  background: #666;
+  border: 0;
+  color: #fff;
+  font-weight: bold;
+  padding: 5px 15px;
+}
+
+#edit-third-parties fieldset .fieldset-wrapper {
+  padding: 15px 13px 0;
+}
+
+/* --- Typo Settings --- */
+#edit-typography .fieldset-wrapper {
+  padding: 0 0 15px;
+}
+
+#edit-typography label {
+  width: 25%;
+}
+
+#edit-typography select,
+#edit-typography .form-text {
+  width: 73%;
+}
+
+#edit-typography select {
+  padding: 2px 1px;
+}
+
+#edit-typography .typo-element-wrapper {
+  border: 1px solid #fff;
+  clear: both;
+  margin-bottom: 3px;
+  overflow: hidden;
+}
+
+#edit-typography .typo-element-wrapper:hover,
+#edit-typography .typo-element-wrapper:focus,
+#edit-typography .typo-element-wrapper:target {
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+}
+
+#edit-typography .form-item {
+  clear: none;
+  margin: 0 10px;
+}
+
+#edit-typography .typo-fonts {
+  float: left;
+  width: 70%;
+}
+
+#edit-typography .typo-type {
+  float: right;
+  width: 30%;
+}
+
+#edit-typography .typo-type select {
+  width: 98%;
+}
+
+#edit-typography .typo-type .form-item {
+  margin-left: 0;
+}
+
+#edit-typography .typo-type label {
+  display: none;
+}
+
+#edit-typography #edit-font-size-wrapper {
+  border-top: 1px dotted #ccc;
+  margin-top: 15px;
+  padding-top: 15px;
+}
+
+#edit-typography #edit-font-size-wrapper .form-item,
+#edit-typography #edit-load-extra-typo-wrapper .form-item {
+  width: auto;
+}
+
+#edit-typography #edit-font-size-wrapper label,
+#edit-typography #edit-load-extra-typo-wrapper label {
+  display: inline-block;
+  width: auto;
+}
+
+#edit-typography #edit-font-size-wrapper select {
+  margin-left: 10px;
+  width: auto;
+}
+
+#edit-typography #edit-load-extra-typo-wrapper label {
+  font-weight: bold;
+}
+
+#edit-typography #edit-base-font-wrapper {
+  background: #ffc;
+  border: 1px solid #ccc;
+}
+
+/* --- Blocks Settings --- */
+.block-region,
+.dragable-blocks {
+  border: 2px dashed #ccc;
+  margin: 10px 0;
+  padding: 5px;
+  position: relative;
+}
+
+.dragable-blocks-list {
+  border: 1px dotted #ccc;
+  margin: 5px;
+  min-height: 50px;
+  overflow: hidden;
+}
+
+.dragable-blocks-list .block {
+  background: #f7f7f7;
+  border: solid 1px #ccc;
+  margin: 5px;
+}
+
+.rb-setting-sub-form {
+  margin: 5px 0;
+  overflow: hidden;
+}
+
+.rb-setting-sub-form .tb-form-btn {
+  float: left;
+}
+
+.rb-setting-title {
+  border: dotted 1px #ccc;
+  margin: 5px;
+  padding: 0 5px;
+}
+
+.hidden-region .rb-setting-title {
+  filter: alpha(opacity = 50);
+  opacity: .5;
+}
+
+.current-setting {
+  border: dotted 1px #ccc;
+  display: none;
+  margin: 5px;
+}
+
+.hidden-region .region-title {
+  filter: alpha(opacity = 50);
+  opacity: .5;
+}
+
+/* --- About Nucleus --- */
+#edit-about-nucleus iframe {
+  margin-left: -20px;
+}
+
+.nucleus-group-wrapper {
+}
+
+.disabled-region-preview .dragable-blocks-list {
+}
+
+.disabled-region-preview .block {
+  background: none;
+  border: none;
+  display: inline;
+  float: left;
+  margin: 0;
+  width: 33%;
+}
+
+.disabled-region-preview .block .rb-setting-sub-form {
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  margin: 5px;
+  padding-bottom: 5px;
+}
+
+.overlay #footer {
+  display: block;
+}
+
+.nucleus-page-preview-container {
+  border: 4px dotted #cccccc;
+  position: relative;
+}
+
+.rb-setting-btn {
+  z-index: 2;
+}
+
+.block.nucleus-updated-z-index {
+  z-index: 900;
+}
+
+.panel-column.nucleus-updated-z-index {
+  z-index: 920;
+}
+
+.wrapper.nucleus-updated-z-index {
+  z-index: 940;
+}
+
+.tb-popup-wrap {
+  position: absolute;
+  width: 450px;
+}
+
+.nucleus-page-draggable .block-preview-wrapper {
+  cursor: move;
+}
+
+.rb-setting-btn.changed-settings {
+  background-color: #0074bd;
+}
+
+.region-preview-wrapper {
+  display: block;
+  outline: 1px dashed #cccccc;
+  padding-bottom: 2px;
+}
+
+/* Clearfix */
+.clearfix:after {
+  content: "";
+}
+
+div.vertical-tabs .vertical-tabs-panes legend {
+  height: auto;
+  width: auto;
+}
+
+div.hidden-zone-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#page_preview_container #page {
+  margin: 5px !important;
+  padding: 5px !important;
+  position: static;
+}

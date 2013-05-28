@@ -1,0 +1,154 @@
+#forum {
+  width: 100%;
+}
+
+.page-forum #page-title {
+  margin-bottom: 10px;
+}
+
+#forum .name {
+  font-weight: bold;
+}
+
+#forum .description {
+}
+
+/* Forums Table */
+#forum table {
+  width: 100%;
+}
+
+#forum tr.even,
+#forum tr.odd {
+}
+
+#forum thead th {
+}
+
+#forum thead th a {
+}
+
+#forum thead th.active {
+}
+
+#forum td {
+}
+
+#forum td a {
+}
+
+#forum td.topics,
+#forum td.posts,
+#forum td.replies,
+#forum td.created,
+#forum td.last-reply {
+}
+
+/* Forums Head */
+#forum tr td.container {
+  padding: 5px;
+}
+
+#forum tr td.container a {
+}
+
+#forum tr td.container .name {
+}
+
+#forum tr td.container .description {
+}
+
+/* Forums List */
+#forum td.forum {
+  width: 60%;
+}
+
+#forum tr.new-topics td.forum {
+}
+
+#forum td.forum .name {
+  background-image: url(../images/forum-default.png);
+  background-position: left center; /* LTR */
+  background-repeat: no-repeat;
+  padding-left: 30px; /* LTR */
+}
+
+#forum tr.new-topics td.forum .name {
+  background-image: url(../images/forum-default.png);
+}
+
+#forum td.forum .name a {
+}
+
+#forum td.forum .description {
+}
+
+#forum td.topics {
+}
+
+#forum td.posts {
+}
+
+/* Topic List */
+#forum td.title {
+}
+
+#forum td.title a {
+}
+
+#forum td.title .submitted {
+}
+
+#forum td.replies {
+}
+
+#forum td.last-reply {
+}
+
+/* Forums Indent */
+#forum div.indent {
+  margin-left: 20px;
+}
+
+/* Forums Icons */
+#forum .icon div {
+  background-image: url(../images/forum-icons.png);
+  background-repeat: no-repeat;
+  height: 24px;
+  width: 24px;
+}
+
+#forum .icon .topic-status-new {
+  background-position: -24px 0;
+}
+
+#forum .icon .topic-status-hot {
+  background-position: -48px 0;
+}
+
+#forum .icon .topic-status-hot-new {
+  background-position: -72px 0;
+}
+
+#forum .icon .topic-status-sticky {
+  background-position: -96px 0;
+}
+
+#forum .icon .topic-status-closed {
+  background-position: -120px 0;
+}
+
+/* Forums Action Links */
+.page-forum ul.action-links {
+}
+
+.page-forum ul.action-links li {
+}
+
+.page-forum ul.action-links li a {
+}
+
+.page-forum ul.action-links a:hover,
+.page-forum ul.action-links a:active,
+.page-forum ul.action-links a:focus {
+}

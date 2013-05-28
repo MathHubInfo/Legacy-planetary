@@ -1,0 +1,165 @@
+/**
+ * Simply Style for Quiktabs
+ */
+
+/* --- Quicktabs ---*/
+.quicktabs_wrapper {
+}
+
+.quicktabs_main {
+  padding-top: 1em;
+}
+
+.quicktabs-style-simply ul.quicktabs-tabs {
+  background: #ccc;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.quicktabs-style-simply ul.quicktabs-tabs li {
+  background: none;
+  display: block;
+  float: left;
+  list-style: none;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.quicktabs-style-simply ul.quicktabs-tabs li a {
+  color: #666;
+  display: block;
+  float: left;
+  padding: .25em .75em;
+}
+
+.quicktabs-style-simply ul.quicktabs-tabs li a:hover,
+.quicktabs-style-simply ul.quicktabs-tabs li a:active,
+.quicktabs-style-simply ul.quicktabs-tabs li a:focus {
+  text-decoration: none;
+}
+
+.quicktabs-style-simply ul.quicktabs-tabs li.active a {
+  background: #333;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* --- Arcodion --- */
+.quick-accordion-simply {
+  font-family: Arial, Helvetica, sans-serif; /* Override the font */
+  font-size: 1em; /* Ensure font size is approriate with the container */
+}
+
+/* Accordion Header */
+.quick-accordion-simply .ui-accordion-header {
+  background: #ccc;
+  border-radius: 0;
+  color: #333;
+  font-weight: bold;
+}
+
+.quick-accordion-simply .ui-accordion-header a {
+  color: #333;
+  font-size: 1em;
+  padding: 0.25em 0.5em 0.25em 2em;
+}
+
+.quick-accordion-simply .ui-state-default .ui-icon {
+  background: url(../../images/arrow.png) no-repeat 5px 5px;
+}
+
+/* Hover Accordion Header */
+.quick-accordion-simply .ui-state-hover {
+  background: #333;
+  border: 1px solid #333;
+  color: #fff;
+}
+
+.quick-accordion-simply .ui-state-hover a {
+  color: #fff;
+}
+
+.quick-accordion-simply .ui-state-hover .ui-icon {
+  background: url(../../images/arrow-2.png) no-repeat 5px 5px;
+}
+
+/* Active Accordion Header */
+.quick-accordion-simply .ui-state-active {
+  background: #c00;
+  border: 1px solid #c00;
+  color: #fff;
+}
+
+.quick-accordion-simply .ui-state-active a {
+  color: #fff;
+}
+
+.quick-accordion-simply .ui-state-active .ui-icon {
+  background: url(../../images/arrow-3.png) no-repeat 5px 5px;
+}
+
+/* Accordion Content */
+.quick-accordion-simply .ui-accordion-content {
+  border-radius: 0;
+  padding: .5em;
+}
+
+/* --- UI Tabs --- */
+.quicktabs-ui-simply {
+  border: 1px solid #ccc;
+  border-radius: 0;
+  font-family: Arial, Helvetica, sans-serif; /* Override the font */
+  font-size: 1em; /* Ensure font size is approriate with the container */
+  padding: 0;
+}
+
+/* Tabs */
+.quicktabs-ui-simply .ui-tabs-nav {
+  background: #ccc;
+  border: 0;
+  border-bottom: 1px solid #aaa;
+  border-radius: 0;
+  margin: 0;
+  padding: .25em .25em 0;
+}
+
+.quicktabs-ui-simply .ui-tabs-nav li {
+  background: #eee;
+  border: 1px solid #aaa;
+  border-bottom: 0;
+}
+
+.quicktabs-ui-simply .ui-tabs-nav li a {
+  color: #666;
+  padding: .375em .75em;
+}
+
+/* Hover Tabs */
+.quicktabs-ui-simply .ui-tabs-nav li.ui-state-hover {
+  background: #ccc;
+  border: 1px solid #aaa;
+  border-bottom: 0;
+}
+
+.quicktabs-ui-simply .ui-tabs-nav li.ui-state-hover a {
+  color: #666;
+}
+
+/* Selected Tabs */
+.quicktabs-ui-simply .ui-tabs-nav li.ui-tabs-selected {
+  background: #fff;
+  border: 1px solid #aaa;
+  border-bottom: 0;
+}
+
+.quicktabs-ui-simply .ui-tabs-nav li.ui-tabs-selected a {
+  color: #333;
+}
+
+/* Tabs Content */
+.quicktabs-ui-simply .ui-tabs-panel {
+  padding: .5em;
+}

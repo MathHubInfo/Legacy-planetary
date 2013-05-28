@@ -1,0 +1,343 @@
+form {
+  margin: 0 0 1em;
+  padding: 0;
+}
+
+input,
+textarea,
+select {
+  border: 1px solid #ccc;
+  font-family: Arial, Helvetica, sans-serif; /* Need to define font-family */
+  font-size: 1em;
+  margin: 0;
+}
+
+fieldset {
+  background: transparent;
+  border: 1px solid #ccc;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+fieldset fieldset:last-child {
+  margin-bottom: 0;
+}
+
+legend {
+  font-weight: bold;
+}
+
+/**
+ * Drupal Form
+ */
+.form-wrapper {
+}
+
+.form-item,
+.form-action {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.form-item label {
+}
+
+.form-item label.option {
+}
+
+.description,
+.form-item .description {
+}
+
+.form-item .description,
+fieldset .description,
+.fieldset-layout-settings dd {
+  font-size: 0.846em;
+}
+
+span.form-required,
+span.marker {
+}
+
+ul.tips {
+}
+
+/* --- Text Inputs --- */
+.form-text,
+textarea {
+  border: 1px solid #ccc;
+  height: auto;
+  padding: 2px;
+}
+
+.form-text:hover,
+textarea:hover,
+.form-text:focus,
+textarea:focus {
+}
+
+.form-item textarea.error {
+  padding: 2px;
+}
+
+/* --- Buttons --- */
+input.form-submit {
+  overflow: visible; /* IE Fix */
+}
+
+input.form-submit,
+a.button {
+}
+
+input.form-submit:hover,
+input.form-submit:focus,
+a.button:hover,
+a.button:focus {
+}
+
+span.button {
+}
+
+span.button input.form-submit {
+}
+
+/* --- Checkbox --- */
+.form-type-checkbox label {
+}
+
+input.form-checkbox {
+  border: 0;
+}
+
+.form-type-checkbox .description {
+  margin-left: 0;
+}
+
+/* --- Radio --- */
+.form-type-radio label {
+}
+
+input.form-radio {
+  border: 0;
+}
+
+.form-type-radio .description {
+  margin-left: 0;
+}
+
+/* --- Selects --- */
+select,
+.form-select {
+}
+
+/* --- Fieldsets --- */
+fieldset {
+  background: transparent;
+  border: 1px solid #ddd;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+fieldset fieldset:last-child {
+  margin-bottom: 0;
+}
+
+*:first-child+html fieldset {
+  background-color: transparent;
+  background-position: 0 10px;
+  padding: 0 10px 10px;
+}
+
+*:first-child+html fieldset > .description,
+*:first-child+html fieldset .fieldset-wrapper .description {
+  padding-top: 10px;
+}
+
+legend.fieldset-legend {
+}
+
+fieldset legend {
+  display: block;
+  font-weight: 400;
+  padding: 0 10px 0 0;
+}
+
+*:first-child+html fieldset legend,
+*:first-child+html fieldset.collapsed legend {
+  display: inline;
+}
+
+html.js fieldset.collapsed {
+  background: transparent;
+  padding-top: 5px;
+}
+
+/* --- Misc. --- */
+.hide-label label {
+  background: none;
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px);
+  position: absolute !important;
+}
+
+.exposed-filters .form-item {
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+#article-admin-filter ul {
+  padding: .5em 0;
+}
+
+#edit-operation-wrapper select {
+  margin: .5em;
+}
+
+div.resizable-textarea textarea {
+  margin-top: 0;
+}
+
+/**
+ * Specific Forms
+ */
+
+/* --- Search --- */
+#search-block-form {
+}
+
+#search-block-form > div {
+}
+
+#search-block-form .container-inline {
+}
+
+#edit-search-block-form-1-wrapper {
+}
+
+#search-block-form label {
+}
+
+#search-block-form input {
+}
+
+#search-block-form .form-submit {
+}
+
+#search-block-form .form-text {
+}
+
+/* Advanced search form */
+fieldset#edit-advanced fieldset {
+  float: left;
+  margin: 0 10px 10px 0;
+}
+
+fieldset#edit-advanced fieldset .fieldset-legend {
+  background: none;
+  padding-left: 1em;
+}
+
+.advanced-search-submit {
+  clear: both;
+}
+
+.search-advanced .criterion {
+  float: none;
+  margin: 0 5px;
+}
+
+#edit-keywords-fieldset .form-item:first-child {
+  margin-top: 5px;
+}
+
+#search-form {
+  margin: 10px 0;
+}
+
+#search-form > div {
+}
+
+#search-form .container-inline {
+}
+
+#search-form label {
+}
+
+#search-form input {
+}
+
+#search-form .form-item {
+}
+
+#search-form .form-submit {
+}
+
+/* --- User login --- */
+#user-login-form .form-item-name {
+}
+
+#user-login-form .form-item-pass {
+}
+
+#user-login-form .form-action {
+}
+
+#user-login-form ul {
+  margin: 0;
+  padding: 0;
+}
+
+#user-login ul {
+  margin: 0 0 5px;
+}
+
+#user-login ul li {
+  margin: 0;
+}
+
+#user-login-form .item-list li {
+  list-style: none;
+  margin: 0;
+}
+
+#user-login-form li.openid-link,
+#user-login li.openid-link {
+  background: none;
+}
+
+.hide-label label {
+  background: none;
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px);
+  position: absolute !important;
+}
+
+#user-admin-filter ul li,
+#article-admin-filter ul li {
+  list-style: none;
+}
+
+/* --- Tips overrides --- */
+.field-type-text-long fieldset {
+  padding: 10px 0;
+}
+
+.field-type-text-long fieldset .form-item {
+  margin: 0;
+  padding: 0 0 0 15px;
+}
+
+fieldset .filter-help {
+  padding: 0 15px 5px;
+}
+
+.filter-guidelines {
+  font-size: .923em;
+  margin: 0;
+  padding: 5px 18px 10px;
+}
+
+/* --- Special case modules --- */
+#devel-switch-user-form {
+  margin-bottom: 0;
+}

@@ -1,0 +1,15 @@
+/* Fix Compose Tips Code */
+.compose-tips table td.type code {
+  display: block;
+  height: auto;
+  overflow: hidden;
+  width: 250px;
+  word-wrap: break-word; /* Validator. http://drupal.org/node/291384 */
+}
+
+/* Fix link elements break table */
+.block-node table .title-author {
+  overflow: hidden;
+  width: 120px;
+  word-wrap: break-word; /* Validator. http://drupal.org/node/291384 */
+}

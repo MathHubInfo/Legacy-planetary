@@ -1,0 +1,225 @@
+html {
+  font-size: 62.5%; /* Change base font-size to 10px. Therefore we can easily calculate other elements font-size */
+}
+
+body {
+  line-height: 1.5; /* Unit-less line-height means line height can scale. */
+}
+
+/* Headings */
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
+h3 {
+  font-size: 1.167em;
+}
+
+h4 {
+  font-size: 1em;
+}
+
+h5,
+h6 {
+  font-size: 1em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+}
+
+p {
+  margin: 1em 0;
+  padding: 0;
+}
+
+p:first-child {
+  margin-top: 0;
+}
+
+em,
+dfn {
+  font-style: italic;
+}
+
+ins {
+  border-bottom: none;
+  text-decoration: none;
+}
+
+pre,
+code,
+tt,
+samp,
+kbd,
+var {
+  font-size: 1em;
+}
+
+blockquote,
+q {
+  font-style: italic;
+  quotes: "" "";
+}
+
+blockquote {
+  margin: 0 0 1.5em;
+  padding: 0 0 0 3em;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+}
+
+blockquote p {
+  margin: 0;
+}
+
+strong,
+dfn,
+caption,
+th {
+  font-weight: bold;
+}
+
+/* Reset horizonatal rules */
+hr {
+  border-style: inset;
+  border-width: 1px;
+  display: block;
+}
+
+/* Lists */
+ul {
+  margin: 0 0 1.5em 1em;
+  padding: 0;
+}
+
+ol {
+  margin: 0 0 1.5em 2em;
+  padding: 0;
+}
+
+.item-list ul,
+.item-list ol {
+  margin: 0 0 0 1em;
+  padding: 0;
+}
+
+ul ul,
+ul ol,
+ol ol,
+ol ul,
+.block ul ul,
+.block ul ol,
+.block ol ol,
+.block ol ul,
+.item-list ul ul,
+.item-list ul ol,
+.item-list ol ol,
+.item-list ol ul {
+  margin-bottom: 0;
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ul ul ul {
+  list-style-type: square;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+ol ol {
+  list-style-type: lower-alpha;
+}
+
+ol ol ol {
+  list-style-type: lower-roman;
+}
+
+ul ul,
+ul ul ul ul {
+  list-style-type: circle;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin: 0 0 1.5em 1.538em;
+}
+
+/* --- Common Tables --- */
+table {
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+
+table.sticky-header {
+  z-index: 10;
+}
+
+/* Table Head */
+thead {
+}
+
+th {
+  padding: 5px;
+}
+
+thead th {
+}
+
+/* Table Body */
+tbody {
+}
+
+td {
+  padding: 5px;
+}
+
+tr.even,
+tr.odd {
+}
+
+tr.odd,
+tr.info {
+}
+
+tr.even {
+}
+
+tr.drag {
+}
+
+tr.drag-previous {
+}
+
+tr.odd td.active {
+}
+
+tr.even td.active {
+}
+
+td.region,
+td.module,
+td.container td.category {
+}

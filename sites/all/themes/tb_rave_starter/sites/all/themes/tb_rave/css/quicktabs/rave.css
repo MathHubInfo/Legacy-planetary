@@ -1,0 +1,403 @@
+/**
+ * Rave Style for Quiktabs
+ */
+
+/* --- Quicktabs ---*/
+.quicktabs-wrapper {
+  background: #f2f2f2;
+  margin-top: 15px;
+  padding: 3px;
+}
+
+.quicktabs-style-rave ul.quicktabs-tabs {
+  background: url(../../images/tabs-bg.png) repeat-x 0 bottom  #fff;  
+  border: 1px solid #ddd;
+  border-bottom: none;
+  margin: 0;    
+  overflow: hidden;
+}
+
+.quicktabs-style-rave ul.quicktabs-tabs li {
+  background: none;  
+  display: block; 
+  cursor: pointer; 
+  float: left;  
+  margin: 0;
+  padding: 10px 0 15px;  
+}
+
+.quicktabs-style-rave ul.quicktabs-tabs li.active {
+  background: url(../../images/tabs-active.png) no-repeat center bottom;
+  border-left: none;  
+}
+
+.quicktabs-style-rave ul.quicktabs-tabs li a {
+  border-left: 1px solid #dedede;
+  color: #333;
+  display: block;  
+  text-decoration: none;
+  text-transform: uppercase;
+  padding: 0 15px; 
+}
+
+.quicktabs-style-rave ul.quicktabs-tabs li a:hover,
+.quicktabs-style-rave ul.quicktabs-tabs li a:focus,
+.quicktabs-style-rave ul.quicktabs-tabs li.active a {
+  color: #9a2016;  
+}
+
+.quicktabs-style-rave ul.quicktabs-tabs li.first a {
+  border-left: none;
+}
+
+
+.quicktabs-style-rave .quicktabs_main {   
+  background: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  padding: 15px;
+}
+
+.quicktabs-style-rave .quicktabs_main .block {
+  margin-bottom: 0;
+}
+
+.quicktabs-style-rave .quicktabs_main .block .item-list ul li {
+  background: none;
+  border-bottom: 1px dotted #ddd;
+  margin: 0; 
+  padding: 15px 0;
+  overflow: hidden;
+}
+
+.quicktabs-style-rave .quicktabs_main .block-comment .item-list ul li {
+  min-height: 0;
+}
+
+.quicktabs-style-rave .quicktabs_main .block .item-list ul li a {
+  color: #333;
+}
+
+.quicktabs-style-rave .quicktabs_main .block .item-list ul li a:hover,
+.quicktabs-style-rave .quicktabs_main .block .item-list ul li a:focus,
+.quicktabs-style-rave .quicktabs_main .block .item-list ul li a:active {
+  color: #9a2016;
+  text-decoration: none;
+}
+
+.quicktabs-style-rave .quicktabs_main .block .item-list ul li span {
+  color: #888;
+}
+
+.quicktabs-style-rave .quicktabs_main .views-field-title,
+.quicktabs-style-rave .quicktabs_main .views-field {
+  font-size: 1em;
+}
+
+.quicktabs-style-rave .quicktabs_main .views-field-changed {
+  font-size: .917em;
+}
+
+.quicktabs-style-rave .views-field-field-image {
+  float: left;
+}
+
+.quicktabs-style-rave .views-field-field-image img {
+  border: 1px solid #e2e2e2;
+  margin: 0 12px 0 0;
+  padding: 4px;
+}
+
+.quicktabs-style-rave .quicktabs_main .block .item-list ul li.views-row-first {
+  padding-top: 0;
+}
+
+.quicktabs-style-rave .quicktabs_main .block .item-list ul li.views-row-last {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Accordion */
+.ui-accordion .ui-accordion-header {
+  margin-bottom: 1px;
+  margin-top: 0;
+}
+
+.quick-accordion-rave .ui-accordion-header {
+  background: #ddd;
+  border: 0;
+  text-transform: uppercase;
+}
+
+.quick-accordion-rave .ui-accordion-content {
+  background: #fff;
+  border: 5px solid #ddd;
+  padding: 20px;
+}
+
+.quick-accordion-rave .ui-accordion-content .block {
+  margin-bottom: 0;
+}
+
+.quick-accordion-rave .ui-accordion-content .block .item-list ul li {
+  background: none;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+  padding: 15px 0;
+  overflow: hidden;  
+}
+
+.quick-accordion-rave .ui-accordion-content .block .item-list ul li:first-child {
+  padding-top: 0;
+}
+
+.quick-accordion-rave .ui-accordion-content .block .view-tags .item-list ul li {
+  border-bottom: none;
+  display: inline-block;
+  float: left;
+  margin: 0;
+  min-height: 0;
+  padding: 0 5px 0 0;
+}
+
+.quick-accordion-rave .ui-accordion-content .block-comment .item-list ul li {
+  min-height: inherit;
+}
+
+ {
+  color: #333;
+}
+
+.quick-accordion-rave .ui-accordion-content .block .item-list ul li a:hover,
+.quick-accordion-rave .ui-accordion-content .block .item-list ul li a:focus,
+.quick-accordion-rave .ui-accordion-content .block .item-list ul li a:active {
+  color: #9a2016;
+  text-decoration: none;
+}
+
+.quick-accordion-rave .ui-accordion-content .block .view-tags .item-list ul li a {
+  background: #E7E7E7;
+  color: #666;
+  display: block;
+  line-height: 1;
+  padding: 4px 5px 5px;
+}
+
+.quick-accordion-rave .ui-accordion-content .block .item-list ul li.views-row-last {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.quick-accordion-rave .ui-accordion-content .block .view-tags .item-list ul li a:hover,
+.quick-accordion-rave .ui-accordion-content .block .view-tags .item-list ul li a:focus,
+.quick-accordion-rave .ui-accordion-content .block .view-tags .item-list ul li a:active {
+  background: #7BB9E0;
+  color: #fff;
+}
+
+.quick-accordion-rave .ui-accordion-content .block .item-list ul li span {
+  color: #888;
+}
+
+.quick-accordion-rave .ui-accordion-content .views-field-title,
+.quick-accordion-rave .ui-accordion-content .views-field {
+}
+
+.quick-accordion-rave .views-field-field-image {
+  float: left;
+}
+
+.quick-accordion-rave .views-field-field-image img {
+  border: 1px solid #E2E2E2;
+  margin: 0 20px 0 0;
+  padding: 4px;
+}
+
+.quick-accordion-rave .quicktabs_main .block .item-list ul li.views-row-first {
+  padding-top: 0;
+}
+
+.quick-accordion-rave .quicktabs_main .block .item-list ul li.views-row-last {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.quick-accordion-rave .ui-accordion-content .views-field-changed {
+}
+
+.ui-widget {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1em;
+}
+
+/* UI Tabs */
+.ui-tabs {
+  padding: 0;
+}
+
+.quicktabs-ui-rave {
+  background: none;
+  border: 0;
+}
+
+.quicktabs-ui-rave ul.ui-tabs-nav {
+  background: #ddd;
+  border: 5px solid #ddd;
+  border-bottom: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  line-height: 35px;
+  margin: 0;
+  padding: 0;
+}
+
+.quicktabs-ui-rave ul.ui-tabs-nav li {
+  background: none;
+  border: 0;
+  display: inline;    
+  line-height: normal;
+  padding: 10px;
+}
+
+.quicktabs-ui-rave ul.ui-tabs-nav li.ui-state-hover {
+  background: none;
+}
+
+.quicktabs-ui-rave ul.ui-tabs-nav li.ui-state-active {
+  background-color: #FFF;
+}
+
+.quicktabs-ui-rave ul.ui-tabs-nav li a {
+  color: #666;
+  text-transform: uppercase;
+  padding: 0;
+}
+
+.quicktabs-ui-rave ul.ui-tabs-nav li a:hover,
+.quicktabs-ui-rave ul.ui-tabs-nav li a:focus {
+  color: #000;  
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.quicktabs-ui-rave ul.ui-tabs-nav li.ui-state-active a {
+  padding-bottom: 10px;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel {
+  background: #fff;
+  border: 5px solid #ddd;
+  border-top: 0;
+  padding: 20px;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block {
+  margin-bottom: 0;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block .item-list ul li {
+  background: none;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+  overflow: hidden;
+  padding: 15px 0;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block .view-tags .item-list ul li {
+  border-bottom: none;
+  display: inline-block;
+  float: left;
+  margin: 0;
+  min-height: 0;
+  padding: 0 5px 0 0;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block-comment .item-list ul li {
+  min-height: inherit;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block .item-list ul li a {
+  color: #333;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block .item-list ul li a:hover,
+.quicktabs-ui-rave .ui-tabs-panel .block .item-list ul li a:focus,
+.quicktabs-ui-rave .ui-tabs-panel .block .item-list ul li a:active {
+  color: #9a2016;
+  text-decoration: none;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block .view-tags .item-list ul li a {
+  background: #E7E7E7;
+  color: #666;
+  display: block;  
+  line-height: 1;
+  padding: 4px 5px 5px;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block .view-tags .item-list ul li a:hover,
+.quicktabs-ui-rave .ui-tabs-panel .block .view-tags .item-list ul li a:focus,
+.quicktabs-ui-rave .ui-tabs-panel .block .view-tags .item-list ul li a:active {
+  background: #7BB9E0;
+  color: #FFF;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block .item-list ul li span {
+  color: #aaa;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .views-field-title,
+.quicktabs-ui-rave .ui-tabs-panel .views-field {
+ 
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .views-field-title {
+
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .views-field-changed {  
+  
+}
+
+.quicktabs-ui-rave .views-field-field-image {
+  float: left;
+}
+
+.quicktabs-ui-rave .views-field-field-image img {
+  border: 1px solid #E2E2E2;
+  margin: 0 12px 0 0;
+  padding: 4px;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block .item-list ul li.views-row-first {
+  padding-top: 0;
+}
+
+.quicktabs-ui-rave .ui-tabs-panel .block .item-list ul li.views-row-last {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.quicktabs-style-rave .quicktabs_main .block .view-tags .item-list ul li {
+  border-bottom: none;
+  display: inline-block; 
+  float: left;
+  margin: 0;
+  min-height: 0;
+  padding: 0 5px 0 0;  
+}
+
+.quicktabs-style-rave .quicktabs_main div.view-tags .item-list ul li a {
+  background: #E7E7E7; 
+  color: #666666;
+  display: block; 
+  line-height: 1;
+  padding: 4px 5px 5px;
+}
+
+.quicktabs-style-rave .quicktabs_main .block div.view-tags .item-list ul li a:hover {
+  background: #7BB9E0;
+  color: #fff;
+}

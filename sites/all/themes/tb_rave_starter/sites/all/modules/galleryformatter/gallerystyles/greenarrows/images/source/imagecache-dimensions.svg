@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg4003"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="imagecache-dimensions.svg">
+  <defs
+     id="defs4005">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective4011" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="420.88059"
+     inkscape:cy="821.27933"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1680"
+     inkscape:window-height="998"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1">
+    <sodipodi:guide
+       orientation="1,0"
+       position="136,919.79688"
+       id="guide4015" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata4008">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#5e6259;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="rect4013"
+       width="500"
+       height="312.5"
+       x="136.00107"
+       y="44.108627" />
+    <rect
+       style="fill:#5e6259;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="rect4019"
+       width="121.26736"
+       height="75"
+       x="136.01927"
+       y="359.92468" />
+    <rect
+       style="fill:#5e6259;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="rect4035"
+       width="121.26736"
+       height="75"
+       x="514.2832"
+       y="360.86218" />
+    <rect
+       y="359.92468"
+       x="262.10721"
+       height="75"
+       width="121.26736"
+       id="rect4037"
+       style="fill:#5e6259;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+    <rect
+       style="fill:#5e6259;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="rect4041"
+       width="121.26736"
+       height="75"
+       x="388.19522"
+       y="359.92468" />
+  </g>
+</svg>

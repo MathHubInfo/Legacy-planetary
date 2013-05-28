@@ -1,0 +1,8 @@
+
+/**
+ * Image style configuration pages.
+ */
+div.widgets-set-new,
+div.widgets-set-new div {
+  display: inline;
+}

@@ -1,0 +1,450 @@
+/* --- Common Links --- */
+a {
+}
+
+a:visited {
+}
+
+a:hover {
+}
+
+a:active,
+a:focus {
+}
+
+/* Any menu block in the menu-bar region */
+.nav {
+  clear: both;
+  margin: 0;
+}
+
+.nav li,
+.nav .menu li {
+  display: inline;
+  float: left;
+  list-style: none;
+}
+
+.nav li a,
+.nav .menu li a {
+  display: block;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.nav ul,
+.nav ul.menu,
+.nav ul.menu li {
+  margin: 0;
+  padding: 0;
+}
+
+.nav .block {
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Default Drupal Menu --- */
+.block ul.menu {
+}
+
+.block ul.menu ul {
+}
+
+.block ul.menu li {
+}
+
+ul.menu li.expanded,
+ul.menu li.collapsed,
+ul.menu li.leaf {
+}
+
+.block ul.menu li a {
+}
+
+.block ul.menu li li a {
+}
+
+.block ul.menu li a:visited {
+}
+
+.block ul.menu li a:hover,
+.block ul.menu li a:focus,
+.block ul.menu li a:active {
+}
+
+.block ul.menu li li a:hover,
+.block ul.menu li li a:focus,
+.block ul.menu li li a:active {
+}
+
+/* Expanded Items */
+.block ul.menu li.expanded {
+}
+
+.block ul.menu li.expanded li.expanded {
+}
+
+.block ul.menu li.expanded li.expanded a {
+}
+
+.block ul.menu li.expanded ul {
+}
+
+.block ul.menu li.expanded ul ul {
+}
+
+/* Collapsed Item */
+.block ul.menu li.collapsed {
+}
+
+.block ul.menu li li.collapsed a,
+.block ul.menu li.expanded li.collapsed a {
+}
+
+/* Leaf Items */
+.block ul.menu li.leaf a {
+}
+
+.block ul.menu li.expanded li.leaf a {
+}
+
+/* Active Items */
+.block ul.menu li.active-trail > a,
+.block ul.menu li > a.active {
+}
+
+.block ul.menu li.leaf a.active {
+}
+
+.block ul.menu li li a.active {
+}
+
+.block ul.menu li li li a.active {
+}
+
+/* Misc. Items */
+.block ul.menu li.first {
+}
+
+.block ul.menu li.last {
+  border-bottom: 0;
+}
+
+.block ul.menu li.content {
+  padding: 0;
+}
+
+/* --- Breadcrumb --- */
+#breadcrumb-wrapper {
+}
+
+#breadcrumb-wrapper h2 {
+}
+
+#breadcrumb-wrapper ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#breadcrumb-wrapper ol li {
+  display: block;
+  float: left;
+  list-style: none;
+}
+
+#breadcrumb-wrapper ol li span {
+}
+
+#breadcrumb-wrapper ol li a {
+}
+
+/* --- Seconday Menu (User Menu) --- */
+#secondary-menu {
+}
+
+#secondary-menu ul {
+}
+
+#secondary-menu ul li {
+}
+
+#secondary-menu ul li a {
+}
+
+#secondary-menu ul li a:hover,
+#secondary-menu ul li a:active,
+#secondary-menu ul li a:focus {
+}
+
+/* --- Footer Menu --- */
+#footer ul.menu {
+}
+
+#footer ul.menu li {
+}
+
+#footer ul.menu li a {
+}
+
+#footer ul.menu li a:hover,
+#footer ul.menu li a:active,
+#footer ul.menu li a:focus {
+}
+
+/* --- Pager --- */
+div.pager {
+}
+
+ul.pager {
+  clear: both;
+  margin: 0;
+  text-align: center;
+}
+
+.item-list ul.pager li {
+  margin: 0;
+}
+
+ul.pager li {
+  background-image: none;
+  display: inline;
+  list-style-type: none;
+  padding: .5em;
+}
+
+ul.pager li a,
+ul.pager li span {
+}
+
+ul.pager li a {
+}
+
+ul.pager li a:visited {
+}
+
+ul.pager li a:hover,
+ul.pager li a:active,
+ul.pager li a:focus {
+}
+
+ul.pager li a.active {
+}
+
+ul.pager li.pager-item {
+}
+
+ul.pager li.first {
+}
+
+ul.pager li.last {
+}
+
+ul.pager li.pager-current {
+}
+
+ul.pager li.pager-first {
+}
+
+ul.pager li.pager-previous {
+}
+
+ul.pager li.pager-next {
+}
+
+ul.pager li.pager-last {
+}
+
+/* Pager List */
+ul.pager-list {
+}
+
+/* Pager Links */
+ul.pager-links {
+}
+
+/* --- Items List --- */
+.item-list ul {
+}
+
+.item-list ul li {
+}
+
+.item-list ul li a {
+}
+
+.item-list ul li a:hover,
+.item-list ul li a:active,
+.item-list ul li a:focus {
+}
+
+/* --- Links --- */
+.links a {
+}
+
+ul.links {
+}
+
+ul.links li {
+}
+
+ul.links li a {
+}
+
+/* --- Action Links --- */
+ul.action-links {
+}
+
+ul.action-links li {
+}
+
+ul.action-links li a {
+}
+
+/* --- More Links --- */
+.more-link {
+}
+
+.more-link a {
+}
+
+/* --- Supperfish --- */
+.block-superfish .block-inner,
+.block-superfish .block-inner .block-content {
+  margin: 0;
+  padding: 0;
+}
+
+.block-superfish ul,
+.block-superfish ul ul,
+.block-superfish ul ul ul,
+.block-superfish ul ul ul ul,
+.block-superfish li {
+  margin: 0;
+  padding: 0;
+}
+
+.sf-vertical,
+.sf-vertical li {
+  width: 100%;
+}
+
+.sf-vertical li:hover ul,
+.sf-vertical li.sfHover ul {
+  left: 100%; /* match ul width */
+  margin: 0;
+  padding: 0;
+  top: 0;
+}
+
+ul.sf-navbar {
+  margin-bottom: 40px !important; /* Height for navbar */
+}
+
+/**
+ * Tabs
+ */
+
+/* --- System Tabs --- */
+ul.primary {
+  border-bottom-color: #ccc;
+  margin: 0 0 1.5em;
+  padding: 0 0 .2em .3em;
+}
+
+ul.primary li {
+  margin: 0;
+}
+
+ul.primary li a {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+  margin-right: .08em;
+  padding: .1em .75em .2em;
+}
+
+ul.primary li a:hover {
+  background-color: #f7f7f7;
+  border-color: #ddd;
+}
+
+ul.primary li.active a {
+  background-color: #fff;
+  border-bottom-color: #fff;
+  border-color: #ccc;
+}
+
+.local-tasks ul.primary li a:hover {
+  background-color: #fff;
+  border-bottom-color: #fff;
+}
+
+.local-tasks ul.primary li.active a {
+  background-color: #fff;
+  border-bottom-color: #fff;
+}
+
+ul.secondary {
+  border-bottom: 1px solid #ccc;
+  margin: 1em 0 0;
+  padding: 0 .3em 1em;
+}
+
+ul.secondary li {
+  border-right: 0;
+  list-style: none;
+  padding: 0 2em 0 0;
+}
+
+ul.secondary li a:hover,
+ul.secondary li a.active {
+  border-bottom: none;
+  text-decoration: underline;
+}
+
+/**
+ * Misc.
+ */
+#tasks {
+  margin-bottom: 1em;
+}
+
+/* Skip Navigation */
+#skip-link {
+}
+
+#skip-link a {
+}
+
+#skip-link a:hover,
+#skip-link a:active,
+#skip-link a:focus {
+}
+
+/* Back To Top */
+a.btn-btt {
+}
+
+a.btn-btt:hover,
+a.btn-btt:active,
+a.btn-btt:focus {
+}
+
+/* Contextual Links */
+.contextual-links-wrapper ul {
+}
+
+.contextual-links-wrapper ul li {
+  background-image: none;
+}
+
+/* Feed Icon */
+a.feed-icon {
+  display: inline-block;
+}
+
+a.feed-icon img {
+  margin: 0;
+  padding: 0;
+}

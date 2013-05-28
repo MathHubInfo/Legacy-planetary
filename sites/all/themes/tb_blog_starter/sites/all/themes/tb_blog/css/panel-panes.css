@@ -1,0 +1,33 @@
+.panel-pane {
+}
+
+.pane-inner {
+}
+
+.pane-title {
+}
+
+/* Skinr pane title alignment. */
+.ta-l .pane-title {
+  text-align: left;
+}
+
+.ta-r .pane-title {
+  text-align: right;
+}
+
+.ta-c .pane-title {
+  text-align: center;
+}
+
+.pane-content {
+}
+
+.panel-pane .feed {
+}
+
+.panel-pane .links {
+}
+
+.panel-pane .more-link {
+}

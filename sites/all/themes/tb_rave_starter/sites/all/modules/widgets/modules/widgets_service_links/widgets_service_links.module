@@ -1,0 +1,78 @@
+<?php
+/**
+ * @file
+ * Implements widgets API to integrate service links as widget elements
+ */
+
+/**
+ * Implements hook_widgets_element_info().
+ */
+function widgets_service_links_widgets_element_info() {
+  $services = service_links_get_links();
+
+  $elements = array();
+  if (is_array($services)) {
+    foreach ($services AS $name => $service) {
+    	$service['label'] = $service['name'];      
+      $service['help'] = $service['description'];
+      $service['template'] = $service['link'];
+      $service['view callback'] = 'widgets_service_links_element_view';
+      $service['group'] = t('Service links');
+      
+      $elements['service_links_' . $name] = $service;
+    }    
+  } 
+  return $elements;
+}
+/*
+ * Callback to use service links module to format link
+ */
+function widgets_service_links_element_view($element) {
+  //service_links_render_some($service_ids, $node = NULL, $nodelink = FALSE, $options = NULL);
+  $link = service_links_render_some(substr($element['name'], 14));
+  return array_pop($link);
+}
+/*
+ * 
+ */
+function widgets_service_links_widgets_default_sets() {
+  $sets = array();
+
+  $sets['widgets_service_links-default'] = array(
+    'elements' => array(
+      array(
+        'name' => 'service_links_twitter',
+        //'data' => array('markup' => 'Follow us on:'),
+        'weight' => 0,
+      ),
+      array(
+        'name' => 'service_links_facebook',
+        //'data' => array('markup' => 'Follow us on:'),
+        'weight' => 1,
+      ),
+      array(
+        'name' => 'service_links_google_buzz',
+        //'data' => array('markup' => 'Follow us on:'),
+        'weight' => 2,
+      ),
+      array(
+        'name' => 'service_links_linkedin',
+        //'data' => array('markup' => 'Follow us on:'),
+        'weight' => 3,
+      ),
+      array(
+        'name' => 'service_links_stumbleupon',
+        //'data' => array('markup' => 'Follow us on:'),
+        'weight' => 4,
+      ),
+      array(
+        'name' => 'service_links_delicious',
+        //'data' => array('markup' => 'Follow us on:'),
+        'weight' => 5,
+      ),
+
+    ),
+  );
+
+  return $sets;
+}

@@ -1,0 +1,290 @@
+/* --- Articles (nodes) --- */
+.article {
+  margin-bottom: 20px; /* Articles spacing */
+}
+
+/* Teaser */
+.node-teaser {
+}
+
+/* Article Title */
+.article > .header {
+}
+
+.node-title {
+}
+
+.node-title a,
+.node-title a:visited {
+}
+
+.node-title a:hover,
+.node-title a:active,
+.node-title a:focus {
+}
+
+/* User Picture */
+.article .user-picture {
+  display: inline;
+}
+
+.article .user-picture img {
+}
+
+/* Meta */
+.node-author {
+}
+
+.username {
+}
+
+.article > .submitted {
+}
+
+.article > .submitted a {
+}
+
+.article > .submitted a:hover,
+.article > .submitted a:active,
+.article > .submitted a:focus {
+}
+
+.article > .submitted .username {
+}
+
+.article > .submitted .time {
+}
+
+/* Field Image */
+.article .field-type-image {
+}
+
+/* Article Lists */
+.article ul {
+}
+
+.article ul li {
+}
+
+.article ol {
+}
+
+.article ol li {
+}
+
+/* Article Links */
+.article .menu {
+}
+
+.article ul.links {
+  margin: 0;
+}
+
+.article ul.links li {
+  margin: 0;
+  padding: 0 .75em 0 0;
+}
+
+.article ul.links li a {
+}
+
+.article ul.links li a:hover,
+.article ul.links li a:active,
+.article ul.links li a:focus {
+}
+
+.article ul.links li.node-readmore a {
+}
+
+.article ul.links li.comment-add a {
+}
+
+.article ul.links li.comment-comments a {
+}
+
+.article ul.links li.comment-new-comments a {
+}
+
+.article ul.links li.blog_usernames_blog a {
+}
+
+.article ul.links li.print_html a {
+}
+
+.article ul.links li.print_email a {
+}
+
+.article ul.links li.print_pdf a {
+}
+
+.article ul.links li.first {
+}
+
+.article ul.links li.last {
+}
+
+/* Workflow states */
+.article-add {
+}
+
+.article-edit {
+}
+
+.article-delete {
+}
+
+.article-preview {
+}
+
+.article-sticky {
+}
+
+.article-promoted {
+}
+
+/* Status */
+.article-unpublished {
+}
+
+/* --- Blogs --- */
+.page-blog .article {
+}
+
+/* Teaser */
+.page-blog .node-teaser {
+}
+
+/* Blog Title */
+.node-blog > .header {
+}
+
+.node-blog .node-title {
+}
+
+.node-blog .node-title a,
+.node-blog .node-title a:visited {
+}
+
+.node-blog .node-title a:hover,
+.node-blog .node-title a:active,
+.node-blog .node-title a:focus {
+}
+
+/* Blog User Picture */
+.node-blog .user-picture {
+  display: inline-block;
+  vertical-align: text-top;
+}
+
+.node-blog .user-picture img {
+}
+
+/* Blog Meta */
+.node-blog > .submitted {
+}
+
+.node-blog > .submitted a {
+}
+
+.node-blog > .submitted a:hover,
+.node-blog > .submitted a:active,
+.node-blog > .submitted a:focus {
+}
+
+.node-blog > .submitted .username {
+}
+
+.node-blog > .submitted .time {
+}
+
+/* Blog Field Image */
+.node-blog .field-type-image {
+}
+
+/* Blog Links */
+.node-blog .menu {
+}
+
+.node-blog ul.links {
+}
+
+.node-blog ul.links li {
+}
+
+.node-blog ul.links li a {
+}
+
+.node-blog ul.links li a:hover,
+.node-blog ul.links li a:active,
+.node-blog ul.links li a:focus {
+}
+
+.node-blog ul.links li.node-readmore a {
+}
+
+.node-blog ul.links li.comment-add a {
+}
+
+.node-blog ul.links li.comment-comments a {
+}
+
+.node-blog ul.links li.comment-new-comments a {
+}
+
+.node-blog ul.links li.blog_usernames_blog a {
+}
+
+.node-blog ul.links li.print_html a {
+}
+
+.node-blog ul.links li.print_email a {
+}
+
+.node-blog ul.links li.print_pdf a {
+}
+
+.node-blog ul.links li.first {
+}
+
+.node-blog ul.links li.last {
+}
+
+/* Blog Workflow states */
+.page-blog .article-add {
+}
+
+.page-blog .article-edit {
+}
+
+.page-blog .article-delete {
+}
+
+.page-blog .article-preview {
+}
+
+.page-blog .article-sticky {
+}
+
+.page-blog .article-promoted {
+}
+
+/* Status */
+.page-blog .article-unpublished {
+}
+
+/**
+ * Misc.
+ */
+
+/* Skinr article title alignment */
+.ta-l .article-title {
+  text-align: left;
+}
+
+.ta-r .article-title {
+  text-align: right;
+}
+
+.ta-c .article-title {
+  text-align: center;
+}

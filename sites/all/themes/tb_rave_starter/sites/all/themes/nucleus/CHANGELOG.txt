@@ -1,0 +1,42 @@
+Nucleus 1.1 , 2012-09-14
+----------------------
+- Improve theme settings render http://drupal.org/node/1638042
+
+Nucleus 1.1 beta4 2012-08-14
+- fix issue http://drupal.org/node/1526028
+- fix issue http://drupal.org/node/1528502
+- fix issue http://drupal.org/node/1687686
+- fix issue http://drupal.org/node/1528502
+- fix issue http://drupal.org/node/1563464
+
+Nucleus 1.1 beta3, 2012-06-22
+----------------------
+- Update something to support responsive in subtheme
+- Fix bug
+
+Nucleus 1.1 beta1, 2012-05-03
+----------------------
+- Make Nucleus backend more user friendly
+- Improve grid system
+- Allow user assigns blocks to the regions directly in Nucleus backend (require
+  jQuery Update)
+- Add Muti-Skins feature allow the themes base on Nucleus can support 
+  multi-colors
+- Remove useless settings:
+  * Breadcrumb separator
+  * Show the "Home" link in breadcrumbs.
+  * Global block style
+- Remove temporarily unused settings
+  * Multi-layout
+- Fix bug in nucleus_preprocess_fieldset()
+
+Nucleus 1.0 alpha2, 2011-11-30
+----------------------
+- Change prefix 'tb_' to 'nucleus_' in all PHP, Javascript functions and variables
+- Update install profile to fix bug about lost menu_links
+- The way rendering panel
+- Update block styling to allow defining a group support 'default' block style
+
+Nucleus 1.0 alpha1, 2011-09-30
+----------------------
+Initial theme

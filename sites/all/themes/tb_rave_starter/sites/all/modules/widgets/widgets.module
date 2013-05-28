@@ -1,0 +1,1513 @@
+<?php
+
+/**
+ * @file
+ * Exposes global functionality for creating widget sets.
+ */
+
+/**
+ * Widget set constant for user presets in the database.
+ */
+define('WIDGETS_STORAGE_NORMAL', 1);
+
+/**
+ * Widget set constant for user presets that override module-defined presets.
+ */
+define('WIDGETS_STORAGE_OVERRIDE', 2);
+
+/**
+ * Widget set constant for module-defined presets in code.
+ */
+define('WIDGETS_STORAGE_DEFAULT', 4);
+
+/**
+ * Widget set constant to represent an editable preset.
+ */
+define('WIDGETS_STORAGE_EDITABLE', WIDGETS_STORAGE_NORMAL | WIDGETS_STORAGE_OVERRIDE);
+
+/**
+ * Widget set constant to represent any module-based preset.
+ */
+define('WIDGETS_STORAGE_MODULE', WIDGETS_STORAGE_OVERRIDE | WIDGETS_STORAGE_DEFAULT);
+
+/**
+ * Implement of hook_help().
+ */
+// TODO
+function widgets_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#widgets':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Widgets enables you to centrally manage code snippets on your site. It is an API that allows you to organize and configure widget elements provided by other modules. Elements can be assembled into widget sets which can be re-used throughout the site via blocks and other render displays.') . '</p>';
+      return $output;
+    case 'admin/structure/widget-sets':
+      return '<p>' . t('Widget sets are groupings of code snippets (widget elements). You can select, order and customize widget elements into widget sets.') . '</p>';    case 'admin/structure/widget-sets/edit/%/add/%':
+      $element = widgets_element_definition_load($arg[7]);
+      return isset($element['help']) ? ('<p>' . $element['help'] . '</p>') : NULL;
+    case 'admin/structure/widget-sets/edit/%/elements/%':
+      $element = ($arg[5] == 'add') ? widgets_element_definition_load($arg[6]) : widgets_element_load($arg[6], $arg[4]);
+      return isset($element['help']) ? ('<p>' . $element['help'] . '</p>') : NULL;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function widgets_menu() {
+  $items = array();
+  
+  //$items['admin/structure/widgets-sets'] = array(
+  $items['admin/structure/widgets'] = array(
+    'title' => 'Widgets',
+    'description' => 'Configure sets of widgets to display in blocks.',
+    'page callback' => 'widgets_set_list',
+    'access arguments' => array('administer widgets sets'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 0,
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets'] = array(
+    'title' => 'Sets',
+    'description' => 'List the current widget sets on the site.',
+    'page callback' => 'widgets_set_list',
+    'access arguments' => array('administer widgets sets'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets/list'] = array(
+    'title' => 'List',
+    'description' => 'List the current widget sets on the site.',
+    'page callback' => 'widgets_set_list',
+    'access arguments' => array('administer widgets sets'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets/add'] = array(
+    'title' => 'Add widget set',
+    'description' => 'Add a new widget set.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_set_add_form'),
+    'access arguments' => array('administer widgets sets'),
+    'type' => MENU_LOCAL_ACTION,
+    //'type' => MENU_LOCAL_TASK,
+    //'context' => MENU_CONTEXT_INLINE,
+    'weight' => 2,
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets/edit/%widgets_set'] = array(
+    'title' => 'Edit widget set',
+    'description' => 'Configure an widget set.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_set_form', 5),
+    'access arguments' => array('administer widgets sets'),
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets/delete/%widgets_set'] = array(
+    'title' => 'Delete widget set',
+    'description' => 'Delete an widget set.',
+    'load arguments' => array(NULL, (string) WIDGETS_STORAGE_NORMAL),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_set_delete_form', 5),
+    'access arguments' => array('administer widgets sets'),
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets/revert/%widgets_set'] = array(
+    'title' => 'Revert style',
+    'description' => 'Revert an widget set.',
+    'load arguments' => array(NULL, (string) WIDGETS_STORAGE_OVERRIDE),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_set_revert_form', 5),
+    'access arguments' => array('administer widgets sets'),
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets/export/%widgets_set'] = array(
+    'title' => 'Export widget set',
+    'description' => 'Export an widget set.',
+    'load arguments' => array(NULL, (string) WIDGETS_STORAGE_NORMAL),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_set_export_form', 5),
+    'access arguments' => array('administer widgets sets'),
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets/edit/%widgets_set/elements/%widgets_element'] = array(
+    'title' => 'Edit widget element',
+    'description' => 'Edit an existing widget within a set.',
+    'load arguments' => array(5, (string) WIDGETS_STORAGE_EDITABLE),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_element_form', 5, 7),
+    'access arguments' => array('administer widgets sets'),
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets/edit/%widgets_set/elements/%widgets_element/delete'] = array(
+    'title' => 'Delete widget',
+    'description' => 'Delete an existing widget from a set.',
+    'load arguments' => array(5, (string) WIDGETS_STORAGE_EDITABLE),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_element_delete_form', 5, 7),
+    'access arguments' => array('administer widgets sets'),
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/sets/edit/%widgets_set/add/%widgets_element_definition'] = array(
+    'title' => 'Add widget',
+    'description' => 'Add a new widget to a set.',
+    'load arguments' => array(5),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_element_form', 5, 7),
+    'access arguments' => array('administer widgets sets'),
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/definitions'] = array(
+    'title' => 'Definitions',
+    'description' => 'Configure sets of widgets to display in blocks.',
+    'page callback' => 'widgets_definition_list',
+    'access arguments' => array('administer widgets sets'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/definitions/list'] = array(
+    'title' => 'Definitions',
+    'description' => 'List the current widget sets on the site.',
+    'page callback' => 'widgets_definition_list',
+    'access arguments' => array('administer widgets sets'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 1,
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/definitions/add'] = array(
+    'title' => 'Add widget definition',
+    'description' => 'Add a new widget definition.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_definition_edit_form', 5, TRUE),
+    'access arguments' => array('administer widgets sets'),
+    'type' => MENU_LOCAL_ACTION,
+    'weight' => 2,
+    'file' => 'widgets.admin.inc',
+  );
+  $items['admin/structure/widgets/definitions/edit/%widgets_element_definition'] = array(
+    'title' => 'Edit widget definition',
+    'description' => 'Configure an widget definition.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_definition_edit_form', 5),
+    'access arguments' => array('administer widgets sets'),
+    'file' => 'widgets.admin.inc',
+    //'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/structure/widgets/definitions/preview/%widgets_element_definition'] = array(
+    'title' => 'Preview widget definition',
+    'description' => 'Configure an widget definition.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_definition_preview_form', 5),
+    'access arguments' => array('administer widgets sets'),
+    'file' => 'widgets.admin.inc',
+    //'type' => MENU_LOCAL_TASK,
+  );  
+  $items['admin/structure/widgets/definitions/export/%widgets_element_definition'] = array(
+    'title' => 'Export widget definition',
+    'description' => 'Export an widget definition.',
+    'load arguments' => array(NULL, (string) WIDGETS_STORAGE_NORMAL),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('widgets_definition_export_form', 5),
+    'access arguments' => array('administer widgets sets'),
+    'file' => 'widgets.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function widgets_theme() {
+  return array(
+    // Theme functions in widget.module.
+    'widgets_set' => array(
+      'variables' => array(
+        'set_name' => NULL,
+        'path' => NULL,
+        'width' => NULL,
+        'height' => NULL,
+        'alt' => '',
+        'title' => NULL,
+        'attributes' => array(),
+      ),
+    ),
+
+    // Theme functions in widget.admin.inc.
+    'widgets_set_list' => array(
+      'variables' => array('sets' => NULL),
+    ),
+    'widgets_set_elements' => array(
+      'render element' => 'form',
+    ),
+    'widgets_set_view' => array(
+      'variables' => array('set' => NULL),
+    ),
+    'widgets_definition_list' => array(
+      'variables' => array('definitions' => NULL),
+    ),
+    'widgets_element_view' => array(
+      'variables' => array('element' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function widgets_permission() {
+  return array(
+    'administer widgets sets' => array(
+      'title' => t('Administer widgets sets'),
+      'description' => t('Create and modify widget sets.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function widgets_form_system_file_system_settings_alter(&$form, &$form_state) {
+  $form['#submit'][] = 'widgets_system_file_system_settings_submit';
+}
+
+/**
+ * Submit handler for the file system settings form.
+ *
+ * Adds a menu rebuild after the public file path has been changed, so that the
+ * menu router item depending on that file path will be regenerated.
+ */
+function widgets_system_file_system_settings_submit($form, &$form_state) {
+  if ($form['file_public_path']['#default_value'] !== $form_state['values']['file_public_path']) {
+    variable_set('menu_rebuild_needed', TRUE);
+  }
+}
+
+/**
+ * Implements hook_flush_caches().
+ */
+function widgets_flush_caches() {
+  return array('cache_widgets');
+}
+
+function widgets_clear_widgets_cache($cid, $wildcard = FALSE) {
+//dsm($cid);
+//dsm($wildcard);
+  if ($cid) {
+    cache_clear_all($cid, 'cache_widgets', $wildcard);
+  }  
+}
+
+/**
+ * Implements hook_widgets_default_styles().
+ */
+/* TODO
+function widgets_widgets_default_styles() {
+  $styles = array();
+
+  $styles['thumbnail'] = array(
+    'elements' => array(
+      array(
+        'name' => 'widgets_scale',
+        'data' => array('width' => 100, 'height' => 100, 'upscale' => 1),
+        'weight' => 0,
+      ),
+    )
+  );
+
+  $styles['medium'] = array(
+    'elements' => array(
+      array(
+        'name' => 'widgets_scale',
+        'data' => array('width' => 220, 'height' => 220, 'upscale' => 1),
+        'weight' => 0,
+      ),
+    )
+  );
+
+  $styles['large'] = array(
+    'elements' => array(
+      array(
+        'name' => 'widgets_scale',
+        'data' => array('width' => 480, 'height' => 480, 'upscale' => 0),
+        'weight' => 0,
+      ),
+    )
+  );
+
+  return $styles;
+}
+*/
+
+/**
+ * Implements hook_widgets_set_save().
+ */
+// TODO review image part of this function
+/*
+function widgets_widgets_set_save($set) {
+  if (isset($set['old_name']) && $set['old_name'] != $set['name']) {
+    $instances = field_read_instances();
+dsm($instances);
+    // Loop through all fields searching for widget fields.
+    foreach ($instances as $instance) {
+      if ($instance['widget']['module'] == 'image') {
+        $instance_changed = FALSE;
+        foreach ($instance['display'] as $view_mode => $display) {
+          // Check if the formatter involves an widget set.
+          if ($display['type'] == 'image' && $display['settings']['widgets_set'] == $set['old_name']) {
+            // Update display information for any instance using the image
+            // set that was just deleted.
+            $instance['display'][$view_mode]['settings']['widgets_set'] = $set['name'];
+            $instance_changed = TRUE;
+          }
+        }
+        if ($instance['widget']['settings']['preview_widgets_set'] == $set['old_name']) {
+          $instance['widget']['settings']['preview_widgets_set'] = $set['name'];
+          $instance_changed = TRUE;
+        }
+        if ($instance_changed) {
+          field_update_instance($instance);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Get an array of all sets and their settings.
+ *
+ * @return
+ *   An array of sets keyed by the widget set ID (wsid).
+ * @see widgets_set_load()
+ */
+function widgets_sets() {
+  $sets = &drupal_static(__FUNCTION__);
+
+  // Grab from cache or build the array.
+  if (!isset($sets)) {
+    if ($cache = cache_get('widgets_sets', 'cache')) {
+      $sets = $cache->data;
+    }
+    else {
+      $sets = array();
+
+      // Select the module-defined sets.
+      foreach (module_implements('widgets_default_sets') as $module) {
+        $module_sets = module_invoke($module, 'widgets_default_sets');
+        foreach ($module_sets as $set_name => $set) {
+          $set['name'] = $set_name;
+          $set['module'] = $module;
+          $set['storage'] = WIDGETS_STORAGE_DEFAULT;
+          foreach ($set['elements'] as $key => $element) {
+            $definition = widgets_element_definition_load($element['name']);
+            if (is_array($definition)) {
+              $element = array_merge($definition, $element);
+            }
+            $set['elements'][$key] = $element;
+          }          
+          $sets[$set_name] = $set;
+        }
+      }
+
+      // Select all the user-defined sets.
+      $user_sets = db_select('widgets_sets', NULL, array('fetch' => PDO::FETCH_ASSOC))
+        ->fields('widgets_sets')
+        ->orderBy('name')
+        ->execute()
+        ->fetchAllAssoc('name', PDO::FETCH_ASSOC);
+
+      // Allow the user sets to override the module sets.
+      foreach ($user_sets as $set_name => $set) {
+        $set['module'] = NULL;
+        $set['storage'] = WIDGETS_STORAGE_NORMAL;
+        $set['elements'] = widgets_set_elements($set);
+        if ($set['data']) {
+          $set['data'] = unserialize($set['data']);
+        }
+        if (isset($sets[$set_name]['module'])) {
+          $set['module'] = $sets[$set_name]['module'];
+          $set['storage'] = WIDGETS_STORAGE_OVERRIDE;
+        }
+        $sets[$set_name] = $set;
+      }
+      
+      drupal_alter('widgets_sets', $sets);
+      cache_set('widgets_sets', $sets);
+    }
+  }
+  return $sets;
+}
+
+/**
+ * Load a set by set name or ID. May be used as a loader for menu items.
+ *
+ * @param $name
+ *   The name of the set.
+ * @param $wsid
+ *   Optional. The numeric id of a set if the name is not known.
+ * @param $include
+ *   If set, this loader will restrict to a specific type of widget set, may be
+ *   one of the defined widget set storage constants.
+ * @return
+ *   An widget set array containing the following keys:
+ *   - "wsid": The unique widget set ID.
+ *   - "name": The unique widget set name.
+ *   - "elements": An array of widget elements within this widget set.
+ *   If the widget set name or ID is not valid, an empty array is returned.
+ * @see widgets_element_load()
+ */
+function widgets_set_load($name = NULL, $wsid = NULL, $include = NULL) {
+  $sets = widgets_sets();
+  // If retrieving by name.
+  if (isset($name) && isset($sets[$name])) {
+    $set = $sets[$name];
+  }
+
+  // If retrieving by widget set id.
+  if (!isset($name) && isset($wsid)) {
+    foreach ($sets as $name => $database_set) {
+      if (isset($database_set['wsid']) && $database_set['wsid'] == $wsid) {
+        $set = $database_set;
+        break;
+      }
+    }
+  }
+
+  // Restrict to the specific type of flag. This bitwise operation basically
+  // states "if the storage is X, then allow".
+  if (isset($set) && (!isset($include) || ($set['storage'] & (int) $include))) {
+    return $set;
+  }
+
+  // Otherwise the set was not found.
+  return FALSE;
+}
+
+/**
+ * Save an widget set.
+ *
+ * @param set
+ *   An widget set array.
+ * @return
+ *   An widget set array. In the case of a new set, 'wsid' will be populated.
+ */
+function widgets_set_save($set) {
+//dsm($set);
+  if (!isset($set['data'])) {
+    $set['data'] = array();
+  }
+  if (isset($set['wsid']) && is_numeric($set['wsid'])) {
+    // Load the existing set to make sure we account for renamed sets.
+    $old_set = widgets_set_load(NULL, $set['wsid']);
+    widgets_set_flush($old_set);
+    drupal_write_record('widgets_sets', $set, 'wsid');
+    if ($old_set['name'] != $set['name']) {
+      $set['old_name'] = $old_set['name'];
+    }
+  }
+  else {
+    drupal_write_record('widgets_sets', $set);
+    $set['is_new'] = TRUE;
+  }
+  
+  widgets_set_visibility_save($set);
+
+  // Let other modules update as necessary on save.
+  module_invoke_all('widgets_set_save', $set);
+
+  // Clear all caches and flush.
+  widgets_set_flush($set);
+
+  return $set;
+}
+
+function widgets_set_visibility_save($set) {
+  /*
+  $set['data']['visibility'] += array(
+    'block' => 1,
+    'token' => 1,
+  );
+  */
+//dsm($set);
+  $mode = 'wsid';
+  $query = db_merge('widgets_visibility')
+    ->key(array('wsid' => $set['wsid']))
+    ->fields(array(
+      'token' => isset($set['data']['visibility']['token']) ? $set['data']['visibility']['token'] : 1,
+      'block' => isset($set['data']['visibility']['block']) ? $set['data']['visibility']['block'] : 1,
+    ));
+  $query->execute();
+  if (!isset($set['data']['visibility']['content_types'])) {
+    $set['data']['visibility']['content_types'] = node_type_get_types();
+  }
+  foreach ($set['data']['visibility']['content_types'] AS $typename => $values) {
+    // unset node types if node_type_get_types() was used to set array
+    if (is_object($values)) {
+      $values = array();
+    }
+    $query = db_merge('widgets_visibility_type')
+      ->key(array('wsid' => $set['wsid'], 'type' => $typename))
+      ->fields(array(
+        'links_full' => (isset($values['links_full']) && $values['links_full']) ? 1 : 0,
+        'links_teaser' => (isset($values['links_teaser']) && $values['links_teaser']) ? 1 : 0,
+      ));
+    $query->execute();   
+  }
+}
+
+/**
+ * Delete an widget set.
+ *
+ * @param $set
+ *   An widget set array.
+ * @param $replacement_set_name
+ *   (optional) When deleting a set, specify a replacement set name so
+ *   that existing settings (if any) may be converted to a new set.
+ * @return
+ *   TRUE on success.
+ */
+function widgets_set_delete($set, $replacement_set_name = '') {
+  widgets_set_flush($set);
+
+  db_delete('widgets_elements')->condition('wsid', $set['wsid'])->execute();
+  db_delete('widgets_sets')->condition('wsid', $set['wsid'])->execute();
+
+  // Let other modules update as necessary on save.
+  $set['old_name'] = $set['name'];
+  $set['name'] = $replacement_set_name;
+  module_invoke_all('widgets_set_delete', $set);
+
+  return TRUE;
+}
+
+/**
+ * Load all the widgets for a wdiget set.
+ *
+ * @param $set
+ *   An widget set array.
+ * @return
+ *   An array of widgets associated with specified wdiget set in the
+ *   format array('wsid' => array()), or an empty array if the specified set
+ *   has no elements.
+ */
+function widgets_set_elements($set) {
+  $elements = widgets_elements();
+  $set_elements = array();
+  foreach ($elements as $element) {
+    if ($set['wsid'] == $element['wsid']) {
+      $set_elements[$element['weid']] = $element;
+    }
+  }
+
+  return $set_elements;
+}
+
+/**
+ * Get an array of widget sets suitable for using as select list options.
+ *
+ * @param $include_empty
+ *   If TRUE a <none> option will be inserted in the options array.
+ * @return
+ *   Array of widget sets both key and value are set to set name.
+ */
+function widgets_set_options($include_empty = TRUE) {
+  $sets = widgets_sets();
+  $options = array();
+  if ($include_empty && !empty($sets)) {
+    $options[''] = t('<none>');
+  }
+  $options = array_merge($options, drupal_map_assoc(array_keys($sets)));
+  if (empty($options)) {
+    $options[''] = t('No defined sets');
+  }
+  return $options;
+}
+
+/**
+ * Flush cached media for a set.
+ *
+ * @param $set
+ *   An widget set array.
+ */
+function widgets_set_flush($set) {
+  $set_directory = drupal_realpath(file_default_scheme() . '://sets/' . $set['name']);
+  if (is_dir($set_directory)) {
+    file_unmanaged_delete_recursive($set_directory);
+  }
+
+  // Let other modules update as necessary on flush.
+  module_invoke_all('widgets_set_flush', $set);
+
+  // Clear widget set and widget caches.
+  cache_clear_all('widgets_sets', 'cache');
+  cache_clear_all('widgets_elements:', 'cache', TRUE);
+  drupal_static_reset('widgets_sets');
+  drupal_static_reset('widgets_elements');
+
+  // Clear field caches so that formatters may be added for this set.
+  field_info_cache_clear();
+  drupal_theme_rebuild();
+
+  // Clear page caches when flushing.
+  if (module_exists('block')) {
+    cache_clear_all('*', 'cache_block', TRUE);
+  }
+  cache_clear_all('*', 'cache_page', TRUE);
+}
+
+/**
+ * Save a default widget set to the database.
+ *
+ * @param set
+ *   An widget set array provided by a module.
+ * @return
+ *   An widget set array. The returned set array will include the new 'wsid'
+ *   assigned to the set.
+ */
+function widgets_default_set_save($set) {
+  $set = widgets_set_save($set);
+  $elements = array();
+  foreach ($set['elements'] as $element) {
+    $element['wsid'] = $set['wsid'];
+    $element = widgets_element_save($element);
+    $elements[$element['weid']] = $element;
+  }
+  $set['elements'] = $elements;
+  return $set;
+}
+
+/**
+ * Revert the changes made by users to a default widget set.
+ *
+ * @param set
+ *   An widget set array.
+ * @return
+ *   Boolean TRUE if the operation succeeded.
+ */
+function widgets_default_set_revert($set) {
+  widgets_set_flush($set);
+
+  db_delete('widgets_elements')->condition('wsid', $set['wsid'])->execute();
+  db_delete('widgets_sets')->condition('wsid', $set['wsid'])->execute();
+
+  return TRUE;
+}
+
+/**
+ * Pull in widget elements exposed by modules implementing hook_widgets_element_info().
+ *
+ * @return
+ *   An array of widget elements to be used when organizing widget sets.
+ * @see hook_widgets_element_info()
+ * @see widgets_element_definition_load()
+ */
+function widgets_element_definitions() {
+  global $language;
+
+  // hook_widgets_element_info() includes translated strings, so each language is
+  // cached separately.
+  $langcode = $language->language;
+
+  $elements = &drupal_static(__FUNCTION__);
+
+  if (!isset($elements)) {
+    if ($cache = cache_get("widgets_elements:$langcode") && !empty($cache->data)) {
+      $elements = $cache->data;
+    }
+    else {
+      $elements = array();
+      include_once drupal_get_path('module', 'widgets') . '/widgets.elements.inc';
+      foreach (module_implements('widgets_element_info') as $module) {
+        foreach (module_invoke($module, 'widgets_element_info') as $name => $element) {
+          // Ensure the current toolkit supports the element.
+          $element['module'] = $module;
+          $element['name'] = $name;
+          $element['data'] = isset($element['data']) ? $element['data'] : array();
+          $element['storage'] = WIDGETS_STORAGE_DEFAULT;
+          $elements[$name] = $element;
+        }
+      }
+          // Select all the user-defined definitions.
+      $user_defs = db_select('widgets_definitions', NULL, array('fetch' => PDO::FETCH_ASSOC))
+        ->fields('widgets_definitions')
+        ->orderBy('name')
+        ->execute()
+        ->fetchAllAssoc('name', PDO::FETCH_ASSOC);
+
+      foreach ($user_defs as $def_name => $def) {
+        $def = unserialize($def['data']);
+        $def['storage'] = WIDGETS_STORAGE_NORMAL;
+        $elements[$def_name] = $def;
+      }
+      uasort($elements, '_widgets_element_definitions_sort');
+      drupal_alter('widgets_element_info', $elements);
+      cache_set("widgets_elements:$langcode", $elements);
+    }
+  }
+  return $elements;
+}
+
+/**
+ * Load the definition for an widget.
+ *
+ * The element definition is a set of core properties for an widget element, not
+ * containing any user-settings. The definition defines various functions to
+ * call when configuring or executing an widget element. This loader is mostly for
+ * internal use within widget.module. Use widgets_element_load() or
+ * widgets_set_load() to get widget elements that contain configuration.
+ *
+ * @param $element
+ *   The name of the element definition to load.
+ * @param $set
+ *   An widget set array to which this element will be added.
+ * @return
+ *   An array containing the widget element definition with the following keys:
+ *   - "element": The unique name for the element being performed. Usually prefixed
+ *     with the name of the module providing the element.
+ *   - "module": The module providing the element.
+ *   - "help": A description of the element.
+ *   - "function": The name of the function that will execute the element.
+ *   - "form": (optional) The name of a function to configure the element.
+ *   - "summary": (optional) The name of a theme function that will display a
+ *     one-line summary of the element. Does not include the "theme_" prefix.
+ */
+function widgets_element_definition_load($element, $set_name = NULL) {
+  $definitions = widgets_element_definitions();
+
+  // If a set is specified, do not allow loading of default set
+  // elements.
+  if (isset($set_name)) {
+    $set = widgets_set_load($set_name, NULL);
+    if ($set['storage'] == WIDGETS_STORAGE_DEFAULT) {
+      return FALSE;
+    }
+  }
+
+  return isset($definitions[$element]) ? $definitions[$element] : FALSE;
+}
+
+function widgets_element_definition_save($element) {
+  $query = db_merge('widgets_definitions')
+    ->key(array('name' => $element['name']))
+    ->fields(array(
+      'data' => serialize($element),
+    ));
+  $query->execute();
+}
+
+function widgets_field_scan($text, $return_matches = FALSE) {
+  // Matches tokens with the following pattern: [$type:$name]
+  // $type and $name may not contain  [ ] or whitespace characters.
+  // $type may not contain : characters, but $name may.
+  $pattern = '/
+    \[\?             # [ - pattern start
+    ([^\s\?=]*)   # match $type not containing whitespace ? or =
+    =               # = - separator
+    ([^\]]*)    # match $name not containing or ? (TODO white space was removed, make sure it keeps working)
+    \?\]             # ] - pattern end
+    /x';
+  
+  $pattern = '/
+    \[\?             # [ - pattern start
+    ([^\s\?=]*)   # match $type not containing whitespace ? or =
+    =               # = - separator
+    (((?!\?\]).)*)    # dont match ?]
+    \?\]             # ] - pattern end
+    /x';
+  
+  preg_match_all($pattern, $text, $matches);
+  
+  if ($return_matches) {
+    return $matches;
+  }
+
+  $originals = $matches[0];
+  $fields = $matches[1];
+  $defaults = $matches[2];
+  
+  // Iterate through the matches, building an associative array containing
+  // $tokens grouped by $types, pointing to the version of the token found in
+  // the source text. For example, $results['node']['title'] = '[node:title]';
+  $pattern = '/
+    ([^\?]*)   # match $type not containing whitespace ? or 
+    \{               # { start of var
+    ([^\?]*)    # match $name not containing whitespace or ?
+    \}
+    ([^\?]*) 
+    /x';
+  $results = array();
+  for ($i = 0; $i < count($fields); $i++) {
+    if (preg_match_all($pattern, $defaults[$i], $matches)) {
+      $results[$fields[$i]] = array(
+        'pre' => $matches[1][0],  
+        'default' => $matches[2][0],
+        'post' => $matches[3][0],
+        'original' => $originals[$i],
+      );    
+    }
+    else {
+      $results[$fields[$i]] = array(
+        'default' => $defaults[$i],
+        'original' => $originals[$i],
+      );
+    }
+  }
+
+  return $results;
+}
+
+/**
+ * Load all widget elements from the database.
+ *
+ * @return
+ *   An array of all widget elements.
+ * @see widgets_element_load()
+ */
+function widgets_elements() {
+  $elements = &drupal_static(__FUNCTION__);
+
+  if (!isset($elements)) {
+    $elements = array();
+
+    // Add database widget elements.
+    $result = db_select('widgets_elements', NULL, array('fetch' => PDO::FETCH_ASSOC))
+      ->fields('widgets_elements')
+      ->orderBy('widgets_elements.weight', 'ASC')
+      ->execute();
+    foreach ($result as $element) {
+      $element['data'] = unserialize($element['data']);
+      $definition = widgets_element_definition_load($element['name']);
+      // Do not load widget elements whose definition cannot be found.
+      if ($definition) {
+        $element = array_merge($definition, $element);
+        $elements[$element['weid']] = $element;
+      }
+    }
+  }
+
+  return $elements;
+}
+
+/**
+ * Load a single widget.
+ *
+ * @param $wid
+ *   The widget element ID.
+ * @param $set_name
+ *   The widget set name.
+ * @param $include
+ *   If set, this loader will restrict to a specific type of widget set.
+ * @return
+ *   An widget element array, consisting of the following keys:
+ *   - "wid": The unique widget element ID.
+ *   - "wsid": The unique widget set ID that contains this widget element.
+ *   - "weight": The weight of this widget element within the widget set.
+ *   - "name": The name of the element definition that powers this widget element.
+ *   - "data": An array of configuration options for this widget element.
+ *   Besides these keys, the entirety of the widget definition is merged into
+ *   the widget element array. Returns FALSE if the specified element cannot be
+ *   found.
+ * @see widgets_set_load()
+ * @see widgets_element_definition_load()
+ */
+function widgets_element_load($wid, $set_name, $include = NULL) {
+  if (($set = widgets_set_load($set_name, NULL, $include)) && isset($set['elements'][$wid])) {
+    return $set['elements'][$wid];
+  }
+  return FALSE;
+}
+
+function widgets_element_load_by_admin_path() {
+  $element = FALSE;
+  if (arg(6) == 'add') {
+    $element = widgets_element_definition_load(arg(7)); 
+  }
+  elseif (arg(4) == 'preview') {
+    $element = widgets_element_definition_load(arg(5)); 
+  }
+  else {
+    $element = widgets_element_load(arg(7), arg(5));
+  }
+  return $element;
+}
+
+/**
+ * Save an widget element.
+ *
+ * @param $element
+ *   An widget element array.
+ * @return
+ *   An widget element array. In the case of a new element, 'weid' will be set.
+ */
+function widgets_element_save($element) {
+//dsm($element);
+  if (!isset($element['data'])) {
+    $element['data'] = array();
+  }
+  if (!empty($element['weid'])) {
+    drupal_write_record('widgets_elements', $element, 'weid');
+  }
+  else {
+    drupal_write_record('widgets_elements', $element);
+  }
+  $set = widgets_set_load(NULL, $element['wsid']);
+  widgets_set_flush($set);
+  return $element;
+}
+
+function widgets_is_preview() {
+  if (arg(0) == 'admin' && arg(2) == 'widgets') {
+    if (arg(4) == 'preview') {
+      return TRUE;
+    }
+    elseif (arg(4) == 'edit') {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/*
+ * Stores javascript attachements in element templates
+ */
+function widgets_add_js_singleton($element = NULL) {
+  static $add_js = array();
+  if (isset($element) && isset($element['data'])) {
+    $add_js[$element['data']] = $element;
+  }
+  return $add_js;
+}
+
+/**
+ * Implements hook_page_alter() to insert JavaScript from element templates.
+ */
+function widgets_page_alter(&$page) {
+  $adds = widgets_add_js_singleton();
+  if (is_array($adds)) {
+    foreach ($adds AS $data => $add) {
+      drupal_add_js($add['data'], $add['options']);
+    }
+  }  
+}
+
+/**
+ * Delete an widget element.
+ *
+ * @param $element
+ *   An widget element array.
+ */
+function widgets_element_delete($element) {
+  db_delete('widgets_elements')->condition('weid', $element['weid'])->execute();
+  $set = widgets_set_load(NULL, $element['wsid']);
+  widgets_set_flush($set);
+}
+
+function widgets_set_error($name, $msg = '', $status = 'warning') {
+  if ($msg) {  	
+    drupal_set_message(filter_xss($msg), $status);
+  }
+  return _widgets_error($name, 'set');
+}
+
+function widgets_get_error($name) {
+  return _widgets_error($name);
+}
+
+function _widgets_error($name, $action = 'get') {
+  static $errors = array();
+  // TODO not sure if this is the best idea, but cures the symptoms of #1468030
+  if (!isset($errors[$name])) {
+    //return FALSE;
+  }
+  if ($action == 'set') {
+    $errors[$name] = TRUE;
+  }
+  elseif ($action == 'reset') {
+    $errors[$name] = FALSE;
+  }
+  if (isset($errors[$name])) {
+    return $errors[$name];
+  }
+  else {
+    return FALSE;
+  }
+}
+
+function widgets_set_cache_scope($name, $scope) {
+  return _widgets_cache_scope($name, $scope, 'set');
+}
+
+function widgets_get_cache_scope($name) {
+  return _widgets_cache_scope($name);
+}
+
+function _widgets_cache_scope($name, $scope = NULL, $action = 'get') {
+  static $cache_scope = array();
+  if ($action == 'set') {
+    if (!$cache_scope[$name][$scope]) {
+      $cache_scope[$name][$scope] = array();
+    }
+    $cache_scope[$name][$scope] = TRUE;
+  }
+  elseif ($action == 'reset') {
+    if ($cache_scope[$name][$scope]) {
+      $cache_scope[$name][$scope] = FALSE;
+    }
+  }
+  if (isset($cache_scope[$name])) {
+    return $cache_scope[$name];
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Returns HTML for a preview of an widget set.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - set: The widget set array being viewed.
+ *
+ * @ingroup themeable
+ */
+function theme_widgets_set_view($variables) {
+  drupal_add_css(drupal_get_path('module', 'widgets') . '/widgets.css');
+
+  $set = $variables['set'];
+  $is_preview = widgets_is_preview();
+  
+  $cid = FALSE;
+  $process_tokens = TRUE;
+  $token_data = array(
+    'set' => $set,
+  );
+  if (isset($variables['process_tokens']) && !$variables['process_tokens']) {
+    $process_tokens = FALSE;
+  }
+  else {
+    if (isset($variables['token_data'])) {
+      $token_data += $variables['token_data'];
+    }
+  }
+
+  $is_preview = widgets_is_preview();
+  if (!$is_preview && isset($set['data']['cache']['scope']) && ($cid = widgets_build_cache_cid($set['name'], $set['data']['cache']['scope'], $token_data))) {
+    $cache = cache_get($cid, 'cache_widgets');
+    if ($cache) {
+//dsm('cache_returned = ' . $cid);
+//dsm($cache);
+      return $cache->data['output'];
+    }
+  }
+  
+//dsm($set);  
+  $style = isset($set['data']['style']) ? $set['data']['style'] : '';
+  
+  $output = '';
+  $set_pre = '';
+  $set_post = '';
+  $set_pre_elements = array();
+  $set_post_elements = array();
+  $count = 0;
+  if (is_array($set['elements']) && (count($set['elements']) > 0)) {
+    
+    foreach ($set['elements'] AS $weight => $element) {
+      $template = $element['template'];
+      $data = isset($element['data']) ? $element['data'] : array();
+      $token_data['widgets']['element'] = $element;
+      // replace literal tokens found in template
+      if ($process_tokens) {
+        $template = widgets_token_replace($template, $token_data);
+      }
+//          if ($element['name'] == 'socialmedia_socialmedia-linkedin-profile-button' || $element['name'] == 'socialmedia_socialmedia-googleplus-profile-button') {
+//        dsm($template);
+//      }
+      $template = widgets_replace_fields($template, $data);
+//          if ($element['name'] == 'socialmedia_socialmedia-linkedin-profile-button' || $element['name'] == 'socialmedia_socialmedia-googleplus-profile-button') {
+//        dsm($template);
+//      }
+      if (isset($element['view callback']) && $element['view callback']) {
+        $template = call_user_func($element['view callback'], $element);
+      }
+      // replace tokens from template variables
+      if ($process_tokens) {
+        $template = widgets_token_replace($template, $token_data);
+      }
+      // if error with tokens, skip widget
+//dsm($element['name']);
+      if (widgets_get_error($element['name']) && !widgets_is_preview()) {
+        continue;
+      }
+
+      $pre = '';
+      $post = '';
+      if ($style) {
+        $a = explode('-', $style);
+        if ($a[0] == 'plain') {
+          if (($a[1] == 'linebreaks') && ($count > 0)) {
+            $pre = "\n";
+          }
+        }
+        else {
+          $pre = '<div id="widgets-element-' . $element['name'] . '" class="widgets widgets-element widgets-element-' . $style . ' widgets-style-' . $style . '">';
+          $post = '</div>';  
+        }   
+      }
+      $output .= $pre . $template . $post;
+      
+      if (isset($element['add_js']) && $element['add_js']['data']) {
+        $element['add_js']['data'] = widgets_replace_fields($element['add_js']['data'], $data);
+        $scope = $element['add_js']['options']['scope'];
+        if (($scope == 'header') || ($scope == 'footer')) {
+          widgets_add_js_singleton($element['add_js']);
+        }
+        elseif ($scope == 'set_pre') {
+          // check if already added, if not add
+          if (!isset($set_pre_elements[$element['add_js']['data']])) {
+            if ($process_tokens) {
+              $set_pre .= token_replace($element['add_js']['data'], $token_data);
+            }
+            $set_pre_elements[$element['add_js']['data']] = 1;
+          }
+        }
+        elseif ($scope == 'set_post') {
+          // check if already added, if not add
+          if (!isset($set_post_elements[$element['add_js']['data']])) {
+            if ($process_tokens) {
+              $set_post .= token_replace($element['add_js']['data'], $token_data);
+            }
+            $set_post_elements[$element['add_js']['data']] = 1;
+          }
+        }
+      }
+      $count++;
+    }
+  }
+  // return empty if no valid widgets
+  if (!$count) {
+    return '';
+  }
+  //$set_pre = token_replace($set_pre, $token_data);
+ // $set_post = token_replace($set_post, $token_data);
+  
+  $pre = '';
+  $post = '';
+  if ($style) {
+    $a = explode('-', $style);
+    if ($a[0] == 'plain') {
+
+    }
+    else {
+      $pre = '<div id="widgets-element-' . $set['name'] . '" class="widgets widgets-set widgets-set-' . $style . ' widgets-style-' . $style . '">';
+      $post = '</div>';  
+      if ($style == 'horizontal') {
+        $post = '<div class="widgets-clear"></div>' . $post;
+      }
+    }      
+  }
+  $output = $set_pre . $pre . $output . $post . $set_post;
+  
+  $data = array(
+    'output' => $output,
+  );
+  
+  if (!$is_preview && $cid) {
+    cache_set($cid, $data, 'cache_widgets');
+    //dsm('cache_set = ' . $cid); 
+  }  
+  
+  return $output;
+}
+
+function widgets_token_replace($template, $token_data) {
+  $template = token_replace($template, $token_data);
+//dsm($token_data);  
+  // check if any special operators
+  if (strpos($template, '[|') === FALSE) {
+    return $template;
+  }
+
+  $pattern = '/\[\|(.*?)\|\]/';
+  preg_match_all($pattern, $template, $matches);
+//dsm($matches);
+  if (isset($matches[1])) {
+    $i = 0;
+    foreach ($matches[1] AS $match) {
+      $elements = explode('||', $match);
+      $value = '';
+      foreach ($elements AS $element) {
+        $results = token_scan($element);
+//dsm($element);
+//dsm($results);
+        if (count($results) == 0) {
+          $value = $element;
+          break;
+        }
+
+      }
+//dsm($matches[0][$i] . ", $value");
+      $template = str_replace($matches[0][$i], $value, $template);
+      $i++;
+    }
+  }
+  return $template;
+}
+
+/**
+ * 
+ * @param unknown_type $name
+ * @param unknown_type $scope
+ * @param array $context - follows format for token_replace $data
+ */
+function widgets_build_cache_cid($name, $scope = '', $context = array()) {
+  //$cache_scope = widgets_build_cache_cid($name);
+  $cache = FALSE;
+  $cid = 'set:' . $name;
+//dsm($scope);
+  if ($scope == 'site') {
+    $cache = TRUE;
+  }
+  elseif ($scope == 'page') {
+    $path = widgets_get_context_path($context);
+    $cid .= ':page:' . $path;
+    $cache = TRUE;
+  }
+  elseif ($scope == 'author') {
+    $uid = widgets_get_context_author_uid($context);
+    $cid .= ':author:' . $uid; 
+    $cache = TRUE;
+  }
+  elseif ($scope == 'user') {
+    $uid = widgets_get_context_user_uid($context);
+    $cid .= ':user:' . $uid; 
+    $cache = TRUE;
+  }
+  drupal_alter('widgets_cache_cid', $cid, $name, $scope, $context);
+  if ($cache) {
+    return $cid;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+function widgets_get_context_path($context = array()) {
+  $path = $_GET['q'];
+  if (isset($context['node']->nid)) {
+    $path .= 'node/' . $context['node']->nid; 
+  }
+  elseif ((arg(0) == 'node') && is_numeric(arg(1))) {         
+    $path .= 'node/' . arg(1); 
+  }
+  drupal_alter('widgets_context_path', $path, $context);
+  return $path;
+}
+
+function widgets_get_context_author_uid($context = array()) {
+  $uid = '';    
+  if (isset($context['node']->uid)) {
+    $uid = $context['node']->uid; 
+  }
+  elseif ((arg(0) == 'node') && is_numeric(arg(1))) {
+    $obj = menu_get_object();
+    if (is_object($obj))  {
+      $uid = $obj->uid;
+    }
+  }
+  elseif (arg(0) == 'user' && is_numeric(arg(1))) {
+    $obj = menu_get_object('user', 1);
+    if (is_object($obj))  {
+      $uid = $obj->uid;
+    }
+  }  
+  drupal_alter('widgets_context_author_uid', $uid, $context);
+  return $uid;
+}
+
+function widgets_get_context_user_uid($context = array()) {
+  $uid = $_GLOBAL['user']->uid;   
+  drupal_alter('widgets_context_user_uid', $uid, $context);
+  return $uid;
+}
+
+function theme_widgets_element_view($variables) {
+  $element = $variables['element'];
+  // wrap element in a set and send it to theme set
+  $set = array(
+    'name' => 'test',
+    'elements' => array($element),
+  );
+  $output = theme('widgets_set_view', array('set' => $set));
+  
+  return $output;
+}
+
+function widgets_replace_fields($template, $data) {
+  $fields = widgets_field_scan($template);
+//dsm($fields);
+  foreach ($fields AS $key => $field) {   
+    $keys = explode(':', $key);
+    if ( count($keys) == 1) {
+      $value = isset($data[$key]) ? $data[$key] : FALSE;
+    } 
+    else {
+      $value = isset($data[$keys[0]][$keys[1]]) ? $data[$keys[0]][$keys[1]] : FALSE;
+    }
+    // if data value, use data otherwise use default
+    if ($value) {
+      // remove field if data value is set to none
+      if ($value == '<none>') {
+        $template = str_replace($field['original'], '', $template);
+      }
+      else {
+        $str = (isset($field['pre']) ? $field['pre'] : '') . $value . (isset($field['post']) ? $field['post'] : '');
+        $template = str_replace($field['original'], $str, $template);
+      }
+    }
+    else {
+      // remove field if default is set to none
+      if (isset($field['default']) && ($field['default'] == '<none>')) {
+        $template = str_replace($field['original'], '', $template);
+      }
+      else {
+        $str = (isset($field['pre']) ? $field['pre'] : '') . $field['default'] . (isset($field['post']) ? $field['post'] : '');
+        $template = str_replace($field['original'], $str, $template);
+      }
+    }
+  }
+  return $template;
+}
+
+/**
+ * Accept a keyword (center, top, left, etc) and return it as a pixel offset.
+ *
+ * @param $value
+ * @param $current_pixels
+ * @param $new_pixels
+ */
+function widgets_filter_keyword($value, $current_pixels, $new_pixels) {
+  switch ($value) {
+    case 'top':
+    case 'left':
+      return 0;
+
+    case 'bottom':
+    case 'right':
+      return $current_pixels - $new_pixels;
+
+    case 'center':
+      return $current_pixels / 2 - $new_pixels / 2;
+  }
+  return $value;
+}
+
+/**
+ * Internal function for sorting widget element definitions through uasort().
+ *
+ * @see widgets_element_definitions()
+ */
+function _widgets_element_definitions_sort($a, $b) {
+  return strcasecmp($a['name'], $b['name']);
+}
+
+/**
+ * Implements hook_block_info().
+ *
+ */
+function widgets_block_info() {
+  $sets = widgets_sets();
+  $blocks = array();
+  if (is_array($sets)) {
+    foreach ($sets AS $set) {
+
+      // skip widget sets without block visibility
+      if (isset($set['data']['visibility']['block']) && !$set['data']['visibility']['block']) {
+        continue;
+      }
+      $blocks['s_' . $set['name']] = array(
+        'info' => t('Widgets: @name', 
+          array(
+            '@name' => $set['name'],
+          )),
+        // caching set at widgets set level
+        'cache' => DRUPAL_NO_CACHE,
+      );
+    }
+  }
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ */
+function widgets_block_view($delta = '') {
+  $a = explode('_', $delta, 2);
+  if ($a[0] == 's') {
+    $set = widgets_set_load($a[1]);
+    include_once drupal_get_path('module', 'widgets') . '/widgets.admin.inc';
+    //$block['content'] = theme('widgets_set_view', array('set' => $set));
+    $contextual_links = array(
+      'admin/structure/widgets/sets/edit/' . $a[1],
+      array('widgets'),
+    );    
+    $block['content'] = array(
+      '#theme' => 'widgets_set_view',
+      '#set' => $set,
+      '#contextual_links' => array('widgets' => $contextual_links),
+    );
+    return $block;
+  }
+}
+
+function widgets_content_type_visibility($node, $view_mode) {
+  if (($view_mode != 'full') && ($view_mode != 'teaser')) {
+    return FALSE;
+  }
+// TODO we don't need the visibility tables using this method, verify and get blocks working the correct without visiblity tables.
+  // iterate over coded widget set visiablity
+  $visible_sets = array();
+  $sets = widgets_sets();
+  if (!is_array($sets)) {
+    return FALSE;
+  }
+  foreach ($sets AS $key => $set) {
+    if (isset($set['data']['visibility']['content_types'][$node->type]['links_' . $view_mode]) && $set['data']['visibility']['content_types'][$node->type]['links_' . $view_mode]) {
+      $visible_sets[] = $set;
+    }
+  }
+  return $visible_sets;
+}
+
+
+/**
+ * Implements hook_node_view().
+ */
+function widgets_node_view($node, $view_mode) {
+  if ($widget_sets = widgets_content_type_visibility($node, $view_mode)) {
+    if (!is_array($widget_sets)) {
+      return;
+    }    
+    foreach ($widget_sets AS $set) {
+      $vars = array(
+       'set' => $set,
+       'token_data' => array(
+          'node' => $node,
+          'widgets' => array('set' => $set),
+        ),
+      );
+      $link = array(
+        'title' => theme('widgets_set_view', $vars),
+        'html' => TRUE,
+      );
+      $node->content['links']['node']['#links'][$set['name']] = $link;
+    }
+    return;
+  }
+}

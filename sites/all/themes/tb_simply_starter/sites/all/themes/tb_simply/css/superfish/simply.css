@@ -1,0 +1,153 @@
+.sf-menu.sf-style-simply {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.sf-menu.sf-style-simply ul {
+  padding-left: 0;
+}
+
+.sf-menu.sf-style-simply li {
+  margin: 0;
+}
+
+.sf-menu.sf-style-simply a {
+  color: #ccc;
+  padding: .75em 1.5em;
+  text-decoration: none;
+}
+
+/* "Have child" Item */
+.sf-menu.sf-style-simply li.menuparent {
+}
+
+.sf-menu.sf-style-simply a.menuparent {
+}
+
+/* Child Menu */
+.sf-menu.sf-style-simply ul {
+}
+
+.sf-menu.sf-style-simply ul li {
+  background: #666;
+}
+
+/* Hover Links */
+.sf-menu.sf-style-simply li:hover,
+.sf-menu.sf-style-simply li.sfHover,
+.sf-menu.sf-style-simply a:hover,
+.sf-menu.sf-style-simply a:focus,
+.sf-menu.sf-style-simply a:active {
+  background: #666;
+  color: #fff;
+}
+
+/* Child Menu Items Hover */
+.sf-menu.sf-style-simply ul li:hover,
+.sf-menu.sf-style-simply ul li.sfHover,
+.sf-menu.sf-style-simply ul li a:focus,
+.sf-menu.sf-style-simply ul li a:hover,
+.sf-menu.sf-style-simply ul li a:active {
+  background: #999;
+  color: #fff;
+}
+
+/* Active Links */
+.sf-menu.sf-style-simply a.active {
+  background: #c00;
+  color: #fff;
+  font-weight: bold;
+}
+
+.sf-menu.sf-style-simply .active-trail .sf-depth-1 {
+  background: #c00;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Child Menu Items Active */
+.sf-menu.sf-style-simply ul li a.active {
+  background: #c00;
+  color: #fff;
+}
+
+/* Navbar */
+.sf-menu.sf-style-simply.sf-navbar {
+  width: 100%;
+}
+
+/* MegaMenu */
+.sf-menu.sf-style-simply span.sf-description {
+  color: #999;
+  display: block;
+  font-size: 0.8em;
+  line-height: 1.5em;
+  margin: 5px 0 0 5px;
+  padding: 0;
+}
+
+.sf-menu.sf-style-simply a.sf-with-ul {
+  padding-right: 2.25em;
+}
+
+.sf-menu.sf-style-simply.rtl a.sf-with-ul { /* RTL */
+  padding-left: 2.25em;
+  padding-right: 1em;
+}
+
+.sf-menu.sf-style-simply ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+  display: inline;
+  float: left;
+  width: 12em;
+}
+
+.sf-menu.sf-style-simply.rtl ul.sf-megamenu li.sf-megamenu-wrapper ol li.sf-megamenu-column {
+  float: right; /* RTL */
+}
+
+.sf-menu.sf-style-simply ul.sf-megamenu li.sf-megamenu-wrapper ol,
+.sf-menu.sf-style-simply ul.sf-megamenu li.sf-megamenu-wrapper ol li {
+  margin: 0;
+  padding: 0;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-1 ul.sf-megamenu {
+  width: 12em;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-10 ul.sf-megamenu {
+  width: 120em;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-2 ul.sf-megamenu {
+  width: 24em;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-3 ul.sf-megamenu {
+  width: 36em;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-4 ul.sf-megamenu {
+  width: 48em;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-5 ul.sf-megamenu {
+  width: 60em;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-6 ul.sf-megamenu {
+  width: 72em;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-7 ul.sf-megamenu {
+  width: 84em;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-8 ul.sf-megamenu {
+  width: 96em;
+}
+
+.sf-menu.sf-style-simply li.sf-parent-children-9 ul.sf-megamenu {
+  width: 108em;
+}
