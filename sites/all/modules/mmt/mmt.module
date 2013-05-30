@@ -38,7 +38,7 @@ function mmt_archives() {
     <ul>
      <li> <a href="?q=/http%3A//docs.omdoc.org/urtheories">urtheories</a> - formal foundations</li>
      <li> <a href="?q=/http%3A//docs.omdoc.org/latin">LATIN</a> - logic atlas</li>
-     <li> <a href="?q=/http%3A//docs.omdoc.org/openmath">OpenMath</a> - a content dictionary with Scala-based computational semantics </li>
+     <li> <a href="?q=/http%3A//www.openmath.org">OpenMath</a> - a content dictionary with Scala-based computational semantics </li>
     </ul>
 	';
   return $htmlText;
@@ -210,7 +210,9 @@ function mmt_node_view($node, $view_mode, $langcode) {
 function mmt_setup() {
   $mmtUrl = variable_get('mmtUrl');
   $qUrl = $mmtUrl . '/:planetary/getPaths';
+  // $qUrl = 'http://localhost/~mihnea/planetary/public/mmtPaths'; //quick hack for preloading mmt uris
   $result = file_get_contents($qUrl);
+  drupal_set_message("Loading: ");
   mmt_load_nodes($result);
 //  menu_build_tree('navigation');
   drupal_set_message("Success");
@@ -241,6 +243,11 @@ function mmt_load_nodes($pathsStr) {
 	  $nid = mmt_make_node($pair[1], $pair[0]); //$node->nid
       //path from url 
       $alias = $pair[1];  
+      
+      if (substr($alias, -1) == '/') {
+        $alias = substr($alias, 0, -1);
+        print_r($alias);
+      }
       $pathOpt = array(
 		'source' => 'node/' . $nid,
 		'alias' => $alias,
@@ -254,6 +261,7 @@ function mmt_load_nodes($pathsStr) {
         'menu_name' => 'navigation',
 	  );
       $id = menu_link_save($menuOpt);
+	  drupal_set_message($alias);
 	  $mlids[] = $id;
 	  $plids_stack[] = $id;
   	}
