@@ -246,7 +246,6 @@ function mmt_load_nodes($pathsStr) {
       
       if (substr($alias, -1) == '/') {
         $alias = substr($alias, 0, -1);
-        print_r($alias);
       }
       $pathOpt = array(
 		'source' => 'node/' . $nid,
