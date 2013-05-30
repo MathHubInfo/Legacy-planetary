@@ -1,5 +1,9 @@
 <?php
 
+require_once("glossary_local.php");
+
+$glossary = null;
+
 function planetary_glossary_field_widget_info() {
   return array(
     'glossary_widget' => array(
@@ -9,60 +13,178 @@ function planetary_glossary_field_widget_info() {
   );
 }
 
+function getGlossary() {
+  global $glossary;
+  if ($glossary == null) {
+    $glossary = new LocalGlossary();
+  }
+  return $glossary;
+}
+
+function planetary_glossary_menu() {
+   $items['glossary/imports'] = array(
+      'title' => 'Autocomplete glossary imports',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'planetary_glossary_get_imports',
+      'access arguments' => array('access content'),
+    );
+   $items['glossary/variables'] = array(
+      'title' => 'Autocomplete glossary imports',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'planetary_glossary_get_variables',
+      'access arguments' => array('access content'),
+    );
+   return $items;
+}
+
+function planetary_glossary_get_imports($prefix = "") {
+  $glossary = getGlossary();
+  $result = array();
+  foreach ($glossary->suggestImports($prefix) as $suggestion) {
+    $result[$suggestion] = $suggestion;
+  }
+  drupal_json_output($result);
+}
+
+function planetary_glossary_get_variables($prefix = "") {
+  $result = array();
+  drupal_json_output($result);
+}
+
+
+
+function planetary_glossary_get_path($module, $lang) {
+  return $module.".".$lang.".tex";
+}
+
 function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  global $base_url;
+  $glossary = getGlossary();
 
   switch ($instance['widget']['type']) {
     case 'glossary_widget':
       $lang = $form["language"]["#value"];
-      $path = isset($items[$delta]['path']) ? $items[$delta]['path'] : '';
+
+      // setting default values
+      $moduleid = "";
+      $imports = "";
+      $symbols = "";
+      $content = "";
+
+      // 
+      if (isset($items[$delta]['path'])) {
+        $moduleid = $items[$delta]['path'];
+        $imports = join($glossary->getModuleImports($moduleid), ",");
+        $symbols = join($glossary->getModuleSymbols($moduleid), ",");
+        $content = planetary_repo_load_file(planetary_glossary_get_path($moduleid, $lang));
+      } 
 
       $filter = isset($items[$delta]['filter']) ? $items[$delta]['filter'] : '';
+
       $widget = $element;
       $widget['#delta'] = $delta;
-	  $content = planetary_repo_load_file($lang."_".$path.".tex");
-
       $widget['#element_validate'] = array('planetary_glossary_field_widget_validate');
       $widget["#type"] = "fieldset";
       $widget["data"] = array(
              "path" => array(
                "#type" => "textfield",
-               "#title" => "Glossary ID",
-               "#default_value" => $path
+               "#title" => "Module name",
+               "#required" => true,
+               "#default_value" => $moduleid
              ),
+             "imports" => array(
+               "#type" => "item",
+               "#title" => "Imports",
+               "autofield" => array(
+                 "#size" => 2,
+                 "#multiple" => true,
+                 "#default_value" => $imports,
+                 "#autocomplete_deluxe_path" => $base_url."/glossary/imports",
+                 "#process" => array("autocomplete_deluxe_element_process")
+               ),
+              ),
+             "symbols" => array(
+               "#type" => "item",
+               "#title" => "Symbols",
+               "autofield" => array(
+                 "#size" => 2,
+                 "#multiple" => true,
+                 "#default_value" => $symbols,
+                 "#autocomplete_deluxe_path" => $base_url."/glossary/variables",
+                 "#process" => array("autocomplete_deluxe_element_process")
+               ),
+              ),
              "lang" => array(
                "#type" => "hidden",
                "#default_value" => $lang
-             ),             
+             ),
               "content" => array(
-              '#title' => t('Editor'),
+              '#title' => t('Definition'),
               '#type' => 'text_format',
               '#tree' => true,
               '#default_value' => $content,
               '#rows' => 20,
               '#format' => $filter,
-              )
+              ),
+              "notations" => array(
+               "#title" => "Notations",
+               "#type" => "textfield",
+               "#default_value" => "",
+              ),
+             "hypernyms" => array(
+               "#title" => "Hypernyms",
+               "#type" => "textfield",
+               "#default_value" => "",
+              ),
+             "hyponyms" => array(
+               "#title" => "Hyponyms",
+               "#type" => "textfield",
+               "#default_value" => "",
+              ),
+             "comments" => array(
+               "#title" => "Comments",
+               "#type" => "textarea",
+               "#default_value" => "",
+              ),
+
         );
-      $widget["filter"] = array(
-              '#type' => 'hidden',
-              );
-      $widget["path"] = array(
-              '#type' => 'hidden',
-              );
+
       break;
   }
+
+  $widget["filter"] = array(
+      "#type" => "hidden",
+      "#default_value" => $filter
+    );
+
+  $widget["path"] = array(
+      "#type" => "hidden",
+      "#default_value" => $filter
+    );
 
   return $widget;
 }
 
 function planetary_glossary_field_widget_validate($element, &$form_state) {
+  $glossary = getGlossary();
+
   $delta = $element['#delta']; // TODO: Isn't there a better way to find out which element?
   $field = $form_state['field'][$element['#field_name']][$element['#language']]['field'];
   $field_name = $field['field_name'];
   if (isset($form_state['values'][$field_name][$element['#language']][$delta])) {
     $values = $form_state['values'][$field_name][$element['#language']][$delta];
+
+    $moduleid = $values["data"]["path"];
     $lang = $values["data"]["lang"];
-    planetary_repo_save_file($lang."_".$values["data"]["path"].".tex", $values["data"]["content"]["value"]);
+    $module_path = planetary_glossary_get_path($moduleid, $lang);
+
+    planetary_repo_save_file($module_path, $values["data"]["content"]["value"]);
+    $glossary->serialize($moduleid,   
+                            explode(",", $values["data"]["imports"]["autofield"]), 
+                            explode(",",$values["data"]["symbols"]["autofield"]));
+
     form_set_value($element["filter"], $values["data"]["content"]["format"], $form_state);
     form_set_value($element["path"], $values["data"]["path"], $form_state);
+    form_set_value($element["data"], $values["data"], $form_state);
   }
 }
