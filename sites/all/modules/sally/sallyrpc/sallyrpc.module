@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the SallyRPC feature.
+ */
+
+include_once 'sallyrpc.features.inc';

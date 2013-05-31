@@ -1,18 +1,49 @@
 <?php
 
 /**
+ * This function is to replace PHP's extremely buggy realpath().
+ * @param string The original path, can be relative etc.
+ * @return string The resolved path, it might not exist.
+ */
+function truepath($path){
+    // whether $path is unix or not
+    $unipath=strlen($path)==0 || $path{0}!='/';
+    // attempts to detect if path is relative in which case, add cwd
+    if(strpos($path,':')===false && $unipath)
+        $path=getcwd().DIRECTORY_SEPARATOR.$path;
+    // resolve path parts (single dot, double dot and double delimiters)
+    $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+    $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
+    $absolutes = array();
+    foreach ($parts as $part) {
+        if ('.'  == $part) continue;
+        if ('..' == $part) {
+            array_pop($absolutes);
+        } else {
+            $absolutes[] = $part;
+        }
+    }
+    $path=implode(DIRECTORY_SEPARATOR, $absolutes);
+    // resolve any symlinks
+    if(file_exists($path) && linkinfo($path)>0)$path=readlink($path);
+    // put initial separator that could have been lost
+    $path=!$unipath ? '/'.$path : $path;
+    return $path;
+}
+
+/**
  * checks if the user is able to access the path @path
  * @return path - normalized path of the file to be accessed
  *         false - if not allowed 
  */
 function planetary_repo_local_access_path($path) {
-  $root = realpath(variable_get('planetary_repo_local_path', "/tmp/"));
-  $p = realpath(dirname($root."/".$path));
+  $root = truepath(variable_get('planetary_repo_local_path', "/tmp/"));
+  $p = truepath($root."/".$path);
   if (strlen($p)==0)
     return false;
   $prefix = substr($p, 0, strlen($root)); 
   if (strcmp($prefix, $root) == 0)
-    return $p."/".basename($path);
+    return $p;
   else
     return false;
 }
@@ -34,6 +65,29 @@ function planetary_repo_local_load($path) {
   return $content;
 }
 
+function planetary_repo_local_list($path) {
+  $full_path = planetary_repo_local_access_path($path);
+  $content = array();
+  if ($full_path) {
+    $handle = opendir($full_path);
+    while (false !== ($file = readdir($handle))) {
+         $content[] = $file;
+    }
+    closedir($handle);
+  }
+  return $content;
+}
+
+function planetary_repo_local_stat($path) {
+  $full_path = planetary_repo_local_access_path($path);
+  if ($full_path) {
+    if (!file_exists($full_path))
+      return null;
+    return $handle = stat($full_path);
+  }
+  return null;
+}
+
 function planetary_repo_local_settings(&$element) {
   $element["planetary_repo_local_path"] = array(
       "#type" => "textfield",
@@ -51,7 +105,9 @@ function planetary_repo_repo_provider() {
         "label" => "Local File System",
         "settings" => 'planetary_repo_local_settings',
         "save" => 'planetary_repo_local_save',
-        "load" => 'planetary_repo_local_load'
+        "load" => 'planetary_repo_local_load',
+        "list" => 'planetary_repo_local_list',
+        "stat" => 'planetary_repo_local_stat',
       ),
     "VFS" => array(
         "label" => "Virtual File System",
@@ -82,6 +138,14 @@ function planetary_repo_save_file($path, $contents) {
   };
 }
 
+function planetary_repo_stat_file($path) {
+  $current = variable_get('planetary_repo_provider', null);
+  if ($current) {
+    $providers = module_invoke_all("repo_provider");
+    return $providers[$current]["stat"]($path);
+  };
+}
+
 function planetary_repo_load_file($path) {
   $current = variable_get('planetary_repo_provider', null);
   if ($current) {
@@ -90,6 +154,13 @@ function planetary_repo_load_file($path) {
   };
 }
 
+function planetary_repo_list($path) {
+  $current = variable_get('planetary_repo_provider', null);
+  if ($current) {
+    $providers = module_invoke_all("repo_provider");
+    return $providers[$current]["list"]($path);
+  };
+}
 
 function planetary_repo_config_form($form, &$form_state) {
   $providers = module_invoke_all("repo_provider");
