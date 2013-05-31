@@ -1,1 +1,0 @@
-JOBAD.config.debug = false;

@@ -42,24 +42,13 @@ function jobad_boot() {
 /**
  * helper function for loading jobads css and js files
  */
-function jobad_init_libs() {
-    $jobadPath = drupal_get_path('module', 'jobad');
-    /**
-     * CSS
-     */
-    drupal_add_css($jobadPath . '/lib/css/jquery-ui.css');
-    drupal_add_css($jobadPath . '/lib/build/release/JOBAD.css');
-    /**
-     * JavaScript
-     */
-    //jquery
-	drupal_add_js($jobadPath . '/lib/js/deps/jquery/jquery-2.0.0.min.js', 'file');
-	drupal_add_js($jobadPath . '/lib/js/deps/jquery/jquery-ui-1.10.3.js', 'file');
-    //underscore
-    drupal_add_js($jobadPath . '/lib/js/deps/underscore/underscore-min.js', 'file');    
-    //jobad
-    drupal_add_js($jobadPath . '/lib/build/release/JOBAD.js', 'file', array('cache' => false));
-    //modules
+function jobad_init_libs() {  
+    //loading libraries
+    libraries_load("jquery");
+    libraries_load("jquery-ui");
+    libraries_load("underscore");
+    libraries_load("jobad");
+    //loading registered modules
     $modules = variable_get('JOBADModulesArray');
     foreach($modules as $id => $file) {
 		jobad_register_module($file);
