@@ -1,0 +1,38 @@
+{
+	"bold" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
+	},
+	"italic" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
+	},
+	"underline" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
+	},
+	"alignleft" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
+	},
+	"alignright" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
+	},
+	"aligncenter" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
+	},
+	"itemize" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
+	},
+	"enumerate" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
+	},
+	"insertMath" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
+	}
+}

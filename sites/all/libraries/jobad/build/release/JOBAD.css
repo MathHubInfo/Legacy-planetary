@@ -1,0 +1,152 @@
+/*
+	JOBAD.css
+	Contains JOBAD UI CSS Data
+	
+	Copyright (C) 2013 KWARC Group <kwarc.info>
+	
+	This file is part of JOBAD.
+	
+	JOBAD is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	JOBAD is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+/* general */
+.JOBAD {
+	/* general JOBAD class applied to all JOBAD items */
+}
+
+/* JOBAD Hover */
+.JOBAD.JOBAD_Hover {
+	position: fixed;
+	background-color: #696969;
+	-webkit-border-radius: 5;
+	-moz-border-radius: 5;
+	border-radius: 5;
+	border: 1px solid #000000;
+}
+
+/* JOBAD ContextMenu */
+.JOBAD.JOBAD_Contextmenu {
+	/* applied to the context menu */
+}
+
+/* JOBAD Sidebar */
+.JOBAD.JOBAD_Sidebar {
+	/* applied to all sidebar elements (including parent) */
+}
+
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Sidebar_Group, .JOBAD.JOBAD_Sidebar.JOBAD_Sidebar_Single {
+	/* JOBAD Sidebar Group or single */
+	position: absolute;
+	right: 0px; 
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Sidebar_group_element {
+	position: relative;
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Sidebar_Wrapper {
+	/* wraps the element that has a sidebar */
+	width: 100%;
+	float: left;
+	overflow: hidden;	
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Sidebar_Container {
+	/* Contains all sidebar elements */
+	height: 1px; /* something positive */
+	position: relative;
+	float: right;
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Sidebar_Notification {
+	/* Sidebar Notifications */
+	-webkit-border-radius: 5;
+	-moz-border-radius: 5;
+	border-radius: 5;
+}
+
+.JOBAD_Sidebar_Hover {
+	position: fixed;
+	-webkit-border-radius: 5;
+	-moz-border-radius: 5;
+	border-radius: 5;
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Notification_info {
+	/* Information */
+	background-color: #0033FF;
+	border: 1px solid #0000FF;
+}
+.JOBAD.JOBAD_Sidebar.JOBAD_Notification_warning {
+	/* Warning */
+	background-color: #FFFF00;
+	border: 1px solid #FFAA00;
+}
+.JOBAD.JOBAD_Sidebar.JOBAD_Notification_error {
+	/* Error */	
+	background-color: red;
+	border: 1px solid red;
+}
+
+/*
+ * JOBAD Config UI
+ */
+
+/* JOBAD Config UI Main */
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_tablemain{
+	font-size: 150%;
+}
+
+/* Infobox */
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_infobox{
+	vertical-align: top; 
+}
+
+/* Infobox */
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_subtabs {
+	font-size: 70%;
+}
+
+/* Module */
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_ModEntry {
+	vertical-align: top; 
+}
+
+/* Config Title */
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_MetaConfigTitle {
+	font-weight: bold; 
+}
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_MetaConfigDesc {
+	font-style: italic;
+	margin-left: 20px; 
+}
+
+/* Validation */
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_validateFail {
+	background-color: red; 
+}
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_validateOK {
+	background-color: #FFFFD0;
+}
+
+/*
+	JOBAD jQuery UI CSS compatibility fixes
+*/
+
+/* fix for bad size */
+.ui-widget { font-size: 70%; }
