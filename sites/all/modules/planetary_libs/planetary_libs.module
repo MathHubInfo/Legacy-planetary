@@ -302,7 +302,7 @@ function planetary_libs_libraries_info() {
         'build/release/JOBAD.js',
       ),
       'css' => array(
-        'css/JOBAD.css',
+        'build/release/JOBAD.css',
       )
     ),
     'variants' => array(
@@ -312,7 +312,7 @@ function planetary_libs_libraries_info() {
             'build/release/JOBAD.min.js',
           ),
           'css' => array(
-            'css/JOBAD.css',
+            'build/release/JOBAD.css',
           )       
         ),
       ),
