@@ -13,7 +13,7 @@ This object is the main JOBAD Namespace.
 
 * **Object** [`JOBAD.modules`](JOBAD.modules/index.md) - Namespace for global module registering. 
 
-* **Object** [`JOBAD.Events`](JOBAD.Events/index.md) - JOBAD Event Namespace. 
+* **Object** [`JOBAD.events`](JOBAD.events/index.md) - JOBAD Event Namespace. 
 * **Function** `JOBAD.isEventDisabled(evtName)` Checks if an event is globally disabled. 
 	* **String** `evtName` Name of the event to check. 
 	* **returns** a boolean. 
@@ -27,7 +27,7 @@ This object is the main JOBAD Namespace.
 * **Object** [`JOBAD.storageBackend`](JOBAD.storageBackend.md) - Storage Backend namespace. 
 
 * **Object** [`JOBAD.util`](JOBAD.util.md) - Contains Utility functions. 
-* **Object** [`JOBAD.Resources`](JOBAD.resources.md) - JOBAD Text Resources
+* **Object** [`JOBAD.resources`](JOBAD.resources.md) - JOBAD Text Resources
 
 * **Object** [`JOBAD.console`](JOBAD.console.md) - Wraps the native console object if available. 
 * **Function** `JOBAD.error(msg)` Produces an error message. 

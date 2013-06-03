@@ -6,8 +6,8 @@ Every module can register listeners to events. Whenever an event occurs JOBAD wi
 * `leftClick`: When an element is left clicked on. 
 * `contextMenu`: When an element is right clicked on, a context menu may appear. Is not triggered when the control key is pressed to allow access to the native context menu. 
 * `hoverText`: A text which will appear in a tooltip hovering over the hovered element. Warning: If there are `title` attributes on the element, they might interfere with this event. 
-* `onSideBarUpdate`: Called when the sidebar is upated. 
-* `onConfigUpdate`: Called whenever the config is updated. 
+* `SideBarUpdate`: Called when the sidebar is upated. 
+* `configUpdate`: Called whenever the config is updated. 
 * `onEvent`: Called whenever another event is raised.  (The event itself is excluded to prevent infinite loops)
 ## Event handling and DOM nodes
 
@@ -25,14 +25,14 @@ JOBAD will first check if any active module handles the left click on the &lt;b&
 element. If so **only** that specific module will handle this event. If not, JOBAD will check the parent &lt;div&gt; if some module can handle a click on 
 the &lt;div&gt; element. 
 
-## Multiple event handler
+## Multiple event handlers
 If there are multiple event handlers for one event, JOBAD might only execute only one. 
 
 * `contextMenu`: Context Menu entries will be merged. 
-* `hoverText`: Only the first handler is called. 
+* `hoverText`: Every handler is triggered, however only the first tooltip is shown. 
 
 For any other event, every handler will be called. 
 
 ## See also
-* [API Documentation for JOBAD.Events](../api/JOBAD/JOBAD.Events/index.md)
+* [API Documentation for JOBAD.events](../api/JOBAD/JOBAD.events/index.md)
 * [Modules](modules.md)

@@ -45,7 +45,6 @@ JOBAD.config.storageBackend = "none";
 	@returns boolean
 */
 JOBAD.util.validateConfigSetting = function(obj, key, val){
-	//TODO: Use update this
 	if(!obj.hasOwnProperty(key)){
 		JOBAD.console.warn("Undefined user setting: "+key);
 		return false;
@@ -315,7 +314,7 @@ JOBAD.util.createProperUserSettingsObject = function(obj, modName){
 								JOBAD.console.warn(WRONG_FORMAT_MSG+" (Array restriction must be non-empty). ");
 								return;
 							}
-							newSpec.push(function(val){return (validator.indexOf(val) != -1);});
+							newSpec.push(function(val){return (JOBAD.refs._.indexOf(validator, val) != -1);});
 					} else {
 						JOBAD.console.warn(WRONG_FORMAT_MSG+" (Type 'list' needs array restriction. ). ");
 						return;
@@ -402,12 +401,17 @@ JOBAD.modules.extensions.config = {
 		*/
 		this.UserConfig.set = function(prop, val){
 			if(this.UserConfig.canSet(prop, val)){
+				if(JOBAD.util.objectEquals(val, this.UserConfig.get(prop))){
+					return; //we have it already; no change neccessary. 
+				}
 				configCache[id][prop] = val;
+				
 			} else {
 				JOBAD.console.warn("Can not set user config '"+prop+"': Validation failure. ");
+				return; 
 			}
 			JOBAD.storageBackend.setKey(id, configCache[id]);
-			this.getJOBAD().element.trigger("JOBAD.ConfigUpdateEvent", [prop]);
+			JOBAD.refs.$("body").trigger("JOBAD.ConfigUpdateEvent", [prop, this.info().identifier]);
 		};
 		
 		/*
@@ -430,7 +434,6 @@ JOBAD.modules.extensions.config = {
 				return res;
 			} else {
 				JOBAD.console.log("Failed to access user setting '"+prop+"'");
-				
 			}
 		};
 		
@@ -450,7 +453,7 @@ JOBAD.modules.extensions.config = {
 				configCache[id] = {};
 				for(var key in value){
 					configCache[id][key] = JOBAD.util.getDefaultConfigSetting(value, key);
-					this.getJOBAD().element.trigger("JOBAD.ConfigUpdateEvent", [key]);
+					JOBAD.refs.$("body").trigger("JOBAD.ConfigUpdateEvent", [key, this.info().identifier]);
 				}
 			}
 		};
@@ -501,20 +504,20 @@ JOBAD.ifaces.push(function(){
 					[
 						JOBAD.refs.$("<div>").append(
 							JOBAD.refs.$("<span>").text("JOBAD Core Version "+JOBAD.version),
-							JOBAD.refs.$("<pre>").text(JOBAD.Resources.jobad_license)
+							JOBAD.refs.$("<pre>").text(JOBAD.resources.jobad_license)
 						),
-						JOBAD.refs.$("<pre>").text(JOBAD.Resources.gpl_v3_text),
+						JOBAD.refs.$("<pre>").text(JOBAD.resources.gpl_v3_text),
 						JOBAD.refs.$("<div>").append(
 							JOBAD.refs.$("<span>").text("jQuery Version "+JOBAD.refs.$.fn.jquery),
-							JOBAD.refs.$("<pre>").text(JOBAD.Resources.jquery_license)
+							JOBAD.refs.$("<pre>").text(JOBAD.resources.jquery_license)
 						),
 						JOBAD.refs.$("<div>").append(
 							JOBAD.refs.$("<span>").text("jQuery UI Version "+JOBAD.refs.$.ui.version),
-							JOBAD.refs.$("<pre>").text(JOBAD.Resources.jqueryui_license)
+							JOBAD.refs.$("<pre>").text(JOBAD.resources.jqueryui_license)
 						),
 						JOBAD.refs.$("<div>").append(
 							JOBAD.refs.$("<span>").text("Underscore Version "+JOBAD.refs._.VERSION),
-							JOBAD.refs.$("<pre>").text(JOBAD.Resources.underscore_license)
+							JOBAD.refs.$("<pre>").text(JOBAD.resources.underscore_license)
 						)
 					], {}, 400
 				).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_subtabs")
@@ -579,7 +582,6 @@ JOBAD.ifaces.push(function(){
 			//Build Config Stuff	
 			var UserConfig = mod.UserConfig.getTypes();
 			
-			//TODO: Update design a little bit
 			for(var key in UserConfig){
 				(function(){
 				var setting = UserConfig[key];
@@ -728,6 +730,7 @@ JOBAD.ifaces.push(function(){
 						break;
 					default:
 						JOBAD.console.warn("Unable to create config dialog: Unknown configuration type '"+type+"' for user setting '"+key+"'");
+						item.remove();
 						break;
 				}
 				
@@ -738,8 +741,13 @@ JOBAD.ifaces.push(function(){
 			$displayer
 			.trigger("JOBAD.modInfoClose")
 			.html("")		
+			
+			
 			.append(
-				JOBAD.util.createTabs(["About", "Config"], [$info, $config], {}, 400).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_subtabs")
+				($config.children().length > 0)?
+					JOBAD.util.createTabs(["About", "Config"], [$info, $config], {}, 400).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_subtabs")
+				:
+					JOBAD.util.createTabs(["About"], [$info], {}, 400).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_subtabs")
 			)
 			.one('JOBAD.modInfoClose', function(){
 				//Store all the settings

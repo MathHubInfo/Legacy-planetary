@@ -3,8 +3,7 @@
 ## Module Template
 
 ```js
-var template = {
-	/* Module Info / Meta Data */
+/* Module Info / Meta Data */
 	info:{
 		'identifier':	'template',  //(Unique) identifier for this module, preferably human readable. 
 		'title':	'Template Module', //Human Readable title of the module. 
@@ -91,10 +90,19 @@ var template = {
 			@param JOBADInstance The instance of JOBAD the module is initiated on. 				
 		*/
 	},
-	onSideBarUpdate: function(JOBADInstance){
+	SideBarUpdate: function(JOBADInstance){
 		/*
 			called every time the sidebar is updated. May be ommitted. 
 			@this An instance of JOBAD.modules.loadedModule
+			@param JOBADInstance The instance of JOBAD the module is initiated on. 
+			@returns nothing. 
+		*/
+	},
+	configUpdate: function(setting, JOBADInstance){
+		/*
+			called every time the user configuration is updated. May be ommitted. 
+			@this An instance of JOBAD.modules.loadedModule
+			@param setting The setting which has been updated. 
 			@param JOBADInstance The instance of JOBAD the module is initiated on. 
 			@returns nothing. 
 		*/

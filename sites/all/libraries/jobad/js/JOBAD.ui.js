@@ -209,7 +209,7 @@ JOBAD.UI.ContextMenu.buildMenuList = function(items, element, elementOrg){
 	for(var i=0;i<items.length;i++){
 		var item = items[i];
 		var $a = JOBAD.refs.$("<a href='#'>");
-		$li = JOBAD.refs.$("<li>")
+		var $li = JOBAD.refs.$("<li>")
 		.appendTo($ul)
 		.append($a);
 		$a
@@ -329,7 +329,7 @@ JOBAD.UI.Sidebar.wrap = function(element){
 				(function(){
 					var group = JOBAD.refs.$(groups[i]);
 					var top = parseInt(JOBAD.refs.$(group[0]).css("top"));
-					var par = JOBAD.refs.$("<div class='JOBAD JOBAD_Sidebar JOBAD_Sidebar_group'><img src='"+JOBAD.UI.Sidebar.config.icons.multiple_open+"' width='16' height='16'></div>")
+					var par = JOBAD.refs.$("<div class='JOBAD JOBAD_Sidebar JOBAD_Sidebar_Group'><img src='"+JOBAD.UI.Sidebar.config.icons.multiple_open+"' width='16' height='16'></div>")
 					.css("top", top).appendTo(sideBarElement);
 					var img = par.find("img");
 					var state = false;

@@ -483,8 +483,7 @@
 
 <h2>Module Template</h2>
 
-<div class="codehilite"><pre><code><span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="cm">/* Module Info / Meta Data */</span>
+<div class="codehilite"><pre><code><span class="cm">/* Module Info / Meta Data */</span>
     <span class="nx">info</span><span class="o">:</span><span class="p">{</span>
         <span class="s1">&#39;identifier&#39;</span><span class="o">:</span>   <span class="s1">&#39;template&#39;</span><span class="p">,</span>  <span class="c1">//(Unique) identifier for this module, preferably human readable. </span>
         <span class="s1">&#39;title&#39;</span><span class="o">:</span>    <span class="s1">&#39;Template Module&#39;</span><span class="p">,</span> <span class="c1">//Human Readable title of the module. </span>
@@ -571,10 +570,19 @@
 <span class="cm">            @param JOBADInstance The instance of JOBAD the module is initiated on.              </span>
 <span class="cm">        */</span>
     <span class="p">},</span>
-    <span class="nx">onSideBarUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">JOBADInstance</span><span class="p">){</span>
+    <span class="nx">SideBarUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">JOBADInstance</span><span class="p">){</span>
         <span class="cm">/*</span>
 <span class="cm">            called every time the sidebar is updated. May be ommitted. </span>
 <span class="cm">            @this An instance of JOBAD.modules.loadedModule</span>
+<span class="cm">            @param JOBADInstance The instance of JOBAD the module is initiated on. </span>
+<span class="cm">            @returns nothing. </span>
+<span class="cm">        */</span>
+    <span class="p">},</span>
+    <span class="nx">configUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">setting</span><span class="p">,</span> <span class="nx">JOBADInstance</span><span class="p">){</span>
+        <span class="cm">/*</span>
+<span class="cm">            called every time the user configuration is updated. May be ommitted. </span>
+<span class="cm">            @this An instance of JOBAD.modules.loadedModule</span>
+<span class="cm">            @param setting The setting which has been updated. </span>
 <span class="cm">            @param JOBADInstance The instance of JOBAD the module is initiated on. </span>
 <span class="cm">            @returns nothing. </span>
 <span class="cm">        */</span>

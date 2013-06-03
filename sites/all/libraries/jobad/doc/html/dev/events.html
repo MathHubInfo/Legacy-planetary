@@ -489,8 +489,8 @@
 <li><code>leftClick</code>: When an element is left clicked on. </li>
 <li><code>contextMenu</code>: When an element is right clicked on, a context menu may appear. Is not triggered when the control key is pressed to allow access to the native context menu. </li>
 <li><code>hoverText</code>: A text which will appear in a tooltip hovering over the hovered element. Warning: If there are <code>title</code> attributes on the element, they might interfere with this event. </li>
-<li><code>onSideBarUpdate</code>: Called when the sidebar is upated. </li>
-<li><code>onConfigUpdate</code>: Called whenever the config is updated. </li>
+<li><code>SideBarUpdate</code>: Called when the sidebar is upated. </li>
+<li><code>configUpdate</code>: Called whenever the config is updated. </li>
 <li><code>onEvent</code>: Called whenever another event is raised.  (The event itself is excluded to prevent infinite loops)
 <h2>Event handling and DOM nodes</h2></li>
 </ul>
@@ -515,13 +515,13 @@ JOBAD will first check if any active module handles the left click on the &lt;b&
 element. If so <strong>only</strong> that specific module will handle this event. If not, JOBAD will check the parent &lt;div&gt; if some module can handle a click on 
 the &lt;div&gt; element. </p>
 
-<h2>Multiple event handler</h2>
+<h2>Multiple event handlers</h2>
 
 <p>If there are multiple event handlers for one event, JOBAD might only execute only one. </p>
 
 <ul>
 <li><code>contextMenu</code>: Context Menu entries will be merged. </li>
-<li><code>hoverText</code>: Only the first handler is called. </li>
+<li><code>hoverText</code>: Every handler is triggered, however only the first tooltip is shown. </li>
 </ul>
 
 <p>For any other event, every handler will be called. </p>
@@ -529,7 +529,7 @@ the &lt;div&gt; element. </p>
 <h2>See also</h2>
 
 <ul>
-<li><a href="../api/JOBAD/JOBAD.Events/index.html">API Documentation for JOBAD.Events</a></li>
+<li><a href="../api/JOBAD/JOBAD.events/index.html">API Documentation for JOBAD.events</a></li>
 <li><a href="modules.html">Modules</a></li>
 </ul>
 

@@ -56,7 +56,7 @@ JOBAD.ifaces.push(function(me, args){
 		var root = me.element;
 
 		for(var key in me.Event){
-			JOBAD.Events[key].Setup.enable.call(me, root);
+			JOBAD.events[key].Setup.enable.call(me, root);
 		}
 
 		return true;
@@ -72,9 +72,9 @@ JOBAD.ifaces.push(function(me, args){
 		}		
 		var root = me.element;
 
-		for(var key in JOBAD.Events){
-			if(JOBAD.Events.hasOwnProperty(key) && !JOBAD.isEventDisabled(key)){
-				JOBAD.Events[key].Setup.disable.call(me, root);
+		for(var key in JOBAD.events){
+			if(JOBAD.events.hasOwnProperty(key) && !JOBAD.isEventDisabled(key)){
+				JOBAD.events[key].Setup.disable.call(me, root);
 			}	
 		}
 
@@ -82,20 +82,20 @@ JOBAD.ifaces.push(function(me, args){
 	};
 	
 	//Setup the events
-	for(var key in JOBAD.Events){
-		if(JOBAD.Events.hasOwnProperty(key) && !JOBAD.isEventDisabled(key)){
+	for(var key in JOBAD.events){
+		if(JOBAD.events.hasOwnProperty(key) && !JOBAD.isEventDisabled(key)){
 
-			me.Event[key] = JOBAD.util.bindEverything(JOBAD.Events[key].namespace, me);
+			me.Event[key] = JOBAD.util.bindEverything(JOBAD.events[key].namespace, me);
 			
-			if(typeof JOBAD.Events[key].Setup.init == "function"){
-				JOBAD.Events[key].Setup.init.call(me, me);
-			} else if(typeof JOBAD.Events[key].Setup.init == "object"){
-				for(var name in JOBAD.Events[key].Setup.init){
-					if(JOBAD.Events[key].Setup.init.hasOwnProperty(name)){
+			if(typeof JOBAD.events[key].Setup.init == "function"){
+				JOBAD.events[key].Setup.init.call(me, me);
+			} else if(typeof JOBAD.events[key].Setup.init == "object"){
+				for(var name in JOBAD.events[key].Setup.init){
+					if(JOBAD.events[key].Setup.init.hasOwnProperty(name)){
 						if(me.hasOwnProperty(name)){
 							JOBAD.console.warn("Setup: Event '"+key+"' tried to override '"+name+"'")
 						} else {
-							me[name] = JOBAD.util.bindEverything(JOBAD.Events[key].Setup.init[name], me);
+							me[name] = JOBAD.util.bindEverything(JOBAD.events[key].Setup.init[name], me);
 						}
 					}
 				}
@@ -110,7 +110,7 @@ JOBAD.ifaces.push(function(me, args){
 JOBAD.modules.ifaces.push([
 	function(properObject, ModuleObject){
 		//Called whenever 
-		for(var key in JOBAD.Events){
+		for(var key in JOBAD.events){
 			if(ModuleObject.hasOwnProperty(key)){
 				properObject[key] = ModuleObject[key];
 			}
@@ -118,11 +118,11 @@ JOBAD.modules.ifaces.push([
 		return properObject;
 	},
 	function(ServiceObject){
-		for(var key in JOBAD.Events){
+		for(var key in JOBAD.events){
 			if(ServiceObject.hasOwnProperty(key)){
 				this[key] = ServiceObject[key];
 			} else {
-				this[key] = JOBAD.Events[key]["default"];
+				this[key] = JOBAD.events[key]["default"];
 			}
 		}
 	}]);
@@ -132,10 +132,10 @@ JOBAD.modules.ifaces.push([
 	@param evtname Name of the event that is disabled. 
 */
 JOBAD.isEventDisabled = function(evtname){
-	return (JOBAD.config.disabledEvents.indexOf(evtname) != -1);
+	return (JOBAD.refs._.indexOf(JOBAD.config.disabledEvents, evtname) != -1);
 };
 
-JOBAD.Events = {};
+JOBAD.events = {};
 
 //config
 JOBAD.config.disabledEvents = []; //Disabled events

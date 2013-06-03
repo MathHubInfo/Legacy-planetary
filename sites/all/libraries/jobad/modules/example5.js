@@ -64,6 +64,9 @@
 					}]]
 				});
 			})
+		},
+		configUpdate: function(){
+			console.log("Updated my config. Please reload. ");
 		}
 	});
 })(JOBAD.refs.$);

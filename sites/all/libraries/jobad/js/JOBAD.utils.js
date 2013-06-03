@@ -19,41 +19,6 @@
 	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* IE fixes: Array.indexOf */
-//from https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Array/indexOf
-if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
-        "use strict";
-        if (this == null) {
-            throw new TypeError();
-        }
-        var t = Object(this);
-        var len = t.length >>> 0;
-        if (len === 0) {
-            return -1;
-        }
-        var n = 0;
-        if (arguments.length > 1) {
-            n = Number(arguments[1]);
-            if (n != n) { // shortcut for verifying if it's NaN
-                n = 0;
-            } else if (n != 0 && n != Infinity && n != -Infinity) {
-                n = (n > 0 || -1) * Math.floor(Math.abs(n));
-            }
-        }
-        if (n >= len) {
-            return -1;
-        }
-        var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-        for (; k < len; k++) {
-            if (k in t && t[k] === searchElement) {
-                return k;
-            }
-        }
-        return -1;
-    }
-}
-
 /* various utility functions */
 JOBAD.util = {};
 
@@ -143,3 +108,59 @@ JOBAD.util.createTabs = function(names, divs, options, height){
 	}
 	return div.tabs(options);
 }
+
+/*
+	Generates a list menu representation from an object representation. 
+	@param menu Menu to generate. 
+	@returns the new representation. 
+*/
+JOBAD.util.generateMenuList = function(menu){
+	if(typeof menu == 'undefined'){
+		return [];
+	}
+	var res = [];
+	for(var key in menu){
+		if(menu.hasOwnProperty(key)){
+			var val = menu[key];
+			if(typeof val == 'function'){
+				res.push([key, val]);		
+			} else {
+				res.push([key, JOBAD.util.generateMenuList(val)]);
+			}
+		}
+	}
+	return res;
+};
+/*
+	Wraps a menu function
+	@param menu Menu to generate. 
+	@returns the new representation. 
+*/
+JOBAD.util.fullWrap = function(menu, wrapper){
+	var menu = (JOBAD.refs._.isArray(menu))?menu:JOBAD.util.generateMenuList(menu);
+	var menu2 = [];
+	for(var i=0;i<menu.length;i++){
+		if(typeof menu[i][1] == 'function'){
+			(function(){
+				var org = menu[i][1];
+				menu2.push([menu[i][0], function(){
+					return wrapper(org, arguments)
+				}]);
+			})();
+		} else {
+			menu2.push([menu[i][0], JOBAD.util.fullWrap(menu[i][1])]);
+		}
+		
+	}
+	return menu2;
+};
+
+/*
+	Checks if 2 objects are equal. Does not accept functions. 
+	@param a Object A
+	@param b Object B
+	@returns boolean
+*/
+JOBAD.util.objectEquals = function(a, b){
+	return JSON.stringify(a) == JSON.stringify(b);
+};

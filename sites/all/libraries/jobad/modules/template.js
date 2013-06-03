@@ -107,7 +107,7 @@ var template = {
 			@param JOBADInstance The instance of JOBAD the module is initiated on. 				
 		*/
 	},
-	onSideBarUpdate: function(JOBADInstance){
+	SideBarUpdate: function(JOBADInstance){
 		/*
 			called every time the sidebar is updated. May be ommitted. 
 			@this An instance of JOBAD.modules.loadedModule
@@ -115,7 +115,7 @@ var template = {
 			@returns nothing. 
 		*/
 	},
-	onConfigUpdate: function(setting, JOBADInstance){
+	configUpdate: function(setting, JOBADInstance){
 		/*
 			called every time the user configuration is updated. May be ommitted. 
 			@this An instance of JOBAD.modules.loadedModule

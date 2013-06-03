@@ -39,6 +39,7 @@
 /* JOBAD ContextMenu */
 .JOBAD.JOBAD_Contextmenu {
 	/* applied to the context menu */
+   z-index: 100;
 }
 
 /* JOBAD Sidebar */

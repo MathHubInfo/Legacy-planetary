@@ -24,7 +24,7 @@
 */
 
 /* left click */
-JOBAD.Events.leftClick = 
+JOBAD.events.leftClick = 
 {
 	'default': function(){
 		return false;
@@ -67,7 +67,7 @@ JOBAD.Events.leftClick =
 };
 
 /* onEvent */
-JOBAD.Events.onEvent = 
+JOBAD.events.onEvent = 
 {
 	'default': function(){},
 	'Setup': {
@@ -97,7 +97,7 @@ JOBAD.Events.onEvent =
 };
 
 /* context menu entries */
-JOBAD.Events.contextMenuEntries = 
+JOBAD.events.contextMenuEntries = 
 {
 	'default': function(){
 		return [];
@@ -138,86 +138,41 @@ JOBAD.Events.contextMenuEntries =
 	}
 }
 
-
-/*
-	Generates a list menu representation from an object representation. 
-	@param menu Menu to generate. 
-	@returns the new representation. 
-*/
-JOBAD.util.generateMenuList = function(menu){
-	if(typeof menu == 'undefined'){
-		return [];
-	}
-	var res = [];
-	for(var key in menu){
-		if(menu.hasOwnProperty(key)){
-			var val = menu[key];
-			if(typeof val == 'function'){
-				res.push([key, val]);		
-			} else {
-				res.push([key, JOBAD.util.generateMenuList(val)]);
-			}
-		}
-	}
-	return res;
-};
-/*
-	Wraps a menu function
-	@param menu Menu to generate. 
-	@returns the new representation. 
-*/
-JOBAD.util.fullWrap = function(menu, wrapper){
-	var menu = (JOBAD.refs._.isArray(menu))?menu:JOBAD.util.generateMenuList(menu);
-	var menu2 = [];
-	for(var i=0;i<menu.length;i++){
-		if(typeof menu[i][1] == 'function'){
-			(function(){
-				var org = menu[i][1];
-				menu2.push([menu[i][0], function(){
-					return wrapper(org, arguments)
-				}]);
-			})();
-		} else {
-			menu2.push([menu[i][0], JOBAD.util.fullWrap(menu[i][1])]);
-		}
-		
-	}
-	return menu2;
-};
-
-/* onConfigUpdate */
-JOBAD.Events.onConfigUpdate = 
+/* configUpdate */
+JOBAD.events.configUpdate = 
 {
 	'default': function(setting, JOBADInstance){},
 	'Setup': {
 		'enable': function(root){
 			var me = this;
-			root.on('JOBAD.ConfigUpdateEvent', function(jqe, setting){
-				me.Event.onConfigUpdate.trigger(event, setting);
+			JOBAD.refs.$("body").on('JOBAD.ConfigUpdateEvent', function(jqe, setting, moduleId){
+				me.Event.configUpdate.trigger(setting, moduleId);
 			});
 		},
 		'disable': function(root){
-			root.off('JOBAD.ConfigUpdateEvent');
+			JOBAD.refs.$("body").off('JOBAD.ConfigUpdateEvent');
 		}
 	},
 	'namespace': 
 	{
 		
-		'getResult': function(setting){
+		'getResult': function(setting, moduleId){
 			return this.modules.iterateAnd(function(module){
-				module.onConfigUpdate.call(module, setting, module.getJOBAD());
+				if(module.info().identifier == moduleId){ //only call events for own module. 
+					module.configUpdate.call(module, setting, module.getJOBAD());
+				}
 				return true;
 			});
 		},
-		'trigger': function(setting){
-			this.element.trigger("JOBAD.Event", ["onConfigUpdate", setting]);
-			return this.Event.onConfigUpdate.getResult(setting);
+		'trigger': function(setting, moduleId){
+			this.element.trigger("JOBAD.Event", ["configUpdate", setting, moduleId]);
+			return this.Event.configUpdate.getResult(setting, moduleId);
 		}
 	}
 };
 
 /* hover Text */
-JOBAD.Events.hoverText = 
+JOBAD.events.hoverText = 
 {
 	'default': function(){
 		return false;	
@@ -351,8 +306,8 @@ JOBAD.Events.hoverText =
 	}
 }
 
-/* sidebar: onSideBarUpdate Event */
-JOBAD.Events.onSideBarUpdate = 
+/* sidebar: SideBarUpdate Event */
+JOBAD.events.SideBarUpdate = 
 {
 	'default': function(){
 		//Does nothing
@@ -384,7 +339,7 @@ JOBAD.Events.onSideBarUpdate =
 						}
 					}
 					JOBAD.UI.Sidebar.forceNotificationUpdate();
-					this.Event.onSideBarUpdate.trigger();
+					this.Event.SideBarUpdate.trigger();
 				},
 				/*
 					Registers a new notification. 
@@ -435,30 +390,30 @@ JOBAD.Events.onSideBarUpdate =
 			}
 		},
 		'enable': function(root){
-			this.Event.onSideBarUpdate.enabled = true;
+			this.Event.SideBarUpdate.enabled = true;
 			
 		},
 		'disable': function(root){
-			this.Event.onSideBarUpdate.enabled = undefined;
+			this.Event.SideBarUpdate.enabled = undefined;
 		}
 	},
 	'namespace': 
 	{
 		
 		'getResult': function(){
-			if(this.Event.onSideBarUpdate.enabled){
+			if(this.Event.SideBarUpdate.enabled){
 				this.modules.iterateAnd(function(module){
-					module.onSideBarUpdate.call(module, module.getJOBAD());
+					module.SideBarUpdate.call(module, module.getJOBAD());
 					return true;
 				});
 			}
 		},
 		'trigger': function(){
-			this.Event.onSideBarUpdate.getResult();
+			this.Event.SideBarUpdate.getResult();
 		}
 	}
 };
 
-for(var key in JOBAD.Events){
+for(var key in JOBAD.events){
 	JOBAD.modules.cleanProperties.push(key);
 }

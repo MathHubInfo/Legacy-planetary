@@ -22,7 +22,7 @@
 */
 
 
-//JOBAD module iface for JOBADInstances
+
 JOBAD.ifaces.push(function(me, args){
 	var InstanceModules = {};
 	var disabledModules = [];
@@ -285,7 +285,7 @@ JOBAD.modules.createProperModuleObject = function(ModuleObject){
 		properObject.namespace = {};
 
 		for(var key in ModuleObject){
-			if(ModuleObject.hasOwnProperty(key) && JOBAD.modules.cleanProperties.indexOf(key) == -1){
+			if(ModuleObject.hasOwnProperty(key) && JOBAD.refs._.indexOf(JOBAD.modules.cleanProperties, key) == -1){
 				if(properObject.info.hasCleanNamespace){
 					JOBAD.console.warn("Warning: Module '"+properObject.info.identifier+"' says its namespace is clean, but property '"+key+"' found. Check ModuleObject.info.hasCleanNamespace. ");	
 				} else {
