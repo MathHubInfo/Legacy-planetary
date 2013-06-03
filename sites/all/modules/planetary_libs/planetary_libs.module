@@ -334,6 +334,7 @@ function planetary_libs_libraries_info() {
       ),
     )
   );
+  
 
   // jQuery Terminal
   $libraries['jquery.terminal'] = array(

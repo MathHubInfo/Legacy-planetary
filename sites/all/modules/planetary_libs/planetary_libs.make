@@ -20,5 +20,5 @@ libraries[editor_tools][download][type] = git
 libraries[editor_tools][download][url] = https://github.com/jucovschi/EditorTools.git
 
 ; requirejs
-libraries[requirejs][download][type] = http
+libraries[requirejs][download][type] = file
 libraries[requirejs][download][url] = http://requirejs.org/docs/release/2.1.5/minified/require.js

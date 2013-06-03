@@ -34,6 +34,7 @@ function _enable_jobad() {
 }
 
 function sally_init() {
+	_enable_jobad();
 }
 
 function sally_theme($existing, $type, $theme, $path) {
