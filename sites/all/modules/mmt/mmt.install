@@ -28,7 +28,26 @@ function mmt_install() {
   
   variable_set('mmtUrl', "http://localhost:8080");
   variable_set('mmt_menu_items', array());
-  variable_set('mmt_mlids', array());
+  $mlids = array();
+
+  $arch_item = array(
+    'link_path' => drupal_get_normal_path('mmt/archives'),
+    'link_title' => "Archives",
+    'weight' => 10,
+    'menu_name' => 'main-menu'
+  );
+  $mlids[] = menu_link_save($arch_item);
+
+  $forum_item = array(
+    'link_path' => drupal_get_normal_path('forum'),
+    'link_title' => "Discussion",
+    'weight' => 15,
+    'menu_name' => 'main-menu'
+  );
+  $mlids[] = menu_link_save($forum_item);
+  
+  
+  variable_set('mmt_mlids', $mlids);
 
   drupal_set_message("installed");
 }

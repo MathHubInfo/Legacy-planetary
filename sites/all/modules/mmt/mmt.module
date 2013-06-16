@@ -11,27 +11,6 @@ function mmt_menu() {
 	  'menu_name' => 'navigation'
 	);
 
-  $mlids = variable_get('mmt_mlids');
-
-  $arch_item = array(
-    'link_path' => drupal_get_normal_path('mmt/archives'),
-    'link_title' => "Archives",
-    'weight' => 10,
-    'menu_name' => 'main-menu'
-  );
-  $mlids[] = menu_link_save($arch_item);
-
-   $forum_item = array(
-    'link_path' => drupal_get_normal_path('forum'),
-    'link_title' => "Discussion",
-    'weight' => 15,
-    'menu_name' => 'main-menu'
-  );
-  $mlids[] = menu_link_save($forum_item);
-  
-  
-  variable_set('mmt_mlids', $mlids);
-
   $items['mmt/archives'] = array(
     'title' => "Archive Callback",
 	  'page callback' => 'mmt_archives',
