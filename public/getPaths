@@ -411,17 +411,11 @@ FOLMOD http://latin.omdoc.org/logics/model_theory?FOLMOD
 
 Universe http://latin.omdoc.org/logics/model_theory?Universe
 
-BaseFOL http://latin.omdoc.org/logics/model_theory?BaseFOL
-
 Forall http://latin.omdoc.org/logics/model_theory?Forall
 
 Exists http://latin.omdoc.org/logics/model_theory?Exists
 
 Equal http://latin.omdoc.org/logics/model_theory?Equal
-
-FOL http://latin.omdoc.org/logics/model_theory?FOL
-
-FOLEQ http://latin.omdoc.org/logics/model_theory?FOLEQ
 
 
 sfolmod.omdoc http://docs.omdoc.org/latin/logics/first-order/model_theory/sfolmod.omdoc
@@ -435,32 +429,14 @@ SExists http://latin.omdoc.org/logics/model_theory?SExists
 
 SEqual http://latin.omdoc.org/logics/model_theory?SEqual
 
-SFOL http://latin.omdoc.org/logics/model_theory?SFOL
-
-SFOLEQ http://latin.omdoc.org/logics/model_theory?SFOLEQ
-
 
 
 soundness http://docs.omdoc.org/latin/logics/first-order/soundness
 sfolsound.omdoc http://docs.omdoc.org/latin/logics/first-order/soundness/sfolsound.omdoc
-BaseSFOL http://latin.omdoc.org/logics/soundness?BaseSFOL
-
 SForall http://latin.omdoc.org/logics/soundness?SForall
 
 
 folsound.omdoc http://docs.omdoc.org/latin/logics/first-order/soundness/folsound.omdoc
-BaseFOL http://latin.omdoc.org/logics/soundness?BaseFOL
-
-Forall http://latin.omdoc.org/logics/soundness?Forall
-
-Exists http://latin.omdoc.org/logics/soundness?Exists
-
-Equal http://latin.omdoc.org/logics/soundness?Equal
-
-IFOL http://latin.omdoc.org/logics/soundness?IFOL
-
-FOL http://latin.omdoc.org/logics/soundness?FOL
-
 
 
 
@@ -634,8 +610,6 @@ Necessity http://latin.omdoc.org/logics/model_theory/kripke?Necessity
 
 Possibility http://latin.omdoc.org/logics/model_theory/kripke?Possibility
 
-ML http://latin.omdoc.org/logics/model_theory/kripke?ML
-
 
 proof_theory.omdoc http://docs.omdoc.org/latin/logics/modal/proof_theory.omdoc
 MLPf http://latin.omdoc.org/logics/proof_theory?MLPf
@@ -711,10 +685,6 @@ D1FOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?D1FOLEQD
 
 OWLBaseFOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLBaseFOLEQD
 
-OWLLiteFOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLLiteFOLEQD
-
-OWLDLFOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLDLFOLEQD
-
 OWLFullFOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLFullFOLEQD
 
 
@@ -728,15 +698,11 @@ FLminus http://latin.omdoc.org/logics/model_theory?FLminus
 
 Catom http://latin.omdoc.org/logics/model_theory?Catom
 
-AL http://latin.omdoc.org/logics/model_theory?AL
-
 C http://latin.omdoc.org/logics/model_theory?C
 
 E http://latin.omdoc.org/logics/model_theory?E
 
 U http://latin.omdoc.org/logics/model_theory?U
-
-ALC http://latin.omdoc.org/logics/model_theory?ALC
 
 F http://latin.omdoc.org/logics/model_theory?F
 
@@ -989,8 +955,6 @@ CONJ http://latin.omdoc.org/logics/model_theory/kripke?CONJ
 
 DISJ http://latin.omdoc.org/logics/model_theory/kripke?DISJ
 
-PL http://latin.omdoc.org/logics/model_theory/kripke?PL
-
 
 propmod.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/propmod.omdoc
 Base http://latin.omdoc.org/logics/model_theory?Base
@@ -1007,56 +971,20 @@ CONJ http://latin.omdoc.org/logics/model_theory?CONJ
 
 IMP http://latin.omdoc.org/logics/model_theory?IMP
 
-PL http://latin.omdoc.org/logics/model_theory?PL
-
 
 
 soundness http://docs.omdoc.org/latin/logics/propositional/soundness
 sound.omdoc http://docs.omdoc.org/latin/logics/propositional/soundness/sound.omdoc
 Base http://latin.omdoc.org/logics/soundness?Base
 
-Truth http://latin.omdoc.org/logics/soundness?Truth
-
-Falsity http://latin.omdoc.org/logics/soundness?Falsity
-
-IMP http://latin.omdoc.org/logics/soundness?IMP
-
-NEG http://latin.omdoc.org/logics/soundness?NEG
-
-CONJ http://latin.omdoc.org/logics/soundness?CONJ
-
-DISJ http://latin.omdoc.org/logics/soundness?DISJ
-
-TND http://latin.omdoc.org/logics/soundness?TND
-
-IPL http://latin.omdoc.org/logics/soundness?IPL
-
-CPL http://latin.omdoc.org/logics/soundness?CPL
-
 
 sound_kripke.omdoc http://docs.omdoc.org/latin/logics/propositional/soundness/sound_kripke.omdoc
-Truth http://latin.omdoc.org/logics/soundness/kripke?Truth
-
-Falsity http://latin.omdoc.org/logics/soundness/kripke?Falsity
-
-NEG http://latin.omdoc.org/logics/soundness/kripke?NEG
-
-IMP http://latin.omdoc.org/logics/soundness/kripke?IMP
-
-CONJ http://latin.omdoc.org/logics/soundness/kripke?CONJ
-
-DISJ http://latin.omdoc.org/logics/soundness/kripke?DISJ
-
-TND http://latin.omdoc.org/logics/soundness/kripke?TND
-
 
 
 
 
 math http://docs.omdoc.org/latin/math
 rational.omdoc http://docs.omdoc.org/latin/math/rational.omdoc
-Rat http://latin.omdoc.org/math?Rat
-
 
 nat.omdoc http://docs.omdoc.org/latin/math/nat.omdoc
 Nat http://latin.omdoc.org/math?Nat
@@ -1073,12 +1001,6 @@ OrderedNat http://latin.omdoc.org/math?OrderedNat
 order-magma.omdoc http://docs.omdoc.org/latin/math/order-magma.omdoc
 MagmaFOL http://latin.omdoc.org/math?MagmaFOL
 
-SemigroupFOL http://latin.omdoc.org/math?SemigroupFOL
-
-CommutativeFOL http://latin.omdoc.org/math?CommutativeFOL
-
-NeutralElementFOL http://latin.omdoc.org/math?NeutralElementFOL
-
 OMRelation http://latin.omdoc.org/math?OMRelation
 
 OMReflexive http://latin.omdoc.org/math?OMReflexive
@@ -1094,8 +1016,6 @@ RelationEqLogic http://latin.omdoc.org/math?RelationEqLogic
 Irreflexive http://latin.omdoc.org/math?Irreflexive
 
 Strict http://latin.omdoc.org/math?Strict
-
-OrderLogic http://latin.omdoc.org/math?OrderLogic
 
 Total http://latin.omdoc.org/math?Total
 
@@ -1123,11 +1043,7 @@ ReSL http://latin.omdoc.org/math?ReSL
 
 TSL http://latin.omdoc.org/math?TSL
 
-POSL http://latin.omdoc.org/math?POSL
-
 ASL http://latin.omdoc.org/math?ASL
-
-OSL http://latin.omdoc.org/math?OSL
 
 Lattice http://latin.omdoc.org/math?Lattice
 
@@ -1191,8 +1107,6 @@ RingUnitCommut http://latin.omdoc.org/math?RingUnitCommut
 
 DifferentialRing http://latin.omdoc.org/math?DifferentialRing
 
-RingUnitLogic http://latin.omdoc.org/math?RingUnitLogic
-
 IntegralDomain http://latin.omdoc.org/math?IntegralDomain
 
 RingDivision http://latin.omdoc.org/math?RingDivision
@@ -1234,8 +1148,6 @@ PointwiseReflexive http://latin.omdoc.org/math?PointwiseReflexive
 PointwiseSymmetric http://latin.omdoc.org/math?PointwiseSymmetric
 
 PointwiseTransitive http://latin.omdoc.org/math?PointwiseTransitive
-
-PointwiseEquivalence http://latin.omdoc.org/math?PointwiseEquivalence
 
 PointsEq http://latin.omdoc.org/math?PointsEq
 
@@ -1282,10 +1194,6 @@ DependentSum http://latin.omdoc.org/foundations/type_theory/church?DependentSum
 types_semantics.omdoc http://docs.omdoc.org/latin/type_theories/Church-style/types_semantics.omdoc
 _IndexedUniverse http://latin.omdoc.org/foundations/type_theory/church?_IndexedUniverse
 
-_ELogic http://latin.omdoc.org/foundations/type_theory/church?_ELogic
-
-_ILogic http://latin.omdoc.org/foundations/type_theory/church?_ILogic
-
 _ExternalLogic http://latin.omdoc.org/foundations/type_theory/church?_ExternalLogic
 
 _InternalLogic http://latin.omdoc.org/foundations/type_theory/church?_InternalLogic
@@ -1308,8 +1216,6 @@ ExternalLogic http://latin.omdoc.org/foundations/type_theory/church?ExternalLogi
 
 InternalLogic http://latin.omdoc.org/foundations/type_theory/church?InternalLogic
 
-Equality http://latin.omdoc.org/foundations/type_theory/church?Equality
-
 ReflectedEquality http://latin.omdoc.org/foundations/type_theory/church?ReflectedEquality
 
 ReflectedLogic http://latin.omdoc.org/foundations/type_theory/church?ReflectedLogic
@@ -1317,8 +1223,6 @@ ReflectedLogic http://latin.omdoc.org/foundations/type_theory/church?ReflectedLo
 DefinitionalEquality http://latin.omdoc.org/foundations/type_theory/church?DefinitionalEquality
 
 AxiomaticEquality http://latin.omdoc.org/foundations/type_theory/church?AxiomaticEquality
-
-InternalEquality http://latin.omdoc.org/foundations/type_theory/church?InternalEquality
 
 
 
@@ -1416,11 +1320,7 @@ Lambda2ToOmega http://latin.omdoc.org/type_theories?Lambda2ToOmega
 
 LambdaP2 http://latin.omdoc.org/type_theories?LambdaP2
 
-Lambda2ToP2 http://latin.omdoc.org/type_theories?Lambda2ToP2
-
 LambdaPOmega_ http://latin.omdoc.org/type_theories?LambdaPOmega_
-
-LambdaOmega_ToPOmega_ http://latin.omdoc.org/type_theories?LambdaOmega_ToPOmega_
 
 LambdaPOmega http://latin.omdoc.org/type_theories?LambdaPOmega
 
@@ -1431,8 +1331,6 @@ stt-mltt.omdoc http://docs.omdoc.org/latin/type_theories/old/stt-mltt.omdoc
 
 mltt.omdoc http://docs.omdoc.org/latin/type_theories/old/mltt.omdoc
 MLTT http://latin.omdoc.org/type_theories?MLTT
-
-STT-MLTT http://latin.omdoc.org/type_theories?STT-MLTT
 
 
 
@@ -1456,8 +1354,6 @@ Necessity http://latin.omdoc.org/translations/ml_fol?Necessity
 
 Possibility http://latin.omdoc.org/translations/ml_fol?Possibility
 
-ML http://latin.omdoc.org/translations/ml_fol?ML
-
 
 satisfaction.omdoc http://docs.omdoc.org/latin/translations/ml-fol/satisfaction.omdoc
 Satisfaction http://latin.omdoc.org/translations/ml_fol?Satisfaction
@@ -1480,11 +1376,7 @@ SForall http://latin.omdoc.org/translations/sfol_fol?SForall
 
 SExists http://latin.omdoc.org/translations/sfol_fol?SExists
 
-SFOL http://latin.omdoc.org/translations/sfol_fol?SFOL
-
 SEqual http://latin.omdoc.org/translations/sfol_fol?SEqual
-
-SFOLEQ http://latin.omdoc.org/translations/sfol_fol?SFOLEQ
 
 
 model_theory.omdoc http://docs.omdoc.org/latin/translations/sfol-fol/model_theory.omdoc
@@ -1500,8 +1392,6 @@ TypesTerms http://latin.omdoc.org/translations/tt_zfc?TypesTerms
 
 
 stt.omdoc http://docs.omdoc.org/latin/translations/type_theory-zfc/stt.omdoc
-STT http://latin.omdoc.org/translations/tt_zfc?STT
-
 
 modules.omdoc http://docs.omdoc.org/latin/translations/type_theory-zfc/modules.omdoc
 IDENT http://latin.omdoc.org/translations/tt_zfc?IDENT
@@ -1540,11 +1430,7 @@ BasePF http://latin.omdoc.org/translations/prop_cat?BasePF
 
 Truth http://latin.omdoc.org/translations/prop_cat?Truth
 
-TruthPF http://latin.omdoc.org/translations/prop_cat?TruthPF
-
 Conj http://latin.omdoc.org/translations/prop_cat?Conj
-
-ConjPF http://latin.omdoc.org/translations/prop_cat?ConjPF
 
 Disj http://latin.omdoc.org/translations/prop_cat?Disj
 
@@ -1558,11 +1444,7 @@ BasePF http://latin.omdoc.org/translations/prop_stt?BasePF
 
 IMP http://latin.omdoc.org/translations/prop_stt?IMP
 
-IMPPF http://latin.omdoc.org/translations/prop_stt?IMPPF
-
 CONJ http://latin.omdoc.org/translations/prop_stt?CONJ
-
-CONJPF http://latin.omdoc.org/translations/prop_stt?CONJPF
 
 
 
@@ -1582,29 +1464,9 @@ DISJ http://latin.omdoc.org/translations/prop_hol?DISJ
 
 IMP http://latin.omdoc.org/translations/prop_hol?IMP
 
-Prop http://latin.omdoc.org/translations/prop_hol?Prop
-
 
 proof_theory.omdoc http://docs.omdoc.org/latin/translations/prop-hol/proof_theory.omdoc
 BasePF http://latin.omdoc.org/translations/prop_hol?BasePF
-
-TruthPF http://latin.omdoc.org/translations/prop_hol?TruthPF
-
-FalsityPF http://latin.omdoc.org/translations/prop_hol?FalsityPF
-
-NEGPF http://latin.omdoc.org/translations/prop_hol?NEGPF
-
-CONJPF http://latin.omdoc.org/translations/prop_hol?CONJPF
-
-DISJPF http://latin.omdoc.org/translations/prop_hol?DISJPF
-
-IMPPF http://latin.omdoc.org/translations/prop_hol?IMPPF
-
-TND http://latin.omdoc.org/translations/prop_hol?TND
-
-IPLPF http://latin.omdoc.org/translations/prop_hol?IPLPF
-
-CPLPF http://latin.omdoc.org/translations/prop_hol?CPLPF
 
 
 
@@ -1616,22 +1478,12 @@ DN-IFOL http://latin.omdoc.org/translations/fol_ifol?DN-IFOL
 
 Universe http://latin.omdoc.org/translations/fol_ifol?Universe
 
-UniverseLogic http://latin.omdoc.org/translations/fol_ifol?UniverseLogic
-
 Forall http://latin.omdoc.org/translations/fol_ifol?Forall
 
 Exists http://latin.omdoc.org/translations/fol_ifol?Exists
 
 
 proof_theory.omdoc http://docs.omdoc.org/latin/translations/dn/Glivenko-Kuroda/fol-ifol/proof_theory.omdoc
-BaseFOLPF http://latin.omdoc.org/translations/fol_ifol?BaseFOLPF
-
-ExistsPF http://latin.omdoc.org/translations/fol_ifol?ExistsPF
-
-ForallPF http://latin.omdoc.org/translations/fol_ifol?ForallPF
-
-IFOLPF http://latin.omdoc.org/translations/fol_ifol?IFOLPF
-
 
 
 prop-iprop http://docs.omdoc.org/latin/translations/dn/Glivenko-Kuroda/prop-iprop
@@ -1668,12 +1520,6 @@ CONJPF http://latin.omdoc.org/translations/prop_iprop?CONJPF
 
 DISJPF http://latin.omdoc.org/translations/prop_iprop?DISJPF
 
-TND http://latin.omdoc.org/translations/prop_iprop?TND
-
-IPLPF http://latin.omdoc.org/translations/prop_iprop?IPLPF
-
-CPLPF http://latin.omdoc.org/translations/prop_iprop?CPLPF
-
 
 
 
@@ -1686,28 +1532,10 @@ SForall http://latin.omdoc.org/translations/sfol_hol?SForall
 
 SExists http://latin.omdoc.org/translations/sfol_hol?SExists
 
-SFOL http://latin.omdoc.org/translations/sfol_hol?SFOL
-
 SEqual http://latin.omdoc.org/translations/sfol_hol?SEqual
-
-SFOLEQ http://latin.omdoc.org/translations/sfol_hol?SFOLEQ
 
 
 proof_theory.omdoc http://docs.omdoc.org/latin/translations/sfol-hol/proof_theory.omdoc
-BaseSFOLPF http://latin.omdoc.org/translations/sfol_hol?BaseSFOLPF
-
-SForallPF http://latin.omdoc.org/translations/sfol_hol?SForallPF
-
-SExistsPF http://latin.omdoc.org/translations/sfol_hol?SExistsPF
-
-SEqualPF http://latin.omdoc.org/translations/sfol_hol?SEqualPF
-
-SIFOLPF http://latin.omdoc.org/translations/sfol_hol?SIFOLPF
-
-SIFOLEQPF http://latin.omdoc.org/translations/sfol_hol?SIFOLEQPF
-
-SFOLPF http://latin.omdoc.org/translations/sfol_hol?SFOLPF
-
 
 
 fol-sfol http://docs.omdoc.org/latin/translations/fol-sfol
@@ -1752,39 +1580,17 @@ SForall-ZF http://latin.omdoc.org/foundations/minimal?SForall-ZF
 
 SExists-ZF http://latin.omdoc.org/foundations/minimal?SExists-ZF
 
-SFOL-ZF http://latin.omdoc.org/foundations/minimal?SFOL-ZF
-
 SEqual-ZF http://latin.omdoc.org/foundations/minimal?SEqual-ZF
 
 BaseSFOLPF-ZF http://latin.omdoc.org/foundations/minimal?BaseSFOLPF-ZF
 
-SForallPF-ZF http://latin.omdoc.org/foundations/minimal?SForallPF-ZF
-
-SExistsPF-ZF http://latin.omdoc.org/foundations/minimal?SExistsPF-ZF
-
-SEqualPF-ZF http://latin.omdoc.org/foundations/minimal?SEqualPF-ZF
-
-SIFOLPF-ZF http://latin.omdoc.org/foundations/minimal?SIFOLPF-ZF
-
-SIFOLEQPF-ZF http://latin.omdoc.org/foundations/minimal?SIFOLEQPF-ZF
-
 SForallPFExt-ZF http://latin.omdoc.org/foundations/minimal?SForallPFExt-ZF
 
-SFOLEQ-ZF http://latin.omdoc.org/foundations/minimal?SFOLEQ-ZF
-
 SExistsUnique-ZF http://latin.omdoc.org/foundations/minimal?SExistsUnique-ZF
-
-SExistsUniquePF-ZF http://latin.omdoc.org/foundations/minimal?SExistsUniquePF-ZF
-
-SIFOLPFExt-ZF http://latin.omdoc.org/foundations/minimal?SIFOLPFExt-ZF
 
 SEqualPFExt-ZF http://latin.omdoc.org/foundations/minimal?SEqualPFExt-ZF
 
 SInequal-ZF http://latin.omdoc.org/foundations/minimal?SInequal-ZF
-
-SInequalPF-ZF http://latin.omdoc.org/foundations/minimal?SInequalPF-ZF
-
-SIFOLEQPFExt-ZF http://latin.omdoc.org/foundations/minimal?SIFOLEQPFExt-ZF
 
 STTIFOLEQ-ZF http://latin.omdoc.org/foundations/minimal?STTIFOLEQ-ZF
 
@@ -1816,57 +1622,15 @@ DISJMizarView http://latin.omdoc.org/foundations/mizar?DISJMizarView
 
 UniverseMizarView http://latin.omdoc.org/foundations/mizar?UniverseMizarView
 
-BaseFOLMizarView http://latin.omdoc.org/foundations/mizar?BaseFOLMizarView
-
-PLMizarView http://latin.omdoc.org/foundations/mizar?PLMizarView
-
 ForallMizarView http://latin.omdoc.org/foundations/mizar?ForallMizarView
 
 ExistsMizarView http://latin.omdoc.org/foundations/mizar?ExistsMizarView
 
-FOLMizarView http://latin.omdoc.org/foundations/mizar?FOLMizarView
-
 EqualMizarView http://latin.omdoc.org/foundations/mizar?EqualMizarView
-
-InequalMizarView http://latin.omdoc.org/foundations/mizar?InequalMizarView
-
-FOLEQMizarView http://latin.omdoc.org/foundations/mizar?FOLEQMizarView
 
 ExistsUniqueMizarView http://latin.omdoc.org/foundations/mizar?ExistsUniqueMizarView
 
-EquivMizarView http://latin.omdoc.org/foundations/mizar?EquivMizarView
-
 BasePFMizarView http://latin.omdoc.org/foundations/mizar?BasePFMizarView
-
-TruthPFMizarView http://latin.omdoc.org/foundations/mizar?TruthPFMizarView
-
-FalsityPFMizarView http://latin.omdoc.org/foundations/mizar?FalsityPFMizarView
-
-NEGPFMizarView http://latin.omdoc.org/foundations/mizar?NEGPFMizarView
-
-IMPPFMizarView http://latin.omdoc.org/foundations/mizar?IMPPFMizarView
-
-CONJPFMizarView http://latin.omdoc.org/foundations/mizar?CONJPFMizarView
-
-DISJPFMizarView http://latin.omdoc.org/foundations/mizar?DISJPFMizarView
-
-IPLPFMizarView http://latin.omdoc.org/foundations/mizar?IPLPFMizarView
-
-TNDMizarView http://latin.omdoc.org/foundations/mizar?TNDMizarView
-
-CPLPFMizarView http://latin.omdoc.org/foundations/mizar?CPLPFMizarView
-
-BaseFOLPFMizarView http://latin.omdoc.org/foundations/mizar?BaseFOLPFMizarView
-
-ForallPFMizarView http://latin.omdoc.org/foundations/mizar?ForallPFMizarView
-
-ExistsPFMizarView http://latin.omdoc.org/foundations/mizar?ExistsPFMizarView
-
-IFOLPFMizarView http://latin.omdoc.org/foundations/mizar?IFOLPFMizarView
-
-EqualPFMizarView http://latin.omdoc.org/foundations/mizar?EqualPFMizarView
-
-IFOLEQPFMizarView http://latin.omdoc.org/foundations/mizar?IFOLEQPFMizarView
 
 FalsityPFExtMizarView http://latin.omdoc.org/foundations/mizar?FalsityPFExtMizarView
 
@@ -1878,19 +1642,9 @@ CONJPFExtMizarView http://latin.omdoc.org/foundations/mizar?CONJPFExtMizarView
 
 DISJPFExtMizarView http://latin.omdoc.org/foundations/mizar?DISJPFExtMizarView
 
-EquivPFMizarView http://latin.omdoc.org/foundations/mizar?EquivPFMizarView
-
-IPLPFExtMizarView http://latin.omdoc.org/foundations/mizar?IPLPFExtMizarView
-
-PLPFExtMizarView http://latin.omdoc.org/foundations/mizar?PLPFExtMizarView
-
 ForallPFExtMizarView http://latin.omdoc.org/foundations/mizar?ForallPFExtMizarView
 
-ExistsUniquePFMizarView http://latin.omdoc.org/foundations/mizar?ExistsUniquePFMizarView
-
 EqualPFExtMizarView http://latin.omdoc.org/foundations/mizar?EqualPFExtMizarView
-
-IFOLPFExtMizarView http://latin.omdoc.org/foundations/mizar?IFOLPFExtMizarView
 
 
 tarski.omdoc http://docs.omdoc.org/latin/foundations/mizar/tarski.omdoc
@@ -2058,8 +1812,6 @@ TypedZF http://latin.omdoc.org/foundations/zfc?TypedZF
 
 
 powerset.omdoc http://docs.omdoc.org/latin/foundations/zfc/powerset.omdoc
-Powersets http://latin.omdoc.org/foundations/zfc?Powersets
-
 
 
 isabelle http://docs.omdoc.org/latin/foundations/isabelle
@@ -2074,6 +1826,8 @@ PureSemantics http://latin.omdoc.org/foundations/isabelle?PureSemantics
 
 
 zfc.omdoc http://docs.omdoc.org/latin/foundations/isabelle/zfc.omdoc
+NesetZFC http://latin.omdoc.org/foundations/isabelle?NesetZFC
+
 
 
 
@@ -2389,6 +2143,14 @@ dgraph.omdoc http://docs.omdoc.org/smglo/dgraph.omdoc
 dgraph http://docs.omdoc.org/smglo/dgraph.omdoc?dgraph
 
 
+cgroup.de.omdoc http://docs.omdoc.org/smglo/cgroup.de.omdoc
+cgroup.de http://docs.omdoc.org/smglo/cgroup.de.omdoc?cgroup.de
+
+
+special-linear-group.de.omdoc http://docs.omdoc.org/smglo/special-linear-group.de.omdoc
+special-linear-group.de http://docs.omdoc.org/smglo/special-linear-group.de.omdoc?special-linear-group.de
+
+
 functions.omdoc http://docs.omdoc.org/smglo/functions.omdoc
 functions http://docs.omdoc.org/smglo/functions.omdoc?functions
 
@@ -2421,12 +2183,20 @@ magma.en.omdoc http://docs.omdoc.org/smglo/magma.en.omdoc
 magma.en http://docs.omdoc.org/smglo/magma.en.omdoc?magma.en
 
 
+semigroup.de.omdoc http://docs.omdoc.org/smglo/semigroup.de.omdoc
+semigroup.de http://docs.omdoc.org/smglo/semigroup.de.omdoc?semigroup.de
+
+
 ring.en.omdoc http://docs.omdoc.org/smglo/ring.en.omdoc
 ring.en http://docs.omdoc.org/smglo/ring.en.omdoc?ring.en
 
 
 sets-operations.omdoc http://docs.omdoc.org/smglo/sets-operations.omdoc
 sets-operations http://docs.omdoc.org/smglo/sets-operations.omdoc?sets-operations
+
+
+magma.de.omdoc http://docs.omdoc.org/smglo/magma.de.omdoc
+magma.de http://docs.omdoc.org/smglo/magma.de.omdoc?magma.de
 
 
 cgroup.en.omdoc http://docs.omdoc.org/smglo/cgroup.en.omdoc
@@ -2445,12 +2215,28 @@ ring.omdoc http://docs.omdoc.org/smglo/ring.omdoc
 ring http://docs.omdoc.org/smglo/ring.omdoc?ring
 
 
+divgroup.en.omdoc http://docs.omdoc.org/smglo/divgroup.en.omdoc
+divgroup.en http://docs.omdoc.org/smglo/divgroup.en.omdoc?divgroup.en
+
+
 monoid.omdoc http://docs.omdoc.org/smglo/monoid.omdoc
 monoid http://docs.omdoc.org/smglo/monoid.omdoc?monoid
 
 
+group.de.omdoc http://docs.omdoc.org/smglo/group.de.omdoc
+group.de http://docs.omdoc.org/smglo/group.de.omdoc?group.de
+
+
 special-linear-group.en.omdoc http://docs.omdoc.org/smglo/special-linear-group.en.omdoc
 special-linear-group.en http://docs.omdoc.org/smglo/special-linear-group.en.omdoc?special-linear-group.en
+
+
+divgroup.omdoc http://docs.omdoc.org/smglo/divgroup.omdoc
+divgroup http://docs.omdoc.org/smglo/divgroup.omdoc?divgroup
+
+
+divgroup.de.omdoc http://docs.omdoc.org/smglo/divgroup.de.omdoc
+divgroup.ed http://docs.omdoc.org/smglo/divgroup.de.omdoc?divgroup.ed
 
 
 group.omdoc http://docs.omdoc.org/smglo/group.omdoc
