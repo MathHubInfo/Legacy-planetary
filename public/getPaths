@@ -1,0 +1,2459 @@
+urtheories http://docs.omdoc.org/urtheories
+meta.omdoc http://docs.omdoc.org/urtheories/meta.omdoc
+Errors http://cds.omdoc.org/mmt?Errors
+
+mmt http://cds.omdoc.org/mmt?mmt
+
+
+openmath.omdoc http://docs.omdoc.org/urtheories/openmath.omdoc
+OpenMath http://www.openmath.org/cd?OpenMath
+
+
+mini-pl.omdoc http://docs.omdoc.org/urtheories/mini-pl.omdoc
+PL http://cds.omdoc.org/urtheories?PL
+
+
+scala.omdoc http://docs.omdoc.org/urtheories/scala.omdoc
+Scala http://cds.omdoc.org/urtheories?Scala
+
+ScalaOM http://cds.omdoc.org/urtheories?ScalaOM
+
+
+module-expressions.omdoc http://docs.omdoc.org/urtheories/module-expressions.omdoc
+ModExp http://cds.omdoc.org/mmt?ModExp
+
+
+lf.omdoc http://docs.omdoc.org/urtheories/lf.omdoc
+Typed http://cds.omdoc.org/urtheories?Typed
+
+LF http://cds.omdoc.org/urtheories?LF
+
+
+bifoundations.omdoc http://docs.omdoc.org/urtheories/bifoundations.omdoc
+Syntactic http://cds.omdoc.org/urtheories?Syntactic
+
+Semantic http://cds.omdoc.org/urtheories?Semantic
+
+
+lfmodulo.omdoc http://docs.omdoc.org/urtheories/lfmodulo.omdoc
+LFModulo http://cds.omdoc.org/urtheories?LFModulo
+
+
+term-reflection.omdoc http://docs.omdoc.org/urtheories/term-reflection.omdoc
+Terms http://cds.omdoc.org/urtheories/reflection?Terms
+
+LFReflection http://cds.omdoc.org/urtheories/reflection?LFReflection
+
+
+sequences.omdoc http://docs.omdoc.org/urtheories/sequences.omdoc
+Sequences http://cds.omdoc.org/urtheories?Sequences
+
+
+
+latin http://docs.omdoc.org/latin
+category_theory http://docs.omdoc.org/latin/category_theory
+lf-based.omdoc http://docs.omdoc.org/latin/category_theory/lf-based.omdoc
+Category http://latin.omdoc.org/category_theory/lf_based?Category
+
+CatTop http://latin.omdoc.org/category_theory/lf_based?CatTop
+
+CatOp http://latin.omdoc.org/category_theory/lf_based?CatOp
+
+Functor http://latin.omdoc.org/category_theory/lf_based?Functor
+
+Product http://latin.omdoc.org/category_theory/lf_based?Product
+
+ProdTop http://latin.omdoc.org/category_theory/lf_based?ProdTop
+
+Coproduct http://latin.omdoc.org/category_theory/lf_based?Coproduct
+
+CoprodTop http://latin.omdoc.org/category_theory/lf_based?CoprodTop
+
+ProdOp http://latin.omdoc.org/category_theory/lf_based?ProdOp
+
+CoprodOp http://latin.omdoc.org/category_theory/lf_based?CoprodOp
+
+Exponential http://latin.omdoc.org/category_theory/lf_based?Exponential
+
+ExpTop http://latin.omdoc.org/category_theory/lf_based?ExpTop
+
+
+dfol-based.omdoc http://docs.omdoc.org/latin/category_theory/dfol-based.omdoc
+Category http://latin.omdoc.org/category_theory/dfol_based?Category
+
+CatTop http://latin.omdoc.org/category_theory/dfol_based?CatTop
+
+CatOp http://latin.omdoc.org/category_theory/dfol_based?CatOp
+
+Functor http://latin.omdoc.org/category_theory/dfol_based?Functor
+
+Isomorphic http://latin.omdoc.org/category_theory/dfol_based?Isomorphic
+
+Terminal http://latin.omdoc.org/category_theory/dfol_based?Terminal
+
+Initial http://latin.omdoc.org/category_theory/dfol_based?Initial
+
+TermOp http://latin.omdoc.org/category_theory/dfol_based?TermOp
+
+InitOp http://latin.omdoc.org/category_theory/dfol_based?InitOp
+
+Product http://latin.omdoc.org/category_theory/dfol_based?Product
+
+ProdTop http://latin.omdoc.org/category_theory/dfol_based?ProdTop
+
+Coproduct http://latin.omdoc.org/category_theory/dfol_based?Coproduct
+
+CoprodTop http://latin.omdoc.org/category_theory/dfol_based?CoprodTop
+
+ProdOp http://latin.omdoc.org/category_theory/dfol_based?ProdOp
+
+CoprodOp http://latin.omdoc.org/category_theory/dfol_based?CoprodOp
+
+Exponential http://latin.omdoc.org/category_theory/dfol_based?Exponential
+
+ExpTop http://latin.omdoc.org/category_theory/dfol_based?ExpTop
+
+
+dfol-based_st.omdoc http://docs.omdoc.org/latin/category_theory/dfol-based_st.omdoc
+Category http://latin.omdoc.org/category_theory/dfol_based?Category
+
+CatTop http://latin.omdoc.org/category_theory/dfol_based?CatTop
+
+CatOp http://latin.omdoc.org/category_theory/dfol_based?CatOp
+
+Functor http://latin.omdoc.org/category_theory/dfol_based?Functor
+
+EndoFunctor http://latin.omdoc.org/category_theory/dfol_based?EndoFunctor
+
+IdFunctor http://latin.omdoc.org/category_theory/dfol_based?IdFunctor
+
+IsFunctor http://latin.omdoc.org/category_theory/dfol_based?IsFunctor
+
+Comp http://latin.omdoc.org/category_theory/dfol_based?Comp
+
+Composition http://latin.omdoc.org/category_theory/dfol_based?Composition
+
+NatTrans http://latin.omdoc.org/category_theory/dfol_based?NatTrans
+
+CompNatFun http://latin.omdoc.org/category_theory/dfol_based?CompNatFun
+
+CompositionNF http://latin.omdoc.org/category_theory/dfol_based?CompositionNF
+
+CompFunNat http://latin.omdoc.org/category_theory/dfol_based?CompFunNat
+
+CompositionFN http://latin.omdoc.org/category_theory/dfol_based?CompositionFN
+
+CompNatVert http://latin.omdoc.org/category_theory/dfol_based?CompNatVert
+
+CompNatHoriz http://latin.omdoc.org/category_theory/dfol_based?CompNatHoriz
+
+CompositionNN http://latin.omdoc.org/category_theory/dfol_based?CompositionNN
+
+Adjunction http://latin.omdoc.org/category_theory/dfol_based?Adjunction
+
+Terminal http://latin.omdoc.org/category_theory/dfol_based?Terminal
+
+Initial http://latin.omdoc.org/category_theory/dfol_based?Initial
+
+TermOp http://latin.omdoc.org/category_theory/dfol_based?TermOp
+
+InitOp http://latin.omdoc.org/category_theory/dfol_based?InitOp
+
+Product http://latin.omdoc.org/category_theory/dfol_based?Product
+
+ProdTop http://latin.omdoc.org/category_theory/dfol_based?ProdTop
+
+Coproduct http://latin.omdoc.org/category_theory/dfol_based?Coproduct
+
+CoprodTop http://latin.omdoc.org/category_theory/dfol_based?CoprodTop
+
+ProdOp http://latin.omdoc.org/category_theory/dfol_based?ProdOp
+
+CoprodOp http://latin.omdoc.org/category_theory/dfol_based?CoprodOp
+
+Exponential http://latin.omdoc.org/category_theory/dfol_based?Exponential
+
+ExpTop http://latin.omdoc.org/category_theory/dfol_based?ExpTop
+
+
+
+logics http://docs.omdoc.org/latin/logics
+tptp http://docs.omdoc.org/latin/logics/tptp
+thf.omdoc http://docs.omdoc.org/latin/logics/tptp/thf.omdoc
+THF0 http://latin.omdoc.org/logics/tptp?THF0
+
+FirstToHigher http://latin.omdoc.org/logics/tptp?FirstToHigher
+
+PTHF http://latin.omdoc.org/logics/tptp?PTHF
+
+
+fof.omdoc http://docs.omdoc.org/latin/logics/tptp/fof.omdoc
+FOF http://latin.omdoc.org/logics/tptp?FOF
+
+
+tff.omdoc http://docs.omdoc.org/latin/logics/tptp/tff.omdoc
+Types http://latin.omdoc.org/logics/tptp?Types
+
+TFF http://latin.omdoc.org/logics/tptp?TFF
+
+PFF http://latin.omdoc.org/logics/tptp?PFF
+
+
+arithmetic.omdoc http://docs.omdoc.org/latin/logics/tptp/arithmetic.omdoc
+Arithmetic http://latin.omdoc.org/logics/tptp?Arithmetic
+
+TFF-Arithmetic http://latin.omdoc.org/logics/tptp?TFF-Arithmetic
+
+
+tptp_typed.omdoc http://docs.omdoc.org/latin/logics/tptp/tptp_typed.omdoc
+Types http://latin.omdoc.org/logics/tptp?Types
+
+TFF http://latin.omdoc.org/logics/tptp?TFF
+
+PFF http://latin.omdoc.org/logics/tptp?PFF
+
+
+thf-extensions.omdoc http://docs.omdoc.org/latin/logics/tptp/thf-extensions.omdoc
+IHOL http://latin.omdoc.org/logics/tptp?IHOL
+
+CHOL http://latin.omdoc.org/logics/tptp?CHOL
+
+Eta http://latin.omdoc.org/logics/tptp?Eta
+
+Xi http://latin.omdoc.org/logics/tptp?Xi
+
+B http://latin.omdoc.org/logics/tptp?B
+
+Products http://latin.omdoc.org/logics/tptp?Products
+
+Description http://latin.omdoc.org/logics/tptp?Description
+
+Choice http://latin.omdoc.org/logics/tptp?Choice
+
+QuantTypes http://latin.omdoc.org/logics/tptp?QuantTypes
+
+DTT http://latin.omdoc.org/logics/tptp?DTT
+
+Henkin http://latin.omdoc.org/logics/tptp?Henkin
+
+Henkin-Eta http://latin.omdoc.org/logics/tptp?Henkin-Eta
+
+Henkin-Xi http://latin.omdoc.org/logics/tptp?Henkin-Xi
+
+Henkin-B http://latin.omdoc.org/logics/tptp?Henkin-B
+
+Henkin-FuncExt http://latin.omdoc.org/logics/tptp?Henkin-FuncExt
+
+Henkin+Desc http://latin.omdoc.org/logics/tptp?Henkin+Desc
+
+Henkin+Choice http://latin.omdoc.org/logics/tptp?Henkin+Choice
+
+THF-Arithmetic http://latin.omdoc.org/logics/tptp?THF-Arithmetic
+
+FirstToHigherArithmetic http://latin.omdoc.org/logics/tptp?FirstToHigherArithmetic
+
+
+tptp_arithmetic.omdoc http://docs.omdoc.org/latin/logics/tptp/tptp_arithmetic.omdoc
+Arithmetic http://latin.omdoc.org/logics/tptp?Arithmetic
+
+TFF-Arithmetic http://latin.omdoc.org/logics/tptp?TFF-Arithmetic
+
+
+tptp.omdoc http://docs.omdoc.org/latin/logics/tptp/tptp.omdoc
+FOF http://latin.omdoc.org/logics/tptp?FOF
+
+
+
+first-order http://docs.omdoc.org/latin/logics/first-order
+syntax http://docs.omdoc.org/latin/logics/first-order/syntax
+dfol.omdoc http://docs.omdoc.org/latin/logics/first-order/syntax/dfol.omdoc
+DFOL http://latin.omdoc.org/logics/syntax?DFOL
+
+
+syntax.omdoc http://docs.omdoc.org/latin/logics/first-order/syntax/syntax.omdoc
+UniverseLogic http://latin.omdoc.org/logics/syntax?UniverseLogic
+
+Forall http://latin.omdoc.org/logics/syntax?Forall
+
+Exists http://latin.omdoc.org/logics/syntax?Exists
+
+RelationLogic http://latin.omdoc.org/logics/syntax?RelationLogic
+
+Equal http://latin.omdoc.org/logics/syntax?Equal
+
+FOL http://latin.omdoc.org/logics/syntax?FOL
+
+FOLEQ http://latin.omdoc.org/logics/syntax?FOLEQ
+
+RelationInLogic http://latin.omdoc.org/logics/syntax?RelationInLogic
+
+
+sorted_syntax.omdoc http://docs.omdoc.org/latin/logics/first-order/syntax/sorted_syntax.omdoc
+BaseSFOL http://latin.omdoc.org/logics/syntax?BaseSFOL
+
+SForall http://latin.omdoc.org/logics/syntax?SForall
+
+SExists http://latin.omdoc.org/logics/syntax?SExists
+
+SEqual http://latin.omdoc.org/logics/syntax?SEqual
+
+SFOL http://latin.omdoc.org/logics/syntax?SFOL
+
+SFOLEQ http://latin.omdoc.org/logics/syntax?SFOLEQ
+
+
+derived.omdoc http://docs.omdoc.org/latin/logics/first-order/syntax/derived.omdoc
+ExistsUnique http://latin.omdoc.org/logics/syntax?ExistsUnique
+
+Inequal http://latin.omdoc.org/logics/syntax?Inequal
+
+
+sorted_derived.omdoc http://docs.omdoc.org/latin/logics/first-order/syntax/sorted_derived.omdoc
+SExistsUnique http://latin.omdoc.org/logics/syntax?SExistsUnique
+
+SInequal http://latin.omdoc.org/logics/syntax?SInequal
+
+
+
+proof_theory http://docs.omdoc.org/latin/logics/first-order/proof_theory
+dfol.omdoc http://docs.omdoc.org/latin/logics/first-order/proof_theory/dfol.omdoc
+DFOL http://latin.omdoc.org/logics/proof_theory?DFOL
+
+
+sorted_proof_theory.omdoc http://docs.omdoc.org/latin/logics/first-order/proof_theory/sorted_proof_theory.omdoc
+BaseSFOL http://latin.omdoc.org/logics/proof_theory?BaseSFOL
+
+SForall http://latin.omdoc.org/logics/proof_theory?SForall
+
+SExists http://latin.omdoc.org/logics/proof_theory?SExists
+
+SEqual http://latin.omdoc.org/logics/proof_theory?SEqual
+
+SIFOL http://latin.omdoc.org/logics/proof_theory?SIFOL
+
+SIFOLEQ http://latin.omdoc.org/logics/proof_theory?SIFOLEQ
+
+SFOL http://latin.omdoc.org/logics/proof_theory?SFOL
+
+SFOLEQ http://latin.omdoc.org/logics/proof_theory?SFOLEQ
+
+
+derived.omdoc http://docs.omdoc.org/latin/logics/first-order/proof_theory/derived.omdoc
+ForallExt http://latin.omdoc.org/logics/proof_theory?ForallExt
+
+ExistsExt http://latin.omdoc.org/logics/proof_theory?ExistsExt
+
+ExistsUnique http://latin.omdoc.org/logics/proof_theory?ExistsUnique
+
+EqualExt http://latin.omdoc.org/logics/proof_theory?EqualExt
+
+Inequal http://latin.omdoc.org/logics/proof_theory?Inequal
+
+IFOLExt http://latin.omdoc.org/logics/proof_theory?IFOLExt
+
+StructuredProofs http://latin.omdoc.org/logics/proof_theory?StructuredProofs
+
+IFOLEQExt http://latin.omdoc.org/logics/proof_theory?IFOLEQExt
+
+FOLExt http://latin.omdoc.org/logics/proof_theory?FOLExt
+
+FOLEQExt http://latin.omdoc.org/logics/proof_theory?FOLEQExt
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/logics/first-order/proof_theory/proof_theory.omdoc
+BaseFOL http://latin.omdoc.org/logics/proof_theory?BaseFOL
+
+Forall http://latin.omdoc.org/logics/proof_theory?Forall
+
+Exists http://latin.omdoc.org/logics/proof_theory?Exists
+
+Equal http://latin.omdoc.org/logics/proof_theory?Equal
+
+TNDEq http://latin.omdoc.org/logics/proof_theory?TNDEq
+
+__ http://latin.omdoc.org/logics/proof_theory?__
+
+EqLogic http://latin.omdoc.org/logics/proof_theory?EqLogic
+
+InEqLogic http://latin.omdoc.org/logics/proof_theory?InEqLogic
+
+IFOL http://latin.omdoc.org/logics/proof_theory?IFOL
+
+IFOLEQ http://latin.omdoc.org/logics/proof_theory?IFOLEQ
+
+FOL http://latin.omdoc.org/logics/proof_theory?FOL
+
+FOLEQ http://latin.omdoc.org/logics/proof_theory?FOLEQ
+
+
+sorted_derived.omdoc http://docs.omdoc.org/latin/logics/first-order/proof_theory/sorted_derived.omdoc
+SForallExt http://latin.omdoc.org/logics/proof_theory?SForallExt
+
+SExistsUnique http://latin.omdoc.org/logics/proof_theory?SExistsUnique
+
+SEqualExt http://latin.omdoc.org/logics/proof_theory?SEqualExt
+
+SInequal http://latin.omdoc.org/logics/proof_theory?SInequal
+
+SIFOLExt http://latin.omdoc.org/logics/proof_theory?SIFOLExt
+
+SIFOLEQExt http://latin.omdoc.org/logics/proof_theory?SIFOLEQExt
+
+SFOLExt http://latin.omdoc.org/logics/proof_theory?SFOLExt
+
+SFOLEQExt http://latin.omdoc.org/logics/proof_theory?SFOLEQExt
+
+
+
+model_theory http://docs.omdoc.org/latin/logics/first-order/model_theory
+folmod.omdoc http://docs.omdoc.org/latin/logics/first-order/model_theory/folmod.omdoc
+FOLMOD http://latin.omdoc.org/logics/model_theory?FOLMOD
+
+Universe http://latin.omdoc.org/logics/model_theory?Universe
+
+BaseFOL http://latin.omdoc.org/logics/model_theory?BaseFOL
+
+Forall http://latin.omdoc.org/logics/model_theory?Forall
+
+Exists http://latin.omdoc.org/logics/model_theory?Exists
+
+Equal http://latin.omdoc.org/logics/model_theory?Equal
+
+FOL http://latin.omdoc.org/logics/model_theory?FOL
+
+FOLEQ http://latin.omdoc.org/logics/model_theory?FOLEQ
+
+
+sfolmod.omdoc http://docs.omdoc.org/latin/logics/first-order/model_theory/sfolmod.omdoc
+SFOLMOD http://latin.omdoc.org/logics/model_theory?SFOLMOD
+
+BaseSFOL http://latin.omdoc.org/logics/model_theory?BaseSFOL
+
+SForall http://latin.omdoc.org/logics/model_theory?SForall
+
+SExists http://latin.omdoc.org/logics/model_theory?SExists
+
+SEqual http://latin.omdoc.org/logics/model_theory?SEqual
+
+SFOL http://latin.omdoc.org/logics/model_theory?SFOL
+
+SFOLEQ http://latin.omdoc.org/logics/model_theory?SFOLEQ
+
+
+
+soundness http://docs.omdoc.org/latin/logics/first-order/soundness
+sfolsound.omdoc http://docs.omdoc.org/latin/logics/first-order/soundness/sfolsound.omdoc
+BaseSFOL http://latin.omdoc.org/logics/soundness?BaseSFOL
+
+SForall http://latin.omdoc.org/logics/soundness?SForall
+
+
+folsound.omdoc http://docs.omdoc.org/latin/logics/first-order/soundness/folsound.omdoc
+BaseFOL http://latin.omdoc.org/logics/soundness?BaseFOL
+
+Forall http://latin.omdoc.org/logics/soundness?Forall
+
+Exists http://latin.omdoc.org/logics/soundness?Exists
+
+Equal http://latin.omdoc.org/logics/soundness?Equal
+
+IFOL http://latin.omdoc.org/logics/soundness?IFOL
+
+FOL http://latin.omdoc.org/logics/soundness?FOL
+
+
+
+
+substructural http://docs.omdoc.org/latin/logics/substructural
+linear.omdoc http://docs.omdoc.org/latin/logics/substructural/linear.omdoc
+FF http://latin.omdoc.org/logics/syntax/focused?FF
+
+Linear_SYN http://latin.omdoc.org/logics/syntax/focused?Linear_SYN
+
+Linear_mod http://latin.omdoc.org/logics/syntax/focused?Linear_mod
+
+Sigma_SYN http://latin.omdoc.org/logics/syntax/focused?Sigma_SYN
+
+Sigma_mod http://latin.omdoc.org/logics/syntax/focused?Sigma_mod
+
+Linear_MOD_Alternative http://latin.omdoc.org/logics/syntax/focused?Linear_MOD_Alternative
+
+
+linear2.omdoc http://docs.omdoc.org/latin/logics/substructural/linear2.omdoc
+Linear_Syn http://latin.omdoc.org/logics/syntax?Linear_Syn
+
+Linear_Pf http://latin.omdoc.org/logics/proof_theory?Linear_Pf
+
+Linear_mod http://latin.omdoc.org/logics/model_theory/categorical?Linear_mod
+
+Linear_sound http://latin.omdoc.org/logics/soundness/categorical?Linear_sound
+
+
+
+second-order http://docs.omdoc.org/latin/logics/second-order
+syntax.omdoc http://docs.omdoc.org/latin/logics/second-order/syntax.omdoc
+BaseSecOL http://latin.omdoc.org/logics/syntax?BaseSecOL
+
+I2II http://latin.omdoc.org/logics/syntax?I2II
+
+SecOL http://latin.omdoc.org/logics/syntax?SecOL
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/logics/second-order/proof_theory.omdoc
+BaseSecOL http://latin.omdoc.org/logics/proof_theory?BaseSecOL
+
+
+
+common_logic http://docs.omdoc.org/latin/logics/common_logic
+syntax.omdoc http://docs.omdoc.org/latin/logics/common_logic/syntax.omdoc
+BaseCL http://latin.omdoc.org/logics/syntax?BaseCL
+
+
+soundness.omdoc http://docs.omdoc.org/latin/logics/common_logic/soundness.omdoc
+
+model_theory.omdoc http://docs.omdoc.org/latin/logics/common_logic/model_theory.omdoc
+CLMOD http://latin.omdoc.org/logics/model_theory?CLMOD
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/logics/common_logic/proof_theory.omdoc
+
+
+casl http://docs.omdoc.org/latin/logics/casl
+soundness.omdoc http://docs.omdoc.org/latin/logics/casl/soundness.omdoc
+
+subsorted_syntax.omdoc http://docs.omdoc.org/latin/logics/casl/subsorted_syntax.omdoc
+CASLSubSorted http://latin.omdoc.org/logics/syntax?CASLSubSorted
+
+
+sorted_syntax.omdoc http://docs.omdoc.org/latin/logics/casl/sorted_syntax.omdoc
+CASLSorts http://latin.omdoc.org/logics/syntax?CASLSorts
+
+CASLSorted http://latin.omdoc.org/logics/syntax?CASLSorted
+
+Typing http://latin.omdoc.org/logics/syntax?Typing
+
+
+model_theory.omdoc http://docs.omdoc.org/latin/logics/casl/model_theory.omdoc
+CASLMOD http://latin.omdoc.org/logics/model_theory?CASLMOD
+
+
+subsorted-sorted.omdoc http://docs.omdoc.org/latin/logics/casl/subsorted-sorted.omdoc
+Subsorted-Sorted http://latin.omdoc.org/logics/syntax?Subsorted-Sorted
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/logics/casl/proof_theory.omdoc
+CASL http://latin.omdoc.org/logics/proof_theory?CASL
+
+
+
+higher-order http://docs.omdoc.org/latin/logics/higher-order
+base.omdoc http://docs.omdoc.org/latin/logics/higher-order/base.omdoc
+HOL http://latin.omdoc.org/foundations/hol?HOL
+
+
+syntax.omdoc http://docs.omdoc.org/latin/logics/higher-order/syntax.omdoc
+HOL-Base http://latin.omdoc.org/logics/syntax?HOL-Base
+
+HOL http://latin.omdoc.org/logics/syntax?HOL
+
+PrawitzHOL http://latin.omdoc.org/logics/syntax?PrawitzHOL
+
+STTHOL http://latin.omdoc.org/logics/syntax?STTHOL
+
+LambdaPHOL http://latin.omdoc.org/logics/syntax?LambdaPHOL
+
+
+modules.omdoc http://docs.omdoc.org/latin/logics/higher-order/modules.omdoc
+Eta http://latin.omdoc.org/foundations/hol?Eta
+
+FunctionalExtensionality http://latin.omdoc.org/foundations/hol?FunctionalExtensionality
+
+BooleanExtensionality http://latin.omdoc.org/foundations/hol?BooleanExtensionality
+
+Description http://latin.omdoc.org/foundations/hol?Description
+
+Choice http://latin.omdoc.org/foundations/hol?Choice
+
+Types-Nonempty http://latin.omdoc.org/foundations/hol?Types-Nonempty
+
+Classical http://latin.omdoc.org/foundations/hol?Classical
+
+IFTE http://latin.omdoc.org/foundations/hol?IFTE
+
+TC http://latin.omdoc.org/foundations/hol?TC
+
+DC http://latin.omdoc.org/foundations/hol?DC
+
+FE http://latin.omdoc.org/foundations/hol?FE
+
+EF http://latin.omdoc.org/foundations/hol?EF
+
+BC http://latin.omdoc.org/foundations/hol?BC
+
+CB http://latin.omdoc.org/foundations/hol?CB
+
+DiaconescuTheorem http://latin.omdoc.org/foundations/hol?DiaconescuTheorem
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/logics/higher-order/proof_theory.omdoc
+HOL http://latin.omdoc.org/logics/proof_theory?HOL
+
+PropositionalExtensionality http://latin.omdoc.org/logics/proof_theory?PropositionalExtensionality
+
+PrawitzHOL http://latin.omdoc.org/logics/proof_theory?PrawitzHOL
+
+LeibnizHOL http://latin.omdoc.org/logics/proof_theory?LeibnizHOL
+
+
+sfol.omdoc http://docs.omdoc.org/latin/logics/higher-order/sfol.omdoc
+SFOL-Syn http://latin.omdoc.org/foundations/hol?SFOL-Syn
+
+SFOL-Pf1 http://latin.omdoc.org/foundations/hol?SFOL-Pf1
+
+SFOL-Pf http://latin.omdoc.org/foundations/hol?SFOL-Pf
+
+
+
+modal http://docs.omdoc.org/latin/logics/modal
+syntax.omdoc http://docs.omdoc.org/latin/logics/modal/syntax.omdoc
+Necessity http://latin.omdoc.org/logics/syntax?Necessity
+
+Possibility http://latin.omdoc.org/logics/syntax?Possibility
+
+ML http://latin.omdoc.org/logics/syntax?ML
+
+
+model_theory.omdoc http://docs.omdoc.org/latin/logics/modal/model_theory.omdoc
+Kripke http://latin.omdoc.org/logics/model_theory/kripke?Kripke
+
+Base http://latin.omdoc.org/logics/model_theory/kripke?Base
+
+MPL http://latin.omdoc.org/logics/model_theory/kripke?MPL
+
+Necessity http://latin.omdoc.org/logics/model_theory/kripke?Necessity
+
+Possibility http://latin.omdoc.org/logics/model_theory/kripke?Possibility
+
+ML http://latin.omdoc.org/logics/model_theory/kripke?ML
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/logics/modal/proof_theory.omdoc
+MLPf http://latin.omdoc.org/logics/proof_theory?MLPf
+
+D http://latin.omdoc.org/logics/proof_theory?D
+
+T http://latin.omdoc.org/logics/proof_theory?T
+
+S4 http://latin.omdoc.org/logics/proof_theory?S4
+
+S4b http://latin.omdoc.org/logics/proof_theory?S4b
+
+S5 http://latin.omdoc.org/logics/proof_theory?S5
+
+
+
+description http://docs.omdoc.org/latin/logics/description
+owl http://docs.omdoc.org/latin/logics/description/owl
+owl.omdoc http://docs.omdoc.org/latin/logics/description/owl/owl.omdoc
+OWL1Datatype http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWL1Datatype
+
+OWLBase http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLBase
+
+OWLLite http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLLite
+
+OWLDL http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLDL
+
+OWLFull http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLFull
+
+
+OWLtoOWL2.omdoc http://docs.omdoc.org/latin/logics/description/owl/OWLtoOWL2.omdoc
+
+owl2.omdoc http://docs.omdoc.org/latin/logics/description/owl/owl2.omdoc
+OWL2Datatype http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2Datatype
+
+OWL2SUB http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2SUB
+
+OWL2ELQL http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2ELQL
+
+OWL2ELRL http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2ELRL
+
+OWL2QLRL http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2QLRL
+
+OWL2EL http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2EL
+
+OWL2QL http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2QL
+
+OWL2RL http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2RL
+
+OWL2DL http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2DL
+
+OWL2Full http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2Full
+
+OWL2 http://latin.omdoc.org/logics/description/owl/owl2.omdoc?OWL2
+
+
+OWL2toFOL.omdoc http://docs.omdoc.org/latin/logics/description/owl/OWL2toFOL.omdoc
+
+FOLEQD.omdoc http://docs.omdoc.org/latin/logics/description/owl/FOLEQD.omdoc
+FOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?FOLEQD
+
+
+DLtoOWL.omdoc http://docs.omdoc.org/latin/logics/description/owl/DLtoOWL.omdoc
+DLBasetoOWL2 http://latin.omdoc.org/logics/description/owl/owl2.omdoc?DLBasetoOWL2
+
+FL0toOWL2 http://latin.omdoc.org/logics/description/owl/owl2.omdoc?FL0toOWL2
+
+FLminustoOWL2 http://latin.omdoc.org/logics/description/owl/owl2.omdoc?FLminustoOWL2
+
+
+OWLtoFOL.omdoc http://docs.omdoc.org/latin/logics/description/owl/OWLtoFOL.omdoc
+D1FOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?D1FOLEQD
+
+OWLBaseFOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLBaseFOLEQD
+
+OWLLiteFOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLLiteFOLEQD
+
+OWLDLFOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLDLFOLEQD
+
+OWLFullFOLEQD http://latin.omdoc.org/logics/description/owl/owl.omdoc?OWLFullFOLEQD
+
+
+
+model_theory_FOL.omdoc http://docs.omdoc.org/latin/logics/description/model_theory_FOL.omdoc
+DLBase http://latin.omdoc.org/logics/model_theory?DLBase
+
+FL0 http://latin.omdoc.org/logics/model_theory?FL0
+
+FLminus http://latin.omdoc.org/logics/model_theory?FLminus
+
+Catom http://latin.omdoc.org/logics/model_theory?Catom
+
+AL http://latin.omdoc.org/logics/model_theory?AL
+
+C http://latin.omdoc.org/logics/model_theory?C
+
+E http://latin.omdoc.org/logics/model_theory?E
+
+U http://latin.omdoc.org/logics/model_theory?U
+
+ALC http://latin.omdoc.org/logics/model_theory?ALC
+
+F http://latin.omdoc.org/logics/model_theory?F
+
+H http://latin.omdoc.org/logics/model_theory?H
+
+R http://latin.omdoc.org/logics/model_theory?R
+
+O http://latin.omdoc.org/logics/model_theory?O
+
+I http://latin.omdoc.org/logics/model_theory?I
+
+S http://latin.omdoc.org/logics/model_theory?S
+
+
+syntax.omdoc http://docs.omdoc.org/latin/logics/description/syntax.omdoc
+DLBase http://latin.omdoc.org/logics/syntax?DLBase
+
+FL0 http://latin.omdoc.org/logics/syntax?FL0
+
+FLminus http://latin.omdoc.org/logics/syntax?FLminus
+
+F http://latin.omdoc.org/logics/syntax?F
+
+E http://latin.omdoc.org/logics/syntax?E
+
+U http://latin.omdoc.org/logics/syntax?U
+
+Catom http://latin.omdoc.org/logics/syntax?Catom
+
+C http://latin.omdoc.org/logics/syntax?C
+
+Cview http://latin.omdoc.org/logics/syntax?Cview
+
+H http://latin.omdoc.org/logics/syntax?H
+
+R http://latin.omdoc.org/logics/syntax?R
+
+O http://latin.omdoc.org/logics/syntax?O
+
+I http://latin.omdoc.org/logics/syntax?I
+
+N http://latin.omdoc.org/logics/syntax?N
+
+Q http://latin.omdoc.org/logics/syntax?Q
+
+AL http://latin.omdoc.org/logics/syntax?AL
+
+ALN http://latin.omdoc.org/logics/syntax?ALN
+
+ALC http://latin.omdoc.org/logics/syntax?ALC
+
+S http://latin.omdoc.org/logics/syntax?S
+
+SHOIN http://latin.omdoc.org/logics/syntax?SHOIN
+
+SROIQ http://latin.omdoc.org/logics/syntax?SROIQ
+
+
+soundness_FOL.omdoc http://docs.omdoc.org/latin/logics/description/soundness_FOL.omdoc
+DLBase http://latin.omdoc.org/logics/soundness?DLBase
+
+
+proof_theory_tableaux.omdoc http://docs.omdoc.org/latin/logics/description/proof_theory_tableaux.omdoc
+DLBase http://latin.omdoc.org/logics/proof_theory?DLBase
+
+C http://latin.omdoc.org/logics/proof_theory?C
+
+FL0 http://latin.omdoc.org/logics/proof_theory?FL0
+
+U http://latin.omdoc.org/logics/proof_theory?U
+
+E http://latin.omdoc.org/logics/proof_theory?E
+
+DL http://latin.omdoc.org/logics/proof_theory?DL
+
+
+model_theory_ZFC.omdoc http://docs.omdoc.org/latin/logics/description/model_theory_ZFC.omdoc
+
+
+propositional http://docs.omdoc.org/latin/logics/propositional
+syntax http://docs.omdoc.org/latin/logics/propositional/syntax
+syntax.omdoc http://docs.omdoc.org/latin/logics/propositional/syntax/syntax.omdoc
+Logic http://latin.omdoc.org/logics/syntax?Logic
+
+Truth http://latin.omdoc.org/logics/syntax?Truth
+
+Falsity http://latin.omdoc.org/logics/syntax?Falsity
+
+NEG http://latin.omdoc.org/logics/syntax?NEG
+
+IMP http://latin.omdoc.org/logics/syntax?IMP
+
+CONJ http://latin.omdoc.org/logics/syntax?CONJ
+
+DISJ http://latin.omdoc.org/logics/syntax?DISJ
+
+Equiv http://latin.omdoc.org/logics/syntax?Equiv
+
+PL http://latin.omdoc.org/logics/syntax?PL
+
+
+interdefinability.omdoc http://docs.omdoc.org/latin/logics/propositional/syntax/interdefinability.omdoc
+ConjAsDisj http://latin.omdoc.org/logics/syntax?ConjAsDisj
+
+DisjAsConj http://latin.omdoc.org/logics/syntax?DisjAsConj
+
+
+minimal.omdoc http://docs.omdoc.org/latin/logics/propositional/syntax/minimal.omdoc
+MPL http://latin.omdoc.org/logics/syntax?MPL
+
+MPL-PL http://latin.omdoc.org/logics/syntax?MPL-PL
+
+
+
+proof_theory http://docs.omdoc.org/latin/logics/propositional/proof_theory
+interdefinability.omdoc http://docs.omdoc.org/latin/logics/propositional/proof_theory/interdefinability.omdoc
+ConjAsDisj http://latin.omdoc.org/logics/proof_theory?ConjAsDisj
+
+
+derived.omdoc http://docs.omdoc.org/latin/logics/propositional/proof_theory/derived.omdoc
+FalsityExt http://latin.omdoc.org/logics/proof_theory?FalsityExt
+
+NEGExt http://latin.omdoc.org/logics/proof_theory?NEGExt
+
+IMPExt http://latin.omdoc.org/logics/proof_theory?IMPExt
+
+CONJExt http://latin.omdoc.org/logics/proof_theory?CONJExt
+
+DISJExt http://latin.omdoc.org/logics/proof_theory?DISJExt
+
+Equiv http://latin.omdoc.org/logics/proof_theory?Equiv
+
+IPLExt http://latin.omdoc.org/logics/proof_theory?IPLExt
+
+PLExt http://latin.omdoc.org/logics/proof_theory?PLExt
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/logics/propositional/proof_theory/proof_theory.omdoc
+Base http://latin.omdoc.org/logics/proof_theory?Base
+
+Truth http://latin.omdoc.org/logics/proof_theory?Truth
+
+Falsity http://latin.omdoc.org/logics/proof_theory?Falsity
+
+NEG http://latin.omdoc.org/logics/proof_theory?NEG
+
+IMP http://latin.omdoc.org/logics/proof_theory?IMP
+
+CONJ http://latin.omdoc.org/logics/proof_theory?CONJ
+
+DISJ http://latin.omdoc.org/logics/proof_theory?DISJ
+
+TND http://latin.omdoc.org/logics/proof_theory?TND
+
+IPL http://latin.omdoc.org/logics/proof_theory?IPL
+
+CPL http://latin.omdoc.org/logics/proof_theory?CPL
+
+
+tnd_from_atomic.omdoc http://docs.omdoc.org/latin/logics/propositional/proof_theory/tnd_from_atomic.omdoc
+TND_from_atomic http://latin.omdoc.org/logics/proof_theory?TND_from_atomic
+
+FOL-Counter http://latin.omdoc.org/logics/proof_theory?FOL-Counter
+
+
+minimal.omdoc http://docs.omdoc.org/latin/logics/propositional/proof_theory/minimal.omdoc
+MPL http://latin.omdoc.org/logics/proof_theory?MPL
+
+MPL-CPL http://latin.omdoc.org/logics/proof_theory?MPL-CPL
+
+
+tableaux.omdoc http://docs.omdoc.org/latin/logics/propositional/proof_theory/tableaux.omdoc
+TableauxProp http://latin.omdoc.org/logics/proof_theory?TableauxProp
+
+
+
+model_theory http://docs.omdoc.org/latin/logics/propositional/model_theory
+categorical http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical
+catlog.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/catlog.omdoc
+Category http://latin.omdoc.org/logics/model_theory/categorical?Category
+
+CatLog http://latin.omdoc.org/logics/model_theory/categorical?CatLog
+
+
+cocartesian.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/cocartesian.omdoc
+CoCartesian http://latin.omdoc.org/logics/model_theory/categorical?CoCartesian
+
+
+iprop.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/iprop.omdoc
+IProp http://latin.omdoc.org/logics/model_theory/categorical?IProp
+
+
+cartesian.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/cartesian.omdoc
+Cartesian http://latin.omdoc.org/logics/model_theory/categorical?Cartesian
+
+
+cartesian_closed.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/cartesian_closed.omdoc
+CartesianClosed http://latin.omdoc.org/logics/model_theory/categorical?CartesianClosed
+
+
+monoidal_comonad.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/monoidal_comonad.omdoc
+MonoidalComonad http://latin.omdoc.org/logics/model_theory/categorical?MonoidalComonad
+
+
+cocartesian_alt.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/cocartesian_alt.omdoc
+CoCartesianAlt http://latin.omdoc.org/logics/model_theory/categorical?CoCartesianAlt
+
+
+monoidal_closed.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/monoidal_closed.omdoc
+MonoidalClosed http://latin.omdoc.org/logics/model_theory/categorical?MonoidalClosed
+
+
+is4.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/is4.omdoc
+IS4 http://latin.omdoc.org/logics/model_theory/categorical?IS4
+
+
+mill.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/mill.omdoc
+MILL http://latin.omdoc.org/logics/model_theory/categorical?MILL
+
+
+ill.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/ill.omdoc
+ILL http://latin.omdoc.org/logics/model_theory/categorical?ILL
+
+
+classical.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/classical.omdoc
+Classical http://latin.omdoc.org/logics/model_theory/categorical?Classical
+
+
+int_negation.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/int_negation.omdoc
+Negation http://latin.omdoc.org/logics/model_theory/categorical?Negation
+
+
+monoidal.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/categorical/monoidal.omdoc
+Monoidal http://latin.omdoc.org/logics/model_theory/categorical?Monoidal
+
+
+
+propmod_kripke.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/propmod_kripke.omdoc
+BasePL http://latin.omdoc.org/logics/model_theory/kripke?BasePL
+
+Truth http://latin.omdoc.org/logics/model_theory/kripke?Truth
+
+Falsity http://latin.omdoc.org/logics/model_theory/kripke?Falsity
+
+NEG http://latin.omdoc.org/logics/model_theory/kripke?NEG
+
+IMP http://latin.omdoc.org/logics/model_theory/kripke?IMP
+
+CONJ http://latin.omdoc.org/logics/model_theory/kripke?CONJ
+
+DISJ http://latin.omdoc.org/logics/model_theory/kripke?DISJ
+
+PL http://latin.omdoc.org/logics/model_theory/kripke?PL
+
+
+propmod.omdoc http://docs.omdoc.org/latin/logics/propositional/model_theory/propmod.omdoc
+Base http://latin.omdoc.org/logics/model_theory?Base
+
+Truth http://latin.omdoc.org/logics/model_theory?Truth
+
+Falsity http://latin.omdoc.org/logics/model_theory?Falsity
+
+NEG http://latin.omdoc.org/logics/model_theory?NEG
+
+DISJ http://latin.omdoc.org/logics/model_theory?DISJ
+
+CONJ http://latin.omdoc.org/logics/model_theory?CONJ
+
+IMP http://latin.omdoc.org/logics/model_theory?IMP
+
+PL http://latin.omdoc.org/logics/model_theory?PL
+
+
+
+soundness http://docs.omdoc.org/latin/logics/propositional/soundness
+sound.omdoc http://docs.omdoc.org/latin/logics/propositional/soundness/sound.omdoc
+Base http://latin.omdoc.org/logics/soundness?Base
+
+Truth http://latin.omdoc.org/logics/soundness?Truth
+
+Falsity http://latin.omdoc.org/logics/soundness?Falsity
+
+IMP http://latin.omdoc.org/logics/soundness?IMP
+
+NEG http://latin.omdoc.org/logics/soundness?NEG
+
+CONJ http://latin.omdoc.org/logics/soundness?CONJ
+
+DISJ http://latin.omdoc.org/logics/soundness?DISJ
+
+TND http://latin.omdoc.org/logics/soundness?TND
+
+IPL http://latin.omdoc.org/logics/soundness?IPL
+
+CPL http://latin.omdoc.org/logics/soundness?CPL
+
+
+sound_kripke.omdoc http://docs.omdoc.org/latin/logics/propositional/soundness/sound_kripke.omdoc
+Truth http://latin.omdoc.org/logics/soundness/kripke?Truth
+
+Falsity http://latin.omdoc.org/logics/soundness/kripke?Falsity
+
+NEG http://latin.omdoc.org/logics/soundness/kripke?NEG
+
+IMP http://latin.omdoc.org/logics/soundness/kripke?IMP
+
+CONJ http://latin.omdoc.org/logics/soundness/kripke?CONJ
+
+DISJ http://latin.omdoc.org/logics/soundness/kripke?DISJ
+
+TND http://latin.omdoc.org/logics/soundness/kripke?TND
+
+
+
+
+
+math http://docs.omdoc.org/latin/math
+rational.omdoc http://docs.omdoc.org/latin/math/rational.omdoc
+Rat http://latin.omdoc.org/math?Rat
+
+
+nat.omdoc http://docs.omdoc.org/latin/math/nat.omdoc
+Nat http://latin.omdoc.org/math?Nat
+
+Recursion http://latin.omdoc.org/math?Recursion
+
+Addition http://latin.omdoc.org/math?Addition
+
+Multiplication http://latin.omdoc.org/math?Multiplication
+
+OrderedNat http://latin.omdoc.org/math?OrderedNat
+
+
+order-magma.omdoc http://docs.omdoc.org/latin/math/order-magma.omdoc
+MagmaFOL http://latin.omdoc.org/math?MagmaFOL
+
+SemigroupFOL http://latin.omdoc.org/math?SemigroupFOL
+
+CommutativeFOL http://latin.omdoc.org/math?CommutativeFOL
+
+NeutralElementFOL http://latin.omdoc.org/math?NeutralElementFOL
+
+OMRelation http://latin.omdoc.org/math?OMRelation
+
+OMReflexive http://latin.omdoc.org/math?OMReflexive
+
+OMBottom http://latin.omdoc.org/math?OMBottom
+
+OMTransitive http://latin.omdoc.org/math?OMTransitive
+
+
+relations_in_logic.omdoc http://docs.omdoc.org/latin/math/relations_in_logic.omdoc
+RelationEqLogic http://latin.omdoc.org/math?RelationEqLogic
+
+Irreflexive http://latin.omdoc.org/math?Irreflexive
+
+Strict http://latin.omdoc.org/math?Strict
+
+OrderLogic http://latin.omdoc.org/math?OrderLogic
+
+Total http://latin.omdoc.org/math?Total
+
+Dense http://latin.omdoc.org/math?Dense
+
+TopLogic http://latin.omdoc.org/math?TopLogic
+
+BottomLogic http://latin.omdoc.org/math?BottomLogic
+
+SupremumLogic http://latin.omdoc.org/math?SupremumLogic
+
+InfimumLogic http://latin.omdoc.org/math?InfimumLogic
+
+UnboundedAbove http://latin.omdoc.org/math?UnboundedAbove
+
+UnboundedBelow http://latin.omdoc.org/math?UnboundedBelow
+
+
+lattices.omdoc http://docs.omdoc.org/latin/math/lattices.omdoc
+SemiLattice http://latin.omdoc.org/math?SemiLattice
+
+RSL http://latin.omdoc.org/math?RSL
+
+ReSL http://latin.omdoc.org/math?ReSL
+
+TSL http://latin.omdoc.org/math?TSL
+
+POSL http://latin.omdoc.org/math?POSL
+
+ASL http://latin.omdoc.org/math?ASL
+
+OSL http://latin.omdoc.org/math?OSL
+
+Lattice http://latin.omdoc.org/math?Lattice
+
+BoundedLattice http://latin.omdoc.org/math?BoundedLattice
+
+ComplementedLattice http://latin.omdoc.org/math?ComplementedLattice
+
+OrthocomplementedLattice http://latin.omdoc.org/math?OrthocomplementedLattice
+
+DeMorganAlgebra http://latin.omdoc.org/math?DeMorganAlgebra
+
+HeytingAlgebra http://latin.omdoc.org/math?HeytingAlgebra
+
+DistributiveLattice http://latin.omdoc.org/math?DistributiveLattice
+
+BooleanAlgebra http://latin.omdoc.org/math?BooleanAlgebra
+
+ModalAlgebra http://latin.omdoc.org/math?ModalAlgebra
+
+DerivativeAlgebra http://latin.omdoc.org/math?DerivativeAlgebra
+
+RelationAlgebra http://latin.omdoc.org/math?RelationAlgebra
+
+
+sets.omdoc http://docs.omdoc.org/latin/math/sets.omdoc
+Universe http://latin.omdoc.org/math?Universe
+
+Relation http://latin.omdoc.org/math?Relation
+
+Reflexive http://latin.omdoc.org/math?Reflexive
+
+Symmetric http://latin.omdoc.org/math?Symmetric
+
+Transitive http://latin.omdoc.org/math?Transitive
+
+Equivalence http://latin.omdoc.org/math?Equivalence
+
+Congruence http://latin.omdoc.org/math?Congruence
+
+Equality http://latin.omdoc.org/math?Equality
+
+EqUniverse http://latin.omdoc.org/math?EqUniverse
+
+
+rings.omdoc http://docs.omdoc.org/latin/math/rings.omdoc
+RightDistrib http://latin.omdoc.org/math?RightDistrib
+
+Distrib http://latin.omdoc.org/math?Distrib
+
+LieRing http://latin.omdoc.org/math?LieRing
+
+JordanRing http://latin.omdoc.org/math?JordanRing
+
+Ring http://latin.omdoc.org/math?Ring
+
+RingCommut http://latin.omdoc.org/math?RingCommut
+
+RingUnit http://latin.omdoc.org/math?RingUnit
+
+RingUnitCommut http://latin.omdoc.org/math?RingUnitCommut
+
+DifferentialRing http://latin.omdoc.org/math?DifferentialRing
+
+RingUnitLogic http://latin.omdoc.org/math?RingUnitLogic
+
+IntegralDomain http://latin.omdoc.org/math?IntegralDomain
+
+RingDivision http://latin.omdoc.org/math?RingDivision
+
+Field http://latin.omdoc.org/math?Field
+
+
+ordered_magmas.omdoc http://docs.omdoc.org/latin/math/ordered_magmas.omdoc
+Monotonous http://latin.omdoc.org/math?Monotonous
+
+OrderedMonoid http://latin.omdoc.org/math?OrderedMonoid
+
+
+relations.omdoc http://docs.omdoc.org/latin/math/relations.omdoc
+Preorder http://latin.omdoc.org/math?Preorder
+
+Antisymmetric http://latin.omdoc.org/math?Antisymmetric
+
+Order http://latin.omdoc.org/math?Order
+
+Top http://latin.omdoc.org/math?Top
+
+Bottom http://latin.omdoc.org/math?Bottom
+
+Supremum http://latin.omdoc.org/math?Supremum
+
+Infimum http://latin.omdoc.org/math?Infimum
+
+
+pointwise.omdoc http://docs.omdoc.org/latin/math/pointwise.omdoc
+Points http://latin.omdoc.org/math?Points
+
+PointwiseUniverse http://latin.omdoc.org/math?PointwiseUniverse
+
+PointwiseRelation http://latin.omdoc.org/math?PointwiseRelation
+
+PointwiseReflexive http://latin.omdoc.org/math?PointwiseReflexive
+
+PointwiseSymmetric http://latin.omdoc.org/math?PointwiseSymmetric
+
+PointwiseTransitive http://latin.omdoc.org/math?PointwiseTransitive
+
+PointwiseEquivalence http://latin.omdoc.org/math?PointwiseEquivalence
+
+PointsEq http://latin.omdoc.org/math?PointsEq
+
+PointwiseMagma http://latin.omdoc.org/math?PointwiseMagma
+
+PointwiseCommutative http://latin.omdoc.org/math?PointwiseCommutative
+
+PointwiseSemigroup http://latin.omdoc.org/math?PointwiseSemigroup
+
+
+
+type_theories http://docs.omdoc.org/latin/type_theories
+Church-style http://docs.omdoc.org/latin/type_theories/Church-style
+kinds.omdoc http://docs.omdoc.org/latin/type_theories/Church-style/kinds.omdoc
+KindsTypesTerms http://latin.omdoc.org/foundations/type_theory/church?KindsTypesTerms
+
+PTSRule http://latin.omdoc.org/foundations/type_theory/church?PTSRule
+
+
+features_semantics.omdoc http://docs.omdoc.org/latin/type_theories/Church-style/features_semantics.omdoc
+
+features.omdoc http://docs.omdoc.org/latin/type_theories/Church-style/features.omdoc
+Unit http://latin.omdoc.org/foundations/type_theory/church?Unit
+
+Void http://latin.omdoc.org/foundations/type_theory/church?Void
+
+NonEmpty http://latin.omdoc.org/foundations/type_theory/church?NonEmpty
+
+IdentityTypes http://latin.omdoc.org/foundations/type_theory/church?IdentityTypes
+
+DisjUnion http://latin.omdoc.org/foundations/type_theory/church?DisjUnion
+
+Products http://latin.omdoc.org/foundations/type_theory/church?Products
+
+Functions http://latin.omdoc.org/foundations/type_theory/church?Functions
+
+PartialFunctions http://latin.omdoc.org/foundations/type_theory/church?PartialFunctions
+
+PartialFunctionsDom http://latin.omdoc.org/foundations/type_theory/church?PartialFunctionsDom
+
+DependentSum http://latin.omdoc.org/foundations/type_theory/church?DependentSum
+
+
+types_semantics.omdoc http://docs.omdoc.org/latin/type_theories/Church-style/types_semantics.omdoc
+_IndexedUniverse http://latin.omdoc.org/foundations/type_theory/church?_IndexedUniverse
+
+_ELogic http://latin.omdoc.org/foundations/type_theory/church?_ELogic
+
+_ILogic http://latin.omdoc.org/foundations/type_theory/church?_ILogic
+
+_ExternalLogic http://latin.omdoc.org/foundations/type_theory/church?_ExternalLogic
+
+_InternalLogic http://latin.omdoc.org/foundations/type_theory/church?_InternalLogic
+
+_Equality http://latin.omdoc.org/foundations/type_theory/church?_Equality
+
+_DefinitionalEquality http://latin.omdoc.org/foundations/type_theory/church?_DefinitionalEquality
+
+_AxiomaticEquality http://latin.omdoc.org/foundations/type_theory/church?_AxiomaticEquality
+
+_InternalEquality http://latin.omdoc.org/foundations/type_theory/church?_InternalEquality
+
+
+types.omdoc http://docs.omdoc.org/latin/type_theories/Church-style/types.omdoc
+IndexedUniverse http://latin.omdoc.org/foundations/type_theory/church?IndexedUniverse
+
+Logic http://latin.omdoc.org/foundations/type_theory/church?Logic
+
+ExternalLogic http://latin.omdoc.org/foundations/type_theory/church?ExternalLogic
+
+InternalLogic http://latin.omdoc.org/foundations/type_theory/church?InternalLogic
+
+Equality http://latin.omdoc.org/foundations/type_theory/church?Equality
+
+ReflectedEquality http://latin.omdoc.org/foundations/type_theory/church?ReflectedEquality
+
+ReflectedLogic http://latin.omdoc.org/foundations/type_theory/church?ReflectedLogic
+
+DefinitionalEquality http://latin.omdoc.org/foundations/type_theory/church?DefinitionalEquality
+
+AxiomaticEquality http://latin.omdoc.org/foundations/type_theory/church?AxiomaticEquality
+
+InternalEquality http://latin.omdoc.org/foundations/type_theory/church?InternalEquality
+
+
+
+Curry-style http://docs.omdoc.org/latin/type_theories/Curry-style
+features_semantics.omdoc http://docs.omdoc.org/latin/type_theories/Curry-style/features_semantics.omdoc
+
+features.omdoc http://docs.omdoc.org/latin/type_theories/Curry-style/features.omdoc
+
+types_semantics.omdoc http://docs.omdoc.org/latin/type_theories/Curry-style/types_semantics.omdoc
+
+types.omdoc http://docs.omdoc.org/latin/type_theories/Curry-style/types.omdoc
+ClassifiedUniverse http://latin.omdoc.org/foundations/type_theory/curry?ClassifiedUniverse
+
+
+
+old http://docs.omdoc.org/latin/type_theories/old
+modules-other.omdoc http://docs.omdoc.org/latin/type_theories/old/modules-other.omdoc
+IDENT http://latin.omdoc.org/type_theories?IDENT
+
+UNIT http://latin.omdoc.org/type_theories?UNIT
+
+VOID http://latin.omdoc.org/type_theories?VOID
+
+DUNION http://latin.omdoc.org/type_theories?DUNION
+
+Product http://latin.omdoc.org/type_theories?Product
+
+SIGMA http://latin.omdoc.org/type_theories?SIGMA
+
+Product-Sigma http://latin.omdoc.org/type_theories?Product-Sigma
+
+Naturals http://latin.omdoc.org/type_theories?Naturals
+
+NatTypes http://latin.omdoc.org/type_theories?NatTypes
+
+Option http://latin.omdoc.org/type_theories?Option
+
+
+base.omdoc http://docs.omdoc.org/latin/type_theories/old/base.omdoc
+Level' http://latin.omdoc.org/type_theories?Level'
+
+Level http://latin.omdoc.org/type_theories?Level
+
+TypesTerms http://latin.omdoc.org/type_theories?TypesTerms
+
+KindsTypesTerms http://latin.omdoc.org/type_theories?KindsTypesTerms
+
+TypesToTypes http://latin.omdoc.org/type_theories?TypesToTypes
+
+
+modules-lambda.omdoc http://docs.omdoc.org/latin/type_theories/old/modules-lambda.omdoc
+DepFun http://latin.omdoc.org/type_theories?DepFun
+
+DepTypes http://latin.omdoc.org/type_theories?DepTypes
+
+DepKinds http://latin.omdoc.org/type_theories?DepKinds
+
+TypeOper http://latin.omdoc.org/type_theories?TypeOper
+
+PolyTypes http://latin.omdoc.org/type_theories?PolyTypes
+
+SimpFun http://latin.omdoc.org/type_theories?SimpFun
+
+SimpTypes http://latin.omdoc.org/type_theories?SimpTypes
+
+SimpToDep http://latin.omdoc.org/type_theories?SimpToDep
+
+SimpKinds http://latin.omdoc.org/type_theories?SimpKinds
+
+SimpToOper http://latin.omdoc.org/type_theories?SimpToOper
+
+UnivTypes http://latin.omdoc.org/type_theories?UnivTypes
+
+UnivToPoly http://latin.omdoc.org/type_theories?UnivToPoly
+
+
+stt.omdoc http://docs.omdoc.org/latin/type_theories/old/stt.omdoc
+STT http://latin.omdoc.org/type_theories?STT
+
+
+lambda-cube.omdoc http://docs.omdoc.org/latin/type_theories/old/lambda-cube.omdoc
+LambdaArrow http://latin.omdoc.org/type_theories?LambdaArrow
+
+LambdaOmega_ http://latin.omdoc.org/type_theories?LambdaOmega_
+
+Lambda2 http://latin.omdoc.org/type_theories?Lambda2
+
+LambdaP http://latin.omdoc.org/type_theories?LambdaP
+
+LambdaArrowToP http://latin.omdoc.org/type_theories?LambdaArrowToP
+
+LambdaOmega http://latin.omdoc.org/type_theories?LambdaOmega
+
+Lambda2ToOmega http://latin.omdoc.org/type_theories?Lambda2ToOmega
+
+LambdaP2 http://latin.omdoc.org/type_theories?LambdaP2
+
+Lambda2ToP2 http://latin.omdoc.org/type_theories?Lambda2ToP2
+
+LambdaPOmega_ http://latin.omdoc.org/type_theories?LambdaPOmega_
+
+LambdaOmega_ToPOmega_ http://latin.omdoc.org/type_theories?LambdaOmega_ToPOmega_
+
+LambdaPOmega http://latin.omdoc.org/type_theories?LambdaPOmega
+
+LambdaOmegaToPOmega http://latin.omdoc.org/type_theories?LambdaOmegaToPOmega
+
+
+stt-mltt.omdoc http://docs.omdoc.org/latin/type_theories/old/stt-mltt.omdoc
+
+mltt.omdoc http://docs.omdoc.org/latin/type_theories/old/mltt.omdoc
+MLTT http://latin.omdoc.org/type_theories?MLTT
+
+STT-MLTT http://latin.omdoc.org/type_theories?STT-MLTT
+
+
+
+
+translations http://docs.omdoc.org/latin/translations
+ml-fol http://docs.omdoc.org/latin/translations/ml-fol
+model_expansion.omdoc http://docs.omdoc.org/latin/translations/ml-fol/model_expansion.omdoc
+FOLMOD-Kripke http://latin.omdoc.org/translations/ml_fol?FOLMOD-Kripke
+
+FOL-Kripke http://latin.omdoc.org/translations/ml_fol?FOL-Kripke
+
+
+syntax.omdoc http://docs.omdoc.org/latin/translations/ml-fol/syntax.omdoc
+ML-FOL http://latin.omdoc.org/translations/ml_fol?ML-FOL
+
+Base http://latin.omdoc.org/translations/ml_fol?Base
+
+MPL http://latin.omdoc.org/translations/ml_fol?MPL
+
+Necessity http://latin.omdoc.org/translations/ml_fol?Necessity
+
+Possibility http://latin.omdoc.org/translations/ml_fol?Possibility
+
+ML http://latin.omdoc.org/translations/ml_fol?ML
+
+
+satisfaction.omdoc http://docs.omdoc.org/latin/translations/ml-fol/satisfaction.omdoc
+Satisfaction http://latin.omdoc.org/translations/ml_fol?Satisfaction
+
+
+model_theory.omdoc http://docs.omdoc.org/latin/translations/ml-fol/model_theory.omdoc
+ML-FOLMOD http://latin.omdoc.org/translations/ml_fol?ML-FOLMOD
+
+Kripke http://latin.omdoc.org/translations/ml_fol?Kripke
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/translations/ml-fol/proof_theory.omdoc
+
+
+sfol-fol http://docs.omdoc.org/latin/translations/sfol-fol
+syntax.omdoc http://docs.omdoc.org/latin/translations/sfol-fol/syntax.omdoc
+BaseSFOL http://latin.omdoc.org/translations/sfol_fol?BaseSFOL
+
+SForall http://latin.omdoc.org/translations/sfol_fol?SForall
+
+SExists http://latin.omdoc.org/translations/sfol_fol?SExists
+
+SFOL http://latin.omdoc.org/translations/sfol_fol?SFOL
+
+SEqual http://latin.omdoc.org/translations/sfol_fol?SEqual
+
+SFOLEQ http://latin.omdoc.org/translations/sfol_fol?SFOLEQ
+
+
+model_theory.omdoc http://docs.omdoc.org/latin/translations/sfol-fol/model_theory.omdoc
+
+proof_theory.omdoc http://docs.omdoc.org/latin/translations/sfol-fol/proof_theory.omdoc
+BaseSFOLPF http://latin.omdoc.org/translations/sfol_fol?BaseSFOLPF
+
+
+
+type_theory-zfc http://docs.omdoc.org/latin/translations/type_theory-zfc
+base.omdoc http://docs.omdoc.org/latin/translations/type_theory-zfc/base.omdoc
+TypesTerms http://latin.omdoc.org/translations/tt_zfc?TypesTerms
+
+
+stt.omdoc http://docs.omdoc.org/latin/translations/type_theory-zfc/stt.omdoc
+STT http://latin.omdoc.org/translations/tt_zfc?STT
+
+
+modules.omdoc http://docs.omdoc.org/latin/translations/type_theory-zfc/modules.omdoc
+IDENT http://latin.omdoc.org/translations/tt_zfc?IDENT
+
+UNIT http://latin.omdoc.org/translations/tt_zfc?UNIT
+
+VOID http://latin.omdoc.org/translations/tt_zfc?VOID
+
+DUNION http://latin.omdoc.org/translations/tt_zfc?DUNION
+
+Product http://latin.omdoc.org/translations/tt_zfc?Product
+
+SIGMA http://latin.omdoc.org/translations/tt_zfc?SIGMA
+
+SimpTypes http://latin.omdoc.org/translations/tt_zfc?SimpTypes
+
+
+mltt.omdoc http://docs.omdoc.org/latin/translations/type_theory-zfc/mltt.omdoc
+
+
+curry_howard http://docs.omdoc.org/latin/translations/curry_howard
+type_theory-logic.omdoc http://docs.omdoc.org/latin/translations/curry_howard/type_theory-logic.omdoc
+CH-IPL http://latin.omdoc.org/translations/stt_prop?CH-IPL
+
+TypesTerms http://latin.omdoc.org/translations/stt_prop?TypesTerms
+
+Product http://latin.omdoc.org/translations/stt_prop?Product
+
+SimpTypes http://latin.omdoc.org/translations/stt_prop?SimpTypes
+
+
+logic-category_theory.omdoc http://docs.omdoc.org/latin/translations/curry_howard/logic-category_theory.omdoc
+Base http://latin.omdoc.org/translations/prop_cat?Base
+
+BasePF http://latin.omdoc.org/translations/prop_cat?BasePF
+
+Truth http://latin.omdoc.org/translations/prop_cat?Truth
+
+TruthPF http://latin.omdoc.org/translations/prop_cat?TruthPF
+
+Conj http://latin.omdoc.org/translations/prop_cat?Conj
+
+ConjPF http://latin.omdoc.org/translations/prop_cat?ConjPF
+
+Disj http://latin.omdoc.org/translations/prop_cat?Disj
+
+Imp http://latin.omdoc.org/translations/prop_cat?Imp
+
+
+logic-type_theory.omdoc http://docs.omdoc.org/latin/translations/curry_howard/logic-type_theory.omdoc
+Base http://latin.omdoc.org/translations/prop_stt?Base
+
+BasePF http://latin.omdoc.org/translations/prop_stt?BasePF
+
+IMP http://latin.omdoc.org/translations/prop_stt?IMP
+
+IMPPF http://latin.omdoc.org/translations/prop_stt?IMPPF
+
+CONJ http://latin.omdoc.org/translations/prop_stt?CONJ
+
+CONJPF http://latin.omdoc.org/translations/prop_stt?CONJPF
+
+
+
+prop-hol http://docs.omdoc.org/latin/translations/prop-hol
+syntax.omdoc http://docs.omdoc.org/latin/translations/prop-hol/syntax.omdoc
+Base http://latin.omdoc.org/translations/prop_hol?Base
+
+Truth http://latin.omdoc.org/translations/prop_hol?Truth
+
+Falsity http://latin.omdoc.org/translations/prop_hol?Falsity
+
+NEG http://latin.omdoc.org/translations/prop_hol?NEG
+
+CONJ http://latin.omdoc.org/translations/prop_hol?CONJ
+
+DISJ http://latin.omdoc.org/translations/prop_hol?DISJ
+
+IMP http://latin.omdoc.org/translations/prop_hol?IMP
+
+Prop http://latin.omdoc.org/translations/prop_hol?Prop
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/translations/prop-hol/proof_theory.omdoc
+BasePF http://latin.omdoc.org/translations/prop_hol?BasePF
+
+TruthPF http://latin.omdoc.org/translations/prop_hol?TruthPF
+
+FalsityPF http://latin.omdoc.org/translations/prop_hol?FalsityPF
+
+NEGPF http://latin.omdoc.org/translations/prop_hol?NEGPF
+
+CONJPF http://latin.omdoc.org/translations/prop_hol?CONJPF
+
+DISJPF http://latin.omdoc.org/translations/prop_hol?DISJPF
+
+IMPPF http://latin.omdoc.org/translations/prop_hol?IMPPF
+
+TND http://latin.omdoc.org/translations/prop_hol?TND
+
+IPLPF http://latin.omdoc.org/translations/prop_hol?IPLPF
+
+CPLPF http://latin.omdoc.org/translations/prop_hol?CPLPF
+
+
+
+dn http://docs.omdoc.org/latin/translations/dn
+Glivenko-Kuroda http://docs.omdoc.org/latin/translations/dn/Glivenko-Kuroda
+fol-ifol http://docs.omdoc.org/latin/translations/dn/Glivenko-Kuroda/fol-ifol
+syntax.omdoc http://docs.omdoc.org/latin/translations/dn/Glivenko-Kuroda/fol-ifol/syntax.omdoc
+DN-IFOL http://latin.omdoc.org/translations/fol_ifol?DN-IFOL
+
+Universe http://latin.omdoc.org/translations/fol_ifol?Universe
+
+UniverseLogic http://latin.omdoc.org/translations/fol_ifol?UniverseLogic
+
+Forall http://latin.omdoc.org/translations/fol_ifol?Forall
+
+Exists http://latin.omdoc.org/translations/fol_ifol?Exists
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/translations/dn/Glivenko-Kuroda/fol-ifol/proof_theory.omdoc
+BaseFOLPF http://latin.omdoc.org/translations/fol_ifol?BaseFOLPF
+
+ExistsPF http://latin.omdoc.org/translations/fol_ifol?ExistsPF
+
+ForallPF http://latin.omdoc.org/translations/fol_ifol?ForallPF
+
+IFOLPF http://latin.omdoc.org/translations/fol_ifol?IFOLPF
+
+
+
+prop-iprop http://docs.omdoc.org/latin/translations/dn/Glivenko-Kuroda/prop-iprop
+syntax.omdoc http://docs.omdoc.org/latin/translations/dn/Glivenko-Kuroda/prop-iprop/syntax.omdoc
+DN-IPL http://latin.omdoc.org/translations/prop_iprop?DN-IPL
+
+Base http://latin.omdoc.org/translations/prop_iprop?Base
+
+Truth http://latin.omdoc.org/translations/prop_iprop?Truth
+
+Falsity http://latin.omdoc.org/translations/prop_iprop?Falsity
+
+NEG http://latin.omdoc.org/translations/prop_iprop?NEG
+
+IMP http://latin.omdoc.org/translations/prop_iprop?IMP
+
+CONJ http://latin.omdoc.org/translations/prop_iprop?CONJ
+
+DISJ http://latin.omdoc.org/translations/prop_iprop?DISJ
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/translations/dn/Glivenko-Kuroda/prop-iprop/proof_theory.omdoc
+BasePF http://latin.omdoc.org/translations/prop_iprop?BasePF
+
+TruthPF http://latin.omdoc.org/translations/prop_iprop?TruthPF
+
+FalsityPF http://latin.omdoc.org/translations/prop_iprop?FalsityPF
+
+NEGPF http://latin.omdoc.org/translations/prop_iprop?NEGPF
+
+IMPPF http://latin.omdoc.org/translations/prop_iprop?IMPPF
+
+CONJPF http://latin.omdoc.org/translations/prop_iprop?CONJPF
+
+DISJPF http://latin.omdoc.org/translations/prop_iprop?DISJPF
+
+TND http://latin.omdoc.org/translations/prop_iprop?TND
+
+IPLPF http://latin.omdoc.org/translations/prop_iprop?IPLPF
+
+CPLPF http://latin.omdoc.org/translations/prop_iprop?CPLPF
+
+
+
+
+
+sfol-hol http://docs.omdoc.org/latin/translations/sfol-hol
+syntax.omdoc http://docs.omdoc.org/latin/translations/sfol-hol/syntax.omdoc
+BaseSFOL http://latin.omdoc.org/translations/sfol_hol?BaseSFOL
+
+SForall http://latin.omdoc.org/translations/sfol_hol?SForall
+
+SExists http://latin.omdoc.org/translations/sfol_hol?SExists
+
+SFOL http://latin.omdoc.org/translations/sfol_hol?SFOL
+
+SEqual http://latin.omdoc.org/translations/sfol_hol?SEqual
+
+SFOLEQ http://latin.omdoc.org/translations/sfol_hol?SFOLEQ
+
+
+proof_theory.omdoc http://docs.omdoc.org/latin/translations/sfol-hol/proof_theory.omdoc
+BaseSFOLPF http://latin.omdoc.org/translations/sfol_hol?BaseSFOLPF
+
+SForallPF http://latin.omdoc.org/translations/sfol_hol?SForallPF
+
+SExistsPF http://latin.omdoc.org/translations/sfol_hol?SExistsPF
+
+SEqualPF http://latin.omdoc.org/translations/sfol_hol?SEqualPF
+
+SIFOLPF http://latin.omdoc.org/translations/sfol_hol?SIFOLPF
+
+SIFOLEQPF http://latin.omdoc.org/translations/sfol_hol?SIFOLEQPF
+
+SFOLPF http://latin.omdoc.org/translations/sfol_hol?SFOLPF
+
+
+
+fol-sfol http://docs.omdoc.org/latin/translations/fol-sfol
+syntax.omdoc http://docs.omdoc.org/latin/translations/fol-sfol/syntax.omdoc
+FOL-SFOL-Sig http://latin.omdoc.org/translations/fol-sfol?FOL-SFOL-Sig
+
+BaseFOL http://latin.omdoc.org/translations/fol-sfol?BaseFOL
+
+
+
+
+foundations http://docs.omdoc.org/latin/foundations
+minimal http://docs.omdoc.org/latin/foundations/minimal
+sttifol.omdoc http://docs.omdoc.org/latin/foundations/minimal/sttifol.omdoc
+IntExt http://latin.omdoc.org/foundations/minimal?IntExt
+
+STTIFOLEQ http://latin.omdoc.org/foundations/minimal?STTIFOLEQ
+
+STTIFOLEQExt http://latin.omdoc.org/foundations/minimal?STTIFOLEQExt
+
+
+universe.omdoc http://docs.omdoc.org/latin/foundations/minimal/universe.omdoc
+Universes http://latin.omdoc.org/foundations/minimal?Universes
+
+List http://latin.omdoc.org/foundations/minimal?List
+
+
+bool-zf.omdoc http://docs.omdoc.org/latin/foundations/minimal/bool-zf.omdoc
+Bool-ZF http://latin.omdoc.org/foundations/minimal?Bool-ZF
+
+
+universe-zf.omdoc http://docs.omdoc.org/latin/foundations/minimal/universe-zf.omdoc
+
+bool.omdoc http://docs.omdoc.org/latin/foundations/minimal/bool.omdoc
+Bool http://latin.omdoc.org/foundations/minimal?Bool
+
+
+sttifol-zf.omdoc http://docs.omdoc.org/latin/foundations/minimal/sttifol-zf.omdoc
+BaseSFOL-ZF http://latin.omdoc.org/foundations/minimal?BaseSFOL-ZF
+
+SForall-ZF http://latin.omdoc.org/foundations/minimal?SForall-ZF
+
+SExists-ZF http://latin.omdoc.org/foundations/minimal?SExists-ZF
+
+SFOL-ZF http://latin.omdoc.org/foundations/minimal?SFOL-ZF
+
+SEqual-ZF http://latin.omdoc.org/foundations/minimal?SEqual-ZF
+
+BaseSFOLPF-ZF http://latin.omdoc.org/foundations/minimal?BaseSFOLPF-ZF
+
+SForallPF-ZF http://latin.omdoc.org/foundations/minimal?SForallPF-ZF
+
+SExistsPF-ZF http://latin.omdoc.org/foundations/minimal?SExistsPF-ZF
+
+SEqualPF-ZF http://latin.omdoc.org/foundations/minimal?SEqualPF-ZF
+
+SIFOLPF-ZF http://latin.omdoc.org/foundations/minimal?SIFOLPF-ZF
+
+SIFOLEQPF-ZF http://latin.omdoc.org/foundations/minimal?SIFOLEQPF-ZF
+
+SForallPFExt-ZF http://latin.omdoc.org/foundations/minimal?SForallPFExt-ZF
+
+SFOLEQ-ZF http://latin.omdoc.org/foundations/minimal?SFOLEQ-ZF
+
+SExistsUnique-ZF http://latin.omdoc.org/foundations/minimal?SExistsUnique-ZF
+
+SExistsUniquePF-ZF http://latin.omdoc.org/foundations/minimal?SExistsUniquePF-ZF
+
+SIFOLPFExt-ZF http://latin.omdoc.org/foundations/minimal?SIFOLPFExt-ZF
+
+SEqualPFExt-ZF http://latin.omdoc.org/foundations/minimal?SEqualPFExt-ZF
+
+SInequal-ZF http://latin.omdoc.org/foundations/minimal?SInequal-ZF
+
+SInequalPF-ZF http://latin.omdoc.org/foundations/minimal?SInequalPF-ZF
+
+SIFOLEQPFExt-ZF http://latin.omdoc.org/foundations/minimal?SIFOLEQPFExt-ZF
+
+STTIFOLEQ-ZF http://latin.omdoc.org/foundations/minimal?STTIFOLEQ-ZF
+
+
+
+mizar http://docs.omdoc.org/latin/foundations/mizar
+mizar-curry.omdoc http://docs.omdoc.org/latin/foundations/mizar/mizar-curry.omdoc
+Mizar-Curry http://latin.omdoc.org/foundations/mizar?Mizar-Curry
+
+
+mizar.omdoc http://docs.omdoc.org/latin/foundations/mizar/mizar.omdoc
+Mizar http://latin.omdoc.org/foundations/mizar?Mizar
+
+
+zfc-mizar.omdoc http://docs.omdoc.org/latin/foundations/mizar/zfc-mizar.omdoc
+BaseMizarView http://latin.omdoc.org/foundations/mizar?BaseMizarView
+
+TruthMizarView http://latin.omdoc.org/foundations/mizar?TruthMizarView
+
+FalsityMizarView http://latin.omdoc.org/foundations/mizar?FalsityMizarView
+
+NEGMizarView http://latin.omdoc.org/foundations/mizar?NEGMizarView
+
+IMPMizarView http://latin.omdoc.org/foundations/mizar?IMPMizarView
+
+CONJMizarView http://latin.omdoc.org/foundations/mizar?CONJMizarView
+
+DISJMizarView http://latin.omdoc.org/foundations/mizar?DISJMizarView
+
+UniverseMizarView http://latin.omdoc.org/foundations/mizar?UniverseMizarView
+
+BaseFOLMizarView http://latin.omdoc.org/foundations/mizar?BaseFOLMizarView
+
+PLMizarView http://latin.omdoc.org/foundations/mizar?PLMizarView
+
+ForallMizarView http://latin.omdoc.org/foundations/mizar?ForallMizarView
+
+ExistsMizarView http://latin.omdoc.org/foundations/mizar?ExistsMizarView
+
+FOLMizarView http://latin.omdoc.org/foundations/mizar?FOLMizarView
+
+EqualMizarView http://latin.omdoc.org/foundations/mizar?EqualMizarView
+
+InequalMizarView http://latin.omdoc.org/foundations/mizar?InequalMizarView
+
+FOLEQMizarView http://latin.omdoc.org/foundations/mizar?FOLEQMizarView
+
+ExistsUniqueMizarView http://latin.omdoc.org/foundations/mizar?ExistsUniqueMizarView
+
+EquivMizarView http://latin.omdoc.org/foundations/mizar?EquivMizarView
+
+BasePFMizarView http://latin.omdoc.org/foundations/mizar?BasePFMizarView
+
+TruthPFMizarView http://latin.omdoc.org/foundations/mizar?TruthPFMizarView
+
+FalsityPFMizarView http://latin.omdoc.org/foundations/mizar?FalsityPFMizarView
+
+NEGPFMizarView http://latin.omdoc.org/foundations/mizar?NEGPFMizarView
+
+IMPPFMizarView http://latin.omdoc.org/foundations/mizar?IMPPFMizarView
+
+CONJPFMizarView http://latin.omdoc.org/foundations/mizar?CONJPFMizarView
+
+DISJPFMizarView http://latin.omdoc.org/foundations/mizar?DISJPFMizarView
+
+IPLPFMizarView http://latin.omdoc.org/foundations/mizar?IPLPFMizarView
+
+TNDMizarView http://latin.omdoc.org/foundations/mizar?TNDMizarView
+
+CPLPFMizarView http://latin.omdoc.org/foundations/mizar?CPLPFMizarView
+
+BaseFOLPFMizarView http://latin.omdoc.org/foundations/mizar?BaseFOLPFMizarView
+
+ForallPFMizarView http://latin.omdoc.org/foundations/mizar?ForallPFMizarView
+
+ExistsPFMizarView http://latin.omdoc.org/foundations/mizar?ExistsPFMizarView
+
+IFOLPFMizarView http://latin.omdoc.org/foundations/mizar?IFOLPFMizarView
+
+EqualPFMizarView http://latin.omdoc.org/foundations/mizar?EqualPFMizarView
+
+IFOLEQPFMizarView http://latin.omdoc.org/foundations/mizar?IFOLEQPFMizarView
+
+FalsityPFExtMizarView http://latin.omdoc.org/foundations/mizar?FalsityPFExtMizarView
+
+NEGPFExtMizarView http://latin.omdoc.org/foundations/mizar?NEGPFExtMizarView
+
+IMPPFExtMizarView http://latin.omdoc.org/foundations/mizar?IMPPFExtMizarView
+
+CONJPFExtMizarView http://latin.omdoc.org/foundations/mizar?CONJPFExtMizarView
+
+DISJPFExtMizarView http://latin.omdoc.org/foundations/mizar?DISJPFExtMizarView
+
+EquivPFMizarView http://latin.omdoc.org/foundations/mizar?EquivPFMizarView
+
+IPLPFExtMizarView http://latin.omdoc.org/foundations/mizar?IPLPFExtMizarView
+
+PLPFExtMizarView http://latin.omdoc.org/foundations/mizar?PLPFExtMizarView
+
+ForallPFExtMizarView http://latin.omdoc.org/foundations/mizar?ForallPFExtMizarView
+
+ExistsUniquePFMizarView http://latin.omdoc.org/foundations/mizar?ExistsUniquePFMizarView
+
+EqualPFExtMizarView http://latin.omdoc.org/foundations/mizar?EqualPFExtMizarView
+
+IFOLPFExtMizarView http://latin.omdoc.org/foundations/mizar?IFOLPFExtMizarView
+
+
+tarski.omdoc http://docs.omdoc.org/latin/foundations/mizar/tarski.omdoc
+Tarski http://latin.omdoc.org/foundations/mizar?Tarski
+
+
+HIDDEN.omdoc http://docs.omdoc.org/latin/foundations/mizar/HIDDEN.omdoc
+HIDDEN http://latin.omdoc.org/foundations/mizar?HIDDEN
+
+
+zfc.omdoc http://docs.omdoc.org/latin/foundations/mizar/zfc.omdoc
+Mizar_ZFC http://latin.omdoc.org/foundations/mizar?Mizar_ZFC
+
+
+mizar-zfc.omdoc http://docs.omdoc.org/latin/foundations/mizar/mizar-zfc.omdoc
+MizarView http://latin.omdoc.org/foundations/mizar?MizarView
+
+TarskiView http://latin.omdoc.org/foundations/mizar?TarskiView
+
+
+
+zfc http://docs.omdoc.org/latin/foundations/zfc
+nat.omdoc http://docs.omdoc.org/latin/foundations/zfc/nat.omdoc
+Nat http://latin.omdoc.org/foundations/zfc?Nat
+
+
+fol.omdoc http://docs.omdoc.org/latin/foundations/zfc/fol.omdoc
+ZFC_FOL http://latin.omdoc.org/foundations/zfc?ZFC_FOL
+
+
+typed_views.omdoc http://docs.omdoc.org/latin/foundations/zfc/typed_views.omdoc
+_UQ http://latin.omdoc.org/foundations/zfc?_UQ
+
+_EQ http://latin.omdoc.org/foundations/zfc?_EQ
+
+_I http://latin.omdoc.org/foundations/zfc?_I
+
+_BU http://latin.omdoc.org/foundations/zfc?_BU
+
+_BI http://latin.omdoc.org/foundations/zfc?_BI
+
+_P http://latin.omdoc.org/foundations/zfc?_P
+
+_F http://latin.omdoc.org/foundations/zfc?_F
+
+ConditionalTermsAux http://latin.omdoc.org/foundations/zfc?ConditionalTermsAux
+
+_C http://latin.omdoc.org/foundations/zfc?_C
+
+_DU http://latin.omdoc.org/foundations/zfc?_DU
+
+
+recursion.omdoc http://docs.omdoc.org/latin/foundations/zfc/recursion.omdoc
+Recursion http://latin.omdoc.org/foundations/zfc?Recursion
+
+
+list.omdoc http://docs.omdoc.org/latin/foundations/zfc/list.omdoc
+Lists http://latin.omdoc.org/foundations/zfc?Lists
+
+Trees http://latin.omdoc.org/foundations/zfc?Trees
+
+
+axioms.omdoc http://docs.omdoc.org/latin/foundations/zfc/axioms.omdoc
+ZFC http://latin.omdoc.org/foundations/zfc?ZFC
+
+
+bool.omdoc http://docs.omdoc.org/latin/foundations/zfc/bool.omdoc
+Boolean http://latin.omdoc.org/foundations/zfc?Boolean
+
+TNDBool http://latin.omdoc.org/foundations/zfc?TNDBool
+
+
+option.omdoc http://docs.omdoc.org/latin/foundations/zfc/option.omdoc
+Option http://latin.omdoc.org/foundations/zfc?Option
+
+
+operations.omdoc http://docs.omdoc.org/latin/foundations/zfc/operations.omdoc
+Operations http://latin.omdoc.org/foundations/zfc?Operations
+
+
+if.omdoc http://docs.omdoc.org/latin/foundations/zfc/if.omdoc
+If http://latin.omdoc.org/foundations/zfc?If
+
+
+types-interfaces.omdoc http://docs.omdoc.org/latin/foundations/zfc/types-interfaces.omdoc
+Church http://latin.omdoc.org/foundations/ftt?Church
+
+Curry http://latin.omdoc.org/foundations/ftt?Curry
+
+ChurchInCurry http://latin.omdoc.org/foundations/ftt?ChurchInCurry
+
+UniversalQuantifier http://latin.omdoc.org/foundations/ftt?UniversalQuantifier
+
+ExistentialQuantifier http://latin.omdoc.org/foundations/ftt?ExistentialQuantifier
+
+PredSubTypes http://latin.omdoc.org/foundations/ftt?PredSubTypes
+
+ImageTypes http://latin.omdoc.org/foundations/ftt?ImageTypes
+
+ConditionalTerms http://latin.omdoc.org/foundations/ftt?ConditionalTerms
+
+BigUnion http://latin.omdoc.org/foundations/ftt?BigUnion
+
+Unit http://latin.omdoc.org/foundations/ftt?Unit
+
+Void http://latin.omdoc.org/foundations/ftt?Void
+
+NonEmpty http://latin.omdoc.org/foundations/ftt?NonEmpty
+
+NonEmptyCurry http://latin.omdoc.org/foundations/ftt?NonEmptyCurry
+
+BigInter http://latin.omdoc.org/foundations/ftt?BigInter
+
+DisjUnion http://latin.omdoc.org/foundations/ftt?DisjUnion
+
+Bool http://latin.omdoc.org/foundations/ftt?Bool
+
+Reflection http://latin.omdoc.org/foundations/ftt?Reflection
+
+PowerTypes http://latin.omdoc.org/foundations/ftt?PowerTypes
+
+Products http://latin.omdoc.org/foundations/ftt?Products
+
+OptionTypes http://latin.omdoc.org/foundations/ftt?OptionTypes
+
+
+types.omdoc http://docs.omdoc.org/latin/foundations/zfc/types.omdoc
+TypedZFBase http://latin.omdoc.org/foundations/zfc?TypedZFBase
+
+Church http://latin.omdoc.org/foundations/zfc?Church
+
+Curry http://latin.omdoc.org/foundations/zfc?Curry
+
+ChurchInCurry http://latin.omdoc.org/foundations/zfc?ChurchInCurry
+
+TypesAsClasses http://latin.omdoc.org/foundations/zfc?TypesAsClasses
+
+TypesAsSets http://latin.omdoc.org/foundations/zfc?TypesAsSets
+
+UniversalQuantifier http://latin.omdoc.org/foundations/zfc?UniversalQuantifier
+
+ExistentialQuantifier http://latin.omdoc.org/foundations/zfc?ExistentialQuantifier
+
+PredSubTypes http://latin.omdoc.org/foundations/zfc?PredSubTypes
+
+ImageTypes http://latin.omdoc.org/foundations/zfc?ImageTypes
+
+ConditionalTerms http://latin.omdoc.org/foundations/zfc?ConditionalTerms
+
+BigUnion http://latin.omdoc.org/foundations/zfc?BigUnion
+
+BigInter http://latin.omdoc.org/foundations/zfc?BigInter
+
+DisjUnion http://latin.omdoc.org/foundations/zfc?DisjUnion
+
+Products http://latin.omdoc.org/foundations/zfc?Products
+
+Functions http://latin.omdoc.org/foundations/zfc?Functions
+
+DependentProducts http://latin.omdoc.org/foundations/zfc?DependentProducts
+
+DependentFunctions http://latin.omdoc.org/foundations/zfc?DependentFunctions
+
+TypedZF http://latin.omdoc.org/foundations/zfc?TypedZF
+
+
+powerset.omdoc http://docs.omdoc.org/latin/foundations/zfc/powerset.omdoc
+Powersets http://latin.omdoc.org/foundations/zfc?Powersets
+
+
+
+isabelle http://docs.omdoc.org/latin/foundations/isabelle
+isabelle.omdoc http://docs.omdoc.org/latin/foundations/isabelle/isabelle.omdoc
+Pure http://latin.omdoc.org/foundations/isabelle?Pure
+
+HOL http://latin.omdoc.org/foundations/isabelle?HOL
+
+
+isabelle-zfc.omdoc http://docs.omdoc.org/latin/foundations/isabelle/isabelle-zfc.omdoc
+PureSemantics http://latin.omdoc.org/foundations/isabelle?PureSemantics
+
+
+zfc.omdoc http://docs.omdoc.org/latin/foundations/isabelle/zfc.omdoc
+
+
+
+
+openmath http://www.openmath.org/
+cds http://www.openmath.org/cds
+arith.omdoc http://www.openmath.org/cds/arith.omdoc
+arith1 http://www.openmath.org/cd?arith1
+
+arith2 http://www.openmath.org/cd?arith2
+
+
+relation.omdoc http://www.openmath.org/cds/relation.omdoc
+relation1 http://www.openmath.org/cd?relation1
+
+
+all.omdoc http://www.openmath.org/cds/all.omdoc
+all http://www.openmath.org/cd?all
+
+
+set.omdoc http://www.openmath.org/cds/set.omdoc
+set1 http://www.openmath.org/cd?set1
+
+set2 http://www.openmath.org/cd?set2
+
+
+string.omdoc http://www.openmath.org/cds/string.omdoc
+string http://www.openmath.org/cd?string
+
+
+interval.omdoc http://www.openmath.org/cds/interval.omdoc
+interval1 http://www.openmath.org/cd?interval1
+
+
+logic.omdoc http://www.openmath.org/cds/logic.omdoc
+logic1 http://www.openmath.org/cd?logic1
+
+
+polygrp.omdoc http://www.openmath.org/cds/polygrp.omdoc
+polyu http://www.openmath.org/cd?polyu
+
+poly http://www.openmath.org/cd?poly
+
+
+nums.omdoc http://www.openmath.org/cds/nums.omdoc
+nums1 http://www.openmath.org/cd?nums1
+
+
+indNat.omdoc http://www.openmath.org/cds/indNat.omdoc
+indNat http://www.openmath.org/cd?indNat
+
+
+list.omdoc http://www.openmath.org/cds/list.omdoc
+list1 http://www.openmath.org/cd?list1
+
+list2 http://www.openmath.org/cd?list2
+
+
+fns.omdoc http://www.openmath.org/cds/fns.omdoc
+fns1 http://www.openmath.org/cd?fns1
+
+
+integer.omdoc http://www.openmath.org/cds/integer.omdoc
+integer1 http://www.openmath.org/cd?integer1
+
+
+setname.omdoc http://www.openmath.org/cds/setname.omdoc
+setname1 http://www.openmath.org/cd?setname1
+
+setname2 http://www.openmath.org/cd?setname2
+
+
+minmax.omdoc http://www.openmath.org/cds/minmax.omdoc
+minmax1 http://www.openmath.org/cd?minmax1
+
+
+combinat.omdoc http://www.openmath.org/cds/combinat.omdoc
+combinat1 http://www.openmath.org/cd?combinat1
+
+permut1 http://www.openmath.org/cd?permut1
+
+
+units.omdoc http://www.openmath.org/cds/units.omdoc
+dimensions1 http://www.openmath.org/cd?dimensions1
+
+units_metric1 http://www.openmath.org/cd?units_metric1
+
+units_imperial1 http://www.openmath.org/cd?units_imperial1
+
+units_ops1 http://www.openmath.org/cd?units_ops1
+
+units_siprefix1 http://www.openmath.org/cd?units_siprefix1
+
+units_sts http://www.openmath.org/cd?units_sts
+
+units_time http://www.openmath.org/cd?units_time
+
+units_us1 http://www.openmath.org/cd?units_us1
+
+
+linalg.omdoc http://www.openmath.org/cds/linalg.omdoc
+linalg1 http://www.openmath.org/cd?linalg1
+
+linalg2 http://www.openmath.org/cd?linalg2
+
+linalg4 http://www.openmath.org/cd?linalg4
+
+linalg5 http://www.openmath.org/cd?linalg5
+
+
+tensor.omdoc http://www.openmath.org/cds/tensor.omdoc
+tensor1 http://www.openmath.org/cd?tensor1
+
+
+complex.omdoc http://www.openmath.org/cds/complex.omdoc
+complex1 http://www.openmath.org/cd?complex1
+
+
+transc.omdoc http://www.openmath.org/cds/transc.omdoc
+transc1 http://www.openmath.org/cd?transc1
+
+
+rounding.omdoc http://www.openmath.org/cds/rounding.omdoc
+rounding1 http://www.openmath.org/cd?rounding1
+
+
+
+test http://www.openmath.org/test
+arith.omdoc http://www.openmath.org/test/arith.omdoc
+Arith http://oaff.kwarc.info/openmath/test?Arith
+
+ArithTest http://oaff.kwarc.info/openmath/test?ArithTest
+
+
+relation.omdoc http://www.openmath.org/test/relation.omdoc
+Relation http://oaff.kwarc.info/openmath/test?Relation
+
+RelationTest http://oaff.kwarc.info/openmath/test?RelationTest
+
+
+set.omdoc http://www.openmath.org/test/set.omdoc
+Set http://oaff.kwarc.info/openmath/test?Set
+
+SetTest http://oaff.kwarc.info/openmath/test?SetTest
+
+
+logic.omdoc http://www.openmath.org/test/logic.omdoc
+Logic http://oaff.kwarc.info/openmath/test?Logic
+
+LogicTest http://oaff.kwarc.info/openmath/test?LogicTest
+
+
+list.omdoc http://www.openmath.org/test/list.omdoc
+List http://oaff.kwarc.info/openmath/test?List
+
+ListTest http://oaff.kwarc.info/openmath/test?ListTest
+
+
+integer.omdoc http://www.openmath.org/test/integer.omdoc
+Integer http://oaff.kwarc.info/openmath/test?Integer
+
+IntegerTest http://oaff.kwarc.info/openmath/test?IntegerTest
+
+
+minmax.omdoc http://www.openmath.org/test/minmax.omdoc
+Minmax http://oaff.kwarc.info/openmath/test?Minmax
+
+MinmaxTest http://oaff.kwarc.info/openmath/test?MinmaxTest
+
+
+linalg.omdoc http://www.openmath.org/test/linalg.omdoc
+Linalg http://oaff.kwarc.info/openmath/test?Linalg
+
+LinalgTest http://oaff.kwarc.info/openmath/test?LinalgTest
+
+
+complex.omdoc http://www.openmath.org/test/complex.omdoc
+Complex http://oaff.kwarc.info/openmath/test?Complex
+
+ComplexTest http://oaff.kwarc.info/openmath/test?ComplexTest
+
+
+rounding.omdoc http://www.openmath.org/test/rounding.omdoc
+Rounding http://oaff.kwarc.info/openmath/test?Rounding
+
+RoundingTest http://oaff.kwarc.info/openmath/test?RoundingTest
+
+
+
+frameit http://www.openmath.org/frameit
+frameIT.omdoc http://www.openmath.org/frameit/frameIT.omdoc
+Ratios http://cds.omdoc.org/frameit?Ratios
+
+RatiosSol http://cds.omdoc.org/frameit?RatiosSol
+
+BasicTrig http://cds.omdoc.org/frameit?BasicTrig
+
+BasicTrigSol http://cds.omdoc.org/frameit?BasicTrigSol
+
+LawOfCosines http://cds.omdoc.org/frameit?LawOfCosines
+
+LawOfCosinesSol http://cds.omdoc.org/frameit?LawOfCosinesSol
+
+Volume http://cds.omdoc.org/frameit?Volume
+
+VolumeSol http://cds.omdoc.org/frameit?VolumeSol
+
+Concrete http://cds.omdoc.org/frameit?Concrete
+
+ConcreteSol http://cds.omdoc.org/frameit?ConcreteSol
+
+FreeSpace http://cds.omdoc.org/frameit?FreeSpace
+
+
+
+uom http://www.openmath.org/uom
+arith.omdoc http://www.openmath.org/uom/arith.omdoc
+Arith1 http://oaff.kwarc.info/openmath/uom?Arith1
+
+
+relation.omdoc http://www.openmath.org/uom/relation.omdoc
+Relation1 http://oaff.kwarc.info/openmath/uom?Relation1
+
+
+set.omdoc http://www.openmath.org/uom/set.omdoc
+Set1 http://oaff.kwarc.info/openmath/uom?Set1
+
+Set2 http://oaff.kwarc.info/openmath/uom?Set2
+
+
+string.omdoc http://www.openmath.org/uom/string.omdoc
+String http://oaff.kwarc.info/openmath/uom?String
+
+
+interval.omdoc http://www.openmath.org/uom/interval.omdoc
+
+logic.omdoc http://www.openmath.org/uom/logic.omdoc
+Logic1 http://oaff.kwarc.info/openmath/uom?Logic1
+
+
+polygrp.omdoc http://www.openmath.org/uom/polygrp.omdoc
+Polyu http://oaff.kwarc.info/openmath/uom?Polyu
+
+PolyuArith http://oaff.kwarc.info/openmath/uom?PolyuArith
+
+
+tensor1.omdoc http://www.openmath.org/uom/tensor1.omdoc
+Tensor1 http://oaff.kwarc.info/openmath/uom?Tensor1
+
+
+nums.omdoc http://www.openmath.org/uom/nums.omdoc
+Nums1 http://oaff.kwarc.info/openmath/uom?Nums1
+
+
+indNat.omdoc http://www.openmath.org/uom/indNat.omdoc
+IndNat http://oaff.kwarc.info/openmath/uom?IndNat
+
+
+list.omdoc http://www.openmath.org/uom/list.omdoc
+List1 http://oaff.kwarc.info/openmath/uom?List1
+
+List2 http://oaff.kwarc.info/openmath/uom?List2
+
+
+integer.omdoc http://www.openmath.org/uom/integer.omdoc
+Integer1 http://oaff.kwarc.info/openmath/uom?Integer1
+
+
+minmax.omdoc http://www.openmath.org/uom/minmax.omdoc
+Minmax1 http://oaff.kwarc.info/openmath/uom?Minmax1
+
+
+combinat.omdoc http://www.openmath.org/uom/combinat.omdoc
+Combinat1 http://oaff.kwarc.info/openmath/uom?Combinat1
+
+Permut1 http://oaff.kwarc.info/openmath/uom?Permut1
+
+
+linalg.omdoc http://www.openmath.org/uom/linalg.omdoc
+Linalg1 http://oaff.kwarc.info/openmath/uom?Linalg1
+
+Linalg2 http://oaff.kwarc.info/openmath/uom?Linalg2
+
+Linalg4 http://oaff.kwarc.info/openmath/uom?Linalg4
+
+LinalgArith http://oaff.kwarc.info/openmath/uom?LinalgArith
+
+
+complex.omdoc http://www.openmath.org/uom/complex.omdoc
+Complex1 http://oaff.kwarc.info/openmath/uom?Complex1
+
+
+transc.omdoc http://www.openmath.org/uom/transc.omdoc
+Transc1 http://oaff.kwarc.info/openmath/uom?Transc1
+
+
+rounding.omdoc http://www.openmath.org/uom/rounding.omdoc
+Rounding1 http://oaff.kwarc.info/openmath/uom?Rounding1
+
+
+
+
+smglo http://docs.omdoc.org/smglo
+dgraph.en.omdoc http://docs.omdoc.org/smglo/dgraph.en.omdoc
+dgraph.en http://docs.omdoc.org/smglo/dgraph.en.omdoc?dgraph.en
+
+
+dgraph.de.omdoc http://docs.omdoc.org/smglo/dgraph.de.omdoc
+dgraph.de http://docs.omdoc.org/smglo/dgraph.de.omdoc?dgraph.de
+
+
+dgraph.omdoc http://docs.omdoc.org/smglo/dgraph.omdoc
+dgraph http://docs.omdoc.org/smglo/dgraph.omdoc?dgraph
+
+
+functions.omdoc http://docs.omdoc.org/smglo/functions.omdoc
+functions http://docs.omdoc.org/smglo/functions.omdoc?functions
+
+
+semigroup.en.omdoc http://docs.omdoc.org/smglo/semigroup.en.omdoc
+semigroup.en http://docs.omdoc.org/smglo/semigroup.en.omdoc?semigroup.en
+
+
+semigroup.omdoc http://docs.omdoc.org/smglo/semigroup.omdoc
+semigroup http://docs.omdoc.org/smglo/semigroup.omdoc?semigroup
+
+
+monoid.en.omdoc http://docs.omdoc.org/smglo/monoid.en.omdoc
+monoid.en http://docs.omdoc.org/smglo/monoid.en.omdoc?monoid.en
+
+
+magma.omdoc http://docs.omdoc.org/smglo/magma.omdoc
+magma http://docs.omdoc.org/smglo/magma.omdoc?magma
+
+
+cgroup.omdoc http://docs.omdoc.org/smglo/cgroup.omdoc
+cgroup http://docs.omdoc.org/smglo/cgroup.omdoc?cgroup
+
+
+group.en.omdoc http://docs.omdoc.org/smglo/group.en.omdoc
+group.en http://docs.omdoc.org/smglo/group.en.omdoc?group.en
+
+
+magma.en.omdoc http://docs.omdoc.org/smglo/magma.en.omdoc
+magma.en http://docs.omdoc.org/smglo/magma.en.omdoc?magma.en
+
+
+ring.en.omdoc http://docs.omdoc.org/smglo/ring.en.omdoc
+ring.en http://docs.omdoc.org/smglo/ring.en.omdoc?ring.en
+
+
+sets-operations.omdoc http://docs.omdoc.org/smglo/sets-operations.omdoc
+sets-operations http://docs.omdoc.org/smglo/sets-operations.omdoc?sets-operations
+
+
+cgroup.en.omdoc http://docs.omdoc.org/smglo/cgroup.en.omdoc
+cgroup.en http://docs.omdoc.org/smglo/cgroup.en.omdoc?cgroup.en
+
+
+special-linear-group.omdoc http://docs.omdoc.org/smglo/special-linear-group.omdoc
+special-linear-group http://docs.omdoc.org/smglo/special-linear-group.omdoc?special-linear-group
+
+
+determinant.omdoc http://docs.omdoc.org/smglo/determinant.omdoc
+determinant http://docs.omdoc.org/smglo/determinant.omdoc?determinant
+
+
+ring.omdoc http://docs.omdoc.org/smglo/ring.omdoc
+ring http://docs.omdoc.org/smglo/ring.omdoc?ring
+
+
+monoid.omdoc http://docs.omdoc.org/smglo/monoid.omdoc
+monoid http://docs.omdoc.org/smglo/monoid.omdoc?monoid
+
+
+special-linear-group.en.omdoc http://docs.omdoc.org/smglo/special-linear-group.en.omdoc
+special-linear-group.en http://docs.omdoc.org/smglo/special-linear-group.en.omdoc?special-linear-group.en
+
+
+group.omdoc http://docs.omdoc.org/smglo/group.omdoc
+group http://docs.omdoc.org/smglo/group.omdoc?group
+
+
