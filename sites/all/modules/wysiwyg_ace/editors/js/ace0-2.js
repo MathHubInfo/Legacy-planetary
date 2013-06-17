@@ -56,12 +56,16 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
       interpretter = handlers.interpretter;
       
       jQuery.get(Drupal.settings.editor_tools.editor_tools_path+"/macros/menu_layout.json", function (data) {
-        toolbar.loadLayout(JSON.parse(data));
+	if (typeof(data) == "string")
+	    data = JSON.parse(data);
+        toolbar.loadLayout(data);
         jQuery(handlers.header).find(".ribbon").ribbon(); 
       });
 
       jQuery.get(Drupal.settings.editor_tools.editor_tools_path+"/macros/preferences.json", function (data) {
-        interpretter.loadAPI(JSON.parse(data));
+	if (typeof(data) == "string")
+	    data = JSON.parse(data);
+        interpretter.loadAPI(data);
         jQuery(handlers.header).find(".ribbon").ribbon(); 
       });
     });
