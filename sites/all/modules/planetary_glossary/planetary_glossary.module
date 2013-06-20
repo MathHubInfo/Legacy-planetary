@@ -13,6 +13,38 @@ function planetary_glossary_field_widget_info() {
   );
 }
 
+function planetary_glossary_field_formatter_info() {
+  return array(
+   // This formatter changes the background color of the content region.
+    'glossary_formatter' => array(
+      'label' => t('Formatter of Glossary content'),
+      'field types' => array('vfs_file'),
+    ),
+  );
+}
+
+function planetary_glossary_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    // This formatter simply outputs the field as text and with a color.
+    case 'glossary_formatter':
+      $lang = $entity->language;
+      foreach ($items as $delta => $item) {
+	$file = $item['path'] . "." . $lang.".tex";
+	$content = planetary_repo_load_file($file);
+
+        $element[$delta] = array(
+          '#markup' => check_markup($content, $item['filter'], $lang),
+        );
+      }
+      break;
+  }
+
+  return $element;
+}
+
+
 function getGlossary() {
   global $glossary;
   if ($glossary == null) {
@@ -34,12 +66,46 @@ function planetary_glossary_menu() {
       'page callback' => 'planetary_glossary_get_variables',
       'access arguments' => array('access content'),
     );
+   $items['glossary/sync'] = array(
+      'title' => 'Import existing glossary files',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('planetary_glossary_sync'),
+      'access arguments' => array('access content'),
+    );
    return $items;
+}
+
+function planetary_glossary_sync($form, &$form_status) {
+
+	$query = new EntityFieldQuery();
+
+	$query->entityCondition('entity_type', 'node')
+		->fieldCondition('field_news_types', 'value', 'spotlight', '=')
+		->fieldCondition('field_photo', 'fid', 'NULL', '!=')
+		->fieldCondition('field_faculty_tag', 'tid', $value)
+		->fieldCondition('field_news_publishdate', 'value', $year. '%', 'like')
+		->fieldOrderBy('field_photo', 'fid', 'DESC')
+		->range(0, 10)
+		->addMetaData('account', user_load(1)); // Run the query as user 1.
+	
+	$result = $query->execute();
+
+	if (isset($result['node'])) {
+		$news_items_nids = array_keys($result['node']);
+		$news_items = entity_load('node', $news_items_nids);
+	}
+
+	foreach (planetary_repo_list("/") as $file) {
+		
+	}
+	return $form;
 }
 
 function planetary_glossary_get_imports($prefix = "") {
   $glossary = getGlossary();
   $result = array();
+  
   foreach ($glossary->suggestImports($prefix) as $suggestion) {
     $result[$suggestion] = $suggestion;
   }

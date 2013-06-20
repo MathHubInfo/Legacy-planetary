@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the PantaBase feature.
+ */
+
+include_once 'pantabase.features.inc';

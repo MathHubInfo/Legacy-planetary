@@ -54,10 +54,10 @@ class DatabaseConnection_mysql extends DatabaseConnection {
     // certain one has been set; otherwise, MySQL defaults to 'utf8_general_ci'
     // for UTF-8.
     if (!empty($connection_options['collation'])) {
-      $this->exec('SET NAMES utf8mb4 COLLATE ' . $connection_options['collation']);
+      $this->exec('SET NAMES utf8 COLLATE ' . $connection_options['collation']);
     }
     else {
-      $this->exec('SET NAMES utf8mb4');
+      $this->exec('SET NAMES utf8');
     }
 
     // Set MySQL init_commands if not already defined.  Default Drupal's MySQL

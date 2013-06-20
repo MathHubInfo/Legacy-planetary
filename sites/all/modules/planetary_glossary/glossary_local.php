@@ -3,8 +3,6 @@
 require_once("glossary_api.php");
 
 class LocalGlossary implements GlossaryAPI {
-
-
   function suggestImports($prefix) {
     $term_matches = array();
     foreach (planetary_repo_list("/") as $file) {
