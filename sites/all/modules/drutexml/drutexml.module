@@ -38,14 +38,80 @@ function drutexml_info() {
  * Implements hook_menu().
  */
 function drutexml_menu() {
-  $items['drutexml'] = array(
-    'title' => 'LaTeX filter implemented via LaTeXML',
-    'type' => MENU_CALLBACK,
-    'page callback' => '_drutexml_information',
-    'access callback' => TRUE,
+  $items['drutexml/latexml/%/viewlog'] = array(
+    'title' => 'View DruTeX Log',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drutexml_get_log', 2),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['drutexml/latexml/%/regenerator'] = array(
+    'title' => 'Regenerate DruTeX',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drutexml_regenerate', 2),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['drutexml/omdoc/%/regenerator'] = array(
+    'title' => 'Regenerate OMDOC',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drutexml_regenerate', 2),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['drutexml/latexml'] = array(
+    'title' => 'DruTeXML',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drutexml_parent'),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['drutexml/omdoc'] = array(
+    'title' => 'DruTeXML',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drutexml_parent'),
+    'access arguments' => array('administer blocks'),
   );
   return $items;
 }
+
+
+function drutexml_parent($form, &$form_state) {
+	$form = array();
+	
+	return $form;
+}
+
+function drutexml_get_log($form, &$form_state, $key) {
+	$form = array();
+	
+	$result = json_decode(_drutexml_cache_read($key."_r"));
+	
+	$form["log"] =
+		array(
+		      "#markup" => "<pre>".$result->log."</pre>",
+		      );
+
+	$form["result"] =
+		array(
+		      "#markup" => "<pre>".htmlentities($result->result)."</pre>",
+		      );
+
+	return $form;
+}
+
+function drutexml_regenerate($form, &$form_state, $key) {
+	$form = array();
+	$form["title"] = array(
+			       "#markup" => "Regenerating ..."
+			       );
+	_drutexml_cache_remove($key);
+
+	return $form;
+}
+
 
 /**
  * Implements hook_filter_info().
@@ -141,21 +207,27 @@ function drutexml_field_formatter_view($entity_type, $entity, $field, $instance,
  * Enriches sTeX sources with \baseURI allowing dependencies to be resolved
  */
 function _drutexml_omdoc2html5($text, $filter, $format, $langcode, $cache, $cache_id) {
+  global $filter_debug;
+
   global $debug_drutexml;
   $key = md5($text);
+  if (isset($filter_debug)) {
+	  $filter_debug["drutexml_omdoc"] = array("drutexml/omdoc", array($key));
+  }
   $cache = _drutexml_cache_read($key);
-
-  // HACK
-  $text = str_replace("xmlns:stex=\"http://kwarc.info/ns/sTeX\"", "xmlns:stex=\"http://kwarc.info/ns/sTeX\" xml:base=\"http://192.168.111.129:3002/sissi/winograd/cds/test.omdoc\"", $text);
 
   if (isset($cache) && $debug_drutexml == 0) {
     return $cache;
   }
 
   $host = isset($filter->settings['jomdoc_url']) ? $filter->settings['jomdoc_url'] : 'http://127.0.0.1/jomdoc.php';
-  $data = "omdoc=".urlencode($text);
-  $content = planetary_webglue_do_post($host,$data);
+  $data = drupal_http_build_query(array("omdoc"=>$text));
 
+  $content = drupal_http_request($host, array("method"=>"POST", "headers" => array("Content-Type"=>"application/x-www-form-urlencoded"), "data"=> $data));
+
+  $content = $content->data;
+  if (strlen($content) == 0)
+	  $content = "<p>Empty OMDoc</p>";
   _drutexml_cache_set($key, $content);
 
   return $content;
@@ -272,6 +344,14 @@ function _drutexml_cache_set($md5, $xhtml, $etid = NULL) {
 	  ->execute();
 }
 
+function _drutexml_cache_remove($md5) {
+	db_delete("drutexml_cache")
+		->condition("cachemd5", $md5)
+		->execute();
+	drupal_goto(drupal_get_destination());
+}
+
+
 function _drutexml_cache_clear() {
 	db_delete("drutexml_cache")->execute();
 }
@@ -284,35 +364,11 @@ function _drutexml_filter_reset_cache($form, &$form_state) {
 function process_latexml($host, $text, $preamble, $metadata, $profile) {
   global $debug_drutexml;
 
-  $data = 'profile='.$profile.'&tex=' . urlencode($text);
-  if (isset($preamble) && isset($metadata)) {
-    $data .= "&preamble=literal:" . urlencode($preamble . "\n") . urlencode($metadata . "\n") . urlencode('\begin{document}'); 
-  }
+  $data = drupal_http_build_query(array("profile"=>$profile, "tex"=>$text, "preload"=>"literal:".$preamble));
 
-  if ($debug_drutexml > 1)
-    {
-      dd("LATEXML HOST IS");
-      dd($host);
-      
-      dd("PREAMBLE IS");
-      dd($preamble);
-      dd("METADATA IS");
-      dd($metadata);
-      dd("LATEX SOURCE IS");
-      dd($text);
+  $content = drupal_http_request($host, array("method"=>"POST", "headers" => array("Content-Type"=>"application/x-www-form-urlencoded"), "data"=> $data));
 
-      dd($data, "DATA IS");
-    }
- 
-  $content = planetary_webglue_do_post($host,$data);
-  if ($debug_drutexml > 1)
-    {
-      dd("RESULT");
-      dd($content);
-    }
-  $res = json_decode($content);
-  $res = trim($res->{'result'});
-  return $res;
+  return $content->data;
 }
 
 /**
@@ -327,6 +383,11 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   global $debug_drutexml;
 
   $key = md5($text);
+  global $filter_debug;
+  if (isset($filter_debug)) {
+	  $filter_debug["drutexml_latexml"] = array("drutexml/latexml", array($key));
+  }
+
   $cache = _drutexml_cache_read($key);
   if (isset($cache) && $debug_drutexml == 0) {
   	return $cache;
@@ -344,7 +405,7 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
       dd(substr($latex_preamble,0,15),"RECEIVED PREAMBLE");
       dd(substr($latex_metadata,0,15),"RECEIVED PREAMBLE");
       dd(substr($latex_etid,0,15),"RECEIVED ETID");
-      dd($drutexml_node->nid,"RECEIVED NODE (NID)");
+      //      dd($drutexml_node->nid,"RECEIVED NODE (NID)");
     }
 
   // so it receives the right data
@@ -383,7 +444,16 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   $host = isset($filter->settings['latexml_url']) ? $filter->settings['latexml_url'] : 'http://latexml.mathweb.org/convert';
 
   $res = process_latexml($host, $text, $preamble, $metadata, $filter->settings['latexml_profile']);
-  
+  _drutexml_cache_set($key."_r", $res);
+
+  $res = json_decode($res);
+
+  if (!isset($res) || !isset($res->{'result'})) {
+	  $res = "<p>Error: no data received</p>";
+	  return $res; 
+  }
+  $res = trim($res->{'result'});
+
   if ($debug_drutexml)
     {  
       dd("LATEXML RESULT IS");
@@ -404,7 +474,7 @@ function _drutexml_filter_latex_process($text, $filter, $format, $langcode, $cac
   } else {
     _drutexml_cache_set($key, $res);
   }
-
+  
   return $res;
 }
 
@@ -454,6 +524,7 @@ function _drutexml_filter_latex_tips($filter, $format, $long = FALSE) {
   }
 }
 
+/*
 function drutexml_node_view_alter(&$build) {
   $node = $build['#node'];
   if ($node) {
@@ -474,3 +545,4 @@ function drutexml_process_node(&$vars) {
     drupal_set_title($node->textitle);
   }
 }
+*/

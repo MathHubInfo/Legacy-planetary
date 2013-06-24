@@ -33,10 +33,28 @@ function planetary_glossary_field_formatter_view($entity_type, $entity, $field, 
       foreach ($items as $delta => $item) {
 	$file = $item['path'] . "." . $lang.".tex";
 	$content = planetary_repo_load_file($file);
+	global $filter_debug;
 
-        $element[$delta] = array(
-          '#markup' => check_markup($content, $item['filter'], $lang),
-        );
+	$filter_debug = array();
+
+	$markup = check_markup($content, $item['filter'], $lang);
+
+        $element[$delta] = 
+		array(
+		      "#type" => "container",
+		      '#attributes' => array(
+					     'class' => array('contextual-links-region'),
+					     ),
+		      "context_links" =>
+		      array(
+			    "#type" => "contextual_links",
+			    "#contextual_links" => $filter_debug
+			    ),
+		      "content" =>
+		      array(
+			    '#markup' => $markup,
+			    )
+		      );
       }
       break;
   }
