@@ -26,7 +26,7 @@ function drutexml_schema() {
 	),
      'cachemd5' => array(
        'type' => 'varchar',
-       'length' => 32,
+       'length' => 35,
        'not null' => true,
 	),
       'xhtml' => array(

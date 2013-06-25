@@ -127,7 +127,21 @@ function planetary_repo_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
   );
+  $items['admin/config/content/repo/sync'] = array(
+    'title' => 'Sync Repository',
+    'description' => 'Sync the VFS to connect to',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('planetary_repo_sync_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
   return $items;
+}
+
+function planetary_repo_sync_form($form, $form_state) {
+   $form = array();
+   
+   return $form;
 }
 
 function planetary_repo_save_file($path, $contents) {

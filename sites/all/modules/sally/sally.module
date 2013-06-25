@@ -22,8 +22,6 @@ function sally_menu() {
 		"page callback" => "sally_formula_explorer",
 		"access callback" => true,
 	);
-
-	
 	return $item;
 }
 
