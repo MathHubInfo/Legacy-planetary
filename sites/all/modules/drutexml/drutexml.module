@@ -228,6 +228,10 @@ function _drutexml_omdoc2html5($text, $filter, $format, $langcode, $cache, $cach
   $content = $content->data;
   if (strlen($content) == 0)
 	  $content = "<p>Empty OMDoc</p>";
+  
+  // removing CSS
+  $content = str_replace('<link rel="stylesheet" type="text/css" href="css/omdoc-default.css"/>','',$content);
+
   _drutexml_cache_set($key, $content);
 
   return $content;
