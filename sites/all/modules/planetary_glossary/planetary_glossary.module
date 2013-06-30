@@ -25,22 +25,21 @@ function planetary_glossary_field_formatter_info() {
 
 function planetary_glossary_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
-
+  
   switch ($display['type']) {
     // This formatter simply outputs the field as text and with a color.
     case 'glossary_formatter':
       $lang = $entity->language;
       foreach ($items as $delta => $item) {
-	$file = $item['path'] . "." . $lang.".tex";
-	$content = planetary_repo_load_file($file);
-	global $filter_debug;
-
-	$filter_debug = array();
-
-	$markup = check_markup($content, $item['filter'], $lang);
-
-        $element[$delta] = 
-		array(
+	      $file = planetary_glossary_get_path($item['path'], $lang);
+        global $filter_context;
+        $filter_context = array();
+        $filter_context['mmt']['dpath'] = mmt_get_doc_path($file);        
+	      $content = planetary_repo_load_file($file);
+	      global $filter_debug;
+	      $filter_debug = array();
+        $markup = check_markup($content, $item['filter'], $lang);
+        $element[$delta] = array(
 		      "#type" => "container",
 		      '#attributes' => array(
 					     'class' => array('contextual-links-region'),
@@ -138,7 +137,7 @@ function planetary_glossary_get_variables($prefix = "") {
 
 
 function planetary_glossary_get_path($module, $lang) {
-  return $module.".".$lang.".tex";
+  return 'source/'.$module.".".$lang.".tex";
 }
 
 function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
@@ -241,6 +240,11 @@ function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $ins
       "#default_value" => $filter
     );
 
+    $widget["dpath"] = array(
+      "#type" => "hidden",
+      "#default_value" => $filter
+    );
+
   $widget["path"] = array(
       "#type" => "hidden",
       "#default_value" => $filter
@@ -261,7 +265,7 @@ function planetary_glossary_field_widget_validate($element, &$form_state) {
     $moduleid = $values["data"]["path"];
     $lang = $values["data"]["lang"];
     $module_path = planetary_glossary_get_path($moduleid, $lang);
-
+    $dpath = mmt_get_doc_path($module_path);
     planetary_repo_save_file($module_path, $values["data"]["content"]["value"]);
     $glossary->serialize($moduleid,   
                             explode(",", $values["data"]["imports"]["autofield"]), 
@@ -270,5 +274,6 @@ function planetary_glossary_field_widget_validate($element, &$form_state) {
     form_set_value($element["filter"], $values["data"]["content"]["format"], $form_state);
     form_set_value($element["path"], $values["data"]["path"], $form_state);
     form_set_value($element["data"], $values["data"], $form_state);
+    form_set_value($element["dpath"], array('tex' => $dpath), $form_state);
   }
 }

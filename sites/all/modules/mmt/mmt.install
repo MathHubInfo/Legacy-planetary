@@ -100,6 +100,18 @@ function mmt_schema() {
         'length' => 511,
         'not null' => TRUE,
       ),
+      'cont' => array(
+        'description' => 'The MMT Content',
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'pres' => array(
+        'description' => 'The MMT Presentation',
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
     ),
     'primary key' => array('uid'),	
   );
