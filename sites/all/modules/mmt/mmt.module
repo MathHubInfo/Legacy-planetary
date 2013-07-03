@@ -472,6 +472,8 @@ function mmt_node_load($nodes, $types) {
  * implements hook_node_view, renders mmt-specific nodes by loading html from MMT instance
  */
 function mmt_node_view($node, $view_mode, $langcode) {
+	if ($view_mode != "full")
+		return;
   if ($node->type == 'mmt_module'  ) {
 	  $inst_id = mmt_initialize();
  	  //getting pres from db
