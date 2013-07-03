@@ -1,0 +1,40 @@
+<?php
+
+function localcomments_node_view($node, $view_mode, $langcode){
+	$modules_url = url(drupal_get_path("module", "localcomments")); 
+	jobad_add_module($modules_url."/planetary.local_comments.js", "planetary.local_comments"); 
+	jobad_initialize();
+}
+
+function localcomments_menu() {
+  $items['localcomment/%/%'] = array( // Using the '%node' load argument ensures that the nid attempting to be accessed belongs to an existing node.
+    'title' => 'Send Message',
+    'description' => 'Send a message',
+    'page callback' => 'localcomments_message_form',
+    'page arguments' => array(1, 2),
+    'access callback' => TRUE
+  );
+
+  return $items;
+}
+
+function localcomments_message_form($url, $id) {
+	module_load_include('inc', 'node', 'node.pages');
+	$content_type = 'forum';
+	$form = node_add($content_type);
+	dpm($form); 
+	$form["title"]["#value"] = "Hello World"; 
+	$form["field_uri"]["und"][0]["value"]["#value"] = $url; 
+	$form["field_id"]["und"][0]["value"]["#value"] = $id; 
+  
+  // Just print the form directly if this is an AJAX request
+  if (isset($_GET['ajax'])) {
+    echo render($form);
+
+    // Halt page processing
+    drupal_exit();
+  }
+
+  // Otherwise return the form as normal
+  return $form;
+}

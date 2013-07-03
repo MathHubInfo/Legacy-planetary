@@ -2,4 +2,5 @@ name = JOBAD
 description = JOBAD js library (v3) plus utility functions for deployment in drupal
 core = 7.x
 package  = Planetary Modules
-dependencies[] = planetary_libs
+dependencies[] = planetary_libs 
+dependencies[] = jquery_update

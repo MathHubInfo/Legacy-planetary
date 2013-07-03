@@ -43,9 +43,12 @@ function jobad_boot() {
  * helper function for loading jobads css and js files
  */
 function jobad_init_libs() {  
-    //loading libraries
-    libraries_load("jquery");
-    libraries_load("jquery-ui");
+	//init the libraries
+	drupal_add_library('system', 'ui.dialog');
+	drupal_add_library('system', 'ui.tabs');
+	drupal_add_library('system', 'ui.spinner');
+	drupal_add_library('system', 'ui.menu');
+	
     libraries_load("underscore");
     libraries_load("jobad");
     //loading registered modules
@@ -83,8 +86,8 @@ function jobad_init_instance($nr) {
     //inline
 	$name = 'JOBAD' . $nr;
     $str = 'var ' . $name . ';
-		$(function(){	
-		' . $name . ' = new JOBAD($("#' . $name . '"));	
+		jQuery(function(){	
+		' . $name . ' = new JOBAD("#' . $name . '");	
 		';
 
 	//loading modules	
@@ -98,4 +101,9 @@ function jobad_init_instance($nr) {
 
     drupal_add_js($str, 'inline');
 	return $name;
+}
+
+
+function jobad_load_from_repo($repo, $file){
+
 }
