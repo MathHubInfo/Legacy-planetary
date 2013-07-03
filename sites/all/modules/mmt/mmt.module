@@ -56,12 +56,40 @@ function mmt_archives() {
   return $htmlText;
 }
 
+/*
+ * converts (virtual) filesystem filepath to MMT document path
+ */
 function mmt_get_doc_path($file) {
-  $srcFrag = substr($file,7); //removing 'source/' 
-  //this should be gotten from META-INF on a per-archive basis
-  $base = 'http://docs.omdoc.org/smglo/';
+  $archives = array(
+    'smglo' => 'http://docs.omdoc.org/smglo/',
+    'latin' => 'http://docs.omdoc.org/latin/',
+    'urtheories' => 'http://docs.omdoc.org/urtheories/' ,
+    'openmath' => 'http://www.openmath.org/',
+    ); //hardcoded for now, get be gotten from MMT using archive name
+
+  //getting archive and fragment path
+  $parts = explode('/', $file); //format is <archive-name>/source/<fragment path>
+  $base = $archives[$parts[0]];
+  $fragParts = array_slice($parts, 2);
+  $srcFrag = join('/', $fragParts);
+
+  //changing extension to .omdoc since that is the path of compilation result
+  $parts = explode('.', $srcFrag);
+  if (count($parts) > 1) { 
+    $parts[count($parts) - 1] = "omdoc"; 
+  }
+  $srcFrag = join(".", $parts); 
+
+  //return MMT doc path
   return $base . $srcFrag;
 }
+
+function mmt_get_format($location) {
+  $parts = explode('.', $location);
+  $ext = $parts[count($parts) - 1];
+  return $ext;  
+}
+
 
 /**
  * Initialize MMT, loads css and js files and uses jobad API
@@ -105,7 +133,7 @@ function mmt_initialize() {
     return $instName;
 }
 
-
+/**  MMT Filters */
 /*
  * filter hooks for handling content formats
  */
@@ -172,21 +200,18 @@ function mmt_filter_compilation_settings($form, $form_state, $filter, $format, $
   return $settings;
 }
 
+/** Other Hooks */
+
 /**
  * implements hook_form_alter, adds URI field to mmt-specific forms
  */
 function mmt_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id == 'mmt_module_node_form' || $form_id == 'mmt_document_node_form') {
+  if ($form_id == 'mmt_module_node_form') {
     $form['uri'] = array(
       '#type' => 'textfield',
       '#title' => t('MMT URI'),
 	  );
 
-
-    $form['body'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Body'),
-    );
  
 	  if(array_key_exists('nid', $form_state['node'])) { //editing existing node
 	  	$nid = $form_state['node']->nid;
@@ -194,16 +219,28 @@ function mmt_form_alter(&$form, &$form_state, $form_id) {
 	  	$uri = $result['uri'];
 	  	$form['uri']['#default_value'] = $uri;
 	  	$form['uri']['#disabled'] = TRUE;
-      
-
-      //$body = mmt_get_content($uri);
-      //mmt_get_presentation($uri, $body);
-      $result = db_query('SELECT nid,cont FROM {mmturi} WHERE nid = :nid', array(':nid' => $nid));
-      $mmt_content = $result->fetchAssoc()['cont'];
-;
-      $form['body']['#default_value'] = $mmt_content;
-
 	  }
+  }
+  
+  if ($form_id == 'mmtdoc_node_form') {
+
+    $form['body'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Body'),
+    );
+ 
+    if(array_key_exists('nid', $form_state['node'])) { //editing existing node
+      $nid = $form_state['node']->nid;
+      $result = db_select('mmtdoc', 'm')->fields('m',array('location'))->condition('nid', $nid, '=')->execute()->fetchAssoc();
+      $location = $result['location'];
+      $content = planetary_repo_local_load($location);
+
+      $form['body']['#default_value'] = $content;
+      $ext = mmt_get_format($location);
+      if ($ext == 'elf') {
+        $form['body']['#disabled'] = TRUE;
+      }
+    }
   }
 }
 
@@ -211,60 +248,94 @@ function mmt_form_alter(&$form, &$form_state, $form_id) {
  * implements hook_node_insert, inserts URI to mmturi table, for mmt-specific nodes
  */
 function mmt_node_insert($node) {
-  if ($node->type == 'mmt_module' || $node->type == 'mmt_document') {
+  if ($node->type == 'mmt_module') {
     db_insert('mmturi')->fields(array(
        'nid' => $node->nid,
-       'uri' => $node->uri, 
-       'pres' => $node->pres, 
-       'cont' => $node->cont))->execute();
+       'uri' => $node->uri))->execute();
   }
-  
-  if ($node->type != 'glossary') {
-    mmt_create_node('Magma', 'magma', 'en', 'tex');
-    mmt_create_node('DGraph', 'dgraph', 'en', 'tex');
-  } 
- 
 
-  if ($node->type == 'glossary') {
+  if ($node->type == 'mmtdoc') {
+    db_insert('mmtdoc')->fields(array(
+       'nid' => $node->nid,
+       'location' => $node->field_external['und']['0']['location']))->execute();
+  }
+
+  if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
     $nid = $node->nid;
-    $dpath = $node->field_external['und']['0']['dpath']['tex'];
+    $dpath = $node->field_external['und']['0']['dpath']['value'];
     mmt_save_path($nid, $dpath);
   }
+  
+
 }
 
-
+/**
+ *  Creates nodes for all documents in planetary_repo path where there is a mmt-connected content type 
+ * associated with that format (based on file extension).  
+ */
 function mmt_create_nodes() {
-  _mmt_create_nodes('source');
+  $formats = array(
+    'smglo' =>  'tex',
+    'latin' => 'elf',
+    'urtheories' => 'mmt',
+    'openmath' => 'mmt',
+    );
+
+  $node_types = array(
+    'tex' => 'glossary', 
+    'elf' => 'mmtdoc', //lf format
+    'mmt' => 'mmtdoc', //mmt format
+  );
+
+  $res = planetary_repo_local_list("");
+  foreach ($res as $file) {
+    if (array_key_exists($file, $formats)) {
+      $format = $formats[$file];
+      _mmt_create_nodes($file . "/source", $format, $node_types[$format]);
+
+    }
+  }
+
   return "Success";
 }
 
-function _mmt_create_nodes($path) {
+function _mmt_create_nodes($path, $format, $node_type) {
   $res = planetary_repo_local_list($path);
+  $title = $path;
+  $body = '';
   foreach ($res as $file) {
     $fpath = $path . "/" .$file;
     if($file[0] != '.') {
-      if (planetary_repo_is_dir($file)) { 
-        _mmt_create_nodes($file);
+      if (planetary_repo_is_dir($fpath)) {         
+        _mmt_create_nodes($fpath, $format, $node_type);
+        $dpath = mmt_get_doc_path($fpath);          
+        $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
       } else {
         $parts = explode('.', $file);
-        print_r($parts);
-
-        if (count($parts) == 3) {
+        $ext = $parts[count($parts) - 1];
+        if ($ext == $format) {
           $module = $parts[0];
-          $lang = $parts[1];
-          $format = $parts[2];
-          if ($format == 'tex') {
-            mmt_create_node($module, $module, $lang, $format);        
+          $lang = 'und'; //default
+          if (count($parts) == 3) {
+            $lang = $parts[1];
           }
+
+          $dpath = mmt_get_doc_path($fpath);          
+          mmt_create_node($module, $lang, $format, $dpath, $fpath, $node_type);        
+          $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
         }
       }
     }
   }
+  $menupath = mmt_get_doc_path($path);
+  $nid = mmt_create_article($title, $body);
+  mmt_save_path($nid, $menupath);
 }
 
-function mmt_create_node($title, $module, $lang, $format) {
+function mmt_create_node($module, $lang, $format, $dpath, $location, $node_type) {
+  $title = $module;
   $newnode = (object) array(
-   'type' => 'glossary',
+   'type' => $node_type,
    'uid' => 0,
    'created' => strtotime("now"),
    'changed' => strtotime("now"),
@@ -275,17 +346,40 @@ function mmt_create_node($title, $module, $lang, $format) {
    'sticky' => 0,
    'language' => $lang
   );
-  $newnode->title = $title;
 
+  $newnode->title = $title;
+  $newnode->field_external['und']['0']['location'] = $location;
   $newnode->field_external['und']['0']['path'] = $module;
   $newnode->field_external['und']['0']['filter'] = $format;
-  $file = planetary_glossary_get_path($module, $lang);
-  $dpath = mmt_get_doc_path($file);
-  $newnode->field_external['und']['0']['dpath'][$format] = $dpath;
+  $newnode->field_external['und']['0']['dpath']['value'] = $dpath;
    
   node_object_prepare($newnode);//necessary ?
-  $nid = node_save($newnode);
-  return $nid;
+  node_save($newnode);
+  return $newnode->nid;
+}
+
+function mmt_create_article($title, $body) {
+  $newnode = (object) array(
+   'type' => 'article',
+   'uid' => 0,
+   'created' => strtotime("now"),
+   'changed' => strtotime("now"),
+   'status' => 1,
+   'comment' => 2,
+   'promote' => 0,
+   'moderate' => 0,
+   'sticky' => 0,
+   'language' => 'und'
+  );
+  $newnode->title = $title;
+  $newnode->body['und'][0]['value'] = $body;
+  $newnode->body['und'][0]['summary'] = $body;  
+  $newnode->body['und'][0]['format'] = 'filtered_html';  
+
+  node_object_prepare($newnode);//necessary ?
+  node_save($newnode);
+  return $newnode->nid;
+
 }
 
 /**
@@ -293,8 +387,9 @@ function mmt_create_node($title, $module, $lang, $format) {
  */
 function mmt_node_load($nodes, $types) {
   $mmtNodes = array();
+  //mmt_module
   foreach ($nodes as $node) {
-    if ($node->type == 'mmt_module' || $node->type == 'mmt_document') {
+    if ($node->type == 'mmt_module') {
       $mmtNodes[$node->nid] = $node;
     }
   }
@@ -304,26 +399,68 @@ function mmt_node_load($nodes, $types) {
       $nodes[$record->nid]->uri = $record->uri; 
     }
   }
+  //mmtdoc
+  $docNodes = array();
+  foreach ($nodes as $node) {
+    if ($node->type == 'mmtdoc') {
+      $docNodes[$node->nid] = $node;
+    }
+  }
+  if (count($docNodes) > 0) { //something to do 
+    $result = db_query('SELECT nid,location FROM {mmtdoc} WHERE nid IN (:nids)', array(':nids' => array_keys($docNodes)));
+    foreach ($result as $record) {
+      $nodes[$record->nid]->location = $record->location;       
+    }
+
+  }
 }
 
 /**
  * implements hook_node_view, renders mmt-specific nodes by loading html from MMT instance
  */
 function mmt_node_view($node, $view_mode, $langcode) {
-  if ($node->type == 'mmt_module' || $node->type == 'mmt_document' ) {
+  if ($node->type == 'mmt_module'  ) {
 	  $inst_id = mmt_initialize();
  	  //getting pres from db
-    $result = db_query('SELECT nid,pres FROM {mmturi} WHERE nid = :nid', array(':nid' => $node->nid));
-    $mmt_presentation = $result->fetchAssoc()['pres'];
+    $mmt_presentation = mmt_get_contentPres($node->uri);
     $node->content['mathml_body'] = array(
       '#markup' => '<div id=' . $inst_id . ' style="overflow:auto">' . $mmt_presentation . '</div>',
       '#weight' => 10,
     );
-  } else if ($node->type == 'glossary') {
+  }
+
+  if ($node->type == 'mmtdoc') {
+    $path = $node->location;
+    $content = planetary_repo_local_load($path);
+    //TODO now check markup
+    global $filter_context;
+    $filter_context = array();
+    $filter_context['mmt']['dpath'] = mmt_get_doc_path($path);
+    $markup = check_markup($content, 'mmt');
+    $node->content['field_external'][0]['content']['#markup'] = $markup;      
+  }
+
+  if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
     $inst_id = mmt_initialize();
     $content = $node->content['field_external'][0]['content']['#markup'];
     $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '">' . $content . '</div>' ;
   }
+}
+
+function mmt_get_contentPres($path, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
+  $mmtUrl = variable_get('mmtUrl');
+  $url = $mmtUrl . '/:planetary/getContentPres';
+  $data = array('path' => $path, 'style' => $style);
+  $options = array(
+    'http' => array(
+        'header'  => "Content-type: application/json\r\n",
+        'method'  => 'POST',
+        'content' => json_encode($data),
+    ),
+  );
+  $context  = stream_context_create($options);
+  $result = file_get_contents($url, false, $context);
+  return $result;
 }
 
 function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
@@ -389,11 +526,15 @@ function mmt_setup() {
 
 
 function mmt_save_path($nid, $path) {
-    $pathOpt = array(
-      'source' => 'node/' . $nid,
-      'alias' => $path,
-    );
-    path_save($pathOpt);
+  if (substr($path, -1) == '/') {
+    $path = substr($path, 0, -1);
+  }
+  
+  $pathOpt = array(
+    'source' => 'node/' . $nid,
+    'alias' => $path,
+  );
+  path_save($pathOpt);
     /*
     //link for tree menu
     $menuOpt = array (
@@ -409,8 +550,30 @@ function mmt_save_path($nid, $path) {
     */
 }
 
-
 function mmt_load_nodes($pathsStr) {
+  $lines = explode("\n", $pathsStr);
+  $arch_item = array(
+    'link_path' => drupal_get_normal_path('mmt/archives'),
+    'link_title' => "Archives",
+    'menu_name' => 'navigation'
+  );
+  $id = menu_link_save($arch_item);
+  //gathering set mlids to cleanup nicely on reinstall 
+  $mlids = variable_get('mmt_mlids');
+  $mlids[] = $id; 
+  variable_set('mmt_mlids', $mlids);
+
+  foreach ($lines as $line) {
+    $pair = explode(" ", $line);
+    $name = $pair[0];
+    $path = $pair[1];
+    $nid = mmt_make_node($path, $name);
+    mmt_save_path($nid, $path);
+  }
+}
+
+//obosolete now, to be removed after done scavenging code from it
+function old_mmt_load_nodes($pathsStr) {
   $lines = explode("\n", $pathsStr);
   $uri = array("mmt","archives");
   $plids_stack = array();
@@ -442,6 +605,7 @@ function mmt_load_nodes($pathsStr) {
 	  );
 	  path_save($pathOpt);
     //link for tree menu
+
     $menuOpt = array (
 		'link_path' => drupal_get_normal_path($alias),
         'link_title' => $uri[count($uri) - 1],
@@ -463,41 +627,36 @@ function mmt_load_nodes($pathsStr) {
  */
 function mmt_make_node($uri, $name) {
 
-  $mmt_content = mmt_get_content($uri);
-
   $comps = explode('?', $uri);
-  $node_type = 'mmt_document';
   $dpath = $uri;
   if (count($comps) > 1) { //module
 	  $node_type = 'mmt_module';
     $dpath = $comps[0] . "/" . $comps[1];
-    $mmt_content = '<omdoc base="'. $dpath . '">' . $mmt_content . '</omdoc>';
-    return 0;
-  }
 
-
-
-  $mmt_presentation = mmt_get_presentation($dpath, $mmt_content);
-  
-  $newnode = (object) array(
-     'type' => $node_type,
-     'uid' => 0,
-     'created' => strtotime("now"),
-     'changed' => strtotime("now"),
-     'status' => 1,
-	   'comment' => 2,
- 	   'promote' => 0,
-     'moderate' => 0,
-     'sticky' => 0,
-     'language' => 'und'    
-   );
-   $newnode->title = $name;
-   $newnode->uri = $uri;
-   $newnode->cont = $mmt_content;
-   $newnode->pres = $mmt_presentation;
-   node_object_prepare($newnode);//necessary ?
-   node_save($newnode);
-   return $newnode->nid;
+    $newnode = (object) array(
+      'type' => $node_type,
+      'uid' => 0,
+      'created' => strtotime("now"),
+      'changed' => strtotime("now"),
+      'status' => 1,
+	    'comment' => 2,
+ 	    'promote' => 0,
+      'moderate' => 0,
+      'sticky' => 0,
+      'language' => 'und'  
+    ); 
+    $newnode->title = $name;
+    $newnode->uri = $uri;
+    node_object_prepare($newnode);//necessary ?
+    node_save($newnode);
+    return $newnode->nid;
+ } else {
+  return -1;
+ }
 }
+
+
+
+
 
 

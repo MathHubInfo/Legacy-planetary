@@ -28,11 +28,12 @@ class LocalGlossary implements GlossaryAPI {
   }
 
   function getModuleImports($moduleId) {
+    $path = planetary_glossary_get_path($moduleId);
     // if no "moduleId".tex file exists, return no imports
-    if (planetary_repo_stat_file($moduleId.".tex") == null)
+    if (planetary_repo_stat_file($path) == null)
       return array();
 
-    $root_content = planetary_repo_load_file($moduleId.".tex");
+    $root_content = planetary_repo_load_file($path);
     $result = array();
     $matches = array();
     preg_match_all("|\\\\gimport\{([a-zA-Z0-9-_]+)\}|", $root_content, $matches, PREG_PATTERN_ORDER);
@@ -40,11 +41,13 @@ class LocalGlossary implements GlossaryAPI {
   }
 
   function getModuleSymbols($moduleId) {
+    $path = planetary_glossary_get_path($moduleId);
+
     // if no "moduleId".tex file exists, return no imports
-    if (planetary_repo_stat_file($moduleId.".tex") == null)
+    if (planetary_repo_stat_file($path) == null)
       return array();
 
-    $root_content = planetary_repo_load_file($moduleId.".tex");
+    $root_content = planetary_repo_load_file($path);
     $result = array();
     $matches = array();
     preg_match_all("|\\\\symbol\{([a-zA-Z0-9-_]+)\}|", $root_content, $matches, PREG_PATTERN_ORDER);
@@ -53,7 +56,7 @@ class LocalGlossary implements GlossaryAPI {
 
 
   function serialize($moduleId, $imports, $symbols) {
-    $file = $moduleId.".tex";
+    $file = planetary_glossary_get_path($moduleId);
     $content = $this->get_template("glossary_module_template.php", array("moduleid" => $moduleId, "imports" => $imports, "symbols" => $symbols));
     planetary_repo_save_file($file, $content);
   }

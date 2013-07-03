@@ -34,7 +34,7 @@ function planetary_glossary_field_formatter_view($entity_type, $entity, $field, 
 	      $file = planetary_glossary_get_path($item['path'], $lang);
         global $filter_context;
         $filter_context = array();
-        $filter_context['mmt']['dpath'] = mmt_get_doc_path($file);        
+        $filter_context['mmt']['dpath'] = mmt_get_doc_path($file);
 	      $content = planetary_repo_load_file($file);
 	      global $filter_debug;
 	      $filter_debug = array();
@@ -135,9 +135,14 @@ function planetary_glossary_get_variables($prefix = "") {
 }
 
 
-
-function planetary_glossary_get_path($module, $lang) {
-  return 'source/'.$module.".".$lang.".tex";
+//default path for nodes of this type
+function planetary_glossary_get_path($module, $lang = "") {
+  $path = 'smglo/source/'.$module;
+  if ($lang != "") {
+    $path .= ".".$lang;
+  }
+  $path .= ".tex";
+  return $path;
 }
 
 function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
@@ -262,7 +267,7 @@ function planetary_glossary_field_widget_validate($element, &$form_state) {
   if (isset($form_state['values'][$field_name][$element['#language']][$delta])) {
     $values = $form_state['values'][$field_name][$element['#language']][$delta];
 
-    $moduleid = $values["data"]["path"];
+    $moduleid = $values["data"]["path"]; //TODO 'path' may not exist anymore
     $lang = $values["data"]["lang"];
     $module_path = planetary_glossary_get_path($moduleid, $lang);
     $dpath = mmt_get_doc_path($module_path);
@@ -274,6 +279,6 @@ function planetary_glossary_field_widget_validate($element, &$form_state) {
     form_set_value($element["filter"], $values["data"]["content"]["format"], $form_state);
     form_set_value($element["path"], $values["data"]["path"], $form_state);
     form_set_value($element["data"], $values["data"], $form_state);
-    form_set_value($element["dpath"], array('tex' => $dpath), $form_state);
+    form_set_value($element["dpath"], array('value' => $dpath), $form_state);
   }
 }

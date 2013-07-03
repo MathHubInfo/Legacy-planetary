@@ -2,8 +2,8 @@
 
 function mmt_install() {
   /** declaring node types */
-  // Module
-  $module_info = (object) array(
+  //MMT Module
+  $mmt_module = (object) array(
     'type' => 'mmt_module',
     'name' => 'MMT Module',
     'base' => 'node_content',
@@ -12,11 +12,11 @@ function mmt_install() {
     'has_title' => true,
   ); 
 
-  node_type_save($module_info);
+  node_type_save($mmt_module);
 
-  // Document
-  $module_info = (object) array(
-    'type' => 'mmt_document',
+  //MMT Document
+  $mmt_doc = (object) array(
+    'type' => 'mmtdoc',
     'name' => 'MMT Document',
     'base' => 'node_content',
     'description' => 'A node containing an flexiformal MMT Document',
@@ -24,8 +24,9 @@ function mmt_install() {
     'has_title' => true,
   ); 
   
-  node_type_save($module_info);
-  
+  //node_add_body_field($mmt_doc);
+  node_type_save($mmt_doc);
+
   variable_set('mmtUrl', "http://localhost:8080");
   variable_set('mmt_menu_items', array());
   $mlids = array();
@@ -52,7 +53,7 @@ function mmt_install() {
   drupal_set_message("installed");
 }
 
-function delete_node_type($node_type_name) {
+function delete_node_type($node_type_name, $remove_type = true) {
   // deleting all node instances
   $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
   $nids = array();
@@ -61,14 +62,18 @@ function delete_node_type($node_type_name) {
   }
   node_delete_multiple($nids);
   //deleting node type
-  node_type_delete($node_type_name);
-
+  if ($remove_type) {
+    node_type_delete($node_type_name);
+  }
 }
 
 function mmt_uninstall() {
   //deleting node types
   delete_node_type('mmt_module');
-  delete_node_type('mmt_document');	
+  delete_node_type('mmtdoc');	
+  delete_node_type('glossary', false); 
+  delete_node_type('article', false); 
+
   $mlids = variable_get('mmt_mlids');
   foreach ($mlids as $mlid) {
 	menu_link_delete($mlid);
@@ -100,20 +105,33 @@ function mmt_schema() {
         'length' => 511,
         'not null' => TRUE,
       ),
-      'cont' => array(
-        'description' => 'The MMT Content',
-        'type' => 'text',
-        'size' => 'big',
+    ),
+    'primary key' => array('uid'),	
+  );
+
+  $schema['mmtdoc'] = array(
+    'description' => 'the base table for URIs',
+    'fields' => array(
+    'did' => array(
+      'description' => 'The primary identifier of a mmtdoc',
+        'type' => 'serial', 
+        'unsigned' => TRUE,
         'not null' => TRUE,
       ),
-      'pres' => array(
-        'description' => 'The MMT Presentation',
-        'type' => 'text',
-        'size' => 'big',
+      'nid' => array(
+      'description' => 'The node id',
+        'type' => 'int', 
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'location' => array(
+        'description' => 'The file path',
+        'type' => 'varchar',
+        'length' => 511,
         'not null' => TRUE,
       ),
     ),
-    'primary key' => array('uid'),	
+    'primary key' => array('did'),  
   );
   return $schema;
   
