@@ -1,0 +1,101 @@
+<?php
+
+/* API functions */
+
+/**
+ * API function for adding a module to JOBAD, currently JOBAD wide, configuring per-instance behaviour is a //TODO
+ * @param $file location of the js file implementing the module as string URI
+ * @param $id the name (id) of the module, to be used when loading the module to an instance 
+ */
+function jobad_add_module($file, $id) {
+	$modules_array = variable_get('JOBADModulesArray');
+	$modules_array[$id] = $file;
+    variable_set('JOBADModulesArray', $modules_array);
+}
+
+/**
+ * API function for initializing JOBAD
+ * @return instance name 
+ */
+function jobad_initialize() {
+    if (! variable_get('JOBADLoaded')) {
+		jobad_init_libs();
+		variable_set('JOBADLoaded', true);
+	}  
+	$nr = variable_get('JOBADInstances') + 1;
+	$inst_id = jobad_init_instance($nr);
+	variable_set('JOBADInstances', $nr);
+	return $inst_id;
+}
+
+/* hooks and helper functions */
+
+/**
+ * implements hook_boot() called on page load, initializes variables
+ */
+function jobad_boot() {
+	variable_set('JOBADLoaded', false);
+	variable_set('JOBADInstances', 0);
+    variable_set('JOBADModulesArray', array());
+}
+
+/**
+ * helper function for loading jobads css and js files
+ */
+function jobad_init_libs() {  
+    //loading libraries
+    libraries_load("jquery");
+    libraries_load("jquery-ui");
+    libraries_load("underscore");
+    libraries_load("jobad");
+    //loading registered modules
+    $modules = variable_get('JOBADModulesArray');
+    foreach($modules as $id => $file) {
+		jobad_register_module($file);
+    }
+}
+
+/**
+ * helper function for registering a module (i.e. loading the relevant js file)
+ * @param $file location of the js file implementing the module as string URI
+ */
+function jobad_register_module($file) {
+	drupal_add_js($file, 'file', array('cache' => false));
+}
+
+/**
+ * helper function for loading a module with a JOBAD instance 
+ * @param $jobad_instance the id of the JOBAD instance
+ * @param $module_id the id of the JOBAD module
+ */
+function jobad_load_module($jobad_instance, $module_id) {
+	return $jobad_instance . '.modules.load("' . $module_id . '", []);
+			';
+}
+
+/**
+ * helper function for initializing a new JOBAD instance on a page
+ * @param $nr the number of this instance (reset on page (re)load), used to generate unique instance id 
+ * @return $name the id (name) of the jobad instance
+ */
+
+function jobad_init_instance($nr) {
+    //inline
+	$name = 'JOBAD' . $nr;
+    $str = 'var ' . $name . ';
+		$(function(){	
+		' . $name . ' = new JOBAD($("#' . $name . '"));	
+		';
+
+	//loading modules	
+	$modules = variable_get('JOBADModulesArray');
+    foreach($modules as $id => $file) {
+		$str = $str . jobad_load_module($name, $id);
+	}
+	$str = $str. '
+		' . $name . '.Setup();
+		});';
+
+    drupal_add_js($str, 'inline');
+	return $name;
+}
