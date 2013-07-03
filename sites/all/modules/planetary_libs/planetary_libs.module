@@ -287,7 +287,7 @@ function planetary_libs_libraries_info() {
     ),
   );
 
-  // Underscore Javascript Library
+  // JOBAD Javascript Library
   $libraries['jobad'] = array(
     'name' => 'JOBAD',
     'vendor url' => 'https://github.com/KWARC/jobad',
@@ -302,9 +302,10 @@ function planetary_libs_libraries_info() {
         'build/release/JOBAD.js',
       ),
       'css' => array(
-        'css/JOBAD.css',
+        'build/release/JOBAD.css',
       )
     ),
+    'dependencies' => array('jquery', 'jquery-ui'),
     'variants' => array(
       'minified' => array(
         'files' => array(
@@ -312,12 +313,50 @@ function planetary_libs_libraries_info() {
             'build/release/JOBAD.min.js',
           ),
           'css' => array(
-            'css/JOBAD.css',
+            'build/release/JOBAD.css',
           )       
         ),
       ),
     ),
   );
+
+  // jquery
+  $libraries['jquery'] = array(
+    'name' => 'jquery',
+    'vendor url' => 'http://jquery.com/',
+    'download url' => 'http://code.jquery.com/jquery.min.js',
+    'version arguments' => array(
+      'file' => 'jquery.min.js',
+      'pattern' => '/jQuery v.([0-9a-zA-Z\.-]+)/',
+    ),
+    'files' => array(
+      'js' => array(
+        'jquery.min.js',
+      ),
+    )
+  ); 
+
+
+  // jquery-ui
+  $libraries['jquery-ui'] = array(
+    'name' => 'jquery-ui',
+    'vendor url' => 'http://jquery.com/',
+    'download url' => 'http://code.jquery.com/ui/1.10.3/jquery-ui.js',
+    'version arguments' => array(
+      'file' => 'ui/minified/jquery-ui.min.js',
+      'pattern' => '/jQuery UI - v.([0-9a-zA-Z\.-]+)/',
+    ),
+    'files' => array(
+      'css' => array(
+        'themes/base/jquery-ui.css',
+      ),
+      'js' => array(
+        'ui/minified/jquery-ui.min.js',
+      ),
+    )
+  ); 
+
+
 
   // RequireJS
   $libraries['requirejs'] = array(
