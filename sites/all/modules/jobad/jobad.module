@@ -90,7 +90,7 @@ function jobad_init_instance($nr) {
       ' . $name .'_element = jQuery("#' . $name . '");
       ' . $name . ' = new JOBAD(' . $name .'_element);
     ';
-
+    
   //loading modules
   $modules = variable_get('JOBADModulesArray');
     foreach($modules as $id => $options) {

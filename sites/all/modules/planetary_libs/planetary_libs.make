@@ -11,7 +11,7 @@ api = "2"
 libraries[jobad][download][type] = git
 libraries[jobad][download][url] = https://github.com/KWARC/jobad.git
 
-; jobad
+; office-ribbon
 libraries[office-ribbon][download][type] = git
 libraries[office-ribbon][download][url] = https://github.com/jucovschi/Office-Ribbon-2010.git
 
@@ -22,3 +22,12 @@ libraries[editor_tools][download][url] = https://github.com/jucovschi/EditorTool
 ; requirejs
 libraries[requirejs][download][type] = file
 libraries[requirejs][download][url] = http://requirejs.org/docs/release/2.1.5/minified/require.js
+
+; jquery
+libraries[jquery][download][type] = file
+libraries[jquery][download][url] = http://code.jquery.com/jquery.min.js
+
+; jquery-ui
+libraries[jquery-ui][download][type] = file
+libraries[jquery-ui][download][url] = http://jqueryui.com/resources/download/jquery-ui-1.10.3.zip
+

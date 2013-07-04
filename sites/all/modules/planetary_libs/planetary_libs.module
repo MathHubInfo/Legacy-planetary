@@ -5,33 +5,15 @@
 function planetary_libs_menu() {
 
   // Main menu item.
-  $items['admin/appearance/planetary_libraries'] = array(
+  $items['admin/config/system/planetary_libraries'] = array(
     'title' => 'Planetary Library Settings',
     'description' => 'Load libraries',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('planetary_libs_settings'),
     'access arguments' => array('administer themes'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'weight' => 100,
   );
-
-  // Global library configuration tab.
-  $items['admin/appearance/planetary_libraries/global'] = array(
-    'title' => 'Global settings',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -1,
-  );
-
-  // Add a local task for each available theme.
-  foreach (list_themes() as $theme) {
-    $items['admin/appearance/planetary_libraries/' . $theme->name] = array(
-      'title' => $theme->info['name'],
-      'page arguments' => array('planetary_libs_settings', $theme->name),
-      'type' => MENU_LOCAL_TASK,
-      'access callback' => '_system_themes_access',
-      'access arguments' => array($theme),
-    );
-  }
 
   // Return the menu item definitions.
   return $items;
@@ -126,6 +108,7 @@ function planetary_libs_init() {
     }
   }
 }
+
 
 /*
  * Build the settings form.
@@ -353,9 +336,10 @@ function planetary_libs_libraries_info() {
         'build/release/JOBAD.js',
       ),
       'css' => array(
-        'css/JOBAD.css',
+        'build/release/JOBAD.css',
       )
     ),
+    'dependencies' => array('jquery', 'jquery-ui'),
     'variants' => array(
       'minified' => array(
         'files' => array(
@@ -364,11 +348,49 @@ function planetary_libs_libraries_info() {
           ),
           'css' => array(
             'build/release/JOBAD.css',
-          )
+          )       
         ),
       ),
     ),
   );
+
+  // jquery
+  $libraries['jquery'] = array(
+    'name' => 'jquery',
+    'vendor url' => 'http://jquery.com/',
+    'download url' => 'http://code.jquery.com/jquery.min.js',
+    'version arguments' => array(
+      'file' => 'jquery.min.js',
+      'pattern' => '/jQuery v.([0-9a-zA-Z\.-]+)/',
+    ),
+    'files' => array(
+      'js' => array(
+        'jquery.min.js',
+      ),
+    )
+  ); 
+
+
+  // jquery-ui
+  $libraries['jquery-ui'] = array(
+    'name' => 'jquery-ui',
+    'vendor url' => 'http://jquery.com/',
+    'download url' => 'http://code.jquery.com/ui/1.10.3/jquery-ui.js',
+    'version arguments' => array(
+      'file' => 'ui/minified/jquery-ui.min.js',
+      'pattern' => '/jQuery UI - v.([0-9a-zA-Z\.-]+)/',
+    ),
+    'files' => array(
+      'css' => array(
+        'themes/base/jquery-ui.css',
+      ),
+      'js' => array(
+        'ui/minified/jquery-ui.min.js',
+      ),
+    )
+  ); 
+
+
 
   // RequireJS
   $libraries['requirejs'] = array(
