@@ -113,10 +113,6 @@ function mmt_get_path_info($location) {
   $fparts = explode('.', $filename);
   $extension = $fparts[count($fparts) - 1];
   
-  if (count($fparts) > 1) { //there is an extension
-    $fparts[count($fparts) - 1] = "omdoc"; 
-  }
-  
   $lang = 'und'; //default
   if (count($fparts) == 3) { //three file parts means <module>.<lang>.<ext>
     $lang = $fparts[1]; 
@@ -124,14 +120,19 @@ function mmt_get_path_info($location) {
 
   $modName = $fparts[0];
 
-  $omdocFileName = join(".", $fparts); 
-
-  
+  //getting dpath  
   $relPathSegments = array_slice($lparts, 2);
-  $omdocRelPath = "";//default for toplevel
+  $relPath = "";//default for toplevel
   if (count($relPathSegments) != 0) {
-    $omdocRelPath = join('/', $relPathSegments);
+    $relPath = join('/', $relPathSegments);
   }
+
+  $rparts = explode('.', $relPath);
+
+  if (count($rparts) > 1) { //there is an extension
+    $rparts[count($rparts) - 1] = "omdoc"; 
+  }
+  $omdocRelPath = join(".", $rparts); 
 
   $dpath = $archives[$archive] . $omdocRelPath;
 
@@ -150,10 +151,7 @@ function mmt_get_path_info($location) {
 
 }
 
-function mmt_get_dependencies($dpath) {
 
-  return array($dpath); //
-}
 
 
 
@@ -223,15 +221,16 @@ function mmt_filter_presentation_process($text, $filter, $format, $langcode, $ca
 
   $dpath = $filter_context['mmt']['dpath'];
   $style = $filter->settings['mmt_style'];
-  $result = mmt_get_presentation($dpath, $text, $style);
-
+  $response = mmt_get_presentation($dpath, $text, $style);
+  
   $key = md5($text);
-  _drutexml_cache_set($key, $result);	
+  _drutexml_cache_set($key, $response);	
   if (isset($filter_debug)) {
 	  $filter_debug["mmt_presentation"] = array("mmt/pres", array($key));
   }
+  $result= json_decode($response, true);
 
-  return $result;
+  return $result['content'];
 }
 
 
@@ -241,16 +240,17 @@ function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cac
 
   $dpath = $filter_context['mmt']['dpath'];
   $format = $filter->settings['mmt_format'];
-  $result = mmt_get_compiled($text, $dpath, $format);
+  $response = mmt_get_compiled($text, $dpath, $format);
 
   $key = md5($text);
-  _drutexml_cache_set($key, $result);	
+  _drutexml_cache_set($key, $response);	
  
   if (isset($filter_debug)) {
 	  $filter_debug["mmt_compilation"] = array("mmt/comp", array($key));
   }
-  
-  return $result;
+  $result= json_decode($response, true);
+
+  return $result['content'];
 }
 
 function mmt_filter_compilation_log($form, $form_state, $key) {
@@ -570,8 +570,9 @@ function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styl
     ),
   );
   $context  = stream_context_create($options);
-  $result = file_get_contents($url, false, $context);
-  return $result;
+  $response = file_get_contents($url, false, $context);
+  $result = json_decode($response, true);
+  return $response;
 }
 
 function mmt_get_compiled($body, $dpath, $format) {
@@ -590,9 +591,10 @@ function mmt_get_compiled($body, $dpath, $format) {
     ),
   );
   $context  = stream_context_create($options);
-  $result = file_get_contents($url, false, $context);
-
-  return $result;
+  $response = file_get_contents($url, false, $context);
+  $result = json_decode($response, true);
+ 
+  return $response;
 }
 
 function mmt_get_content($path) {
@@ -604,6 +606,35 @@ function mmt_get_content($path) {
   $url = $mmtUrl . '/:mmt?' . $path . $postPath. '_present_' . 'xml';
   $content = file_get_contents($url);
   return $content;
+}
+
+/** gets a list of the mmt paths of all mmt theories that are included in the given one
+ * i.e. all theories this one depends on 
+ * e.g.  
+  mmt_get_dependencies("http://docs.omdoc.org/smglo/dgraph.en.omdoc?dgraph.en");
+  mmt_get_dependencies("http://docs.omdoc.org/smglo/dgraph.omdoc?dgraph");
+*/
+function mmt_get_dependencies($mpath) {
+  $mmtUrl = variable_get('mmtUrl');
+  $url = $mmtUrl . '/:query';
+  $data = '<related><individual uri="'.$mpath.'"/><transitive><toobject relation="Includes"/></transitive></related>';
+
+  $options = array(
+    'http' => array(
+        'header'  => "Content-type: application/xml\r\n",
+        'method'  => 'POST',
+        'content' => $data,
+    ),
+  );
+  $context  = stream_context_create($options);
+  $response = file_get_contents($url, false, $context);
+  $xml = new SimpleXMLElement($response);
+  $xmlpaths = $xml->xpath('/results/result/uri');
+  $results = array();
+  foreach ($xmlpaths as $xmlpath){
+    $results[] = (string)$xmlpath['path'];
+  }
+  return array($results); 
 }
 
 /**
