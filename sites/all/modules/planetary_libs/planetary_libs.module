@@ -339,7 +339,6 @@ function planetary_libs_libraries_info() {
         'build/release/JOBAD.css',
       )
     ),
-    'dependencies' => array('jquery', 'jquery-ui'),
     'variants' => array(
       'minified' => array(
         'files' => array(
@@ -354,6 +353,7 @@ function planetary_libs_libraries_info() {
     ),
   );
 
+/*
   // jquery
   $libraries['jquery'] = array(
     'name' => 'jquery',
@@ -389,7 +389,7 @@ function planetary_libs_libraries_info() {
       ),
     )
   ); 
-
+*/
 
 
   // RequireJS
@@ -456,6 +456,7 @@ function planetary_libs_libraries_info() {
       'file' => 'editor_utils.json',
       'pattern' => '/"version": "([0-9a-zA-Z\.-]+)"/',
     ),
+    'dependencies' => array('jobad'),
     'files' => array(
       'js' => array(
         'editor_utils.min.js',
