@@ -3,9 +3,9 @@ core = "7.x"
 api = "2"
 
 
-; underscore
-libraries[underscore][download][type] = git
-libraries[underscore][download][url] = git://github.com/documentcloud/underscore.git
+; underscore (No longer needed for JOBAD)
+; libraries[underscore][download][type] = git
+; libraries[underscore][download][url] = git://github.com/documentcloud/underscore.git
 
 ; jobad
 libraries[jobad][download][type] = git
