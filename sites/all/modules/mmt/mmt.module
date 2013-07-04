@@ -56,6 +56,56 @@ function mmt_archives() {
   return $htmlText;
 }
 
+/** api for vfs location */
+
+function mmt_get_path_info($location) {
+  $archives = array(
+    'smglo' => 'http://docs.omdoc.org/smglo/',
+    'latin' => 'http://docs.omdoc.org/latin/',
+    'urtheories' => 'http://docs.omdoc.org/urtheories/' ,
+    'openmath' => 'http://www.openmath.org/',
+  ); //hardcoded for now, get be gotten from MMT using archive name
+
+  $lparts = explode('/', $location); //format is <archive-name>/source/<fragment path>
+  $archive = $lparts[0];
+
+  $filename = $lparts[count($lparts) - 1];
+  
+  $relPathSegments = array_slice($parts, 2, -1); 
+  
+  $fparts = explode('.', $filename);
+  $extension = $fparts[count($fparts) - 1];
+  
+  if (count($fparts) > 1) { //there is an extension
+    $fparts[count($fparts) - 1] = "omdoc"; 
+  }
+  
+  $lang = 'und'; //default
+  if (count($fparts) == 3) { //three file parts means <module>.<lang>.<ext>
+    $lang = $fparts[1]; 
+  }
+
+  $modName = $fparts[0];
+
+  $omdocFileName = join(".", $parts); 
+  $omdocRelPath = join('/', $relPathSegments) . "/" . $omdocFileName;
+  
+
+  $dpath = $archives[$archive] . $omdocRelPath;
+
+  $path_info = array(
+    'location' => $location,
+    'archive' => $archive,
+    'extension' => $extension,
+    'module' => $modName,
+    'lang' => $lang,
+    'dpath' => $dpath,
+    );
+
+  return $path_info;
+
+}
+
 /*
  * converts (virtual) filesystem filepath to MMT document path
  */
@@ -352,7 +402,14 @@ function mmt_create_node($module, $lang, $format, $dpath, $location, $node_type)
   $newnode->field_external['und']['0']['path'] = $module;
   $newnode->field_external['und']['0']['filter'] = $format;
   $newnode->field_external['und']['0']['dpath']['value'] = $dpath;
-   
+  /*
+  $newnode->mmt_body['und'][0]['data']
+  $newnode->mmt_body['und'][0]['filter'] = $format
+  $newnode->mmt_body['und'][0]['path'] = $location
+
+  */
+
+
   node_object_prepare($newnode);//necessary ?
   node_save($newnode);
   return $newnode->nid;
@@ -466,7 +523,10 @@ function mmt_get_contentPres($path, $style = 'http://cds.omdoc.org/styles/omdoc/
 function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
   $mmtUrl = variable_get('mmtUrl');
   $url = $mmtUrl . '/:planetary/getPresentation';
-  $data = array('body' => $body, 'dpath' => $dpath, 'style' => $style);
+  $data = array('body' => $body, 'style' => $style);
+  if (isset($dpath)) {
+    $data['dpath'] = $dpath;
+  }
   
   $options = array(
     'http' => array(
@@ -483,8 +543,10 @@ function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styl
 function mmt_get_compiled($body, $dpath, $format) {
   $mmtUrl = variable_get('mmtUrl');
   $url = $mmtUrl . '/:planetary/getCompiled';
-  $data = array('body' => $body, 'dpath' => $dpath, 'format' => $format);
-  
+  $data = array('body' => $body, 'format' => $format);
+  if (isset($dpath)) {
+    $data['dpath'] = $dpath;
+  }
   $options = array(
     'http' => array(
         'header'  => "Content-type: application/json\r\n",
