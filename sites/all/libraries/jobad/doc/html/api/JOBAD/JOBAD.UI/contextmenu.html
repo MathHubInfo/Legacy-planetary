@@ -485,7 +485,9 @@
 <li><strong>Object</strong> <code>JOBAD.UI.ContextMenu.config</code> - JOBAD ContextMenu UI Configuration namespace</li>
 <li><strong>Number</strong> <code>JOBAD.UI.ContextMenu.config.margin</code> - Number of pixels to keep the context menu away from the right and bottom end of the page. Default: 20. </li>
 <li><strong>Number</strong> <code>JOBAD.UI.ContextMenu.config.width</code> - Width of the context menu. Default: 250. </li>
-<li><strong>Function</strong> <code>JOBAD.UI.ContextMenu.enable(element, demandFunction, onEnable, onDisable)</code> - Registers a context menu on an element.
+<li><strong>Number</strong> <code>JOBAD.UI.ContextMenu.config.radius</code> - Radius for radial context menu entries. Default: 20. </li>
+<li><strong>Number</strong> <code>JOBAD.UI.ContextMenu.config.radiusConst</code> - Constant for calculating radius. Default: 30. </li>
+<li><strong>Function</strong> <code>JOBAD.UI.ContextMenu.enable(element, demandFunction, config, typeFunction, onEnable, onDisable)</code> - Registers a context menu on an element.
 <ul>
 <li><strong>jQuery</strong> <code>element</code> The element to register the menu on. </li>
 <li><strong>Function</strong> <code>demandFunction(element, elementOrg)</code> Function to call when a menu is requested. 
@@ -495,29 +497,60 @@
 <li><strong>jQuery</strong> <code>elementOrg</code> The element the context menu call originates from. </li>
 <li><strong>returns</strong> a list of <code>[name, callback]</code> and <code>[name, submenu]</code> pairs or <code>false</code> if no menu should be generated. </li>
 </ul></li>
-<li><strong>Function</strong> <code>onEnable(element)</code> Optional. Called when the menu is shown. 
+<li><strong>Object</strong> <code>config</code> Configuration. 
 <ul>
-<li><strong>Undefined</strong> <code>this</code></li>
-<li><strong>jQuery</strong> <code>element</code> The element the menu was originally registered on. </li>
+<li><strong>Function|String</strong> <code>config.type(element, elementOrg)</code> Optional. Type of menu to use. Either a fixed string or a function returning the type of menu to use. Types are: <code>standard</code> (0) and <code>radial</code> (1). </li>
+<li><strong>Function</strong> <code>config.open()</code> Optional. Will be called before the context menu is opened. </li>
+<li><strong>Function</strong> <code>config.close()</code>Optional. Will be called after the context menu has been closed. </li>
+<li><strong>Function</strong> <code>config.callback()</code> Optional. Will be called after a callback is called. </li>
+<li><strong>jQuery</strong> <code>config.parents</code> Optional. Menus not to keep open when this menu is opened. </li>
+<li><strong>Boolean</strong> <code>config.block</code> Optional. Always block the Browser context menu. </li>
+<li><strong>jQuery</strong> <code>config.element</code> Optional. Force to use this as an element for searching for menus. </li>
+<li><strong>jQuery</strong> <code>config.unbindListener</code> Element to additionally listen to for unbinds. </li>
+<li><strong>jQuery</strong> <code>config.callBackTarget</code> Optional. Element to use for callback. Defaults to found element. </li>
+<li><strong>jQuery</strong> <code>config.callBackOrg</code>   Optional. Element to use for callback. </li>
 </ul></li>
-<li><strong>Function</strong> <code>onDisable(element)</code> Optional. Called when the menu is hidden. 
+<li><strong>returns</strong> The <code>element</code> the menu was registered on.</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.UI.ContextMenu.clear(keepers)</code> - Clears all context menus
 <ul>
-<li><strong>Undefined</strong> <code>this</code></li>
-<li><strong>jQuery</strong> <code>element</code> The element the menu was originally registered on. </li>
-</ul></li>
-<li><strong>returns</strong> The <code>element</code> the menu was registered on. </li>
+<li><strong>jQuery</strong> <code>keepers</code> Menus to keep open</li>
 </ul></li>
 <li><strong>Function</strong> <code>JOBAD.UI.ContextMenu.disable(element)</code> - Disables the context menu. 
 <ul>
 <li><strong>jQuery</strong> <code>element</code> The element to remove the menu from. </li>
 <li><strong>returns</strong> The <code>element</code> the menu was registered on. </li>
 </ul></li>
-<li><strong>Function</strong> <code>JOBAD.UI.ContextMenu.buildMenuList(items, element, elementOrg)</code> Builds the menu html element. 
+<li><strong>Function</strong> <code>JOBAD.UI.ContextMenu.buildContextMenuList(items, element, elementOrg, callback)</code> - Builds the menu html element for the standard menu element. 
 <ul>
-<li><strong>Array</strong> <code>items</code> a list of <code>[name, callback]</code> and <code>[name, submenu]</code> pairs representing the menu to be built. </li>
+<li><strong>Array</strong> <code>items</code> a list of <code>[name, callback, icon]</code> and <code>[name, submenu, icon]</code> pairs representing the menu to be built. </li>
 <li><strong>jQuery</strong> <code>element</code> The element the context menu has been requested on. </li>
 <li><strong>jQuery</strong> <code>elementOrg</code> The element the context menu call originates from. </li>
+<li><strong>Function</strong> <code>callback(element)</code> Callback whenever some callback is called. </li>
 <li><strong>returns</strong> a <strong>jQuery</strong> element representing the menu. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.UI.ContextMenu.buildPieMenuList(items, element, elementOrg, callback)</code> - Builds the menu html element for the pie menu element. </p>
+
+<ul>
+<li><strong>Array</strong> <code>items</code> a list of <code>[name, callback, icon]</code> and <code>[name, submenu, icon]</code> pairs representing the menu to be built. </li>
+<li><strong>jQuery</strong> <code>element</code> The element the context menu has been requested on. </li>
+<li><strong>jQuery</strong> <code>elementOrg</code> The element the context menu call originates from. </li>
+<li><strong>Function</strong> <code>callback(element)</code> Callback whenever some callback is called. </li>
+<li><strong>Number</strong> <code>x</code> x-Coordinate of menu center. </li>
+<li><strong>Number</strong> <code>y</code> y-Coordinate of menu center. </li>
+<li><strong>returns</strong> a <strong>jQuery</strong> element representing the menu. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.UI.ContextMenu.generateMenuList(menu)</code> - Generates a list menu representation from an object representation. </p>
+
+<ul>
+<li><strong>Object</strong> <code>menu</code> an object representation of the menu. </li>
+<li><strong>returns</strong> the new representation. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.UI.ContextMenu.fullWrap(menu, wrapper)</code> - Wraps a menu callback with the spacefied wrapper. 
+<ul>
+<li><strong>Object</strong> <code>menu</code> The menu to wrap. </li>
+<li><strong>Function</strong> <code>wrapper(org, arguments)</code> The wrapper function. </li>
+<li><strong>returns</strong> the new representation. </li>
 </ul></li>
 </ul>
 

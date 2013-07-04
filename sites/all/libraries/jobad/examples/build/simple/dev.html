@@ -5,52 +5,46 @@
 		<!-- This file has been generated automatically. Any changes will be overwritten. -->
 
 		
-		<script src="./../../../js/deps/jquery/jquery-2.0.0.min.js"></script>
+		<script src="./../../../js/deps/jquery/jquery-2.0.2.min.js"></script>
 		<script src="./../../../js/deps/jquery/jquery-ui-1.10.3.js"></script>
-		<script src="./../../../js/deps/underscore/underscore-min.js"></script>
 		<link href="./../../../css/jquery-ui.css" rel="stylesheet">
-
 
 		<!-- Include JOBAD -->
 <script src='./../../../build/release/JOBAD.js'></script>
 
-
-		<link href="./../../../css/JOBAD.css" rel="stylesheet">
-
-
-		<!-- Load all the modules -->
-
-		<script src="./../../../modules/example1.js"></script>
-		<script src="./../../../modules/example2.js"></script>
-		<script src="./../../../modules/example3.js"></script>
-		<script src="./../../../modules/example4.js"></script>
-		<script src="./../../../modules/example5.js"></script>
+<link rel='stylesheet' type='text/css' href='./../../../build/release/JOBAD.css'>
 
 		<script type="text/javascript">
 			var JOBAD1, JOBAD2;
 
-			JOBAD.noConflict._(); //prevent underscore conflicts
+			JOBAD.repo.loadAllFrom("../../../modules", function(){ //Load all from the repo
+				jQuery(function(){	
+					JOBAD1 = new JOBAD(jQuery("#1"));
+					JOBAD2 = new JOBAD(jQuery("#2"));
 
-			jQuery(function(){	
-				JOBAD1 = new JOBAD(jQuery("#1"));
-				JOBAD2 = new JOBAD(jQuery("#2"));
+					JOBAD1.modules.load([
+						['test.click', ['green']],
+						"test.menu1",
+						"test.menu2",
+						"test.hover",
+						"jobad.debug"
+					], function(mod, state){
+						this.Setup();
+					});
 
-				JOBAD1.modules.load('test.color.click', ['green']);
-				JOBAD1.modules.load('test.color.hover', []);
-				JOBAD1.modules.load('test.color.menu', []);
-				JOBAD1.modules.load('test.p', []);
-
-				
-				JOBAD2.modules.load('test.color.click', ['blue']);
-				JOBAD2.modules.load('test.color.hover', []);
-				JOBAD2.modules.load('test.color.menu', []);
-				JOBAD2.modules.load('test.sidebar', []);
-				JOBAD2.modules.load('test.p', []);
-				
-
-				JOBAD1.Setup();
-				JOBAD2.Setup();
-			})		
+					JOBAD2.modules.load([
+						['test.click', ['blue']],
+						"test.menu1",
+						"test.menu2",
+						"test.hover",
+						"test.sidebar",
+						"jobad.debug",
+						"mathjax.mathjax"
+					], function(mod, state){
+						this.Setup();
+					});
+				})	
+			});	
 		</script>
 	</head>
 	<body>
@@ -71,8 +65,8 @@
 			<p>
 				<b>A menu and a tooltip. </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id massa eget elit condimentum fringilla. Nam malesuada odio eu tortor condimentum id aliquam elit tincidunt. Sed sit amet dolor non lorem interdum interdum eget id dolor. Maecenas congue lectus quis purus ultrices ut interdum enim consectetur. Nunc venenatis neque vitae lacus fringilla mollis. Morbi augue felis, dapibus at ultricies et, tincidunt vel velit. Morbi nisi purus, bibendum eget dapibus elementum, dictum nec diam. Proin ac elit massa, non sollicitudin justo. Etiam id risus mi, at interdum mi. Pellentesque et malesuada enim. Aliquam eros massa, eleifend aliquam feugiat ut, tincidunt quis urna. Vestibulum vehicula dolor eu augue lobortis cursus. Cras vitae urna nulla. Duis placerat orci et dolor egestas vulputate. Donec sed orci augue.
 			</p>
-			<p id='nomenu'>
-				<b>No menu at all. </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id massa eget elit condimentum fringilla. Nam malesuada odio eu tortor condimentum id aliquam elit tincidunt. Sed sit amet dolor non lorem interdum interdum eget id dolor. Maecenas congue lectus quis purus ultrices ut interdum enim consectetur. Nunc venenatis neque vitae lacus fringilla mollis. Morbi augue felis, dapibus at ultricies et, tincidunt vel velit. Morbi nisi purus, bibendum eget dapibus elementum, dictum nec diam. Proin ac elit massa, non sollicitudin justo. Etiam id risus mi, at interdum mi. Pellentesque et malesuada enim. Aliquam eros massa, eleifend aliquam feugiat ut, tincidunt quis urna. Vestibulum vehicula dolor eu augue lobortis cursus. Cras vitae urna nulla. Duis placerat orci et dolor egestas vulputate. Donec sed orci augue.
+			<p class='JOBAD_Ignore'>
+				<b>Nothing here</b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id massa eget elit condimentum fringilla. Nam malesuada odio eu tortor condimentum id aliquam elit tincidunt. Sed sit amet dolor non lorem interdum interdum eget id dolor. Maecenas congue lectus quis purus ultrices ut interdum enim consectetur. Nunc venenatis neque vitae lacus fringilla mollis. Morbi augue felis, dapibus at ultricies et, tincidunt vel velit. Morbi nisi purus, bibendum eget dapibus elementum, dictum nec diam. Proin ac elit massa, non sollicitudin justo. Etiam id risus mi, at interdum mi. Pellentesque et malesuada enim. Aliquam eros massa, eleifend aliquam feugiat ut, tincidunt quis urna. Vestibulum vehicula dolor eu augue lobortis cursus. Cras vitae urna nulla. Duis placerat orci et dolor egestas vulputate. Donec sed orci augue.
 			</p>
 		</div>
 		<h1>JOBAD (Instance 2)</h1>
@@ -80,6 +74,39 @@
 		<div id='2'>
 			<p>
 				Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.
+			</p>
+			<p>
+				Some math: 
+<math mode="display" xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>=</mo>
+    <mfrac>
+      <mrow>
+        <mo form="prefix">&#x2212;<!-- − --></mo>
+        <mi>b</mi>
+        <mo>&#x00B1;<!-- &PlusMinus; --></mo>
+        <msqrt>
+          <msup>
+            <mi>b</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>&#x2212;<!-- − --></mo>
+          <mn>4</mn>
+          <mo>&#x2062;<!-- &InvisibleTimes; --></mo>
+          <mi>a</mi>
+          <mo>&#x2062;<!-- &InvisibleTimes; --></mo>
+          <mi>c</mi>
+        </msqrt>
+      </mrow>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;<!-- &InvisibleTimes; --></mo>
+        <mi>a</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
 			</p>
 			<p>
 				Donec cursus neque quis eros tristique facilisis molestie sem consectetur. Pellentesque ut tortor erat, non semper nunc. Phasellus et nibh leo, a posuere ante. In laoreet purus vel nulla mattis id placerat enim rhoncus. Duis quam mi, laoreet quis ullamcorper eu, dignissim sit amet odio. Fusce accumsan mollis augue, facilisis vestibulum mi sodales ut. Nullam ligula libero, tempus ut tempus non, vestibulum ac urna. Phasellus faucibus imperdiet urna, et ullamcorper nisi ultrices vel. Etiam mollis est nibh.

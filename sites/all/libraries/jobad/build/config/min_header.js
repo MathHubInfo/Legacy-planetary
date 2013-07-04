@@ -19,4 +19,7 @@
 	
 	You should have received a copy of the GNU General Public License
 	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
+
+
+	JOBAD includes Underscore 1.4.4, Copyright (c) 2009-2013 Jeremy Ashkenas, DocumentCloud. 
 */

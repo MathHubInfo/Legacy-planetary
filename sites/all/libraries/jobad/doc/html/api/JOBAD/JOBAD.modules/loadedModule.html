@@ -482,11 +482,12 @@
 <h1>JOBAD.modules.loadedModule</h1>
 
 <ul>
-<li><strong>Function</strong> <code>JOBAD.modules.loadedModule(name, args, JOBADInstance)</code> Loads a module, assuming the dependencies are already available. 
+<li><strong>Function</strong> <code>JOBAD.modules.loadedModule(name, args, JOBADInstance, callback)</code> Loads a module, assuming the dependencies are already available. 
 <ul>
 <li><strong>String</strong> <code>name</code> Module to load.</li>
 <li><strong>Array[Mixed]</strong> Arguments to pass to this module instance. </li>
 <li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
+<li><strong>Function</strong> <code>callback(state)</code> Callback. Will be called when the module has finsihed loading or fails to do so. </li>
 <li><strong>returns</strong> a new <code>JOBAD.modules.loadedModule</code> instance. </li>
 </ul></li>
 </ul>
@@ -495,7 +496,42 @@
 
 <ul>
 <li><strong>Function</strong> <code>.info()</code> Returns the info object of this module. </li>
-<li><strong>Function</strong> <code>.getJOBAD()</code> Gets the <code>JOBADInstance</code> this module is bound to. </li>
+<li><p><strong>Function</strong> <code>.getJOBAD()</code> Gets the <code>JOBADInstance</code> this module is bound to. </p></li>
+<li><p><strong>Function</strong> <code>.isActive()</code> Checks if this module is active. </p></li>
+<li><strong>Function</strong> <code>.activate()</code> Activates this module. </li>
+<li><strong>Function</strong> <code>.deactivate()</code> Deactivates this module</li>
+</ul>
+
+<h2>UserConfiguration</h2>
+
+<ul>
+<li><p><strong>Function</strong> <code>.UserConfig.set(prop, value)</code> Updates user configuration. </p>
+
+<ul>
+<li><strong>String</strong> <code>prop</code> Property to set. </li>
+<li><strong>Mixed</strong> <code>value</code> Value to set. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.UserConfig.canSet(prop, value)</code> Checks if a user configuration can be set with the specefied value. </p>
+
+<ul>
+<li><strong>String</strong> <code>prop</code> Property to set. </li>
+<li><strong>Mixed</strong> <code>value</code> Value to set. </li>
+<li><strong>returns</strong> boolean. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.UserConfig.get(prop)</code> Reads user configuration. </p>
+
+<ul>
+<li><strong>String</strong> <code>prop</code> Property to get. </li>
+<li><strong>returns</strong> value. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.UserConfig.setMessage(msg)</code> Sets the current message (displayed in config UI). </p>
+
+<ul>
+<li><strong>String</strong> <code>msg</code> Message to set. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.UserConfig.getMessage()</code> Gets the current message (displayed in config UI). </p></li>
+<li><p><strong>Function</strong> <code>.UserConfig.reset()</code> Resets the user configuration. </p></li>
+<li><strong>Function</strong> <code>.UserConfig.getTypes()</code> Gets the user configuration types. </li>
 </ul>
 
 <h2>Event functions</h2>
@@ -535,37 +571,7 @@
 </ul></li>
 </ul>
 
-<h2>Further members</h2>
-
-<p>A <code>JOBAD.modules.loadedModule</code> instance also contains all non-standard properties of the original Module object. Note
-that any JSON-style objects are referenced (and thus shared among all instances of this module) and everything else 
-is copied. </p>
-
-<ul>
-<li><strong>Function</strong> <code>.isActive()</code> Checks if this module is active. </li>
-<li><strong>Function</strong> <code>.activate()</code> Activates this module. </li>
-<li><strong>Function</strong> <code>.deactivate()</code> Deactivates this module</li>
-</ul>
-
-<h3>.UserConfig</h3>
-
-<ul>
-<li><strong>Object</strong> <code>.UserConfig</code> User configuration namespace. </li>
-<li><strong>Function</strong> <code>.UserConfig.reset()</code> Resets the user configuration to the default. </li>
-<li><strong>Function</strong> <code>.UserConfig.get(key)</code> Gets a user value setting. 
-<ul>
-<li><strong>String</strong> <code>key</code> Key to retrieve. </li>
-<li><strong>returns</strong> Object</li>
-</ul></li>
-<li><strong>Function</strong> <code>.UserConfig.set(key, value)</code> Sets a user value setting. 
-<ul>
-<li><strong>String</strong> <code>key</code> Key to set. </li>
-<li><strong>Object</strong> <code>value</code> Value to store. </li>
-</ul></li>
-<li><strong>Function</strong> <code>.UserConfig.getTypes()</code> Gets the available user configurations and its types. </li>
-</ul>
-
-<h3>.localStore</h3>
+<h2>.localStore</h2>
 
 <ul>
 <li><strong>Object</strong> <code>.localStore</code> Namespace to store variables bound to this instance of a module. </li>
@@ -579,13 +585,17 @@ is copied. </p>
 <li><strong>String</strong> <code>key</code> Name of variable to get. </li>
 <li><strong>Mixed</strong> <code>value</code> Value to set the variable to. </li>
 </ul></li>
-<li><p><strong>Function</strong> <code>.localStore.delete(key)</code> Deletes a local variable. </p>
+<li><strong>Function</strong> <code>.localStore.delete(key)</code> Deletes a local variable. 
+<ul>
+<li><strong>String</strong> <code>key</code> Key to delete. </li>
+</ul></li>
+<li><strong>Function</strong> <code>.localStore.keys()</code> Gets all available keys. </li>
+</ul>
+
+<h2>.globalStore</h2>
 
 <ul>
-<li><strong>String</strong> <code>key</code> Key to delete. 
-<h3>.globalStore</h3></li>
-</ul></li>
-<li><p><strong>Object</strong> <code>.globalStore</code> Namespace to store variables shared among instances of this variable. </p></li>
+<li><strong>Object</strong> <code>.globalStore</code> Namespace to store variables shared among instances of this variable. </li>
 <li><strong>Function</strong> <code>.globalStore.get(key)</code> Gets a global variable. 
 <ul>
 <li><strong>String</strong> <code>key</code> Name of variable to get. </li>
@@ -600,7 +610,14 @@ is copied. </p>
 <ul>
 <li><strong>String</strong> <code>key</code> Key to delete. </li>
 </ul></li>
+<li><strong>Function</strong> <code>.globalStore.keys()</code> Gets all available keys. </li>
 </ul>
+
+<h2>Further members</h2>
+
+<p>A <code>JOBAD.modules.loadedModule</code> instance also contains all non-standard properties of the original Module object. Note
+that any JSON-style objects are referenced (and thus shared among all instances of this module) and everything else 
+is copied. </p>
 
 <h2>Footnotes</h2>
 

@@ -502,10 +502,67 @@
 <li><strong>Boolean</strong> <code>checkDeps</code> Also checks if that modules dependencies are available. </li>
 <li><strong>returns</strong> a boolean indicating if the module is available. </li>
 </ul></li>
-<li><strong>Function</strong> <code>JOBAD.modules.getDependencyList(name)</code> checks the complete dependency tree of a module. Warning: Does not check for circular dependencies. May hang up it in a loop in that case. 
+<li><p><strong>Function</strong> <code>JOBAD.modules.getDependencyList(name)</code> checks the complete dependency tree of a module. Warning: Does not check for circular dependencies. May hang up it in a loop in that case. </p>
+
 <ul>
 <li><strong>String</strong> <code>name</code> Name of the module to check. </li>
 <li><strong>returns</strong> an array of dependencies of name including name in such an order, thet they can all be loaded without unresolved dependencies. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.modules.createProperModuleObject(ModuleObject)</code> - Creates a proper Module Object. </p>
+
+<ul>
+<li><strong>Object</strong> <code>ModuleObject</code> Module object which is loaded directly. </li>
+<li><strong>returns</strong> object</li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.modules.createProperUserSettingsObject(obj, modName)</code> - Creates a proper User Settings Object. </p>
+
+<ul>
+<li><strong>Object</strong> <code>obj</code> Configuration Object</li>
+<li><strong>String</strong> <code>modName</code> Identifier of the module. </li>
+<li><strong>returns</strong> object</li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.modules.getDefaultConfigSetting(obj, key)</code> - Gets the default of a configuration object. </p>
+
+<ul>
+<li><strong>Object</strong> <code>obj</code> Configuration Object</li>
+<li><strong>String</strong> <code>key</code> Key to get. </li>
+<li><strong>returns</strong> object</li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.modules.validateConfigSetting(obj, key, val)</code> - Validates if the specefied object of a configuration object can be set. </p>
+
+<ul>
+<li><strong>Object</strong> <code>obj</code> Configuration Object</li>
+<li><strong>String</strong> <code>key</code> Key to validate. </li>
+<li><strong>Object</strong> <code>value</code> Value to vaildate. </li>
+<li><strong>returns</strong> boolean. </li>
+</ul></li>
+<li><p><strong>Object</strong> <code>JOBAD.modules.globalStore</code> Namespace to store variables shared among instances of modules. </p></li>
+<li><strong>Function</strong> <code>JOBAD.modules.globalStore.get(id, key)</code> - Gets a global variable for the specefied module. 
+<ul>
+<li><strong>String</strong> <code>id</code> Identifier of module to access. </li>
+<li><strong>String</strong> <code>key</code> Name of variable to get. </li>
+<li><strong>returns</strong> the variable or undefined. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.modules.globalStore.set(id, key, value)</code> - Sets a global variable for the specefied module. 
+<ul>
+<li><strong>String</strong> <code>id</code> Identifier of module to access. </li>
+<li><strong>String</strong> <code>key</code> Name of variable to get. </li>
+<li><strong>Mixed</strong> <code>value</code> Value to set the variable to. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.modules.globalStore.delete(id, key)</code> - Deletes a global variable for the specefied module. 
+<ul>
+<li><strong>String</strong> <code>id</code> Identifier of module to access. </li>
+<li><strong>String</strong> <code>key</code> Key to delete. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.modules.globalStore.keys(id)</code> - Gets all available keys for the specefied module. 
+<ul>
+<li><strong>String</strong> <code>id</code> Identifier of module to access. 
+<strong>returns</strong> Array of key names. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.modules.globalStore.getFor(id)</code> - Gets the globalStore Instance for the specefied module. 
+<ul>
+<li><strong>String</strong> <code>id</code> Identifier of module to access. </li>
+<li><strong>returns</strong> globalStore instance. </li>
 </ul></li>
 </ul>
 

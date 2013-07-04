@@ -1,5 +1,6 @@
 # JOBADInstance.Event
 
+* **Object** [`.Event.dblClick`](dblClick.md) Namespace for dblClick Events. 
 * **Object** [`.Event.leftClick`](leftClick.md) Namespace for leftClick Events. 
 * **Object** [`.Event.contextMenuEntries`](contextMenuEntries.md) Namespace for contextMenuEntries Events. 
 * **Object** [`.Event.hoverText`](hoverText.md) Namespace for hoverText Events. 

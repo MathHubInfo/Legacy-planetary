@@ -482,10 +482,45 @@
 <h1>JOBADInstance.Sidebar</h1>
 
 <ul>
-<li><p><strong>Function</strong> <code>.Sidebar.forceUpdate()</code> Forces an update of the sidebar. </p></li>
+<li><p><strong>Function</strong> <code>.Sidebar.getSidebarImplementation(type)</code> - Gets the specefied sidebar implementation. </p>
+
+<ul>
+<li><strong>Instance[ <a href="index.html">JOBAD</a> ]</strong> <code>this</code> The JOBAD Instance to work on. </li>
+<li><strong>String</strong> <code>type</code> implementation to get. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Sidebar.forceInit()</code> - Forces an initialisation of the sidebar. </p>
+
+<ul>
+<li><strong>Instance[ <a href="index.html">JOBAD</a> ]</strong> <code>this</code> The JOBAD Instance to work on. </li>
+<li><strong>String</strong> <code>type</code> implementation to get. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Sidebar.makeCache()</code> Creates a cache of all objects currently in the sidebar. </p>
+
+<ul>
+<li><strong>Instance[ <a href="index.html">JOBAD</a> ]</strong> <code>this</code> The JOBAD Instance to work on. </li>
+<li><strong>returns</strong> the cache. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Sidebar.transit(to)</code> Changes the sidebar type to the specefied type. </p>
+
+<ul>
+<li><strong>Instance[ <a href="index.html">JOBAD</a> ]</strong> <code>this</code> The JOBAD Instance to work on. </li>
+<li><strong>String</strong> <code>to</code> New type to use. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Sidebar.redraw()</code> Redraws the sidebar. </p>
+
+<ul>
+<li><strong>Instance[ <a href="index.html">JOBAD</a> ]</strong> <code>this</code> The JOBAD Instance to work on. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Sidebar.redrawT(type)</code> Redraws the sidebar using the specefied type. </p>
+
+<ul>
+<li><strong>Instance[ <a href="index.html">JOBAD</a> ]</strong> <code>this</code> The JOBAD Instance to work on. </li>
+<li><strong>String</strong> <code>type</code> Type to use. </li>
+</ul></li>
 <li><p><strong>Function</strong> <code>.Sidebar.registerNotification(element, config)</code> Registers a new notification on the sidebar. </p>
 
 <ul>
+<li><strong>Instance[ <a href="index.html">JOBAD</a> ]</strong> <code>this</code> The JOBAD Instance to work on. </li>
 <li><strong>jQuery</strong> <code>element</code> An element to register the notification on. </li>
 <li><strong>Object</strong> <code>config</code> A map which may contain any of the following members: 
 <ul>
@@ -498,11 +533,24 @@
 </ul></li>
 <li><strong>returns</strong> a jQuery element representing the added notification. </li>
 </ul></li>
-<li><p><strong>Function</strong> <code>.Sidebar.removeNotification(notification)</code> Removes a notification from the sidebar. </p>
+<li><p><strong>Function</strong> <code>.Sidebar.removeNotification(notification, autoRedraw)</code> Removes a notification from the sidebar. </p>
 
 <ul>
+<li><strong>Instance[ <a href="index.html">JOBAD</a> ]</strong> <code>this</code> The JOBAD Instance to work on. </li>
 <li><strong>jQuery</strong> <code>notification</code> A jQuery element represnting the notification. </li>
+<li><strong>Boolean</strong> <code>autoRedraw</code> Optional. Should the sidebar be redrawn? (default: true)</li>
 </ul></li>
+<li><p><strong>Function</strong> <code>.Sidebar.removeNotificationT(notification, autoRedraw, type)</code> Removes a notification from the sidebar. </p>
+
+<ul>
+<li><strong>Instance[ <a href="index.html">JOBAD</a> ]</strong> <code>this</code> The JOBAD Instance to work on. </li>
+<li><strong>jQuery</strong> <code>notification</code> A jQuery element represnting the notification. </li>
+<li><strong>Boolean</strong> <code>autoRedraw</code> Optional. Should the sidebar be redrawn? (default: true)</li>
+<li><strong>String</strong> <code>type</code> Type of Sidebar to use. </li>
+</ul></li>
+<li><p><strong>Array</strong> <code>.Sidebar.ElementRequestCache</code> Cache for elements yet to register to the sidebar. <strong>Do not modify</strong></p></li>
+<li><strong>Object</strong> <code>.Sidebar.PastRequestCache</code> Request cache for elements registered with the sidebar. <strong>Do not modify</strong> </li>
+<li><strong>Object</strong> <code>.Sidebar.Elements</code> All elements currently registered with the sidebar. <strong>Do not modify</strong></li>
 </ul>
 
 <h2>See also</h2>

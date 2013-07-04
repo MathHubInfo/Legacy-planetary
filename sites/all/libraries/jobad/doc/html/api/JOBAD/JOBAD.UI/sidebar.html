@@ -483,13 +483,13 @@
 
 <ul>
 <li><strong>Object</strong> <code>JOBAD.UI.Sidebar.config</code> - JOBAD Sidebar UI Configuration namespace</li>
-<li><strong>Number</strong> <code>JOBAD.UI.Sidebar.config.width</code> Width of the sidebar. Default: 100. </li>
-<li><strong>Object</strong> <code>JOBAD.UI.Sidebar.config.iconDistance</code> Minimal icon distance (in pixels) before grouping. Default: 15. </li>
-<li><p><strong>Object</strong> <code>JOBAD.UI.Sidebar.config.icons</code> Contains urls for default icons. (Depending on the class)</p></li>
-<li><p><strong>Function</strong> <code>JOBAD.UI.Sidebar.wrap(element)</code> - Wraps an element to create a sidebar UI. </p>
+<li><strong>Number</strong> <code>JOBAD.UI.Sidebar.config.width</code> Width of the sidebar. Default: 50. </li>
+<li><p><strong>Object</strong> <code>JOBAD.UI.Sidebar.config.iconDistance</code> Minimal icon distance (in pixels) before grouping. Default: 15. </p></li>
+<li><p><strong>Function</strong> <code>JOBAD.UI.Sidebar.wrap(element, align)</code> - Wraps an element to create a sidebar UI. </p>
 
 <ul>
 <li><code>element</code> a jQuery-ish object<sup class="footnote-ref" id="fnref-1"><a href="sidebar.html#fn-1">1</a></sup> to create a sidebar for. </li>
+<li><strong>String</strong> <code>align</code> Alignment for the sidebar. Either <code>right</code> (default) or <code>left</code>. </li>
 <li><strong>returns</strong> the original element, now wrapped. </li>
 </ul></li>
 <li><p><strong>Function</strong> <code>JOBAD.UI.Sidebar.unwrap(element)</code> - Unwraps an element, destroying the sidebar. </p>
@@ -498,7 +498,7 @@
 <li><code>element</code> a jQuery-ish object to remove the sidebar from. </li>
 <li><strong>returns</strong> the original element, now unwrapped. </li>
 </ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.UI.Sidebar.addNotification(sidebar, element, config)</code> - Adds a new notification to the sidebar. </p>
+<li><p><strong>Function</strong> <code>JOBAD.UI.Sidebar.addNotification(sidebar, element, config, align)</code> - Adds a new notification to the sidebar. </p>
 
 <ul>
 <li><code>sidebar</code> Sidebar to bind notification to. </li>
@@ -509,10 +509,12 @@
 <li><strong>String</strong> <code>config.icon</code> An icon to use for the notification. Default depends on <code>config.class</code>. </li>
 <li><strong>String</strong> <code>config.menu</code> A context menu for the notification. </li>
 <li><strong>Object</strong> <code>config.menuThis</code> value of <code>this</code> for menu callbacks. </li>
-<li><strong>String</strong> <code>config.text</code> A text to use for the notification. </li>
+<li><strong>String</strong> <code>config.text</code> A text to use for the notification</li>
 <li><strong>Boolean</strong> <code>config.trace</code> Highlight the original element when hovering the notification ? </li>
+<li><strong>Boolean</strong> <code>config.hide</code> If set to true, the notification will be hidden when the element is hidden. Otherwise, the notification will travel up the dom tree. </li>
 <li><strong>Function</strong> <code>config.click</code> On click callback. </li>
 </ul></li>
+<li><strong>String</strong> <code>align</code> Alignment for the sidebar if it still has to be created. </li>
 <li><strong>returns</strong> a new empty jQuery sidebar notification element. </li>
 </ul></li>
 <li><p><strong>Function</strong> <code>JOBAD.UI.Sidebar.removeNotification(notification)</code> - Removes a notification from the sidebar. </p>

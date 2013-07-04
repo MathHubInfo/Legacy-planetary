@@ -483,19 +483,77 @@
 
 <ul>
 <li><p><strong>Object</strong> <code>.modules</code> Namespace for module related functions. </p></li>
-<li><p><strong>Function</strong> <code>.modules.load(module, options, ignoreDeps=false)</code> loads a JOBAD module if not yet loaded.</p>
+<li><p><strong>Function</strong> <code>.modules.load(module, options, config)</code> Overloaded. See also below. Loads a JOBAD module if not yet loaded.</p>
 
 <ul>
 <li><strong>String</strong> <code>module</code> Name of module to load. </li>
 <li><strong>Array[Mixed]</strong> <code>options</code> Array of options to pass to the module. </li>
-<li><strong>Boolean</strong> <code>ignoredeps</code> Set to <code>true</code> to load the module without checking if its dependencies are satisfied. Defaults to <code>false</code>. </li>
-</ul></li>
-<li><strong>Function</strong> <code>.modules.loaded(module)</code> Checks if a module is loaded. 
+<li><strong>Mixed</strong> <code>config</code> Configuration for module loading. You can also use only <code>config.activate</code> or <code>config.ready</code> instead. 
 <ul>
-<li><strong>String</strong> Name of the module to check. </li>
-<li><strong>returns</strong> boolean indicating if the module is loaded. </li>
+<li><strong>Boolean</strong> <code>activate</code> Should the module be activated automatically? Default: True. </li>
+<li><strong>Function</strong> <code>load(state, module)</code> Callback when a single module in all the modules to load is loaded. 
+<ul>
+<li><strong>Boolean</strong> <code>state</code> Was loading successfull?</li>
+<li><strong>Array[String]</strong> <code>modules</code> An array containing the module loaded</li>
 </ul></li>
-<li><strong>Function</strong> <code>.modules.activate(module)</code> Activates a module. 
+<li><strong>Function</strong> <code>ready(state, modules)</code> Callback when all modules have loaded. 
+<ul>
+<li><strong>Boolean</strong> <code>state</code> Was loading successfull?</li>
+<li><strong>Array[String]</strong> <code>modules</code> An array of modules loaded. </li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.modules.load(modules, config)</code> Overloaded. See also above. Loads JOBAD modules if not yet loaded.</p>
+
+<ul>
+<li><strong>Mixed</strong> <code>modules</code> Names of module to load. May be a name-option map or an array of names or an array of <code>[name, option, activate]</code> pairs. </li>
+<li><strong>Mixed</strong> <code>config</code> Configuration for module loading. You can also use only <code>config.activate</code> or <code>config.ready</code> instead. 
+<ul>
+<li><strong>Boolean</strong> <code>activate</code> Should the module be activated automatically? Default: True. </li>
+<li><strong>Function</strong> <code>load(state, module)</code> Callback when a single module in all the modules to load is loaded. 
+<ul>
+<li><strong>Boolean</strong> <code>state</code> Was loading successfull?</li>
+<li><strong>Array[String]</strong> <code>modules</code> An array containing the module loaded</li>
+</ul></li>
+<li><strong>Function</strong> <code>ready(state, modules)</code> Callback when all modules have loaded. 
+<ul>
+<li><strong>Boolean</strong> <code>state</code> Was loading successfull?</li>
+<li><strong>Array[String]</strong> <code>modules</code> An array of modules loaded. </li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.modules.loaded(modules)</code> Checks if a set of modules is loaded. </p>
+
+<ul>
+<li><strong>String|Array[String]</strong> <code>modules</code> Name of the modules to check. </li>
+<li><strong>returns</strong> boolean indicating if the modules loaded. </li>
+</ul></li>
+<li><strong>Function</strong> <code>.modules.loadedOK(modules)</code> Checks if a set of modules is loaded fine. 
+<ul>
+<li><strong>String|Array[String]</strong> <code>modules</code> Name of the modules to check. </li>
+<li><strong>returns</strong> boolean indicating if the modules loaded without problems.</li>
+</ul></li>
+<li><strong>Function</strong> <code>.modules.loadedFail(modules)</code> Checks if a set of modules is loaded with problems. 
+<ul>
+<li><strong>String|Array[String]</strong> <code>modules</code> Name of the modules to check. </li>
+<li><strong>returns</strong> boolean indicating if the modules loaded with problems.</li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.modules.inLoadProcess(modules)</code> Checks if a set of modules is somewhere in the loading process (either loading or loaded or quenued for loading)</p>
+
+<ul>
+<li><strong>String|Array[String]</strong> <code>modules</code> Name of the modules to check. </li>
+<li><strong>returns</strong> boolean indicating if the modules are referenced somewhere.</li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.modules.once(modules, callback, scope, run)</code> Registers a callback once a certain set of modules is registered. </p>
+
+<ul>
+<li><strong>String|Array[String]</strong> <code>modules</code> Name of the modules to wait for. </li>
+<li><strong>Function</strong> <code>callback(modules, state)</code> Callback. </li>
+<li><strong>Object</strong> <code>scope</code> Scope to use for callback. Optional. Default: Current JOBADInstance. </li>
+<li><strong>Boolean</strong> <code>run</code> Should the loop for executing triggers be run immediatly? Default: True. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.modules.activate(module)</code> Activates a module. </p>
+
 <ul>
 <li><strong>String</strong> <code>module</code> The module to activate. </li>
 </ul></li>

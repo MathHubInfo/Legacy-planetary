@@ -487,6 +487,30 @@
 <li><strong>Object</strong> <a href="hover.html"><code>JOBAD.UI.hover</code></a> Namespace for the hover UI. </li>
 <li><strong>Object</strong> <a href="contextmenu.html"><code>JOBAD.UI.ContextMenu</code></a> Namespace for the Context Menu UI. </li>
 <li><strong>Object</strong> <a href="sidebar.html"><code>JOBAD.UI.Sidebar</code></a> Namespace for the Sidebar UI. </li>
+<li><strong>Object</strong> <a href="toolbar.html"><code>JOBAD.UI.Toolbar</code></a> Namespace for the Toolbar UI. </li>
+<li><strong>Object</strong> <a href="folding.html"><code>JOBAD.UI.Folding</code></a> Namespace for the Folding UI. </li>
+<li><strong>Object</strong> <a href="overlay.html"><code>JOBAD.UI.Overlay</code></a> Namespace for the Overlay UI. </li>
+<li><strong>Function</strong> <code>JOBAD.UI.highlight(element, color)</code> Highlights an element
+<ul>
+<li><strong>jQuery</strong> <code>element</code> Element to highlight. </li>
+<li><strong>String</strong> <code>color</code> Optional. Color to use. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.UI.unhighlight(element)</code> Reverts an element to its normal state. 
+<ul>
+<li><strong>jQuery</strong> <code>element</code> Element to unhighlight. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.UI.sortTableBy(element, sortFunction, callback)</code> - Sorts a table
+<ul>
+<li><strong>jQuery</strong> <code>element</code> A th in the header of the table representing by which column to sort by. </li>
+<li><strong>String|Function</strong> <code>sortFunction(a, b)</code> A string-based sorting function which sorts the table. Can also be a string: 
+<ul>
+<li><code>ascending</code> - Sort ascending</li>
+<li><code>descending</code>- Sort descending</li>
+<li><code>reset</code> - Go back to the original state</li>
+<li><code>rotate</code> - Rotate through the above. </li>
+</ul></li>
+<li><strong>Function</strong> <code>callback(state)</code> Optional. If <code>sortFunction == 'rotate'</code>,  this function will be called with the current (new) state. (0 = 'reset', 1=<code>ascending</code>, 2=<code>descending</code>)</li>
+</ul></li>
 </ul>
 
 	</body>

@@ -484,47 +484,43 @@
 <p>This object is the main JOBAD Namespace. </p>
 
 <ul>
-<li><p><strong>Function</strong> <code>JOBAD(JOBADRootElement)</code> Creates a new instance of <code>JOBAD</code> bound to <code>JOBADRootElement</code>. </p>
+<li><p><strong>Function</strong> <code>JOBAD(element, config)</code> Creates a new instance of <code>JOBAD</code> bound to <code>element</code> </p>
 
 <ul>
-<li><code>JOBADRootElement</code> a jQuery-ish object<sup class="footnote-ref" id="fnref-1"><a href="index.html#fn-1">1</a></sup> to bind a new JOBAD instance to. </li>
-<li><strong>returns</strong> a new <a href="JOBADInstance/index.html"><code>JOBAD</code></a> instance. </li>
-</ul></li>
-<li><p><strong>String</strong> <code>JOBAD.version</code> - The current JOBAD Version ('3.0.0')</p></li>
-<li><p><strong>Object</strong> <a href="JOBAD.config.html"><code>JOBAD.config</code></a> - Global Configuration namespace. </p></li>
-<li><p><strong>Array</strong> <a href="JOBAD.ifaces/index.html"><code>JOBAD.ifaces</code></a> - JOBAD ifaces</p></li>
-<li><p><strong>Object</strong> <a href="JOBAD.modules/index.html"><code>JOBAD.modules</code></a> - Namespace for global module registering. </p></li>
-<li><p><strong>Object</strong> <a href="JOBAD.events/index.html"><code>JOBAD.events</code></a> - JOBAD Event Namespace. </p></li>
-<li><p><strong>Function</strong> <code>JOBAD.isEventDisabled(evtName)</code> Checks if an event is globally disabled. </p>
-
+<li><strong>jQuery</strong> <code>element</code> a jQuery Object to bind this JOBAD INstance to. May not be empty. Collections containing more than one element may cause problems </li>
+<li><strong>Object</strong> <code>config</code> JOBAD Configuration. 
 <ul>
-<li><strong>String</strong> <code>evtName</code> Name of the event to check. </li>
-<li><strong>returns</strong> a boolean. </li>
+<li><strong>String</strong> <code>config.sidebar_type</code> Type of sidebar to use: <code>right</code> (default), <code>left</code> or <code>bound</code></li>
+<li><strong>Array</strong> <code>config.restricted_user_config</code> An array of configuration items which can not be changed by the user</li>
 </ul></li>
-<li><p><strong>Object</strong> <a href="JOBAD.UI/index.html"><code>JOBAD.UI</code></a> - Global UI Namespace. </p></li>
-<li><p><strong>Object</strong> <a href="JOBAD.refs.html"><code>JOBAD.refs</code></a> - Contains internal references to  JOBADs dependencies. </p></li>
-<li><p><strong>Function</strong> <a href="JOBAD.noConflict.html"><code>JOBAD.noConflict</code></a> - Provides a way to free the variables used by JOBADs dependencies. </p></li>
-<li><p><strong>Object</strong> <a href="JOBAD.storageBackend.html"><code>JOBAD.storageBackend</code></a> - Storage Backend namespace. </p></li>
-<li><p><strong>Object</strong> <a href="JOBAD.util.html"><code>JOBAD.util</code></a> - Contains Utility functions. </p></li>
-<li><p><strong>Object</strong> <a href="JOBAD.resources.html"><code>JOBAD.resources</code></a> - JOBAD Text Resources</p></li>
-<li><p><strong>Object</strong> <a href="JOBAD.console.html"><code>JOBAD.console</code></a> - Wraps the native console object if available. </p></li>
-<li><strong>Function</strong> <code>JOBAD.error(msg)</code> Produces an error message. 
+<li><strong>returns</strong> a new <a href="JOBADInstance/index.html"><code>JOBAD</code></a> instance</li>
+</ul></li>
+<li><p><strong>String</strong> <code>JOBAD.version</code> - The current JOBAD Version ('3.1.6')</p></li>
+<li><strong>Function</strong> <code>JOBAD.error(msg)</code> - Produces an error message
 <ul>
-<li><strong>String</strong> <code>msg</code> The message to produce. </li>
+<li><strong>String</strong> <code>msg</code> The message to produce</li>
 </ul></li>
-<li><strong>Function</strong> <code>JOBAD.toString()</code></li>
+<li><strong>Function</strong> <code>JOBAD.isEventDisabled(name)</code> - Checks if an event is globally disabled
+<ul>
+<li><strong>String</strong> <code>name</code> Name of the event to check</li>
+<li><strong>returns</strong> a boolean</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.noConflict()</code> - Restores the variable $ created by jQuery to its previous state. 
+<ul>
+<li><strong>returns</strong> a reference to jQuery</li>
+</ul></li>
+<li><strong>Array</strong> <a href="JOBAD.ifaces/index.html"><code>JOBAD.ifaces</code></a> - JOBAD ifaces</li>
+<li><strong>Object</strong> <a href="JOBAD.config.html"><code>JOBAD.config</code></a> - Configuration namespace</li>
+<li><strong>Object</strong> <a href="JOBAD.console.html"><code>JOBAD.console</code></a> - Wraps the native console object if available</li>
+<li><strong>Object</strong> <a href="JOBAD.events/index.html"><code>JOBAD.events</code></a> - Event namespace</li>
+<li><strong>Object</strong> <a href="JOBAD.modules/index.html"><code>JOBAD.modules</code></a> - Module namespace</li>
+<li><strong>Object</strong> <a href="JOBAD.refs.html"><code>JOBAD.refs</code></a> - Contains internal references to  JOBADs dependencies</li>
+<li><strong>Object</strong> <a href="JOBAD.resources.html"><code>JOBAD.resources</code></a> - Text and icon resources namespace</li>
+<li><strong>Object</strong> <a href="JOBAD.Sidebar.html"><code>JOBAD.Sidebar</code></a> - Namespace for the sidebar</li>
+<li><strong>Object</strong> <a href="JOBAD.storageBackend.html"><code>JOBAD.storageBackend</code></a> - Storage Backend namespace</li>
+<li><strong>Object</strong> <a href="JOBAD.UI/index.html"><code>JOBAD.UI</code></a> - UI Namespace</li>
+<li><strong>Object</strong> <a href="JOBAD.util.html"><code>JOBAD.util</code></a> - Contains Utility functions</li>
 </ul>
-
-<h2>Footnotes</h2>
-
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn-1">
-<p>A jQuery-ish object is any object that can be passed to the main jQuery function, for example a document node or a jQuery selector.&nbsp;<a href="index.html#fnref-1" class="footnoteBackLink" title="Jump back to footnote 1 in the text.">&#8617;</a></p>
-</li>
-</ol>
-</div>
 
 	</body>
 </html>

@@ -499,6 +499,93 @@
 
 <p>The official JOBAD repository is located at <a href="https://github.com/KWARC/jobad">https://github.com/KWARC/jobad</a>. </p>
 
+<h2>Changelog</h2>
+
+<h3>Version 3.1.6 (Stable)</h3>
+
+<ul>
+<li>improved repository override urls</li>
+<li>removed build submodules, made them static</li>
+<li>fixed 'failed to load module: undefined' error messages</li>
+</ul>
+
+<h3>Version 3.1.5</h3>
+
+<ul>
+<li>made module loading asynchronous </li>
+<li>added repositories
+<ul>
+<li>a nice way to store modules in</li>
+<li>can be loaded dynamically loaded from code</li>
+</ul></li>
+<li>added "externals" to module info
+<ul>
+<li>allows to load external scripts as dependencies</li>
+<li>added a MathJax module which uses this</li>
+<li>allowing globalinit functions to be async if a module info peropety <code>async</code> is set to true. </li>
+</ul></li>
+<li>added <code>url</code> to module info, to provide a module homepage</li>
+<li>improved globalStore, localStore and UserConfig
+<ul>
+<li>you can now get and set multiple values at once</li>
+<li>UserConfig and globalStore now accessible outside of loadedModule Instances (via JOBAD.modules.globalStore and JOBAD.UserConfig)</li>
+</ul></li>
+<li>added <code>.UserConfig.setMessage</code> and <code>.UserConfig.getMessage</code></li>
+<li>improved ToolBar, now supports icons</li>
+<li>minor CSS fixes</li>
+<li>more doc updates</li>
+</ul>
+
+<h3>Version 3.1.0</h3>
+
+<ul>
+<li>improved Sidebar
+<ul>
+<li>added sidebar postions: left, right and bound to element. </li>
+<li>default width reduced to 50px. </li>
+</ul></li>
+<li>improved UserConfig
+<ul>
+<li>added cookie storageBackend</li>
+<li>improved the config UI</li>
+</ul></li>
+<li>removed Underscore as a dependency
+<ul>
+<li>it is now included in the <code>JOBAD.util</code> namespace, <code>JOBAD.refs._</code> has been removed. </li>
+</ul></li>
+<li>added marking elements as hidden or visible so they can be ignored by events &amp; UI. </li>
+<li>split up JOBAD into event more files; added folders for more structure in code. </li>
+<li>added JOBAD Folding
+<ul>
+<li>allows to fold elements, at the moment only usable via code. </li>
+<li>either on the left or on the right. </li>
+<li>always inside of the sidebar. </li>
+</ul></li>
+<li>added the radial menu (also known as the icon menu)
+<ul>
+<li>as an alternative to the normal menu. </li>
+<li>only configurable via code. </li>
+<li>also allowing custom icons</li>
+</ul></li>
+<li>added configUpdate event</li>
+<li>added doubleClick event</li>
+<li>split up the CSS in one JOBAD.css file and one user-configurable JOBAD.theme.css file. </li>
+<li>updated jQuery to version 2.0.2</li>
+<li>updated the documentation (a lot)</li>
+</ul>
+
+<h3>Version 3.0.1</h3>
+
+<ul>
+<li>minor bug fixes</li>
+</ul>
+
+<h3>Version 3.0.0</h3>
+
+<ul>
+<li>Initial stable release</li>
+</ul>
+
 <h2>License</h2>
 
 <pre><code>Copyright (C) 2013 KWARC Group &lt;kwarc.info&gt;
@@ -516,6 +603,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with JOBAD.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 </code></pre>
+
+<p>This project includes Underscore 1.4.4, which is licensed under <a href="https://github.com/documentcloud/underscore/blob/master/LICENSE">MIT License</a>. </p>
 
 <h2>See also</h2>
 

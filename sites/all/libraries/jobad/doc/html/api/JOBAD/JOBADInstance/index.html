@@ -484,14 +484,21 @@
 <p>An instance of <code>JOBAD</code> has the following properties: </p>
 
 <ul>
-<li><p><strong>jQuery</strong> <code>.element</code> The element this JOBAD instance is bound to. </p></li>
+<li><strong>jQuery</strong> <code>.element</code> The element this JOBAD instance is bound to. </li>
+<li><p><strong>String</strong> <code>.ID</code> An Id identifiing this JOABD Instance. (Note: This changes every time the JOBADInstance is re-created)</p></li>
 <li><p><strong>Object</strong> <a href="setup.html"><code>.Setup</code></a> Namespace for setup functions</p></li>
 <li><strong>Object</strong> <a href="modules.html"><code>.modules</code></a> Namespace for module related functions. </li>
+<li><strong>Object</strong> <a href="Config.html"><code>.Config</code></a> JOBAD Configuration namespace. </li>
 <li><strong>Object</strong> <a href="event/index.html"><code>.Event</code></a> Namespace for event related functions. </li>
 <li><strong>Object</strong> <a href="sidebar.html"><code>.Sidebar</code></a> Namespace for Sidebar Functions. </li>
-<li><strong>Object</strong> <a href="UserConfig.html"><code>.UserConfig</code></a> Namespace for User Configuration. </li>
+<li><strong>Object</strong> <a href="folding.html"><code>.Folding</code></a> Namespace for Folding Functions. </li>
 <li><strong>Array</strong> <code>.args</code> An array containing the parameters originally parsed to the module constructor. </li>
 <li><strong>Function</strong> <code>.showConfigUI()</code> Displays the configuration UI. </li>
+<li><strong>Function</strong> <code>.contains(element)</code> - Checks if <code>element</code> is a memer of this JOBADInstance. 
+<ul>
+<li><strong>jQuery</strong> Element to check. </li>
+<li><strong>returns</strong> boolean. </li>
+</ul></li>
 </ul>
 
 	</body>

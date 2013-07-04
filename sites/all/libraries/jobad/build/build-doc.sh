@@ -1,7 +1,8 @@
 #!/bin/bash
 
-echo "JOBAD Doc build script"
+BASE_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+echo "JOBAD Doc build script"
 echo "Checking build requirements ..."
 
 printf "Python ... "
@@ -34,10 +35,10 @@ RETVAL=$?
 [ $RETVAL -ne 0 ] && echo "FAIL" && echo "Abort: Python module BeautifulSoup 4 not found. " && exit 
 
 printf "Cleaning up previous build ..."
-rm -r ../doc/html
+rm -r $BASE_PATH/../doc/html
 echo "OK"
 echo "Building JOBAD Doc ..."
 
-python deps/PythonMarkdownCompiler/md-render2.py --render md  -t "[%] - JOBAD Documentation" -s sitemap.md --header config/doc_header.txt -st "Index" -sh ../doc/md ../doc/html
+python $BASE_PATH/deps/PythonMarkdownCompiler/md-render2.py --render md  -t "[%] - JOBAD Documentation" -s sitemap.md --header $BASE_PATH/config/doc_header.txt -st "Index" -sh $BASE_PATH/../doc/md $BASE_PATH/../doc/html
 echo "OK"
 exit 0

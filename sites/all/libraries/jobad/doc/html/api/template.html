@@ -486,18 +486,21 @@
 <ul>
 <li><strong>Object</strong> <code>template.info</code> Module information namespace. </li>
 <li><strong>String</strong> <code>template.info.identifier</code> A unique identifier for the module. </li>
-<li><strong>String</strong> <code>template.info.title</code> Module title</li>
+<li><strong>String</strong> <code>template.info.title</code> Module title. </li>
 <li><strong>String</strong> <code>template.info.author</code> The module author. </li>
 <li><strong>String</strong> <code>template.info.description</code> A human readable description of the module. </li>
+<li><strong>String</strong> <code>template.info.url</code> Website URL of module if available, otherwise false. </li>
 <li><strong>String</strong> <code>template.info.version</code> String containing the version number. May be omitted. </li>
 <li><strong>String</strong> <code>template.info.hasCleanNamespace</code> Booelan indicating if the namespace of this moudle contains other, custom, properties which should be copied over. If so, they will be copied to any module instance and <code>this</code> inside of any of the functions can refer to it. Note that this may be shared among different instances of the module since javascript creates references to JSON-style objects. Can also be disabled globally by configuration in which case non-clean modules will not load. Property may be omitted in which case it is assumed to be true. </li>
-<li><p><strong>Array[String]</strong> <code>template.info.dependencies</code> Array of module dependencies. If ommited, assumed to have no dependencies. </p></li>
+<li><strong>Array[String]</strong> <code>template.info.dependencies</code> Array of module dependencies. If ommited, assumed to have no dependencies. </li>
+<li><strong>Array[String]</strong> <code>template.info.externals</code> Array of script urls which are external dependencies of the module. </li>
+<li><p><strong>Array[String]</strong> <code>template.info.async</code> Determines if the globalinit function is async, i. e. if it gets a function as callback. </p></li>
 <li><p><strong>Object</strong> <code>template.config</code> Specification of user configurable objects. A map containing (<code>name</code>, <code>spec</code>) values. The <code>spec</code> object looks like the following:</p>
 
 <ul>
 <li><strong>Array[3|4]</strong> <code>spec</code> Contains the specification. 
 <ul>
-<li><strong>String</strong> <code>spec[0] = type</code> The type of the setting: <code>string</code> (a string), <code>bool</code> (a boolean), <code>number</code> (a number), <code>integer</code> (an integer) or <code>list</code> (a list of different values to select from). </li>
+<li><strong>String</strong> <code>spec[0] = type</code> The type of the setting: <code>string</code> (a string), <code>bool</code> (a boolean), <code>number</code> (a number), <code>integer</code> (an integer), <code>list</code> (a list of different values to select from) or <code>none</code> (hidden from user, can be anything). </li>
 <li><strong>Mixed</strong> <code>spec[1] = restrictions</code> Restrictions to apply for setting. Optional if type if not <code>list</code>. 
 <ul>
 <li>for <code>string</code>: a regular expression or a function <code>check(value)</code> which returns a boolean. </li>
@@ -508,44 +511,72 @@
 <li><strong>Mixed</strong> <code>spec[2|1] = default</code> Default value for the setting. Must match the restrictions (if applicable). </li>
 <li><strong>Mixed</strong> <code>spec[3|2] = meta</code> Meta information. If type is not <code>list</code>, may either be a string (with name of setting) 
 or an array containg the name of the setting and optionally a longer description of this setting. For <code>list</code>, this must be an array containg the setting name 
-and the name of each option.  </li>
+and the name of each option. <br />
+There is also the special option type 'none', which represents a hidden setting which can not be changed by the user. It has a default but no validator and no meta. </li>
 </ul></li>
 </ul></li>
-<li><p><strong>Function</strong> <code>template.globalinit()</code> Called exactly once GLOBALLY. Can be used to initialise global module ids, etc. May be ommitted. Will be called once a module is loaded. </p>
+<li><p><strong>Function</strong> <code>template.configUpdate(key, JOBADInstance)</code> Called every time a user configuration is updated.  </p>
 
 <ul>
-<li><strong>Undefined</strong> <code>this</code></li>
+<li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
+<li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
+<li><strong>Mixed</strong> <code>key</code> The configuration setting that was updated. </li>
 </ul></li>
-<li><strong>Function</strong> <code>template.init(JOBADInstance, param1, param2, param3 /*, ... */)</code> Called to intialise a new instance of this module. 
+<li><p><strong>Function</strong> <code>template.globalinit(next)</code> Called exactly once GLOBALLY. Can be used to initialise global module ids, etc. May be ommitted. Will be called once a module is loaded. </p>
+
+<ul>
+<li><strong>Object</strong> <code>this</code> Special Object which contains all additional functions of the module object and the following properties of a loadedModule Object: 
+<ul>
+<li><code>info</code></li>
+<li><code>globalStore</code></li>
+<li>``</li>
+</ul></li>
+<li><strong>Function</strong> <code>next()</code> Only given if <code>info.async</code> is true. Callback this function should call once ready. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>template.init(JOBADInstance, param1, param2, param3 /*, ... */)</code> Called to intialise a new instance of this module. </p>
+
 <ul>
 <li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
 <li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
 <li><strong>Mixed</strong> <code>*param</code> Initial parameters passed to <a href="JOBAD/JOBADInstance/modules.html"><code>JOBADInstance.modules.load</code></a>. </li>
 </ul></li>
-<li><strong>Function</strong> <code>template.activate(JOBADInstance)</code> Called whenever the module is activated. 
+<li><p><strong>Function</strong> <code>template.activate(JOBADInstance)</code> Called whenever the module is activated. </p>
+
 <ul>
 <li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
 <li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
 </ul></li>
-<li><strong>Function</strong> <code>template.deactivate(JOBADInstance)</code> Called whenever the module is deactivated. 
+<li><p><strong>Function</strong> <code>template.deactivate(JOBADInstance)</code> Called whenever the module is deactivated. </p>
+
 <ul>
 <li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
 <li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
 </ul></li>
-<li><strong>Function</strong> <code>template.onSideBarUpdate(target, JOBADInstance)</code> Called every time the sidebar is updated. May be ommitted. 
+<li><p><strong>Function</strong> <code>template.SideBarUpdate(target, JOBADInstance)</code> Called every time the sidebar is updated. May be ommitted. </p>
+
 <ul>
 <li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
 <li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
-<li><strong>returns</strong> a text, a jQuery-ish object<sup class="footnote-ref" id="fnref-1"><a href="template.html#fn-1">1</a></sup> or a boolean indicating either the text or if something was done. </li>
+<li><strong>returns</strong> a text, a jQuery-ish object[^1] or a boolean indicating either the text or if something was done. </li>
 </ul></li>
-<li><strong>Function</strong> <code>template.leftClick(target, JOBADInstance)</code> Called when a left click is performed.  Every left click action is performed. May be ommitted. 
+<li><p><strong>Function</strong> <code>template.leftClick(target, JOBADInstance)</code> Called when a left click is performed. May be ommitted. </p>
+
 <ul>
 <li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
 <li><strong>jQuery</strong> <code>target</code> The element that was left clicked on. </li>
 <li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
 <li><strong>returns</strong> <code>true</code> if it performed some action, <code>false</code> otherwise. </li>
 </ul></li>
-<li><strong>Function</strong> <code>template.contextMenuEntries(target, JOBADInstance)</code> Called when a context menu is requested. Context Menu entries will be merged. May be ommitted. 
+<li><p><strong>Function</strong> <code>template.dblClick(target, JOBADInstance)</code> Called when a double click is performed. May be ommitted. </p>
+
+<ul>
+<li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
+<li><strong>jQuery</strong> <code>target</code> The element that was double clicked on. </li>
+<li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
+<li><strong>returns</strong> <code>true</code> if it performed some action, <code>false</code> otherwise. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>template.contextMenuEntries(target, JOBADInstance)</code> Called when a context menu is requested. Context Menu entries will be merged. May be ommitted. </p>
+
 <ul>
 <li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
 <li><strong>jQuery</strong> <code>target</code> The element that was right clicked on. </li>
@@ -565,7 +596,7 @@ and the name of each option.  </li>
 <li><strong>Instance[ <a href="JOBAD/JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>this</code> The current module instance. </li>
 <li><strong>jQuery</strong> <code>target</code> The element that was hovered clicked on. </li>
 <li><strong>Instance[ <a href="JOBAD/JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> The instance of JOBAD the module is initiated on. </li>
-<li><strong>returns</strong> a text, a jQuery-ish object<sup class="footnote-ref" id="fnref-1"><a href="template.html#fn-1">2</a></sup> or a boolean indicating either the text or if something was done. </li>
+<li><strong>returns</strong> a text, a jQuery element or a boolean indicating either the text or if something was done. </li>
 </ul></li>
 <li><strong>Function</strong> <code>template.onEvent(event, element, JOBADInstance)</code> Called when an onEvent handler is requested. May be ommitted. 
 <ul>
@@ -579,23 +610,8 @@ and the name of each option.  </li>
 <h2>See also</h2>
 
 <ul>
-<li><a href="../dev/modules.html">Getting started with modules</a></li>
+<li><a href="../intro/modules.html">Getting started with modules</a></li>
 </ul>
-
-<h2>Footnotes</h2>
-
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn-1">
-<p>A jQuery-ish object is any object that can be passed to the main jQuery function, for example a document node or a jQuery selector.&nbsp;<a href="template.html#fnref-1" class="footnoteBackLink" title="Jump back to footnote 1 in the text.">&#8617;</a></p>
-</li>
-
-<li id="fn-1">
-<p>A jQuery-ish object is any object that can be passed to the main jQuery function, for example a document node or a jQuery selector.&nbsp;<a href="template.html#fnref-1" class="footnoteBackLink" title="Jump back to footnote 2 in the text.">&#8617;</a></p>
-</li>
-</ol>
-</div>
 
 	</body>
 </html>

@@ -482,10 +482,34 @@
 <h1>JOBAD.resources</h1>
 
 <ul>
-<li><strong>String</strong> <code>JOBAD.resources.gpl_v3_text</code> The GPL v3 License Text</li>
-<li><strong>String</strong> <code>JOBAD.resources.jquery_license</code> jQuery License Text</li>
-<li><strong>String</strong> <code>JOBAD.resources.jqueryui_license</code> jQuery UI License Text</li>
-<li><strong>String</strong> <code>JOBAD.resources.jobad_license</code> JOBAD License Text</li>
+<li><strong>Function</strong> <code>JOBAD.resources.provide(type, name, value)</code> - Provide a new resource for others to use
+<ul>
+<li><strong>String</strong> <code>type</code> Either 'text' or 'icon'</li>
+<li><strong>String</strong> <code>name</code> Name of new resource to provide. Can also be a <code>name</code> - <code>value</code> map</li>
+<li><strong>String</strong> <code>value</code> Resource value</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.resources.available(type, name)</code> - Checks if a resource is available
+<ul>
+<li><strong>String</strong> <code>type</code> Either 'text' or 'icon'</li>
+<li><strong>String</strong> <code>name</code> Name of resource to check for</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.resources.getIconResource(name, alternatives)</code> - Gets the specefied icon resource. May also be a url to an unknown resource
+<ul>
+<li><strong>String</strong> <code>name</code> Name of resource to get.</li>
+<li><strong>Object</strong> <code>alternatives</code> Optional. An object to override resource names</li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.resources.getTextResource(name)</code> - Gets the specefied text resource</p>
+
+<ul>
+<li><strong>String</strong> <code>name</code> Name of resource to get</li>
+</ul></li>
+<li><p><strong>Object</strong> <code>JOBAD.resources.text</code> - Contains text resources</p></li>
+<li><strong>String</strong> <code>JOBAD.resources.text.gpl_v3_text</code> - The GPL v3 License Text</li>
+<li><strong>String</strong> <code>JOBAD.resources.text.jquery_license</code> - jQuery License Text</li>
+<li><strong>String</strong> <code>JOBAD.resources.text.jqueryui_license</code> - jQuery UI License Text</li>
+<li><strong>String</strong> <code>JOBAD.resources.text.jobad_license</code> - JOBAD License Text</li>
+<li><strong>String</strong> <code>JOBAD.resources.text.underscore_license</code> - Underscore License Text</li>
+<li><strong>Object</strong> <code>JOBAD.resources.icons</code> - Contains urls for icons. Mostly used for notifications</li>
 </ul>
 
 	</body>

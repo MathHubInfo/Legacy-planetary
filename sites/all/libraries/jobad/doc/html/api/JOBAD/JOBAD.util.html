@@ -481,63 +481,152 @@
 <p><a href="../../index.html">Start</a> &gt; <a href="../index.html">API Documentation</a> &gt; <a href="index.html">JOBAD</a> &gt; <strong>JOBAD.util</strong></p>
 <h1>JOBAD.util</h1>
 
-<ul>
-<li><strong>Function</strong> <code>JOBAD.util.UID()</code> Gets a unique id which can be used as identifier. </li>
-<li><strong>Function</strong> <code>JOBAD.util.bindEverything(object, thisObject)</code> Binds every function in <code>object</code> to <code>thisObject</code>. Also includes nested namespaces. 
-<ul>
-<li><strong>object</strong> <code>object</code> Object to bind functions in. </li>
-<li><strong>object</strong> <code>thisObject</code> Object to bind functions to. </li>
-<li><strong>returns</strong> a new object containing the bound functions. </li>
-</ul></li>
-<li><strong>Function</strong> <code>JOBAD.util.generateMenuList(menu)</code> Generates a list menu representation from an object representation. 
-<ul>
-<li><strong>Object</strong> <code>menu</code> an object representation of the menu. </li>
-<li><strong>returns</strong> the new representation. </li>
-</ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.util.fullWrap(menu, callback)</code> Wraps a menu callback with the spacefied wrapper</p>
+<p>In addition to these functions, JOBAD.util also contains all underscore (version 1.4.4) functions. See their documentation at <a href="http://underscorejs.org/">underscorejs.org</a>. </p>
 
 <ul>
-<li><strong>Object</strong> <code>menu</code> The menu to wrap. </li>
-<li><strong>Function</strong> <code>wrapper(org, arguments)</code> The wrapper function. </li>
-<li><strong>returns</strong> the new representation. </li>
-</ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.util.createRadio(texts, start)</code> Creates a jQuery UI radio button. </p>
-
+<li><strong>Function</strong> <code>JOBAD.util.UID()</code> - Gets a unique id which can be used as identifier</li>
+<li><strong>Function</strong> <code>JOBAD.util.objectEquals(a, b)</code> - Checks if two objects are equal</li>
+<li><strong>Function</strong> <code>JOBAD.util.bindEverything(object, thisObject)</code> - Binds every function in <code>object</code> to <code>thisObject</code>. Also includes nested namespaces
 <ul>
-<li><strong>Array</strong> <code>texts</code> Texts to use as names. </li>
-<li><strong>number</strong> <code>start</code> Identifier of the initial value.  </li>
-<li><strong>returns</strong> jQuery object. </li>
+<li><strong>object</strong> <code>object</code> Object to bind functions in</li>
+<li><strong>object</strong> <code>thisObject</code> Object to bind functions to</li>
+<li><strong>returns</strong> a new object containing the bound functions</li>
 </ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.util.createTabs(names, tabs, options, height)</code> Creates a jQuery UI tabs. </p>
-
+<li><strong>Function</strong> <code>JOBAD.util.argWrap(func, wrap)</code> - Applies a function to the arguments of a function every time it is called
 <ul>
-<li><strong>Array</strong> <code>names</code> Texts to use as names for tab titles. </li>
-<li><strong>Array</strong> <code>tabs</code> Elements to use as tabs. </li>
-<li><strong>Array</strong> <code>options</code> Options to pass to jQuery UI Tabs. </li>
-<li><strong>number</strong> <code>height</code> Optional. Height of the tabs. </li>
-<li><strong>returns</strong> jQuery object. </li>
+<li><strong>Function</strong> <code>func()</code> Function to wrap</li>
+<li><strong>Function</strong> <code>wrap(original_arguments)</code> Wrapper Function</li>
 </ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.util.createProperUserSettingsObject(obj, modName)</code> Creates a proper User Settings Object. </p>
-
+<li><strong>Function</strong> <code>JOBAD.util.argSlice(func, from, to)</code> - Applies Array.slice to the arguments of a function every time it is called
 <ul>
-<li><strong>Object</strong> <code>obj</code> Configuration Object</li>
-<li><strong>String</strong> <code>modName</code> Identifier of the module. </li>
+<li><strong>Function</strong> <code>func()</code> Function to wrap</li>
+<li><strong>Number</strong> <code>from</code> </li>
+<li><strong>Number</strong> <code>to</code></li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.createRadio(texts, start)</code> - Creates a jQuery UI radio button
+<ul>
+<li><strong>Array</strong> <code>texts</code> Texts to use as names</li>
+<li><strong>number</strong> <code>start</code> Identifier of the initial value</li>
+<li><strong>returns</strong> jQuery object</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.createTabs(names, tabs, options, height)</code> - Creates a jQuery UI tabs
+<ul>
+<li><strong>Array</strong> <code>names</code> Texts to use as names for tab titles</li>
+<li><strong>Array</strong> <code>tabs</code> Elements to use as tabs</li>
+<li><strong>Array</strong> <code>options</code> Options to pass to jQuery UI Tabs</li>
+<li><strong>number</strong> <code>height</code> Optional. Height of the tabs</li>
+<li><strong>returns</strong> jQuery object</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.closest(element, check)</code> - Similar to jQuery's closest. Travels up the DOM tree and finds the first element which matches check. This includes element itself
+<ul>
+<li><strong>jQuery</strong> <code>element</code> Element to start with</li>
+<li><strong>String</strong> <code>check</code> Check to perform. Either a function <code>check(element)</code> or a jQuery selector</li>
 <li><strong>returns</strong> object</li>
 </ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.util.getDefaultConfigSetting</code> Gets the default of a configuration object. </p>
-
+<li><strong>Function</strong> <code>JOBAD.util.markHidden(element)</code> - Marks an element as hidden
 <ul>
-<li><strong>Object</strong> <code>obj</code> Configuration Object</li>
-<li><strong>String</strong> <code>key</code> Key to get. </li>
-<li><strong>returns</strong> object</li>
+<li><strong>jQuery</strong> <code>element</code> Element to mark as hidden</li>
 </ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.util.validateConfigSetting(obj, key, val)</code> Validates if the specefied object of a configuration object can be set. </p>
+<li><strong>Function</strong> <code>JOBAD.util.markVisible(element)</code> - Marks an element as visible
+<ul>
+<li><strong>jQuery</strong> <code>element</code> Element to mark as visible</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.markDefault(element)</code> - Removes any marking from an element
+<ul>
+<li><strong>jQuery</strong> <code>element</code> Element to remove marking from</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.isMarkedHidden(element)</code> - Checks if an element is marked as hidden
+<ul>
+<li><strong>jQuery</strong> <code>element</code> Element to check</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.isMarkedVisible(element)</code> - Checks if an element is marked as visible. 
+<ul>
+<li><strong>jQuery</strong> <code>element</code> Element to check</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.isHidden(element)</code> - Checks if an element is hidden
+<ul>
+<li><strong>jQuery</strong> <code>element</code> Element to check</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.defined(obj)</code> - Checks if <code>obj</code> is defined and returns it if so. Otherwise returns an empty JSON-object
+<ul>
+<li><strong>Object</strong> <code>obj</code> Object to check</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.forceBool(obj, def)</code> - Forces <code>obj</code> to be of type boolean
+<ul>
+<li><strong>Object</strong> <code>obj</code> Object to check</li>
+<li><strong>Object</strong> <code>def</code> Optional. Default to use. If undefined, obj will be forced into a boolean. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.forceFunction(obj, def)</code> - Forces <code>obj</code> to be a function
+<ul>
+<li><strong>Object</strong> <code>obj</code> Object to check</li>
+<li><strong>Object</strong> <code>def</code> Optional. Default function to use. If not a function, will return a function which retruns def. If omitetd will use <code>obj</code> as <code>def</code></li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.ifType(obj, type, def)</code> - If <code>obj</code> is not of type <code>type</code>, will return <code>def</code>, otherwise return <code>obj</code></li>
+<li><strong>Function</strong> <code>JOBAD.util.equalsIgnoreCase(a, b)</code> - Checks if two strings are equal, ignoring case. </li>
+<li><strong>Function</strong> <code>JOBAD.util.orderTree(element)</code> - Return an order jQuery collection of element, where they are sorted by depth (deepest first)
+<ul>
+<li><strong>jQuery</strong> <code>element</code> Elements to sort</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.isUrl(url)</code> - Checks if string is a valid url. Includes data urls. 
+<ul>
+<li><strong>String</strong> <code>url</code> String to check. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.startsWith(str, start)</code> - Checks if the string <code>str</code> starts with the string <code>start</code>. </li>
+<li><strong>Function</strong> <code>JOBAD.util.lOr()</code> - Performs a logical or on all arguments given to it. Note: This method flattens all arguments. </li>
+<li><strong>Function</strong> <code>JOBAD.util.lAnd()</code> - Performs a logical and on all arguments given to it. Note: This method flattens all arguments. </li>
+<li><strong>Function</strong> <code>JOBAD.util.containsAll(container, contained, includeSelf)</code> - Checks if all elements in <code>contained</code> are contained somewhere in <code>container</code>. 
+<ul>
+<li><strong>jQuery</strong> <code>container</code> Container to look in. </li>
+<li><strong>jQuery</strong> <code>contained</code> Contained elements to look for. </li>
+<li><strong>Boolean</strong> <code>includeSelf</code> Optional. Include the container element iteself in the search. Default: False. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.loadExternalJS(names, callback, scope)</code> - Loads one or more external JavaScript files. 
+<ul>
+<li><strong>Array|String</strong> <code>names</code> Name (URL) of file to load or array of file names. </li>
+<li><strong>Function</strong> <code>callback(urls, success)</code> Callback once files have loaded
+<ul>
+<li><strong>this</strong> <code>scope</code></li>
+<li><strong>Array</strong> <code>urls</code> Originally given urls. </li>
+<li><strong>Boolean</strong> <code>success</code> Have the files been loaded or has there been a timeout?</li>
+</ul></li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.escapeHTML(str)</code> - Escapes a string for use within html. 
+<ul>
+<li><strong>String</strong> <code>str</code> String to escape</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.resolve(url, base, isDir)</code> - Resolves a url. 
+<ul>
+<li><strong>String</strong> <code>url</code> Url to resolve. </li>
+<li><strong>String</strong> <code>base</code> Optional. A Base url. </li>
+<li><strong>Boolean</strong> <code>isDir</code> Assume a directory.  </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.on(query, event, handler)</code> - Adds an event listener to a query. 
+<ul>
+<li><strong>jQuery</strong> <code>query</code> A jQuery element to use as query. </li>
+<li><strong>String</strong> <code>event</code> Event to listen to. </li>
+<li><em>*Function</em> <code>handler(param1, param2, ...)</code> Event listener</li>
+<li><strong>returns</strong> Id of the newly added handler. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.util.once(query, event, handler)</code> - Adds a one-time  event listener to a query. </p>
 
 <ul>
-<li><strong>Object</strong> <code>obj</code> Configuration Object</li>
-<li><strong>String</strong> <code>key</code> Key to validate. </li>
-<li><strong>Object</strong> <code>value</code> Value to vaildate. </li>
-<li><strong>returns</strong> boolean. </li>
+<li><strong>jQuery</strong> <code>query</code> A jQuery element to use as query. </li>
+<li><strong>String</strong> <code>event</code> Event to listen to. </li>
+<li><em>*Function</em> <code>handler(param1, param2, ...)</code> Event listener</li>
+<li><strong>returns</strong> Id of the newly added handler. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.util.off(query, id)</code> - Removes an event listener from a query. </p>
+
+<ul>
+<li><strong>jQuery</strong> <code>query</code> A jQuery element to use as query. </li>
+<li><strong>String</strong> <code>id</code> Id of handler to remove. </li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.trigger(query, event, params)</code> - Triggers an event on a query. 
+<ul>
+<li><strong>jQuery</strong> <code>query</code> A jQuery element to use as query. </li>
+<li><strong>String</strong> <code>event</code> Event to trigger. </li>
+<li><strong>Array</strong> <code>params</code> Optional. Array of parameters to pass to event handlers.</li>
+<li><strong>returns</strong> <code>Array of results</code></li>
 </ul></li>
 </ul>
 

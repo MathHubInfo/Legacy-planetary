@@ -4,16 +4,19 @@ This object can be used as a termplate for module objects. **Note:** The code fo
 
 * **Object** `template.info` Module information namespace. 
 * **String** `template.info.identifier` A unique identifier for the module. 
-* **String** `template.info.title` Module title
+* **String** `template.info.title` Module title. 
 * **String** `template.info.author` The module author. 
 * **String** `template.info.description` A human readable description of the module. 
+* **String** `template.info.url` Website URL of module if available, otherwise false. 
 * **String** `template.info.version` String containing the version number. May be omitted. 
 * **String** `template.info.hasCleanNamespace` Booelan indicating if the namespace of this moudle contains other, custom, properties which should be copied over. If so, they will be copied to any module instance and `this` inside of any of the functions can refer to it. Note that this may be shared among different instances of the module since javascript creates references to JSON-style objects. Can also be disabled globally by configuration in which case non-clean modules will not load. Property may be omitted in which case it is assumed to be true. 
 * **Array[String]** `template.info.dependencies` Array of module dependencies. If ommited, assumed to have no dependencies. 
+* **Array[String]** `template.info.externals` Array of script urls which are external dependencies of the module. 
+* **Array[String]** `template.info.async` Determines if the globalinit function is async, i. e. if it gets a function as callback. 
 
 * **Object** `template.config` Specification of user configurable objects. A map containing (`name`, `spec`) values. The `spec` object looks like the following:
 	* **Array[3|4]** `spec` Contains the specification. 
-		* **String** `spec[0] = type` The type of the setting: `string` (a string), `bool` (a boolean), `number` (a number), `integer` (an integer) or `list` (a list of different values to select from). 
+		* **String** `spec[0] = type` The type of the setting: `string` (a string), `bool` (a boolean), `number` (a number), `integer` (an integer), `list` (a list of different values to select from) or `none` (hidden from user, can be anything). 
 		* **Mixed** `spec[1] = restrictions` Restrictions to apply for setting. Optional if type if not `list`. 
 			* for `string`: a regular expression or a function `check(value)` which returns a boolean. 
 			* for `bool`: N/A
@@ -23,28 +26,51 @@ This object can be used as a termplate for module objects. **Note:** The code fo
 		* **Mixed** `spec[3|2] = meta` Meta information. If type is not `list`, may either be a string (with name of setting) 
 		or an array containg the name of the setting and optionally a longer description of this setting. For `list`, this must be an array containg the setting name 
 		and the name of each option.  
-		
-* **Function** `template.globalinit()` Called exactly once GLOBALLY. Can be used to initialise global module ids, etc. May be ommitted. Will be called once a module is loaded. 
-	* **Undefined** `this`
+		There is also the special option type 'none', which represents a hidden setting which can not be changed by the user. It has a default but no validator and no meta. 
+
+* **Function** `template.configUpdate(key, JOBADInstance)` Called every time a user configuration is updated.  
+	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
+	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
+	* **Mixed** `key` The configuration setting that was updated. 
+
+* **Function** `template.globalinit(next)` Called exactly once GLOBALLY. Can be used to initialise global module ids, etc. May be ommitted. Will be called once a module is loaded. 
+	* **Object** `this` Special Object which contains all additional functions of the module object and the following properties of a loadedModule Object: 
+		* `info`
+		* `globalStore`
+		* ``
+	* **Function** `next()` Only given if `info.async` is true. Callback this function should call once ready. 
+
 * **Function** `template.init(JOBADInstance, param1, param2, param3 /*, ... */)` Called to intialise a new instance of this module. 
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
 	* **Mixed** `*param` Initial parameters passed to [`JOBADInstance.modules.load`](JOBAD/JOBADInstance/modules.md). 
+
 * **Function** `template.activate(JOBADInstance)` Called whenever the module is activated. 
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
+
 * **Function** `template.deactivate(JOBADInstance)` Called whenever the module is deactivated. 
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
-* **Function** `template.onSideBarUpdate(target, JOBADInstance)` Called every time the sidebar is updated. May be ommitted. 
+
+* **Function** `template.SideBarUpdate(target, JOBADInstance)` Called every time the sidebar is updated. May be ommitted. 
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
 	* **returns** a text, a jQuery-ish object[^1] or a boolean indicating either the text or if something was done. 
-* **Function** `template.leftClick(target, JOBADInstance)` Called when a left click is performed.  Every left click action is performed. May be ommitted. 
+
+* **Function** `template.leftClick(target, JOBADInstance)` Called when a left click is performed. May be ommitted. 
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **jQuery** `target` The element that was left clicked on. 
 	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
 	* **returns** `true` if it performed some action, `false` otherwise. 
+	
+* **Function** `template.dblClick(target, JOBADInstance)` Called when a double click is performed. May be ommitted. 
+	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
+	* **jQuery** `target` The element that was double clicked on. 
+	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
+	* **returns** `true` if it performed some action, `false` otherwise. 
+
+
 * **Function** `template.contextMenuEntries(target, JOBADInstance)` Called when a context menu is requested. Context Menu entries will be merged. May be ommitted. 
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **jQuery** `target` The element that was right clicked on. 
@@ -58,7 +84,7 @@ This object can be used as a termplate for module objects. **Note:** The code fo
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **jQuery** `target` The element that was hovered clicked on. 
 	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
-	* **returns** a text, a jQuery-ish object[^1] or a boolean indicating either the text or if something was done. 
+	* **returns** a text, a jQuery element or a boolean indicating either the text or if something was done. 
 * **Function** `template.onEvent(event, element, JOBADInstance)` Called when an onEvent handler is requested. May be ommitted. 
 	* **Instance[ [JOBAD.modules.loadedModule](JOBAD/JOBAD.modules/loadedModule.md) ]** `this` The current module instance. 
 	* **string** `event` The event that was triggered. 
@@ -66,7 +92,4 @@ This object can be used as a termplate for module objects. **Note:** The code fo
 	* **Instance[ [JOBAD](JOBAD/JOBADInstance/index.md) ]** `JOBADInstance` The instance of JOBAD the module is initiated on. 
 
 ## See also
-* [Getting started with modules](../dev/modules.md)
-
-## Footnotes
-[^1]: A jQuery-ish object is any object that can be passed to the main jQuery function, for example a document node or a jQuery selector. 
+* [Getting started with modules](../intro/modules.md)
