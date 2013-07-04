@@ -19,6 +19,97 @@ function planetary_libs_menu() {
   return $items;
 }
 
+/**
+* Helper Function to check if one string start with another
+* Adapted from http://stackoverflow.com/questions/834303/php-startswith-and-endswith-functions
+* @param $haystack String to check.
+* @param $needle Starting string
+*/
+function startsWith($haystack, $needle)
+{
+    return !strncmp($haystack, $needle, strlen($needle));
+}
+
+function planetary_libs_js_alter(&$javascript) {
+  $base_path = drupal_get_path('module', 'planetary_libs');
+
+  //jQuery
+  $javascript['misc/jquery.js']['data']    =  $base_path . '/libs/jquery/jquery-1.9.1.js';
+  $javascript['misc/jquery.js']['version'] = '1.9.1';
+
+  $hooked_in_ui = false;
+
+  foreach($javascript as $filename => $value){
+    if(startsWith($filename, "misc/ui/jquery.ui")){
+      if(!$hooked_in_ui){
+        $hooked_in_ui = true;
+        $javascript[$filename]['data'] = $base_path . '/libs/jquery-ui/js/jquery-ui-1.10.3.min.js';
+      } else {
+        unset($javascript[$filename]);
+      }
+    }
+  }
+
+}
+
+function planetary_libs_css_alter(&$css) {
+  $base_path = drupal_get_path('module', 'planetary_libs');
+  $hooked_in_ui = false;
+
+  foreach($css as $filename => $value){
+    if(startsWith($filename, "misc/ui/jquery.ui")){
+      if(!$hooked_in_ui){
+        $hooked_in_ui = true;
+        $css[$filename]['data'] = $base_path . '/libs/jquery-ui/css/smoothness/jquery-ui-1.10.3.min.css';
+      } else {
+        unset($css[$filename]);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_init().
+ */
+function planetary_libs_init() {
+
+  // Retrieve the current theme name.
+  $current_theme = variable_get('theme_default', 'none');
+
+  // Retrieve the settings for all themes.
+  $all_settings = variable_get('planetary_libs_settings');
+
+  // Get the settings for a specific theme
+  if (isset($all_settings[$current_theme])) {
+    $settings = $all_settings[$current_theme];
+  }
+  else {
+    $settings = array();
+  }
+
+  // Get all the currently registered libraries.
+  $libraries = array();
+  foreach (libraries_info() as $name => $info) {
+    $libraries[$name] = libraries_detect($name);
+  }
+
+  // Sort the libraries by their array key.
+  ksort($libraries);
+
+  // Go through each library and load the ones chosen.
+  foreach ($libraries as $machine_name => $library) {
+    // Check to see if the library should be loaded.
+    if (isset($settings['libraries'][$machine_name]['load']) && $settings['libraries'][$machine_name]['load'] == 1) {
+      // Make sure the library still exists.
+      if (($library2 = libraries_detect($machine_name)) && !empty($library2['installed'])) {
+        // Load the library or speicifed variant.
+        libraries_load($machine_name);
+      }
+    }
+  }
+}
+
+
 /*
  * Build the settings form.
  *
@@ -202,7 +293,8 @@ function planetary_libs_theme_settings_submit($form, &$form_state) {
 
 function planetary_libs_libraries_info() {
 
-  // Underscore Javascript Library
+  // Underscore Javascript Library (no longer needed for JOBAd)
+  /*
   $libraries['underscore'] = array(
     'name' => 'Underscore',
     'vendor url' => 'https://github.com/documentcloud/underscore',
@@ -227,12 +319,13 @@ function planetary_libs_libraries_info() {
       ),
     ),
   );
+  */
 
   // JOBAD Javascript Library
   $libraries['jobad'] = array(
     'name' => 'JOBAD',
     'vendor url' => 'https://github.com/KWARC/jobad',
-    'download url' => 'https://github.com/KWARC/jobad/zipball/master',
+    'download url' => 'https://github.com/KWARC/jobad/zipball/stable',
     'version arguments' => array(
       'file' => 'build/release/JOBAD.min.js',
       'pattern' => '/JOBAD v(\d+)/',
@@ -314,7 +407,7 @@ function planetary_libs_libraries_info() {
       ),
     )
   );
-  
+
 
   // jQuery Terminal
   $libraries['jquery.terminal'] = array(
@@ -368,7 +461,7 @@ function planetary_libs_libraries_info() {
         'editor_utils.min.js',
       ),
     ),
-    
+
   );
 
   // jQuery UI Layout
@@ -388,7 +481,7 @@ function planetary_libs_libraries_info() {
       )
     ),
   );
-  
+
   return $libraries;
 }
 
@@ -397,7 +490,7 @@ function planetary_libs_libraries_info() {
  *
  * @param type $library
  * @param type $options
- * @return type 
+ * @return type
  */
 function _planetary_libs_force_version($library,$options) {
   $file = DRUPAL_ROOT . '/' . $library['library path'] . '/' . $options['file'];
