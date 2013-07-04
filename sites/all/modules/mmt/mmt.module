@@ -27,8 +27,44 @@ function mmt_menu() {
     'type' => MENU_CALLBACK,
 	);
 
-    return $items;
-  }
+  $items['mmt/comp/%/log'] = array(
+    'title' => 'MMT->OMDoc log',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mmt_filter_compilation_log', 2),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['mmt/pres/%/log'] = array(
+    'title' => 'MMT->OMDoc presentation',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mmt_filter_compilation_log', 2),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['mmt/comp'] = array(
+    'title' => 'MMT->OMDoc',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mmt_parent'),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['mmt/pres'] = array(
+    'title' => 'MMT->OMDoc',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mmt_parent'),
+    'access arguments' => array('administer blocks'),
+  );
+  return $items;
+}
+
+function mmt_parent($form, $form_state) {
+	return $form;
+}
 
 function mmt_setup_access() {
   global $user;
@@ -150,36 +186,24 @@ function mmt_initialize() {
      */
     $mmtPath = drupal_get_path('module', 'mmt');
     $mmtUrl = variable_get('mmtUrl');  
+
+    libraries_load("jobad");
  
-    //drupal_add_css($mmtPath . '/resources/mmt-web/css/omdoc/omdoc-default.css');
-    drupal_add_css($mmtPath . '/resources/mmt-web/css/mmt.css', array('weight' => PHP_INT_MAX, 'every_page' => false));
-   // drupal_add_css($mmtPath . '/resources/mmt-web/css/browser.css');
-    drupal_add_css($mmtPath . '/resources/mmt-web/script/codemirror2/lib/codemirror.css');
-    //drupal_add_css($mmtPath . '/resources/mmt-web/css/JOBAD.css');
-    drupal_add_css($mmtPath . '/resources/mmt-web/css/jquery/jquery-ui.css');
+    drupal_add_css($mmtPath . '/css/mmt.css', array('weight' => PHP_INT_MAX, 'every_page' => false));
     
     /**
      * JavaScript
      */
     drupal_add_js('var mmtUrl = "' . $mmtUrl . '";', 'inline');
-    
-  
-    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
-    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/hovering.js', "kwarc.mmt.hovering");
-    jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/interactive-viewing.js', "kwarc.mmt.intvw");
-  //  jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/edit.js', "kwarc.mmt.editing");
-  //  jobad_add_module($mmtPath . '/resources/mmt-web/script/jobad/modules/folding.js', "kwarc.mmt.folding");
-    $instName = jobad_initialize();
-    //codemirror (editor)
-    drupal_add_js($mmtPath . '/resources/mmt-web/script/codemirror2/lib/codemirror.js', 'file');
-    drupal_add_js($mmtPath . '/resources/mmt-web/script/codemirror2/mode/lf/lf.js', 'file');  
-    //tree 
-    drupal_add_js($mmtPath . '/resources/mmt-web/script/tree/jquery.hotkeys.js', 'file');
-    drupal_add_js($mmtPath . '/resources/mmt-web/script/tree/jquery.jstree.js', 'file');
+    jobad_add_module($mmtPath . '/jobad/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
+    jobad_add_module($mmtPath . '/jobad/hovering.js', "kwarc.mmt.hovering");
+    jobad_add_module($mmtPath . '/jobad/interactive-viewing.js', "kwarc.mmt.intvw");
+
     //mmt js libs
-    drupal_add_js($mmtPath . '/resources/mmt-web/script/jobad/mmt-html.js', 'file', array('cache' => false));
-    drupal_add_js($mmtPath . '/resources/mmt-web/script/jobad/mathml.js', 'file', array('cache' => false));
+    drupal_add_js($mmtPath . '/utils/mmt-html.js', 'file', array('cache' => false));
+    drupal_add_js($mmtPath . '/utils/mathml.js', 'file', array('cache' => false));
     //modules
+    $instName = jobad_initialize();
     return $instName;
 }
 
@@ -215,19 +239,47 @@ function mmt_filter_info() {
 
 function mmt_filter_presentation_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   global $filter_context;
+  global $filter_debug;
+
   $dpath = $filter_context['mmt']['dpath'];
   $style = $filter->settings['mmt_style'];
   $result = mmt_get_presentation($dpath, $text, $style);
+
+  $key = md5($text);
+  _drutexml_cache_set($key, $result);	
+  if (isset($filter_debug)) {
+	  $filter_debug["mmt_presentation"] = array("mmt/pres", array($key));
+  }
+
   return $result;
 }
 
 
 function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  global $filter_debug;
   global $filter_context;
+
   $dpath = $filter_context['mmt']['dpath'];
   $format = $filter->settings['mmt_format'];
   $result = mmt_get_compiled($text, $dpath, $format);
+
+  $key = md5($text);
+  _drutexml_cache_set($key, $result);	
+ 
+  if (isset($filter_debug)) {
+	  $filter_debug["mmt_compilation"] = array("mmt/comp", array($key));
+  }
+  
   return $result;
+}
+
+function mmt_filter_compilation_log($form, $form_state, $key) {
+	$val = _drutexml_cache_read($key);
+	$form["log"] =
+		array(
+		      "#markup" => "<pre>".htmlentities($val)."</pre>",
+		      );
+	return $form;
 }
 
 function mmt_filter_presentation_settings($form, $form_state, $filter, $format, $defaults) {
@@ -332,7 +384,7 @@ function mmt_create_nodes() {
     );
 
   $node_types = array(
-    'tex' => 'glossary', 
+    'tex' => 'glossary', //glossary_entry for smglo
     'elf' => 'mmtdoc', //lf format
     'mmt' => 'mmtdoc', //mmt format
   );
@@ -409,7 +461,6 @@ function mmt_create_node($module, $lang, $format, $dpath, $location, $node_type)
 
   */
 
-
   node_object_prepare($newnode);//necessary ?
   node_save($newnode);
   return $newnode->nid;
@@ -476,6 +527,8 @@ function mmt_node_load($nodes, $types) {
  * implements hook_node_view, renders mmt-specific nodes by loading html from MMT instance
  */
 function mmt_node_view($node, $view_mode, $langcode) {
+	if ($view_mode != "full")
+		return;
   if ($node->type == 'mmt_module'  ) {
 	  $inst_id = mmt_initialize();
  	  //getting pres from db
@@ -527,7 +580,7 @@ function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styl
   if (isset($dpath)) {
     $data['dpath'] = $dpath;
   }
-  
+
   $options = array(
     'http' => array(
         'header'  => "Content-type: application/json\r\n",
@@ -547,6 +600,7 @@ function mmt_get_compiled($body, $dpath, $format) {
   if (isset($dpath)) {
     $data['dpath'] = $dpath;
   }
+
   $options = array(
     'http' => array(
         'header'  => "Content-type: application/json\r\n",

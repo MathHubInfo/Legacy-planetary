@@ -1,7 +1,5 @@
 <?php
 
-
-
 function mmt_create_fields() {
   // Check if our field is not already created.
     
@@ -12,7 +10,6 @@ function mmt_create_fields() {
     );
   }
 
-   
   // Create the instance on the bundle.
     $instance = array(
         'field_name' => 'field_external',

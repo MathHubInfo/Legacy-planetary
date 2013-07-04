@@ -5,77 +5,18 @@
 function planetary_libs_menu() {
 
   // Main menu item.
-  $items['admin/appearance/planetary_libraries'] = array(
+  $items['admin/config/system/planetary_libraries'] = array(
     'title' => 'Planetary Library Settings',
     'description' => 'Load libraries',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('planetary_libs_settings'),
     'access arguments' => array('administer themes'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'weight' => 100,
   );
 
-  // Global library configuration tab.
-  $items['admin/appearance/planetary_libraries/global'] = array(
-    'title' => 'Global settings',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -1,
-  );
-
-  // Add a local task for each available theme.
-  foreach (list_themes() as $theme) {
-    $items['admin/appearance/planetary_libraries/' . $theme->name] = array(
-      'title' => $theme->info['name'],
-      'page arguments' => array('planetary_libs_settings', $theme->name),
-      'type' => MENU_LOCAL_TASK,
-      'access callback' => '_system_themes_access',
-      'access arguments' => array($theme),
-    );
-  }
-
   // Return the menu item definitions.
   return $items;
-}
-
-/**
- * Implements hook_init().
- */
-function planetary_libs_init() {
-
-  // Retrieve the current theme name.
-  $current_theme = variable_get('theme_default', 'none');
-
-  // Retrieve the settings for all themes.
-  $all_settings = variable_get('planetary_libs_settings');
-
-  // Get the settings for a specific theme
-  if (isset($all_settings[$current_theme])) {
-    $settings = $all_settings[$current_theme];
-  }
-  else {
-    $settings = array();
-  }
-
-  // Get all the currently registered libraries.
-  $libraries = array();
-  foreach (libraries_info() as $name => $info) {
-    $libraries[$name] = libraries_detect($name);
-  }
-
-  // Sort the libraries by their array key.
-  ksort($libraries);
-
-  // Go through each library and load the ones chosen.
-  foreach ($libraries as $machine_name => $library) {
-    // Check to see if the library should be loaded.
-    if (isset($settings['libraries'][$machine_name]['load']) && $settings['libraries'][$machine_name]['load'] == 1) {
-      // Make sure the library still exists.
-      if (($library2 = libraries_detect($machine_name)) && !empty($library2['installed'])) {
-        // Load the library or speicifed variant.
-        libraries_load($machine_name);
-      }
-    }
-  }
 }
 
 /*
@@ -305,6 +246,7 @@ function planetary_libs_libraries_info() {
         'build/release/JOBAD.css',
       )
     ),
+    'dependencies' => array('jquery', 'jquery-ui'),
     'variants' => array(
       'minified' => array(
         'files' => array(

@@ -1,7 +1,6 @@
 name = "Wysiwyg Ace Plugin"
 description = "Wysiwyg editor plugin that integrates source view syntax highlighting"
 dependencies[] = wysiwyg
-dependencies[] = jquery_update
 package = "User interface"
 core = 7.x
 

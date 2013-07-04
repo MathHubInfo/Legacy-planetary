@@ -83,8 +83,8 @@ function jobad_init_instance($nr) {
     //inline
 	$name = 'JOBAD' . $nr;
     $str = 'var ' . $name . ';
-		$(function(){	
-		' . $name . ' = new JOBAD($("#' . $name . '"));	
+		jQuery(function(){	
+		' . $name . ' = new JOBAD("#' . $name . '");	
 		';
 
 	//loading modules	
