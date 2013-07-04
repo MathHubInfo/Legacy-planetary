@@ -1,0 +1,55 @@
+<?php
+
+function planetary_glossary_install() {
+  //Glossary Entry
+  $glossary = (object) array(
+    'type' => 'glossary',
+    'name' => 'Glossary',
+    'base' => 'node_content',
+    'description' => 'A node containing a Glossary entry',
+    'has_title' => true,
+  ); 
+  
+  //node_add_body_field($mmt_doc);
+  node_type_save($glossary);
+
+  // Create the instance on the bundle.
+  $instance = array(
+    'field_name' => 'field_external', //field is declared by mmt
+    'entity_type' => 'node',
+    'label' => 'MMT Body',
+    'bundle' => 'glossary',
+    // If you don't set the "required" property then the field wont be required by default.
+    'required' => TRUE,
+    'widget' => array(
+      'type' => 'glossary_widget',
+    ),
+    'display' => array(
+      'default' => array(	
+      'type' => 'glossary_formatter',),
+    ),    
+  );
+  field_create_instance($instance);
+  drupal_set_message("installed");
+}
+
+
+
+function planetary_glossary_uninstall() {
+  planetary_glossary_delete_node_type('glossary'); //function declared by mmt
+  drupal_set_message("uninstalled");
+}
+
+function planetary_glossary_delete_node_type($node_type_name, $remove_type = true) {
+  // deleting all node instances
+  $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+  node_delete_multiple($nids);
+  //deleting node type
+  if ($remove_type) {
+    node_type_delete($node_type_name);
+  }
+}

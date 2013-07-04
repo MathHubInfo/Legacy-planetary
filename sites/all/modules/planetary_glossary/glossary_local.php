@@ -27,8 +27,11 @@ class LocalGlossary implements GlossaryAPI {
       return ob_get_clean();
   }
 
-  function getModuleImports($moduleId) {
-    $path = planetary_glossary_get_path($moduleId);
+  function getModuleImports($location) {
+    $path_info = mmt_get_path_info($location);
+    $moduleId = $path_info['modName'];
+    $parent = $path_info['parent'];
+    $path = planetary_glossary_get_path($moduleId, $parent);
     // if no "moduleId".tex file exists, return no imports
     if (planetary_repo_stat_file($path) == null)
       return array();
@@ -40,9 +43,11 @@ class LocalGlossary implements GlossaryAPI {
     return $matches[1];
   }
 
-  function getModuleSymbols($moduleId) {
-    $path = planetary_glossary_get_path($moduleId);
-
+  function getModuleSymbols($location) {
+    $path_info = mmt_get_path_info($location);
+    $moduleId = $path_info['modName'];
+    $parent = $path_info['parent'];
+    $path = planetary_glossary_get_path($moduleId, $parent);
     // if no "moduleId".tex file exists, return no imports
     if (planetary_repo_stat_file($path) == null)
       return array();
@@ -55,10 +60,13 @@ class LocalGlossary implements GlossaryAPI {
   }
 
 
-  function serialize($moduleId, $imports, $symbols) {
-    $file = planetary_glossary_get_path($moduleId);
+  function serialize($location, $imports, $symbols) {
+    $path_info = mmt_get_path_info($location);
+    $moduleId = $path_info['modName'];
+    $parent = $path_info['parent'];
+    $path = planetary_glossary_get_path($moduleId, $parent);
     $content = $this->get_template("glossary_module_template.php", array("moduleid" => $moduleId, "imports" => $imports, "symbols" => $symbols));
-    planetary_repo_save_file($file, $content);
+    planetary_repo_save_file($path, $content);
   }
 }
 

@@ -106,8 +106,9 @@ function mmt_get_path_info($location) {
   $archive = $lparts[0];
 
   $filename = $lparts[count($lparts) - 1];
-  
-  $relPathSegments = array_slice($parts, 2, -1); 
+  $folderSegs = array_slice($lparts, 0, -1);
+  $parent = join("/", $folderSegs);
+ 
   
   $fparts = explode('.', $filename);
   $extension = $fparts[count($fparts) - 1];
@@ -123,17 +124,24 @@ function mmt_get_path_info($location) {
 
   $modName = $fparts[0];
 
-  $omdocFileName = join(".", $parts); 
-  $omdocRelPath = join('/', $relPathSegments) . "/" . $omdocFileName;
+  $omdocFileName = join(".", $fparts); 
+
   
+  $relPathSegments = array_slice($lparts, 2);
+  $omdocRelPath = "";//default for toplevel
+  if (count($relPathSegments) != 0) {
+    $omdocRelPath = join('/', $relPathSegments);
+  }
 
   $dpath = $archives[$archive] . $omdocRelPath;
 
   $path_info = array(
     'location' => $location,
     'archive' => $archive,
+    'filename' => $filename,
     'extension' => $extension,
     'module' => $modName,
+    'parent' => $parent, //parent folder
     'lang' => $lang,
     'dpath' => $dpath,
     );
@@ -142,39 +150,11 @@ function mmt_get_path_info($location) {
 
 }
 
-/*
- * converts (virtual) filesystem filepath to MMT document path
- */
-function mmt_get_doc_path($file) {
-  $archives = array(
-    'smglo' => 'http://docs.omdoc.org/smglo/',
-    'latin' => 'http://docs.omdoc.org/latin/',
-    'urtheories' => 'http://docs.omdoc.org/urtheories/' ,
-    'openmath' => 'http://www.openmath.org/',
-    ); //hardcoded for now, get be gotten from MMT using archive name
+function mmt_get_dependencies($dpath) {
 
-  //getting archive and fragment path
-  $parts = explode('/', $file); //format is <archive-name>/source/<fragment path>
-  $base = $archives[$parts[0]];
-  $fragParts = array_slice($parts, 2);
-  $srcFrag = join('/', $fragParts);
-
-  //changing extension to .omdoc since that is the path of compilation result
-  $parts = explode('.', $srcFrag);
-  if (count($parts) > 1) { 
-    $parts[count($parts) - 1] = "omdoc"; 
-  }
-  $srcFrag = join(".", $parts); 
-
-  //return MMT doc path
-  return $base . $srcFrag;
+  return array($dpath); //
 }
 
-function mmt_get_format($location) {
-  $parts = explode('.', $location);
-  $ext = $parts[count($parts) - 1];
-  return $ext;  
-}
 
 
 /**
@@ -323,27 +303,6 @@ function mmt_form_alter(&$form, &$form_state, $form_id) {
 	  	$form['uri']['#disabled'] = TRUE;
 	  }
   }
-  
-  if ($form_id == 'mmtdoc_node_form') {
-
-    $form['body'] = array(
-      '#type' => 'textarea',
-      '#title' => t('Body'),
-    );
- 
-    if(array_key_exists('nid', $form_state['node'])) { //editing existing node
-      $nid = $form_state['node']->nid;
-      $result = db_select('mmtdoc', 'm')->fields('m',array('location'))->condition('nid', $nid, '=')->execute()->fetchAssoc();
-      $location = $result['location'];
-      $content = planetary_repo_local_load($location);
-
-      $form['body']['#default_value'] = $content;
-      $ext = mmt_get_format($location);
-      if ($ext == 'elf') {
-        $form['body']['#disabled'] = TRUE;
-      }
-    }
-  }
 }
 
 /**
@@ -354,12 +313,6 @@ function mmt_node_insert($node) {
     db_insert('mmturi')->fields(array(
        'nid' => $node->nid,
        'uri' => $node->uri))->execute();
-  }
-
-  if ($node->type == 'mmtdoc') {
-    db_insert('mmtdoc')->fields(array(
-       'nid' => $node->nid,
-       'location' => $node->field_external['und']['0']['location']))->execute();
   }
 
   if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
@@ -410,7 +363,8 @@ function _mmt_create_nodes($path, $format, $node_type) {
     if($file[0] != '.') {
       if (planetary_repo_is_dir($fpath)) {         
         _mmt_create_nodes($fpath, $format, $node_type);
-        $dpath = mmt_get_doc_path($fpath);          
+        $path_info = mmt_get_path_info($fpath);
+        $dpath = $path_info['dpath'];          
         $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
       } else {
         $parts = explode('.', $file);
@@ -421,15 +375,17 @@ function _mmt_create_nodes($path, $format, $node_type) {
           if (count($parts) == 3) {
             $lang = $parts[1];
           }
+          $path_info = mmt_get_path_info($fpath);
+          $dpath = $path_info['dpath']; 
 
-          $dpath = mmt_get_doc_path($fpath);          
           mmt_create_node($module, $lang, $format, $dpath, $fpath, $node_type);        
           $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
         }
       }
     }
   }
-  $menupath = mmt_get_doc_path($path);
+  $path_info = mmt_get_path_info($path);
+  $menupath = $path_info['dpath'];  
   $nid = mmt_create_article($title, $body);
   mmt_save_path($nid, $menupath);
 }
@@ -450,8 +406,7 @@ function mmt_create_node($module, $lang, $format, $dpath, $location, $node_type)
   );
 
   $newnode->title = $title;
-  $newnode->field_external['und']['0']['location'] = $location;
-  $newnode->field_external['und']['0']['path'] = $module;
+  $newnode->field_external['und']['0']['path'] = $location;
   $newnode->field_external['und']['0']['filter'] = $format;
   $newnode->field_external['und']['0']['dpath']['value'] = $dpath;
   /*
@@ -507,21 +462,58 @@ function mmt_node_load($nodes, $types) {
       $nodes[$record->nid]->uri = $record->uri; 
     }
   }
-  //mmtdoc
-  $docNodes = array();
-  foreach ($nodes as $node) {
-    if ($node->type == 'mmtdoc') {
-      $docNodes[$node->nid] = $node;
-    }
-  }
-  if (count($docNodes) > 0) { //something to do 
-    $result = db_query('SELECT nid,location FROM {mmtdoc} WHERE nid IN (:nids)', array(':nids' => array_keys($docNodes)));
-    foreach ($result as $record) {
-      $nodes[$record->nid]->location = $record->location;       
-    }
-
-  }
 }
+
+/**  MMT Formatter */
+
+function mmt_field_formatter_info() {
+   return array(
+   // This formatter changes the background color of the content region.
+    'mmt_formatter' => array(
+      'label' => t('Formatter of MMT content'),
+      'field types' => array('vfs_file'),
+    ),
+  );
+}
+
+function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  
+  switch ($display['type']) {
+    case 'mmt_formatter':
+      $lang = $entity->language;
+      foreach ($items as $delta => $item) {
+        $location = $item['path'];
+        $path_info = mmt_get_path_info($location);
+
+        global $filter_context;
+        $filter_context = array();
+        $filter_context['mmt']['dpath'] = $path_info['dpath'];
+        $content = planetary_repo_load_file($location);
+        global $filter_debug;
+        $filter_debug = array();
+        $markup = check_markup($content, $item['filter'], $lang);
+        $element[$delta] = array(
+          "#type" => "container",
+          '#attributes' => array(
+               'class' => array('contextual-links-region'),
+               ),
+          "context_links" =>
+          array(
+          "#type" => "contextual_links",
+          "#contextual_links" => $filter_debug
+          ),
+          "content" =>
+          array(
+          '#markup' => $markup,
+          )
+          );
+      }
+      break;
+    }
+  return $element;
+}
+
 
 /**
  * implements hook_node_view, renders mmt-specific nodes by loading html from MMT instance
@@ -537,17 +529,6 @@ function mmt_node_view($node, $view_mode, $langcode) {
       '#markup' => '<div id=' . $inst_id . ' style="overflow:auto">' . $mmt_presentation . '</div>',
       '#weight' => 10,
     );
-  }
-
-  if ($node->type == 'mmtdoc') {
-    $path = $node->location;
-    $content = planetary_repo_local_load($path);
-    //TODO now check markup
-    global $filter_context;
-    $filter_context = array();
-    $filter_context['mmt']['dpath'] = mmt_get_doc_path($path);
-    $markup = check_markup($content, 'mmt');
-    $node->content['field_external'][0]['content']['#markup'] = $markup;      
   }
 
   if ($node->type == 'glossary' || $node->type == 'mmtdoc') {

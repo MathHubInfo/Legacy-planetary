@@ -8,45 +8,27 @@ function mmt_create_fields() {
         'field_name' => 'field_external',
         'type' => 'vfs_file', //declared in vfs module
     );
+    field_create_field($field);
   }
 
   // Create the instance on the bundle.
-    $instance = array(
-        'field_name' => 'field_external',
-        'entity_type' => 'node',
-        'label' => 'MMT Body',
-        'bundle' => 'mmtdoc',
-        // If you don't set the "required" property then the field wont be required by default.
-        'required' => TRUE,
-        'widget' => array(
-            'type' => 'textfield',
-        ),
-        /*
-        'display' => array(
-            'type' => 'glossary_formatter',
-        ),
-        */
-    );
-    field_create_instance($instance);
-   
-   /*
-   // Create the instance on the bundle.
-    $instance = array(
-        'field_name' => 'field_external',
-        'entity_type' => 'node',
-        'label' => 'MMT Body',
-        'bundle' => 'glossary',
-        // If you don't set the "required" property then the field wont be required by default.
-        'required' => TRUE,
-        'widget' => array(
-            'type' => 'glossary_widget',
-        ), 
-        'display' => array(
-            'type' => 'glossary_formatter',
-        ),
-    );
-    field_create_instance($instance);
-  */
+  $instance = array(
+    'field_name' => 'field_external',
+    'entity_type' => 'node',
+    'label' => 'MMT Body',
+    'bundle' => 'mmtdoc',
+    // If you don't set the "required" property then the field wont be required by default.
+    'required' => TRUE,
+    'widget' => array(
+      'type' => 'textfield',
+    ),
+    'display' => array(
+      'default' => array( 
+        'type' => 'mmt_formatter',
+      ),
+    ),    
+  );
+  field_create_instance($instance);
 }
 
 function mmt_install() {

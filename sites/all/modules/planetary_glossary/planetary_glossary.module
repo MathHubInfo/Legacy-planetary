@@ -31,11 +31,13 @@ function planetary_glossary_field_formatter_view($entity_type, $entity, $field, 
     case 'glossary_formatter':
       $lang = $entity->language;
       foreach ($items as $delta => $item) {
-	      $file = planetary_glossary_get_path($item['path'], $lang);
+	      $location = $item['path'];
+        $path_info = mmt_get_path_info($location);
+
         global $filter_context;
         $filter_context = array();
-        $filter_context['mmt']['dpath'] = mmt_get_doc_path($file);
-	      $content = planetary_repo_load_file($file);
+        $filter_context['mmt']['dpath'] = $path_info['dpath'];
+	      $content = planetary_repo_load_file($location);
 	      global $filter_debug;
 	      $filter_debug = array();
         $markup = check_markup($content, $item['filter'], $lang);
@@ -136,12 +138,8 @@ function planetary_glossary_get_variables($prefix = "") {
 
 
 //default path for nodes of this type
-function planetary_glossary_get_path($module, $lang = "") {
-  $path = 'smglo/source/'.$module;
-  if ($lang != "") {
-    $path .= ".".$lang;
-  }
-  $path .= ".tex";
+function planetary_glossary_get_path($module, $parent) {
+  $path = $parent.$module.".tex";
   return $path;
 }
 
@@ -161,10 +159,13 @@ function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $ins
 
       // 
       if (isset($items[$delta]['path'])) {
-        $moduleid = $items[$delta]['path'];
+        $location = $items[$delta]['path'];
+        $path_info = mmt_get_path_info($location);
+        $moduleid = $path_info['modName'];
+
         $imports = join($glossary->getModuleImports($moduleid), ",");
         $symbols = join($glossary->getModuleSymbols($moduleid), ",");
-        $content = planetary_repo_load_file(planetary_glossary_get_path($moduleid, $lang));
+        $content = planetary_repo_load_file($location);
       } 
 
       $filter = isset($items[$delta]['filter']) ? $items[$delta]['filter'] : '';
@@ -266,13 +267,14 @@ function planetary_glossary_field_widget_validate($element, &$form_state) {
   $field_name = $field['field_name'];
   if (isset($form_state['values'][$field_name][$element['#language']][$delta])) {
     $values = $form_state['values'][$field_name][$element['#language']][$delta];
-
-    $moduleid = $values["data"]["path"]; //TODO 'path' may not exist anymore
+    
+    $location = $values["data"]["path"]; //TODO for manually created nodes, this needs to correspond to the <module>.<lang>.<ext> standard
     $lang = $values["data"]["lang"];
-    $module_path = planetary_glossary_get_path($moduleid, $lang);
-    $dpath = mmt_get_doc_path($module_path);
-    planetary_repo_save_file($module_path, $values["data"]["content"]["value"]);
-    $glossary->serialize($moduleid,   
+    $path_info = mmt_get_path_info($location);
+    
+    $dpath = $path_info['dpath'];
+    planetary_repo_save_file($location, $values["data"]["content"]["value"]);
+    $glossary->serialize($location,   
                             explode(",", $values["data"]["imports"]["autofield"]), 
                             explode(",",$values["data"]["symbols"]["autofield"]));
 
