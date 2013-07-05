@@ -3,41 +3,15 @@ define(function(require) {
 		var core = require("scripts/core-cjucovschi-0.0.1"); 
 		core.setAce(ace); 
 
-		var text = core.getText();
-		basePath = Drupal.settings.basePath;
-		var request = {
-			text : text,
-		};
-
+		var basePath = Drupal.settings.basePath;
+		var context = Drupal.settings.editor_tools.context.mmt;
+		var path = encodeURIComponent(context.dpath+"?"+context.module+"."+context.lang);
 		var $ = jQuery;
+		var iCode = "<iframe style='width: 100%; height:550px' src='"+basePath+"?q=hypertree&ajax&path="+path+"''>";
+		console.log(iCode);
 
-		jQuery.post(basePath+"compile", request, function(result) {
-			var root = $("<div>");
-			var errors = false;
+		iDiv = $("<div>").append(iCode);
 
-			for (var type in result) {
-				var title = "ok";
-				if (result[type].length > 0)
-					title = "errors found";
-
-				root.append("<h3>"+type+" status: "+title+" </h3>");
-
-				var tpErrors = $("<div>");
-				for (var i in result[type]) {
-					errors = true;
-					$(tpErrors).append(result[type][i]+"<br/>");
-				}
-				root.append(tpErrors);
-			}
-
-			var title = "Success";
-			if (errors) {
-				title = "Errors found";
-			}
-
-			var parent = $("<div>").append(root);
-			$(parent).dialog({title: title, height: 300, width: 400});
-			$(root).accordion({collapsible: true});
-		});
+		$(iDiv).dialog({width:600, height:600});
 	}
 });

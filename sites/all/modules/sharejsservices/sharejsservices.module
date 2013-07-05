@@ -64,8 +64,6 @@ function editor_service_hypertree() {
     	echo $res;
     } else
     	return $res;
-
-;
 }
 
 function sharejsservices_theme($existing, $type, $theme, $path) {
