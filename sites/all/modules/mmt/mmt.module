@@ -634,6 +634,7 @@ function mmt_get_dependencies($mpath) {
   foreach ($xmlpaths as $xmlpath){
     $results[] = (string)$xmlpath['path'];
   }
+
   return array($results); 
 }
 
