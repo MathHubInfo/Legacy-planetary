@@ -1,3 +1,5 @@
+(function($){
+
 var navigation = {
 	info: {
 		'identifier' : 'kwarc.mmt.navigation',
@@ -83,3 +85,4 @@ var navigation = {
 
 JOBAD.modules.register(navigation);
 
+})(jQuery);

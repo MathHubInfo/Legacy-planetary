@@ -56,6 +56,12 @@ function planetary_repo_local_access_path($path) {
   return planetary_repo_access_path($root, $path);
 }
 
+function planetary_repo_is_dir($path) {
+  $full_path = planetary_repo_local_access_path($path);
+  $ret = is_dir($full_path);
+  return $ret;
+}
+
 function planetary_repo_local_save($path, $content) {
   $full_path = planetary_repo_local_access_path($path);
   if (!$full_path) 

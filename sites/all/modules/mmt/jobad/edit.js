@@ -1,3 +1,5 @@
+(function($){
+
 var edit = {
 	info: {
 		'identifier' : 'kwarc.mmt.editing',
@@ -112,3 +114,4 @@ var edit = {
 
 
 JOBAD.modules.register(edit);
+})(jQuery);

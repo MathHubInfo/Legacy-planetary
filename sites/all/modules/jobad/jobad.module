@@ -50,7 +50,6 @@ function jobad_init_libs() {
   drupal_add_library('system', 'ui.spinner');
   drupal_add_library('system', 'ui.menu');
 
-    libraries_load("underscore");
     libraries_load("jobad");
     //loading registered modules
     $modules = variable_get('JOBADModulesArray');

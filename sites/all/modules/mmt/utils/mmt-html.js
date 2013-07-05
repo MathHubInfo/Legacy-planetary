@@ -1,11 +1,13 @@
 /* Utility functions and state provided for MMT/OMDoc-based html documents */
 
-// the following functions $.fn.f add functionality to jQuery and can be used as $(...).f
+// the following functions jQuery.fn.f add functionality to jQuery and can be used as $(...).f
 
 // contrary to the built-in jQuery analogues, these work for 'pref:name' attributes and math elements
 // do not replace calls to these function with the jQuery analogues!
 
-$.fn.hasAttribute = function(name) {  
+(function($) {
+
+jQuery.fn.hasAttribute = function(name) {  
 	return (typeof this.attr(name) !== 'undefined' && this.attr(name) !== false);
 };
 
@@ -16,7 +18,7 @@ function getClassArray(elem) {
 }
 
 /* add a class cl to all matched elements */
-$.fn.addMClass = function(cl){
+jQuery.fn.addMClass = function(cl){
    this.each(function(){
       if (this.hasAttribute('class'))
          $(this).attr('class', $(this).attr('class') + ' ' + cl);   
@@ -26,7 +28,7 @@ $.fn.addMClass = function(cl){
    return this;
 }
 /* remove a class cl from all matched elements */
-$.fn.removeMClass = function(cl){
+jQuery.fn.removeMClass = function(cl){
    this.each(function(){
       var classes = getClassArray(this);
       var newclasses = classes.filter(function(elem){return (elem !== cl) && (elem !== "")});
@@ -39,7 +41,7 @@ $.fn.removeMClass = function(cl){
    return this;
 }
 /* toggle class cl in all matched elements */
-$.fn.toggleMClass = function(cl){
+jQuery.fn.toggleMClass = function(cl){
    this.each(function(){
       var classes = getClassArray(this);
       if (classes.indexOf(cl) == -1)
@@ -50,13 +52,13 @@ $.fn.toggleMClass = function(cl){
    return this;
 }
 /* keep elements that have class cl */
-$.fn.filterMClass = function(cl){
+jQuery.fn.filterMClass = function(cl){
    return this.filter(function(){
       var classes = getClassArray(this);
       return (classes.indexOf(cl) !== -1)
    });
 }
-// end $.fn.f functions
+// end jQuery.fn.f functions
 
 
 /* some common URIs */
@@ -139,7 +141,7 @@ var mmt = {
 			var targetnode = $('#' + targetid).children('div');
 			targetnode.replaceWith(data.firstChild);
 		}
-		$.ajax({ 'url': url,
+		jQuery.ajax({ 'url': url,
 				 'dataType': 'xml',
 				 'success': cont
 			   });
@@ -149,7 +151,7 @@ var mmt = {
 	   if (elem.hasAttribute('jobad:load')) {
          var url = this.adaptMMTURI(elem.getAttribute('jobad:load'), '', true);
          var res = null;
-         $.ajax({ 'url': url,
+         jQuery.ajax({ 'url': url,
                 'dataType': 'xml',
                 'async': false,
                 'success': function cont(data) {res = data;}
@@ -276,7 +278,7 @@ var qmt = {
 	/* executes a QMT query (as constructed by helper functions) via ajax and runs a continuation on the result */
     exec : function (q, cont) {
 	   var qUrl = mmt.makeURL('/:query');
-		$.ajax({
+		jQuery.ajax({
 			url:qUrl, 
 			type:'POST',
 			data:q,
@@ -287,3 +289,5 @@ var qmt = {
 		});
 	},
 };
+    window.mmt = mmt;
+})(jQuery);

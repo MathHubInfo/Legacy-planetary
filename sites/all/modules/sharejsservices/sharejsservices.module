@@ -17,7 +17,53 @@ function sharejsservices_menu() {
     	'access arguments' => array('access administration pages'),
     	'type' => MENU_NORMAL_ITEM,
 	);
+
+	$items["compile"] = array (
+		'title' => 'Run filter over some text',
+		'page callback' => 'editor_service_compile',
+    	'access arguments' => array('access content'),
+   	    'type' => MENU_CALLBACK,
+	);
 	return $items;
+}
+
+function editor_service_compile() {
+	$text = $_POST["text"];
+	$file = "smglo/source/dgraph.de.tex";
+    global $filter_context;
+    $filter_context = array();
+    $info = mmt_get_path_info($file);
+
+    $filter_context['mmt']['dpath'] = $info["dpath"];
+   	global $filter_debug;
+	$filter_debug = array();
+
+    $markup = check_markup($text, "tex", "und");
+    $output = array();
+
+    if (isset($filter_debug["drutexml_latexml"])) {
+    	$key = $filter_debug["drutexml_latexml"][1][0];
+	   	$result = json_decode(_drutexml_cache_read($key."_r"));
+	   	$log = $result->log;
+	   	$matches = array();
+	   	preg_match_all("|Error:[^\\n]*|", $log, $matches);
+
+	   	$output["latexml"] = $matches[0];
+    }
+
+    foreach (array("mmt_compilation", "mmt_presentation") as $type) {
+	    if (isset($filter_debug[$type])) {
+    		$key = $filter_debug[$type][1][0];
+		   	$result = json_decode(_drutexml_cache_read($key));
+		   	$log = $result->log;
+	   		$matches = array();
+	   		preg_match_all("|Error:[^\\n]*|", $log, $matches);
+
+		   	$output[$type] = $matches[0];
+	    }
+    }
+
+	drupal_json_output($output);
 }
 
 function sharejs_config_form($form, &$form_state) {

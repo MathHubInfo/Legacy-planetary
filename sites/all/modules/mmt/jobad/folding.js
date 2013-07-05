@@ -1,3 +1,4 @@
+(function($){
 var folding = {
 	info: {
 		'identifier' : 'kwarc.mmt.folding',
@@ -140,3 +141,4 @@ var folding = {
 
 JOBAD.modules.register(folding);
 
+})(jQuery);

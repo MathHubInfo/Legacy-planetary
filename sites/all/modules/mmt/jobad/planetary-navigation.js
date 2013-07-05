@@ -1,3 +1,5 @@
+(function($){
+
 var planetaryNavigation = {
 	info: {
 		'identifier' : 'kwarc.mmt.planetary.navigation',
@@ -57,3 +59,4 @@ var planetaryNavigation = {
 
 
 JOBAD.modules.register(planetaryNavigation);
+})(jQuery);
