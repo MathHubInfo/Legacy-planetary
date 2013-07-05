@@ -164,6 +164,10 @@ function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $ins
 
         $moduleid = $path_info['module'];
 
+        global $filter_context;
+        $filter_context = array();
+        $filter_context['mmt'] = $path_info;
+
         $imports = join($glossary->getModuleImports($location), ",");
         $symbols = join($glossary->getModuleSymbols($location), ",");
         $content = planetary_repo_load_file($location);

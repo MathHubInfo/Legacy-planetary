@@ -29,7 +29,7 @@ function sharejsservices_menu() {
 
 function editor_service_compile() {
 	$text = $_POST["text"];
-	$file = "smglo/source/dgraph.de.tex";
+	$file = $_POST["path"];
     global $filter_context;
     $filter_context = array();
     $info = mmt_get_path_info($file);
