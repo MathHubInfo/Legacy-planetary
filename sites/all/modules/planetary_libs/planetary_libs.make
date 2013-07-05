@@ -31,3 +31,6 @@ libraries[jquery][download][url] = http://code.jquery.com/jquery.min.js
 libraries[jquery-ui][download][type] = file
 libraries[jquery-ui][download][url] = http://jqueryui.com/resources/download/jquery-ui-1.10.3.zip
 
+; 
+libraries[jit][download][type] = file
+libraries[jit][download][url] = http://philogb.github.io/jit/downloads/Jit-2.0.1.zip
