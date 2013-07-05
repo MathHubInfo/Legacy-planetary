@@ -57,9 +57,6 @@
   };
 
   Drupal.autocomplete_deluxe.Widget.prototype.init = function(settings) {
-    if ($.browser.msie && $.browser.version === "6.0") {
-      return;
-    }
 
     this.id = settings.input_id;
     this.jqObject = $('#' + this.id);
@@ -114,7 +111,7 @@
       });
     };
 
-    this.jqObject.autocomplete({
+    this.jqObject.data("autocomplete", {
       'source' : this.source,
       'minLength': settings.min_length
     });

@@ -34,5 +34,9 @@
 	"insertMath" : {
 		"repo" : "cjucovschi",
 		"version" : "0.0.1"
+	},
+	"compile" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
 	}
 }

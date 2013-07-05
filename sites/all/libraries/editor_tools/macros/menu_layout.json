@@ -43,6 +43,13 @@
 				"href" : "icons/cmd/sc_insertmath.png",
 				"help" : "Align center"		
 			}
+		},		
+		"Compile" : {
+			"compile" : {
+				"href" : "icons/cmd/sc_insertmath.png",
+				"help" : "Compile"		
+			}
 		}
+
 	}
 }

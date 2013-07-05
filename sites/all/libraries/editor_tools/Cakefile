@@ -15,5 +15,11 @@ task 'build', 'Build the .js files', ->
 	exec "coffee --compile --bare --output editor_tools src/"
 	exec "r.js -o build.js optimize=none"
 
+
+task 'sbuild', 'Build the .js files', ->
+	exec "coffee --compile --bare --output editor_tools src/"
+	exec "r.js -o build.js optimize=none"
+
+
 task 'min', 'Build the minified version', ->
 	exec "r.js -o build.js"
