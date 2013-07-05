@@ -29,7 +29,8 @@ class LocalGlossary implements GlossaryAPI {
 
   function getModuleImports($location) {
     $path_info = mmt_get_path_info($location);
-    $moduleId = $path_info['modName'];
+
+    $moduleId = $path_info['module'];
     $parent = $path_info['parent'];
     $path = planetary_glossary_get_path($moduleId, $parent);
     // if no "moduleId".tex file exists, return no imports
@@ -45,7 +46,8 @@ class LocalGlossary implements GlossaryAPI {
 
   function getModuleSymbols($location) {
     $path_info = mmt_get_path_info($location);
-    $moduleId = $path_info['modName'];
+
+    $moduleId = $path_info['module'];
     $parent = $path_info['parent'];
     $path = planetary_glossary_get_path($moduleId, $parent);
     // if no "moduleId".tex file exists, return no imports
@@ -62,7 +64,7 @@ class LocalGlossary implements GlossaryAPI {
 
   function serialize($location, $imports, $symbols) {
     $path_info = mmt_get_path_info($location);
-    $moduleId = $path_info['modName'];
+    $moduleId = $path_info['module'];
     $parent = $path_info['parent'];
     $path = planetary_glossary_get_path($moduleId, $parent);
     $content = $this->get_template("glossary_module_template.php", array("moduleid" => $moduleId, "imports" => $imports, "symbols" => $symbols));

@@ -45,30 +45,39 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
 	  editor.getSession().setValue(obj.value);
 	  editor.setTheme("ace/theme/textmate");
 	  editor.getSession().setMode("ace/mode/"+cSettings["mode"]);
-    window.editor = editor;
 
     require.config({ baseUrl: Drupal.settings.editor_tools.editor_tools_path }),
 
     require(["editor_tools/main"], function(main) {
       handlers = main.enrich_editor(editor, "#ace_"+params.field, {root_path: Drupal.settings.editor_tools.editor_tools_path+"/"});
-
+      console.log(params);
       toolbar = handlers.toolbar;
       interpretter = handlers.interpretter;
-      
-      jQuery.get(Drupal.settings.editor_tools.editor_tools_path+"/macros/menu_layout.json", function (data) {
-	if (typeof(data) == "string")
-	    data = JSON.parse(data);
-        toolbar.loadLayout(data);
-        jQuery(handlers.header).find(".ribbon").ribbon(); 
-      });
 
-      jQuery.get(Drupal.settings.editor_tools.editor_tools_path+"/macros/preferences.json", function (data) {
-	if (typeof(data) == "string")
-	    data = JSON.parse(data);
-        interpretter.loadAPI(data);
-        jQuery(handlers.header).find(".ribbon").ribbon(); 
-      });
+      function download(file, callback) {
+        jQuery.get(file, function(data) {
+          callback(null, data);
+        });
+      };
+
+      async.waterfall([
+        function(callback) { download(Drupal.settings.editor_tools.editor_tools_path+"/macros/preferences.json", callback); },
+        function(data, callback) { 
+            if (typeof(data) == "string") data = JSON.parse(data);
+            interpretter.loadAPI(data);
+            callback();
+        },
+        function(callback) { download(Drupal.settings.editor_tools.editor_tools_path+"/macros/menu_layout.json", callback); },
+        function(data, callback) {
+           if (typeof(data) == "string") data = JSON.parse(data);
+            toolbar.loadLayout(data);
+            jQuery(handlers.header).find(".ribbon").ribbon();
+            callback();
+        }
+      ]);
+
     });
+
 	  jQuery.data(obj, 'editor', editor);
   });
 };

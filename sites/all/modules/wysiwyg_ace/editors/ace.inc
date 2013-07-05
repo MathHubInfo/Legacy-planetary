@@ -70,9 +70,6 @@ function wysiwyg_ace_ace_version($editor) {
 *   theme name.
 */
 function wysiwyg_ace_ace_themes($editor, $profile) {
-	/**
-	* TODO: just a STUB 
-	*/
 	$plugins = $profile->settings["buttons"]["default"];
 	$plugin_path = drupal_get_path("module", "wysiwyg_ace");
 	drupal_add_css($plugin_path."/css/ace.css", 
@@ -86,14 +83,8 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 		drupal_add_js($editor['library path'] . '/build/src-min-noconflict/'.$pp.".js");
 	}
 	$cpath = url("", array("absolute"=>true)).drupal_get_path("module", "wysiwyg_ace")."/editors/js/";
-	drupal_add_library('system', 'ui');
-	drupal_add_library('system', 'ui.button');
-	drupal_add_library('system', 'ui.dialog');
-	libraries_load("jobad");
-	libraries_load("jquery.layout");
-	libraries_load("jquery.terminal");
+	jobad_init_libs();
 	libraries_load("office-ribbon");
-	libraries_load("underscore");
 	libraries_load("requirejs");
 	libraries_load("editor_tools");
 

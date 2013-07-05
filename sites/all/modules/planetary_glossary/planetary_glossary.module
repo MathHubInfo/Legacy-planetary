@@ -139,7 +139,7 @@ function planetary_glossary_get_variables($prefix = "") {
 
 //default path for nodes of this type
 function planetary_glossary_get_path($module, $parent) {
-  $path = $parent.$module.".tex";
+  $path = $parent."/".$module.".tex";
   return $path;
 }
 
@@ -161,10 +161,11 @@ function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $ins
       if (isset($items[$delta]['path'])) {
         $location = $items[$delta]['path'];
         $path_info = mmt_get_path_info($location);
-        $moduleid = $path_info['modName'];
 
-        $imports = join($glossary->getModuleImports($moduleid), ",");
-        $symbols = join($glossary->getModuleSymbols($moduleid), ",");
+        $moduleid = $path_info['module'];
+
+        $imports = join($glossary->getModuleImports($location), ",");
+        $symbols = join($glossary->getModuleSymbols($location), ",");
         $content = planetary_repo_load_file($location);
       } 
 

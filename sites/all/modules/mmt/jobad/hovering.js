@@ -1,3 +1,5 @@
+(function($){
+
 var hovering = {
 	/* JOBAD Interface  */ 
 	info: {
@@ -38,3 +40,4 @@ var hovering = {
 }
 
 JOBAD.modules.register(hovering);
+})(jQuery);
