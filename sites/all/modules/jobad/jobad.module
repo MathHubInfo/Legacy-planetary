@@ -72,7 +72,7 @@ function jobad_register_module($file) {
  * @param $module_id the id of the JOBAD module
  */
 function jobad_load_module($jobad_instance, $module_id, $params) {
-  return $jobad_instance . '.modules.load("' . $module_id . '" , ' . json_encode($params). ' ); ';
+  return $jobad_instance . '.modules.load("' . $module_id . '" ,[], ' . json_encode($params). '); ';
 }
 
 /**
@@ -91,6 +91,8 @@ function jobad_init_instance($nr) {
     ';
     
   //loading modules
+  $str .= jobad_register_module("sites/all/libraries/jobad/modules/core/jobad/jobad.config.js");
+  $str .= jobad_load_module($name, "jobad.config", array());
   $modules = variable_get('JOBADModulesArray');
     foreach($modules as $id => $options) {
     $str = $str . '    ' . jobad_load_module($name, $id, $options[1]);

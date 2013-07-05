@@ -182,6 +182,12 @@ function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $ins
       $widget["data"] = array(
              "path" => array(
                "#type" => "textfield",
+               "#title" => "File Location",
+               "#required" => true,
+               "#default_value" => $location
+             ),
+              "module" => array(
+               "#type" => "textfield",
                "#title" => "Module name",
                "#required" => true,
                "#default_value" => $moduleid

@@ -41,10 +41,10 @@ var planetaryNavigation = {
 
 	planetaryOpen : function(uri) {
 	  uriSegs = uri.split("?");
-	  if (uriSegs.length < 2) {//module or document path 
+	  if (uriSegs.length < 2) {//document path 
 	    window.location.search = "?q=" + this.encode(uri);
-      } else { //symbol or fragment path
-		var modUri = uriSegs[0] + "?" + uriSegs[1];
+      } else { //module, symbol or fragment path
+		var modUri = uriSegs[0]; //getting doc
 		window.location.search = "?q=" + this.encode(modUri);        
       }
 	},

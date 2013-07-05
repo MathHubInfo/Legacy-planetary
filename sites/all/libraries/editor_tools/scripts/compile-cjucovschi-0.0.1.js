@@ -12,7 +12,7 @@ define(function(require) {
 
 		var $ = jQuery;
 
-		jQuery.post(basePath+"compile", request, function(result) {
+		jQuery.post(basePath+"?q=compile", request, function(result) {
 			var root = $("<div>");
 			var errors = false;
 
