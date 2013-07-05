@@ -48,6 +48,10 @@
 			"compile" : {
 				"href" : "icons/cmd/sc_insertmath.png",
 				"help" : "Compile"		
+			},
+			"graph" : {
+				"href" : "icons/cmd/sc_insertmath.png",
+				"help" : "Graph"		
 			}
 		}
 

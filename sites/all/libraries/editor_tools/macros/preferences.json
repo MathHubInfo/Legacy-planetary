@@ -38,5 +38,9 @@
 	"compile" : {
 		"repo" : "cjucovschi",
 		"version" : "0.0.1"
+	},
+	"graph" : {
+		"repo" : "cjucovschi",
+		"version" : "0.0.1"
 	}
 }

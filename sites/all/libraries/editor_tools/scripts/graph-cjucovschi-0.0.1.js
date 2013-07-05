@@ -6,7 +6,6 @@ define(function(require) {
 		var text = core.getText();
 		basePath = Drupal.settings.basePath;
 		var request = {
-			path : Drupal.settings.editor_tools.context.mmt.location,
 			text : text,
 		};
 
