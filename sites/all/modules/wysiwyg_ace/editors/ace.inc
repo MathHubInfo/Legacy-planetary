@@ -88,7 +88,13 @@ function wysiwyg_ace_ace_themes($editor, $profile) {
 	libraries_load("requirejs");
 	libraries_load("editor_tools");
 
-	drupal_add_js(array('editor_tools' => array('editor_tools_path' => libraries_get_path("editor_tools", true))), 'setting');
+    global $filter_context;
+    $config = array('editor_tools_path' => libraries_get_path("editor_tools", true));
+    if (isset($filter_context)) {
+    	$config['context'] = $filter_context;
+    }
+
+	drupal_add_js(array('editor_tools' => $config), 'setting');
 
 	return array('default');
 }

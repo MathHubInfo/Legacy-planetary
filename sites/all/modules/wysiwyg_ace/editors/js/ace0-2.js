@@ -50,7 +50,6 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
 
     require(["editor_tools/main"], function(main) {
       handlers = main.enrich_editor(editor, "#ace_"+params.field, {root_path: Drupal.settings.editor_tools.editor_tools_path+"/"});
-      console.log(params);
       toolbar = handlers.toolbar;
       interpretter = handlers.interpretter;
 
@@ -75,7 +74,6 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
             callback();
         }
       ]);
-
     });
 
 	  jQuery.data(obj, 'editor', editor);
