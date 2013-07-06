@@ -97,7 +97,7 @@ function editor_service_compile() {
    	global $filter_debug;
 	$filter_debug = array();
 
-    $markup = check_markup($text, "tex", "und");
+    $markup = check_markup($text, $info['extension'], "und");
     $output = array();
 
     if (isset($filter_debug["drutexml_latexml"])) {
@@ -116,7 +116,7 @@ function editor_service_compile() {
 		   	$result = json_decode(_drutexml_cache_read($key));
 		   	$log = $result->log;
 	   		$matches = array();
-	   		preg_match_all("|Error:[^\\n]*|", $log, $matches);
+	   		preg_match_all("|error [^\\n]*|", $log, $matches);
 
 		   	$output[$type] = $matches[0];
 	    }

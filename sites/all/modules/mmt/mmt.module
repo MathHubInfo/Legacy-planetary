@@ -303,7 +303,19 @@ function mmt_form_alter(&$form, &$form_state, $form_id) {
 	  	$form['uri']['#disabled'] = TRUE;
 	  }
   }
+
+  if ($form_id == 'mmtdoc_node_form') { 
+    if(array_key_exists('nid', $form_state['node'])) { //editing existing node
+       $location = $form_state['node']->field_external['und']['0']['path']; 
+       $path_info = mmt_get_path_info($location);
+       global $filter_context;
+       $filter_context = array();
+       $filter_context['mmt'] = $path_info;
+
+    }
+  }
 }
+
 
 /**
  * implements hook_node_insert, inserts URI to mmturi table, for mmt-specific nodes
@@ -513,7 +525,6 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
     }
   return $element;
 }
-
 
 /**
  * implements hook_node_view, renders mmt-specific nodes by loading html from MMT instance
