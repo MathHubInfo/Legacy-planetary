@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the KWARC Members ContentTypes feature.
+ */
+
+include_once 'kwarc_members_contenttypes.features.inc';
