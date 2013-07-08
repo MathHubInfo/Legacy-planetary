@@ -17,7 +17,114 @@ function sharejsservices_menu() {
     	'access arguments' => array('access administration pages'),
     	'type' => MENU_NORMAL_ITEM,
 	);
+
+	$items["compile"] = array (
+		'title' => 'Run filter over some text',
+		'page callback' => 'editor_service_compile',
+    	'access arguments' => array('access content'),
+   	    'type' => MENU_CALLBACK,
+	);
+	$items["getDependencies"] = array (
+		'title' => 'Run filter over some text',
+		'page callback' => 'editor_service_getDependencies',
+    	'access arguments' => array('access content'),
+   	    'type' => MENU_CALLBACK,
+	);
+
+	$items["hypertree"] = array (
+		'title' => 'Run filter over some text',
+		'page callback' => 'editor_service_hypertree',
+    	'access arguments' => array('access content'),
+   	    'type' => MENU_CALLBACK,
+	);
+
 	return $items;
+}
+
+function editor_service_hypertree() {
+	drupal_add_library('system', 'ui.dialog');
+    libraries_load("jit");
+
+    if (isset($_GET["ajax"])) {
+    	$prefix = drupal_get_js();
+    } else
+    	$prefix = "";
+
+    $path = $_GET["path"];
+    $name = substr($path, strrpos($path, "?")+1);
+
+	$res = theme("editor_service_hypertree", array(
+		"jit_root"=>url(libraries_get_path("jit")), 
+		"root" => json_encode(array( "id" => $path, "name" => $name)),
+		"depURL" => url("/getDependencies"),
+		"prefix" => $prefix
+	));
+
+    if (isset($_GET["ajax"])) {
+    	echo $res;
+    } else
+    	return $res;
+
+;
+}
+
+function sharejsservices_theme($existing, $type, $theme, $path) {
+	return array(
+			'editor_service_hypertree' => array(
+				'variables' => array('content' => NULL),
+				'template' => "editor_service_hypertree"
+			)
+	);
+}
+
+
+function editor_service_getDependencies() {
+	$path = $_POST["path"];
+	$res = mmt_get_dependencies($path);
+	$rr = array();
+	foreach ($res[0] as $key) {
+		array_push($rr, str_replace("http://docs.omdoc.org", "http://docs.omdoc.org/smglo", $key));
+	}
+    drupal_json_output($rr);
+}
+
+function editor_service_compile() {
+	$text = $_POST["text"];
+	$file = $_POST["path"];
+    global $filter_context;
+    $filter_context = array();
+    $info = mmt_get_path_info($file);
+
+    $filter_context['mmt']['dpath'] = $info["dpath"];
+   	global $filter_debug;
+	$filter_debug = array();
+
+    $markup = check_markup($text, "tex", "und");
+    $output = array();
+
+    if (isset($filter_debug["drutexml_latexml"])) {
+    	$key = $filter_debug["drutexml_latexml"][1][0];
+	   	$result = json_decode(_drutexml_cache_read($key."_r"));
+	   	$log = $result->log;
+	   	$matches = array();
+	   	preg_match_all("|Error:[^\\n]*|", $log, $matches);
+
+	   	$output["latexml"] = $matches[0];
+    }
+
+    foreach (array("mmt_compilation", "mmt_presentation") as $type) {
+	    if (isset($filter_debug[$type])) {
+    		$key = $filter_debug[$type][1][0];
+		   	$result = json_decode(_drutexml_cache_read($key));
+		   	$log = $result->log;
+	   		$matches = array();
+	   		preg_match_all("|Error:[^\\n]*|", $log, $matches);
+
+		   	$output[$type] = $matches[0];
+	    }
+    }
+
+	drupal_json_output($output);
 }
 
 function sharejs_config_form($form, &$form_state) {

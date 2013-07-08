@@ -39,7 +39,7 @@ function drutexml_info() {
  */
 function drutexml_menu() {
   $items['drutexml/latexml/%/viewlog'] = array(
-    'title' => 'View DruTeX Log',
+    'title' => 'LaTeXML log + XHTML/OMDOC',
     'type' => MENU_LOCAL_ACTION,
     'context' => MENU_CONTEXT_INLINE,
     'page callback' => 'drupal_get_form',
@@ -47,7 +47,7 @@ function drutexml_menu() {
     'access arguments' => array('administer blocks'),
   );
   $items['drutexml/latexml/%/regenerator'] = array(
-    'title' => 'Regenerate DruTeX',
+    'title' => 'Rerun LaTeXML',
     'type' => MENU_LOCAL_ACTION,
     'context' => MENU_CONTEXT_INLINE,
     'page callback' => 'drupal_get_form',
@@ -55,7 +55,7 @@ function drutexml_menu() {
     'access arguments' => array('administer blocks'),
   );
   $items['drutexml/omdoc/%/regenerator'] = array(
-    'title' => 'Regenerate OMDOC',
+    'title' => 'Regenerate presentation',
     'type' => MENU_LOCAL_ACTION,
     'context' => MENU_CONTEXT_INLINE,
     'page callback' => 'drupal_get_form',
@@ -228,6 +228,10 @@ function _drutexml_omdoc2html5($text, $filter, $format, $langcode, $cache, $cach
   $content = $content->data;
   if (strlen($content) == 0)
 	  $content = "<p>Empty OMDoc</p>";
+  
+  // removing CSS
+  $content = str_replace('<link rel="stylesheet" type="text/css" href="css/omdoc-default.css"/>','',$content);
+
   _drutexml_cache_set($key, $content);
 
   return $content;

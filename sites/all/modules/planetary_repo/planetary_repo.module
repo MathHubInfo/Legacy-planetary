@@ -36,8 +36,7 @@ function truepath($path){
  * @return path - normalized path of the file to be accessed
  *         false - if not allowed 
  */
-function planetary_repo_local_access_path($path) {
-  $root = truepath(variable_get('planetary_repo_local_path', "/tmp/"));
+function planetary_repo_access_path($root, $path) {
   $p = truepath($root."/".$path);
   if (strlen($p)==0)
     return false;
@@ -46,6 +45,21 @@ function planetary_repo_local_access_path($path) {
     return $p;
   else
     return false;
+}
+
+/*
+ ------------------- LOCAL REPOSITORY ---------------------------
+*/
+
+function planetary_repo_local_access_path($path) {
+  $root = truepath(variable_get('planetary_repo_local_path', "/tmp/"));
+  return planetary_repo_access_path($root, $path);
+}
+
+function planetary_repo_is_dir($path) {
+  $full_path = planetary_repo_local_access_path($path);
+  $ret = is_dir($full_path);
+  return $ret;
 }
 
 function planetary_repo_local_save($path, $content) {
@@ -96,8 +110,90 @@ function planetary_repo_local_settings(&$element) {
     );
 }
 
-function planetary_repo_virtual_settings(&$element) {
+/*
+ * ----------------- GIT REPOSITORY ---------------------------
+ */
+
+
+
+function planetary_repo_git_access_path($path) {
+  $root = truepath(variable_get('planetary_repo_git_path', "/tmp/"));
+  return planetary_repo_access_path($root, $path);
 }
+
+function planetary_repo_git_settings(&$element) {
+  $element["planetary_repo_git_path"] = array(
+      "#type" => "textfield",
+      "#title" => "Path to the checked out git repository",
+      "#default_value" => variable_get('planetary_repo_git_path', "/tmp/"),
+    );
+
+  $element["planetary_repo_git_exec"] = array(
+      "#type" => "textfield",
+      "#title" => "Path to the git executable",
+      "#default_value" => variable_get('planetary_repo_git_exec', "/usr/bin/git"),
+    );
+}
+
+function planetary_repo_git_pull() {
+  $exec = variable_get('planetary_repo_git_exec', "/usr/bin/git");
+  $path = variable_get('planetary_repo_git_path');
+  shell_exec("cd $path; git pull");
+}
+
+function planetary_repo_git_push() {
+  global $user;
+  $uname = $user->name;
+
+  $exec = variable_get('planetary_repo_git_exec', "/usr/bin/git");
+  $path = variable_get('planetary_repo_git_path');
+  shell_exec("cd $path; git add *; git commit -m 'change by user $uname'; git push origin master ");
+}
+
+function planetary_repo_git_save($path, $content) {
+  planetary_repo_git_push();
+  $full_path = planetary_repo_git_access_path($path);
+  if (!$full_path) 
+    return false;
+  $f = fopen($full_path, "w");
+  fwrite($f, $content);
+  fclose($f);
+}
+
+function planetary_repo_git_load($path) {
+  planetary_repo_git_pull();
+  $full_path = planetary_repo_git_access_path($path);
+  $f = fopen($full_path, "r");
+  $content = fread($f, 1000000);
+  fclose($f);
+  return $content;
+}
+
+function planetary_repo_git_list($path) {
+  planetary_repo_git_pull();
+  $full_path = planetary_repo_git_access_path($path);
+  $content = array();
+  if ($full_path) {
+    $handle = opendir($full_path);
+    while (false !== ($file = readdir($handle))) {
+         $content[] = $file;
+    }
+    closedir($handle);
+  }
+  return $content;
+}
+
+function planetary_repo_git_stat($path) {
+  planetary_repo_git_pull();
+  $full_path = planetary_repo_git_access_path($path);
+  if ($full_path) {
+    if (!file_exists($full_path))
+      return null;
+    return $handle = stat($full_path);
+  }
+  return null;
+}
+
 
 function planetary_repo_repo_provider() {
   return array(
@@ -109,9 +205,13 @@ function planetary_repo_repo_provider() {
         "list" => 'planetary_repo_local_list',
         "stat" => 'planetary_repo_local_stat',
       ),
-    "VFS" => array(
-        "label" => "Virtual File System",
-        "settings" => 'planetary_repo_virtual_settings'
+    "git" => array(
+        "label" => "Git File System",
+        "settings" => 'planetary_repo_git_settings',
+	"save" => 'planetary_repo_git_save',
+        "load" => 'planetary_repo_git_load',
+        "list" => 'planetary_repo_git_list',
+        "stat" => 'planetary_repo_git_stat',
       )
     );
 }

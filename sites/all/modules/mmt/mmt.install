@@ -1,0 +1,172 @@
+<?php
+
+function mmt_create_fields() {
+  // Check if our field is not already created.
+    
+  if (!field_info_field('field_external')) {
+    $field = array(
+        'field_name' => 'field_external',
+        'type' => 'vfs_file', //declared in vfs module
+    );
+    field_create_field($field);
+  }
+
+  // Create the instance on the bundle.
+  $instance = array(
+    'field_name' => 'field_external',
+    'entity_type' => 'node',
+    'label' => 'MMT Body',
+    'bundle' => 'mmtdoc',
+    // If you don't set the "required" property then the field wont be required by default.
+    'required' => TRUE,
+    'widget' => array(
+      'type' => 'textfield',
+    ),
+    'display' => array(
+      'default' => array( 
+        'type' => 'mmt_formatter',
+      ),
+    ),    
+  );
+  field_create_instance($instance);
+}
+
+function mmt_install() {
+  /** declaring node types */
+  //MMT Module
+  $mmt_module = (object) array(
+    'type' => 'mmt_module',
+    'name' => 'MMT Module',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal MMT Module',
+    'body_label' => 'Module Body',
+    'has_title' => true,
+  ); 
+
+  node_type_save($mmt_module);
+
+  //MMT Document
+  $mmt_doc = (object) array(
+    'type' => 'mmtdoc',
+    'name' => 'MMT Document',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal MMT Document',
+    'body_label' => 'Document Body',
+    'has_title' => true,
+  ); 
+  
+  //node_add_body_field($mmt_doc);
+  node_type_save($mmt_doc);
+
+  //adding fields
+  mmt_create_fields();
+
+  variable_set('mmtUrl', "http://localhost:8080");
+  variable_set('mmt_menu_items', array());
+  $mlids = array();
+
+  $arch_item = array(
+    'link_path' => drupal_get_normal_path('mmt/archives'),
+    'link_title' => "Archives",
+    'weight' => 10,
+    'menu_name' => 'main-menu'
+  );
+  $mlids[] = menu_link_save($arch_item);
+
+  $forum_item = array(
+    'link_path' => drupal_get_normal_path('forum'),
+    'link_title' => "Discussion",
+    'weight' => 15,
+    'menu_name' => 'main-menu'
+  );
+  $mlids[] = menu_link_save($forum_item);
+  
+  
+  variable_set('mmt_mlids', $mlids);
+
+  drupal_set_message("installed");
+}
+
+function delete_node_type($node_type_name, $remove_type = true) {
+  // deleting all node instances
+  $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+  node_delete_multiple($nids);
+  //deleting node type
+  if ($remove_type) {
+    node_type_delete($node_type_name);
+  }
+}
+
+function mmt_uninstall() {
+  //deleting node types
+  delete_node_type('mmt_module');
+  delete_node_type('mmtdoc');	
+  delete_node_type('glossary', false); 
+  delete_node_type('article', false); 
+
+  $mlids = variable_get('mmt_mlids');
+  foreach ($mlids as $mlid) {
+	menu_link_delete($mlid);
+  }
+
+  drupal_set_message("uninstalled");
+}
+
+/** declares tables for MMT-specific content */ 
+function mmt_schema() {
+  $schema['mmturi'] = array(
+    'description' => 'the base table for URIs',
+    'fields' => array(
+	  'uid' => array(
+	    'description' => 'The primary identifier of a uri',
+        'type' => 'serial', 
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'nid' => array(
+	    'description' => 'The node id',
+        'type' => 'int', 
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uri' => array(
+        'description' => 'The MMT URI',
+        'type' => 'varchar',
+        'length' => 511,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('uid'),	
+  );
+
+  $schema['mmtdoc'] = array(
+    'description' => 'the base table for URIs',
+    'fields' => array(
+    'did' => array(
+      'description' => 'The primary identifier of a mmtdoc',
+        'type' => 'serial', 
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'nid' => array(
+      'description' => 'The node id',
+        'type' => 'int', 
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'location' => array(
+        'description' => 'The file path',
+        'type' => 'varchar',
+        'length' => 511,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('did'),  
+  );
+  return $schema;
+  
+}

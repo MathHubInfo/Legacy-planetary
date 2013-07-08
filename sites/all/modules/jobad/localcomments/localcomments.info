@@ -1,0 +1,6 @@
+name = Local Comments
+description = Local Comments for use with JOBAD
+core = 7.x
+package  = Planetary Modules
+dependencies[] = jobad
+dependencies[] = views

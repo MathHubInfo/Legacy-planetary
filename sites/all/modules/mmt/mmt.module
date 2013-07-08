@@ -1,0 +1,790 @@
+<?php
+
+/**
+ * Implementing hook_menu()
+ */
+function mmt_menu() {
+    $items['mmt/setup'] = array(
+	  'title' => "Setup MMT",
+	  'page callback' => 'mmt_setup',
+	  'access callback' => 'mmt_setup_access',
+	  'menu_name' => 'navigation'
+	  );
+
+    $items['mmt/autoload'] = array(
+    'title' => "AutoLoad",
+    'page callback' => 'mmt_create_nodes',
+    'access callback' => 'mmt_setup_access',
+    'menu_name' => 'navigation'
+    );
+
+  $items['mmt/archives'] = array(
+    'title' => "Archive Callback",
+	  'page callback' => 'mmt_archives',
+	  'access callback' => true,
+    'menu_name' => 'main-menu',
+    'weight' => 10,
+    'type' => MENU_CALLBACK,
+	);
+
+  $items['mmt/comp/%/log'] = array(
+    'title' => 'MMT->OMDoc log',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mmt_filter_compilation_log', 2),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['mmt/pres/%/log'] = array(
+    'title' => 'MMT->OMDoc presentation',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mmt_filter_compilation_log', 2),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['mmt/comp'] = array(
+    'title' => 'MMT->OMDoc',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mmt_parent'),
+    'access arguments' => array('administer blocks'),
+  );
+  $items['mmt/pres'] = array(
+    'title' => 'MMT->OMDoc',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mmt_parent'),
+    'access arguments' => array('administer blocks'),
+  );
+  return $items;
+}
+
+function mmt_parent($form, $form_state) {
+	return $form;
+}
+
+function mmt_setup_access() {
+  global $user;
+  if ($user-> uid == 1) {//only admin has rights 
+    return true;
+  } else {
+	return false;
+  }
+}
+
+
+function mmt_archives() {
+  //TODO change generation mode for this page
+  $htmlText = '
+	The archives page contains a collection of flexiformal mathematical repositories that are made available in the OAFF. 
+	Currently, this includes the following: 
+    <ul>
+     <li> <a href="?q=/http%3A//docs.omdoc.org/urtheories">urtheories</a> - formal foundations</li>
+     <li> <a href="?q=/http%3A//docs.omdoc.org/latin">LATIN</a> - logic atlas</li>
+     <li> <a href="?q=/http%3A//www.openmath.org">OpenMath</a> - a content dictionary with Scala-based computational semantics </li>
+     <li> <a href="?q=/http%3A//docs.omdoc.org/smglo">SMGlo</a> - a semantic glossary of mathematics (in progress) </li>
+
+    </ul>
+	';
+  return $htmlText;
+}
+
+/** api for vfs location */
+
+function mmt_get_path_info($location) {
+  $archives = array(
+    'smglo' => 'http://docs.omdoc.org/smglo/',
+    'latin' => 'http://docs.omdoc.org/latin/',
+    'urtheories' => 'http://docs.omdoc.org/urtheories/' ,
+    'openmath' => 'http://www.openmath.org/',
+  ); //hardcoded for now, get be gotten from MMT using archive name
+
+  $lparts = explode('/', $location); //format is <archive-name>/source/<fragment path>
+  $archive = $lparts[0];
+
+  $filename = $lparts[count($lparts) - 1];
+  $folderSegs = array_slice($lparts, 0, -1);
+  $parent = join("/", $folderSegs);
+ 
+  
+  $fparts = explode('.', $filename);
+  $extension = $fparts[count($fparts) - 1];
+  
+  $lang = 'und'; //default
+  if (count($fparts) == 3) { //three file parts means <module>.<lang>.<ext>
+    $lang = $fparts[1]; 
+  }
+
+  $modName = $fparts[0];
+
+  //getting dpath  
+  $relPathSegments = array_slice($lparts, 2);
+  $relPath = "";//default for toplevel
+  if (count($relPathSegments) != 0) {
+    $relPath = join('/', $relPathSegments);
+  }
+
+  $rparts = explode('.', $relPath);
+
+  if (count($rparts) > 1) { //there is an extension
+    $rparts[count($rparts) - 1] = "omdoc"; 
+  }
+  $omdocRelPath = join(".", $rparts); 
+
+  $dpath = $archives[$archive] . $omdocRelPath;
+
+  $path_info = array(
+    'location' => $location,
+    'archive' => $archive,
+    'filename' => $filename,
+    'extension' => $extension,
+    'module' => $modName,
+    'parent' => $parent, //parent folder
+    'lang' => $lang,
+    'dpath' => $dpath,
+    );
+
+  return $path_info;
+
+}
+
+
+
+
+
+/**
+ * Initialize MMT, loads css and js files and uses jobad API
+ */
+function mmt_initialize() {
+	/**
+     * CSS
+     */
+    $mmtPath = drupal_get_path('module', 'mmt');
+    $mmtUrl = variable_get('mmtUrl');  
+
+    libraries_load("jobad");
+ 
+    drupal_add_css($mmtPath . '/css/mmt.css', array('weight' => PHP_INT_MAX, 'every_page' => false));
+    
+    /**
+     * JavaScript
+     */
+    drupal_add_js('var mmtUrl = "' . $mmtUrl . '";', 'inline');
+    jobad_add_module($mmtPath . '/jobad/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
+    jobad_add_module($mmtPath . '/jobad/hovering.js', "kwarc.mmt.hovering");
+    jobad_add_module($mmtPath . '/jobad/interactive-viewing.js', "kwarc.mmt.intvw");
+
+    //mmt js libs
+    drupal_add_js($mmtPath . '/utils/mmt-html.js', 'file', array('cache' => false));
+    drupal_add_js($mmtPath . '/utils/mathml.js', 'file', array('cache' => false));
+    //modules
+    $instName = jobad_initialize();
+    return $instName;
+}
+
+/**  MMT Filters */
+/*
+ * filter hooks for handling content formats
+ */
+function mmt_filter_info() {
+  $filters = array();
+  $filters['mmt-presentation'] = array(
+    'title' => t('MMT Presentation filter'),
+    'description' => t('The text will be rendered by MMT using a presentation style'),
+    'process callback' => 'mmt_filter_presentation_process',
+    'default settings' => array(
+      'mmt_style' => 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5',
+    ),
+    'settings callback' => 'mmt_filter_presentation_settings',
+ //   'tips callback' => '_mmt_filter_presentation_tips',
+  );
+  $filters['mmt-compilation'] = array(
+    'title' => t('MMT Compilation filter'),
+    'description' => t('The text will be compiled by MMT to return MMT-OMDoc'),
+    'process callback' => 'mmt_filter_compilation_process',
+    'default settings' => array(
+      'mmt_format' => 'mmt',
+    ),
+    'settings callback' => 'mmt_filter_compilation_settings',
+ //   'tips callback' => '_mmt_filter_presentation_tips',
+  );
+
+  return $filters;
+}
+
+function mmt_filter_presentation_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  global $filter_context;
+  global $filter_debug;
+
+  $dpath = $filter_context['mmt']['dpath'];
+  $style = $filter->settings['mmt_style'];
+  $response = mmt_get_presentation($dpath, $text, $style);
+  
+  $key = md5($text);
+  _drutexml_cache_set($key, $response);	
+  if (isset($filter_debug)) {
+	  $filter_debug["mmt_presentation"] = array("mmt/pres", array($key));
+  }
+  $result= json_decode($response, true);
+
+  return $result['content'];
+}
+
+
+function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  global $filter_debug;
+  global $filter_context;
+
+  $dpath = $filter_context['mmt']['dpath'];
+  $format = $filter->settings['mmt_format'];
+  $response = mmt_get_compiled($text, $dpath, $format);
+
+  $key = md5($text);
+  _drutexml_cache_set($key, $response);	
+ 
+  if (isset($filter_debug)) {
+	  $filter_debug["mmt_compilation"] = array("mmt/comp", array($key));
+  }
+  $result= json_decode($response, true);
+
+  return $result['content'];
+}
+
+function mmt_filter_compilation_log($form, $form_state, $key) {
+	$val = _drutexml_cache_read($key);
+	$form["log"] =
+		array(
+		      "#markup" => "<pre>".htmlentities($val)."</pre>",
+		      );
+	return $form;
+}
+
+function mmt_filter_presentation_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings['mmt_style'] = array(
+    '#type' => 'textfield',
+    '#title' => t('MMT Presentation Style'),
+    '#default_value' => isset($filter->settings['mmt_style']) ? $filter->settings['mmt_style'] : $defaults['mmt_style'],
+    '#description' => t('The URI or name of the style used by MMT to generate presentation for MMT/OMDoc documents'),
+  );
+  return $settings;
+}
+
+function mmt_filter_compilation_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings['mmt_format'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Input Format for MMT to compile'),
+    '#default_value' => isset($filter->settings['mmt_format']) ? $filter->settings['mmt_format'] : $defaults['mmt_format'],
+    '#description' => t('The format of the text sent to MMT to be compiled into MMT/OMDoc'),
+  );
+  return $settings;
+}
+
+/** Other Hooks */
+
+/**
+ * implements hook_form_alter, adds URI field to mmt-specific forms
+ */
+function mmt_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'mmt_module_node_form') {
+    $form['uri'] = array(
+      '#type' => 'textfield',
+      '#title' => t('MMT URI'),
+	  );
+
+ 
+	  if(array_key_exists('nid', $form_state['node'])) { //editing existing node
+	  	$nid = $form_state['node']->nid;
+	  	$result = db_select('mmturi', 'm')->fields('m',array('uri'))->condition('nid', $nid, '=')->execute()->fetchAssoc();
+	  	$uri = $result['uri'];
+	  	$form['uri']['#default_value'] = $uri;
+	  	$form['uri']['#disabled'] = TRUE;
+	  }
+  }
+}
+
+/**
+ * implements hook_node_insert, inserts URI to mmturi table, for mmt-specific nodes
+ */
+function mmt_node_insert($node) {
+  if ($node->type == 'mmt_module') {
+    db_insert('mmturi')->fields(array(
+       'nid' => $node->nid,
+       'uri' => $node->uri))->execute();
+  }
+
+  if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
+    $nid = $node->nid;
+    $dpath = $node->field_external['und']['0']['dpath']['value'];
+    mmt_save_path($nid, $dpath);
+  }
+  
+
+}
+
+/**
+ *  Creates nodes for all documents in planetary_repo path where there is a mmt-connected content type 
+ * associated with that format (based on file extension).  
+ */
+function mmt_create_nodes() {
+  $formats = array(
+    'smglo' =>  'tex',
+    'latin' => 'elf',
+    'urtheories' => 'mmt',
+    'openmath' => 'mmt',
+    );
+
+  $node_types = array(
+    'tex' => 'glossary', //glossary_entry for smglo
+    'elf' => 'mmtdoc', //lf format
+    'mmt' => 'mmtdoc', //mmt format
+  );
+
+  $res = planetary_repo_local_list("");
+  foreach ($res as $file) {
+    if (array_key_exists($file, $formats)) {
+      $format = $formats[$file];
+      _mmt_create_nodes($file . "/source", $format, $node_types[$format]);
+
+    }
+  }
+
+  return "Success";
+}
+
+function _mmt_create_nodes($path, $format, $node_type) {
+  $res = planetary_repo_local_list($path);
+  $title = $path;
+  $body = '';
+  foreach ($res as $file) {
+    $fpath = $path . "/" .$file;
+    if($file[0] != '.') {
+      if (planetary_repo_is_dir($fpath)) {         
+        _mmt_create_nodes($fpath, $format, $node_type);
+        $path_info = mmt_get_path_info($fpath);
+        $dpath = $path_info['dpath'];          
+        $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
+      } else {
+        $parts = explode('.', $file);
+        $ext = $parts[count($parts) - 1];
+        if ($ext == $format) {
+          $module = $parts[0];
+          $lang = 'und'; //default
+          if (count($parts) == 3) {
+            $lang = $parts[1];
+          }
+          $path_info = mmt_get_path_info($fpath);
+          $dpath = $path_info['dpath']; 
+
+          mmt_create_node($module, $lang, $format, $dpath, $fpath, $node_type);        
+          $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
+        }
+      }
+    }
+  }
+  $path_info = mmt_get_path_info($path);
+  $menupath = $path_info['dpath'];  
+  $nid = mmt_create_article($title, $body);
+  mmt_save_path($nid, $menupath);
+}
+
+function mmt_create_node($module, $lang, $format, $dpath, $location, $node_type) {
+  $title = $module;
+  $newnode = (object) array(
+   'type' => $node_type,
+   'uid' => 0,
+   'created' => strtotime("now"),
+   'changed' => strtotime("now"),
+   'status' => 1,
+   'comment' => 2,
+   'promote' => 0,
+   'moderate' => 0,
+   'sticky' => 0,
+   'language' => $lang
+  );
+
+  $newnode->title = $title;
+  $newnode->field_external['und']['0']['path'] = $location;
+  $newnode->field_external['und']['0']['filter'] = $format;
+  $newnode->field_external['und']['0']['dpath']['value'] = $dpath;
+  /*
+  $newnode->mmt_body['und'][0]['data']
+  $newnode->mmt_body['und'][0]['filter'] = $format
+  $newnode->mmt_body['und'][0]['path'] = $location
+
+  */
+
+  node_object_prepare($newnode);//necessary ?
+  node_save($newnode);
+  return $newnode->nid;
+}
+
+function mmt_create_article($title, $body) {
+  $newnode = (object) array(
+   'type' => 'article',
+   'uid' => 0,
+   'created' => strtotime("now"),
+   'changed' => strtotime("now"),
+   'status' => 1,
+   'comment' => 2,
+   'promote' => 0,
+   'moderate' => 0,
+   'sticky' => 0,
+   'language' => 'und'
+  );
+  $newnode->title = $title;
+  $newnode->body['und'][0]['value'] = $body;
+  $newnode->body['und'][0]['summary'] = $body;  
+  $newnode->body['und'][0]['format'] = 'filtered_html';  
+
+  node_object_prepare($newnode);//necessary ?
+  node_save($newnode);
+  return $newnode->nid;
+
+}
+
+/**
+ * implements hook_node_load, loads URI from mmturi table, for mmt-specific nodes
+ */
+function mmt_node_load($nodes, $types) {
+  $mmtNodes = array();
+  //mmt_module
+  foreach ($nodes as $node) {
+    if ($node->type == 'mmt_module') {
+      $mmtNodes[$node->nid] = $node;
+    }
+  }
+  if (count($mmtNodes) > 0) { //something to do	
+    $result = db_query('SELECT nid,uri FROM {mmturi} WHERE nid IN (:nids)', array(':nids' => array_keys($mmtNodes)));
+    foreach ($result as $record) {
+      $nodes[$record->nid]->uri = $record->uri; 
+    }
+  }
+}
+
+/**  MMT Formatter */
+
+function mmt_field_formatter_info() {
+   return array(
+   // This formatter changes the background color of the content region.
+    'mmt_formatter' => array(
+      'label' => t('Formatter of MMT content'),
+      'field types' => array('vfs_file'),
+    ),
+  );
+}
+
+function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  
+  switch ($display['type']) {
+    case 'mmt_formatter':
+      $lang = $entity->language;
+      foreach ($items as $delta => $item) {
+        $location = $item['path'];
+        $path_info = mmt_get_path_info($location);
+
+        global $filter_context;
+        $filter_context = array();
+        $filter_context['mmt']['dpath'] = $path_info['dpath'];
+        $content = planetary_repo_load_file($location);
+        global $filter_debug;
+        $filter_debug = array();
+        $markup = check_markup($content, $item['filter'], $lang);
+        $element[$delta] = array(
+          "#type" => "container",
+          '#attributes' => array(
+               'class' => array('contextual-links-region'),
+               ),
+          "context_links" =>
+          array(
+          "#type" => "contextual_links",
+          "#contextual_links" => $filter_debug
+          ),
+          "content" =>
+          array(
+          '#markup' => $markup,
+          )
+          );
+      }
+      break;
+    }
+  return $element;
+}
+
+
+/**
+ * implements hook_node_view, renders mmt-specific nodes by loading html from MMT instance
+ */
+function mmt_node_view($node, $view_mode, $langcode) {
+	if ($view_mode != "full")
+		return;
+  if ($node->type == 'mmt_module'  ) {
+	  $inst_id = mmt_initialize();
+ 	  //getting pres from db
+    $mmt_presentation = mmt_get_contentPres($node->uri);
+    $node->content['mathml_body'] = array(
+      '#markup' => '<div id=' . $inst_id . ' style="overflow:auto">' . $mmt_presentation . '</div>',
+      '#weight' => 10,
+    );
+  }
+
+  if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
+    $inst_id = mmt_initialize();
+    $content = $node->content['field_external'][0]['content']['#markup'];
+    $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '">' . $content . '</div>' ;
+  }
+}
+
+function mmt_get_contentPres($path, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
+  $mmtUrl = variable_get('mmtUrl');
+  $url = $mmtUrl . '/:planetary/getContentPres';
+  $data = array('path' => $path, 'style' => $style);
+  $options = array(
+    'http' => array(
+        'header'  => "Content-type: application/json\r\n",
+        'method'  => 'POST',
+        'content' => json_encode($data),
+    ),
+  );
+  $context  = stream_context_create($options);
+  $result = file_get_contents($url, false, $context);
+  return $result;
+}
+
+function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
+  $mmtUrl = variable_get('mmtUrl');
+  $url = $mmtUrl . '/:planetary/getPresentation';
+  $data = array('body' => $body, 'style' => $style);
+  if (isset($dpath)) {
+    $data['dpath'] = $dpath;
+  }
+
+  $options = array(
+    'http' => array(
+        'header'  => "Content-type: application/json\r\n",
+        'method'  => 'POST',
+        'content' => json_encode($data),
+    ),
+  );
+  $context  = stream_context_create($options);
+  $response = file_get_contents($url, false, $context);
+  $result = json_decode($response, true);
+  return $response;
+}
+
+function mmt_get_compiled($body, $dpath, $format) {
+  $mmtUrl = variable_get('mmtUrl');
+  $url = $mmtUrl . '/:planetary/getCompiled';
+  $data = array('body' => $body, 'format' => $format);
+  if (isset($dpath)) {
+    $data['dpath'] = $dpath;
+  }
+
+  $options = array(
+    'http' => array(
+        'header'  => "Content-type: application/json\r\n",
+        'method'  => 'POST',
+        'content' => json_encode($data),
+    ),
+  );
+  $context  = stream_context_create($options);
+  $response = file_get_contents($url, false, $context);
+  $result = json_decode($response, true);
+ 
+  return $response;
+}
+
+function mmt_get_content($path) {
+  $mmtUrl = variable_get('mmtUrl');
+  $postPath = '???'; //default-for documents
+  if (substr_count($path, '?') == 1) { //mmt module
+    $postPath = '??';
+  }
+  $url = $mmtUrl . '/:mmt?' . $path . $postPath. '_present_' . 'xml';
+  $content = file_get_contents($url);
+  return $content;
+}
+
+/** gets a list of the mmt paths of all mmt theories that are included in the given one
+ * i.e. all theories this one depends on 
+ * e.g.  
+  mmt_get_dependencies("http://docs.omdoc.org/smglo/dgraph.en.omdoc?dgraph.en");
+  mmt_get_dependencies("http://docs.omdoc.org/smglo/dgraph.omdoc?dgraph");
+*/
+function mmt_get_dependencies($mpath) {
+  $mmtUrl = variable_get('mmtUrl');
+  $url = $mmtUrl . '/:query';
+  $data = '<related><individual uri="'.$mpath.'"/><transitive><toobject relation="Includes"/></transitive></related>';
+
+  $options = array(
+    'http' => array(
+        'header'  => "Content-type: application/xml\r\n",
+        'method'  => 'POST',
+        'content' => $data,
+    ),
+  );
+  $context  = stream_context_create($options);
+  $response = file_get_contents($url, false, $context);
+  $xml = new SimpleXMLElement($response);
+  $xmlpaths = $xml->xpath('/results/result/uri');
+  $results = array();
+  foreach ($xmlpaths as $xmlpath){
+    $results[] = (string)$xmlpath['path'];
+  }
+  return array($results); 
+}
+
+/**
+ * helper function to automatically create nodes in drupal by loading from an MMT instance (currently hardcoded)
+ */
+function mmt_setup() {
+  $mmtUrl = variable_get('mmtUrl');
+  $qUrl = $mmtUrl . '/:planetary/getPaths';
+  //$qUrl = 'public/getPaths'; //quick hack for preloading mmt uris
+  $result = file_get_contents($qUrl);
+  drupal_set_message("Loading: ");
+  mmt_load_nodes($result);
+//  menu_build_tree('navigation');
+  drupal_set_message("Success");
+  return "";
+}
+
+
+function mmt_save_path($nid, $path) {
+  if (substr($path, -1) == '/') {
+    $path = substr($path, 0, -1);
+  }
+  
+  $pathOpt = array(
+    'source' => 'node/' . $nid,
+    'alias' => $path,
+  );
+  path_save($pathOpt);
+    /*
+    //link for tree menu
+    $menuOpt = array (
+    'link_path' => drupal_get_normal_path($path),
+        'link_title' => $uri[count($uri) - 1],
+        'plid' => $plids_stack[count($plids_stack) - 1],
+        'menu_name' => 'navigation',
+    );
+    $id = menu_link_save($menuOpt);
+    drupal_set_message($alias);
+    $mlids[] = $id;
+    $plids_stack[] = $id;
+    */
+}
+
+function mmt_load_nodes($pathsStr) {
+  $lines = explode("\n", $pathsStr);
+  $arch_item = array(
+    'link_path' => drupal_get_normal_path('mmt/archives'),
+    'link_title' => "Archives",
+    'menu_name' => 'navigation'
+  );
+  $id = menu_link_save($arch_item);
+  //gathering set mlids to cleanup nicely on reinstall 
+  $mlids = variable_get('mmt_mlids');
+  $mlids[] = $id; 
+  variable_set('mmt_mlids', $mlids);
+
+  foreach ($lines as $line) {
+    $pair = explode(" ", $line);
+    $name = $pair[0];
+    $path = $pair[1];
+    $nid = mmt_make_node($path, $name);
+    mmt_save_path($nid, $path);
+  }
+}
+
+//obosolete now, to be removed after done scavenging code from it
+function old_mmt_load_nodes($pathsStr) {
+  $lines = explode("\n", $pathsStr);
+  $uri = array("mmt","archives");
+  $plids_stack = array();
+  $mlids = variable_get('mmt_mlids');
+  $arch_item = array(
+	  'link_path' => drupal_get_normal_path('mmt/archives'),
+	  'link_title' => "Archives",
+	  'menu_name' => 'navigation'
+	);
+  $id = menu_link_save($arch_item);
+  $plids_stack[] = $id;
+  $mlids[] = $id;
+  foreach ($lines as $line) {
+    if ($line == "") {
+  	  array_pop($uri); //reset uri
+      array_pop($plids_stack); //reset plids  	  
+	} else {
+	  $pair = explode(" ", $line);
+	  $uri[] = $pair[0];
+	  $nid = mmt_make_node($pair[1], $pair[0]); //$node->nid
+    //path from url 
+    $alias = $pair[1];  
+    if (substr($alias, -1) == '/') {
+      $alias = substr($alias, 0, -1);
+    }
+    $pathOpt = array(
+		  'source' => 'node/' . $nid,
+		  'alias' => $alias,
+	  );
+	  path_save($pathOpt);
+    //link for tree menu
+
+    $menuOpt = array (
+		'link_path' => drupal_get_normal_path($alias),
+        'link_title' => $uri[count($uri) - 1],
+        'plid' => $plids_stack[count($plids_stack) - 1],
+        'menu_name' => 'navigation',
+	  );
+    $id = menu_link_save($menuOpt);
+	  drupal_set_message($alias);
+	  $mlids[] = $id;
+	  $plids_stack[] = $id;
+  	}
+  }
+  variable_set('mmt_mlids', $mlids);
+  menu_cache_clear_all();
+}
+
+/**
+ * helper function for mmt_load_nodes, adds individual node
+ */
+function mmt_make_node($uri, $name) {
+
+  $comps = explode('?', $uri);
+  $dpath = $uri;
+  if (count($comps) > 1) { //module
+	  $node_type = 'mmt_module';
+    $dpath = $comps[0] . "/" . $comps[1];
+
+    $newnode = (object) array(
+      'type' => $node_type,
+      'uid' => 0,
+      'created' => strtotime("now"),
+      'changed' => strtotime("now"),
+      'status' => 1,
+	    'comment' => 2,
+ 	    'promote' => 0,
+      'moderate' => 0,
+      'sticky' => 0,
+      'language' => 'und'  
+    ); 
+    $newnode->title = $name;
+    $newnode->uri = $uri;
+    node_object_prepare($newnode);//necessary ?
+    node_save($newnode);
+    return $newnode->nid;
+ } else {
+  return -1;
+ }
+}
+
+
+
+
+
+
