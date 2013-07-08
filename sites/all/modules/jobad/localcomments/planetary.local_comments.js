@@ -47,7 +47,6 @@ JOBAD.modules.register({
             "click": function(){
               location.href = me.url; 
             },
-            "class": "info",
             "icon": "planetary.localcomment",
           }).on("contextmenu", false);
 
