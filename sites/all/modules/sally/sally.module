@@ -27,12 +27,11 @@ function sally_menu() {
 
 function _enable_jobad() {
 	drupal_add_library('system','ui');
-	libraries_load("underscore");
 	libraries_load("jobad");
 }
 
 function sally_init() {
-	_enable_jobad();
+	 //_enable_jobad();
 }
 
 function sally_theme($existing, $type, $theme, $path) {

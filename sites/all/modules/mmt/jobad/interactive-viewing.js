@@ -1,4 +1,6 @@
-var interactiveViewing = {
+(function($){
+
+	var interactiveViewing = {
 	/* JOBAD Interface  */ 
 	info: {
 		'identifier' : 'kwarc.mmt.intvw',
@@ -101,3 +103,4 @@ var interactiveViewing = {
 JOBAD.modules.register(interactiveViewing);
 
 
+})(jQuery);

@@ -1,5 +1,36 @@
 <?php
 
+function mmt_create_fields() {
+  // Check if our field is not already created.
+    
+  if (!field_info_field('field_external')) {
+    $field = array(
+        'field_name' => 'field_external',
+        'type' => 'vfs_file', //declared in vfs module
+    );
+    field_create_field($field);
+  }
+
+  // Create the instance on the bundle.
+  $instance = array(
+    'field_name' => 'field_external',
+    'entity_type' => 'node',
+    'label' => 'MMT Body',
+    'bundle' => 'mmtdoc',
+    // If you don't set the "required" property then the field wont be required by default.
+    'required' => TRUE,
+    'widget' => array(
+      'type' => 'textfield',
+    ),
+    'display' => array(
+      'default' => array( 
+        'type' => 'mmt_formatter',
+      ),
+    ),    
+  );
+  field_create_instance($instance);
+}
+
 function mmt_install() {
   /** declaring node types */
   //MMT Module
@@ -26,6 +57,9 @@ function mmt_install() {
   
   //node_add_body_field($mmt_doc);
   node_type_save($mmt_doc);
+
+  //adding fields
+  mmt_create_fields();
 
   variable_set('mmtUrl', "http://localhost:8080");
   variable_set('mmt_menu_items', array());

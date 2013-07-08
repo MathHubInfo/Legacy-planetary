@@ -483,6 +483,26 @@ function planetary_libs_libraries_info() {
     ),
   );
 
+  // jit
+  $libraries['jit'] = array(
+    'name' => 'jit',
+    'vendor url' => 'http://philogb.github.io/jit/',
+    'download url' => 'http://philogb.github.io/jit/downloads/Jit-2.0.1.zip',
+    'version arguments' => array(
+      'file' => 'jit.js',
+      'pattern' => "/jit.version = '([0-9\.]+)'/",
+      'lines' => 100,
+    ),
+    'files' => array(
+      'css' => array(
+        'Examples/css/base.css',
+      ),
+      'js' => array(
+        'jit.js',
+      ),
+    )
+  ); 
+
   return $libraries;
 }
 
