@@ -8,7 +8,7 @@ function localcomments_views_api() {
  * implements hook_node_view() - Called on page load
  */
 function localcomments_node_view($node, $view_mode, $langcode){
-  if($view_mode == "full"){
+  if($view_mode == "full" and localcomments_active_for_type(node_type_get_type($node)->type)){
     drupal_add_js(array(
         "localcomments" => array(
             "nid" => $node->nid,
@@ -19,6 +19,11 @@ function localcomments_node_view($node, $view_mode, $langcode){
     jobad_add_module($modules_url."/planetary.local_comments.js", "planetary.local_comments");
     jobad_initialize();
   }
+}
+
+function localcomments_active_for_type($type){
+  $types = explode("\n", variable_get('localcomments_contenttypes', ''));
+  return in_array($type, $types);
 }
 
 function localcomments_getcomments($uri){
@@ -67,6 +72,15 @@ function localcomments_menu() {
     'access callback' => TRUE
   );
 
+  $items['admin/config/content/localcomments'] = array(
+    'title' => 'Local Comments configuration',
+    'description' => 'Configure on which content types loclcomments will be active. ',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('localcomments_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
   return $items;
 }
 
@@ -95,4 +109,15 @@ function localcomments_message_form($url, $id) {
 
   // Otherwise return the form as normal
   return $form;
+}
+
+function localcomments_form($form, &$form_state) {
+  $form['localcomments_contenttypes'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Active Content Types'),
+    '#default_value' => variable_get('localcomments_contenttypes', ''),
+    '#description' => t('Content Types on which Local Comments should be enabled? One per line. '),
+  );
+
+  return system_settings_form($form);
 }
