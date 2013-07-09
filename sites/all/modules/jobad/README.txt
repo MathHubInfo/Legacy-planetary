@@ -9,7 +9,8 @@ Then, whenever necessary use jobad_add_module($js_file_path, $module_id) to tell
 load the module with id $module_id that is implemented in the file $js_file_path.
 Finally, after all relevant modules (if any) are loaded, call jobad_initialize() to get load jobad on that page.
 jobad_initialize returns an unique instance name that can be used later to mark where that instance will be active.
-Currently, A jobad instance is active on all page elements that have its name as id.
+By default, A jobad instance is active on all page elements that have its name as id.
 e.g. a jobad instance with id "JOBAD1" will be active on <div id="JOBAD1" > ... </div> but not on <div id="foo"> ... </div>.
+If you want to put it somewhere else, you can give a css selector as parameter to jobad_initialize("your-css-selector"); 
 
 As an example, you can check out the `mmt` module from https://github.com/m-iancu/planetary/tree/master/sites/all/modules/mmt

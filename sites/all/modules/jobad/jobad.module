@@ -16,15 +16,21 @@ function jobad_add_module($file, $id, $params = array() ) {
 
 /**
  * API function for initializing JOBAD
+ * @param $where An Optiobnal CSS selector for where to put the JOBAD Instance. 
  * @return instance name
  */
-function jobad_initialize() {
+function jobad_initialize($where = NULL) {
     if (! variable_get('JOBADLoaded')) {
     jobad_init_libs();
     variable_set('JOBADLoaded', true);
   }
   $nr = variable_get('JOBADInstances') + 1;
-  $inst_id = jobad_init_instance($nr);
+
+  if($where == NULL){
+    $where = "#JOBAD" . $nr; 
+  }
+
+  $inst_id = jobad_init_instance($nr, $where);
   variable_set('JOBADInstances', $nr);
   return $inst_id;
 }
@@ -78,15 +84,17 @@ function jobad_load_module($jobad_instance, $module_id, $params) {
 /**
  * helper function for initializing a new JOBAD instance on a page
  * @param $nr the number of this instance (reset on page (re)load), used to generate unique instance id
+ * @param $where Wher to put the JOABD Instance. 
  * @return $name the id (name) of the jobad instance
  */
 
-function jobad_init_instance($nr) {
+function jobad_init_instance($nr, $where) {
     //inline
   $name = 'JOBAD' . $nr;
     $str = 'var ' . $name . ', ' . $name .'_element;
     jQuery(function(){
-      ' . $name .'_element = jQuery("#' . $name . '");
+      ' . $name .'_element = jQuery("' . $where . '");
+      if(' . $name .'_element.length == 0){ return; } //to not have errors from JOBAD
       ' . $name . ' = new JOBAD(' . $name .'_element);
     ';
     
