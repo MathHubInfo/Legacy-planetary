@@ -510,14 +510,14 @@ function kwarc_members_contenttypes_field_default_fields() {
       'bundle' => 'member_profile',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => '',
+      'description' => 'Editable',
       'display' => array(
         'default' => array(
           'label' => 'above',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '1',
+          'weight' => '0',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -582,7 +582,7 @@ function kwarc_members_contenttypes_field_default_fields() {
             'thousand_separator' => ' ',
           ),
           'type' => 'number_integer',
-          'weight' => '3',
+          'weight' => '1',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -608,6 +608,72 @@ function kwarc_members_contenttypes_field_default_fields() {
         'settings' => array(),
         'type' => 'hidden_hidden',
         'weight' => '2',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-member_profile-field_linkid'.
+  $fields['node-member_profile-field_linkid'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_linkid',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'number_integer',
+    ),
+    'field_instance' => array(
+      'bundle' => 'member_profile',
+      'default_value' => array(
+        0 => array(
+          'value' => '0',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 0,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_integer',
+          'weight' => 7,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_linkid',
+      'label' => 'LinkId',
+      'required' => 0,
+      'settings' => array(
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'hidden_field',
+        'settings' => array(),
+        'type' => 'hidden_hidden',
+        'weight' => '4',
       ),
     ),
   );
@@ -643,16 +709,21 @@ function kwarc_members_contenttypes_field_default_fields() {
     ),
     'field_instance' => array(
       'bundle' => 'member_profile',
-      'default_value' => NULL,
+      'default_value' => array(
+        0 => array(
+          'value' => '0',
+        ),
+      ),
       'deleted' => '0',
-      'description' => 'The author id of the member',
+      'description' => 'Editable
+The author id of the member. To be found at: http://test.kwarc.info/biblio?s=author&o=asc . If not found - write 0.',
       'display' => array(
         'default' => array(
           'label' => 'above',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '6',
+          'weight' => '5',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -664,7 +735,7 @@ function kwarc_members_contenttypes_field_default_fields() {
       'entity_type' => 'node',
       'field_name' => 'field_publications_id',
       'label' => 'Publications ID',
-      'required' => 0,
+      'required' => 1,
       'settings' => array(
         'text_processing' => '0',
         'user_register_form' => FALSE,
@@ -676,7 +747,7 @@ function kwarc_members_contenttypes_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '4',
+        'weight' => '6',
       ),
     ),
   );
@@ -719,14 +790,15 @@ function kwarc_members_contenttypes_field_default_fields() {
       'bundle' => 'member_profile',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Please check the member\'s role in KWARC',
+      'description' => 'Please check the member\'s role in KWARC
+Editable',
       'display' => array(
         'default' => array(
           'label' => 'above',
           'module' => 'taxonomy',
           'settings' => array(),
           'type' => 'taxonomy_term_reference_link',
-          'weight' => '5',
+          'weight' => '4',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -747,7 +819,73 @@ function kwarc_members_contenttypes_field_default_fields() {
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_buttons',
-        'weight' => '5',
+        'weight' => '7',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-member_profile-field_userid'.
+  $fields['node-member_profile-field_userid'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_userid',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'number_integer',
+    ),
+    'field_instance' => array(
+      'bundle' => 'member_profile',
+      'default_value' => array(
+        0 => array(
+          'value' => '0',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 0,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_integer',
+          'weight' => 6,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_userid',
+      'label' => 'UserId',
+      'required' => 0,
+      'settings' => array(
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'hidden_field',
+        'settings' => array(),
+        'type' => 'hidden_hidden',
+        'weight' => '3',
       ),
     ),
   );
@@ -785,14 +923,15 @@ function kwarc_members_contenttypes_field_default_fields() {
       'bundle' => 'member_profile',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'Unique username ',
+      'description' => 'Unique username 
+Editable',
       'display' => array(
         'default' => array(
           'label' => 'above',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '4',
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -816,7 +955,7 @@ function kwarc_members_contenttypes_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '3',
+        'weight' => '5',
       ),
     ),
   );
@@ -1117,6 +1256,9 @@ function kwarc_members_contenttypes_field_default_fields() {
   t('Contact Details');
   t('Description');
   t('Determine if this is an OG group.');
+  t('Editable');
+  t('Editable
+The author id of the member. To be found at: http://test.kwarc.info/biblio?s=author&o=asc . If not found - write 0.');
   t('Email');
   t('Full Name');
   t('Group');
@@ -1126,12 +1268,15 @@ function kwarc_members_contenttypes_field_default_fields() {
   t('Groups audience');
   t('Home node');
   t('Image');
-  t('Please check the member\'s role in KWARC');
+  t('LinkId');
+  t('Please check the member\'s role in KWARC
+Editable');
   t('Please upload a photo');
   t('Publications ID');
   t('Role');
-  t('The author id of the member');
-  t('Unique username ');
+  t('Unique username 
+Editable');
+  t('UserId');
   t('Username');
 
   return $fields;
