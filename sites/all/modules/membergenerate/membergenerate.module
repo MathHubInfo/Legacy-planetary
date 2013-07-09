@@ -31,7 +31,7 @@ function membergenerate_node_presave($node) {
       $newnode = new StdClass();
       $newnode->type  = "content_group";
       $newnode->status = 1;
-      $newnode->title = ($node->title)." (pages)";
+      $newnode->title = ($node->title)." ";
       $newnode->og_menu = true;
       node_save($newnode);
 
