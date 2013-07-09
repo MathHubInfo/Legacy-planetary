@@ -41,7 +41,7 @@ JOBAD.modules.register({
     for(var i=0;i<notifications.length;i++){
       (function(){
           var me = notifications[i];
-          JOBADInstance.Sidebar.registerNotification(JOBAD.refs.$("#"+me.id), {
+          JOBADInstance.Sidebar.registerNotification(document.getElementById(me.id), {
             "text": me.summary,
             "trace": true,
             "click": function(){
@@ -99,6 +99,10 @@ JOBAD.modules.register({
             close: function(){
               location.reload(); 
             }
+          }).parent().css({
+            "position": "fixed",
+            "top": Math.max(0, ((window.innerHeight - $Div.outerHeight()) / 2)),
+            "left": Math.max(0, ((window.innerWidth - $Div.outerWidth()) / 2))
           });
         }
       };
