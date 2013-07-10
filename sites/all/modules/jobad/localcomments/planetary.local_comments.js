@@ -128,8 +128,6 @@ JOBAD.modules.register({
       }); 
     }
 
-    console.log(result); 
-
     return result; 
   }
 });
