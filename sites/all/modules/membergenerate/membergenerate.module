@@ -9,10 +9,10 @@
 
 
 /*
-**Implements hook_node_presave().
+**Implements hook_node_presave() .
 **/
 
-
+  
 
 function membergenerate_node_presave($node) {
 
@@ -22,7 +22,7 @@ function membergenerate_node_presave($node) {
 
 
 
-    if ($node->field_groupid['und']['0']['value']==0) {
+    if ($node->field_groupid['und']['0']['value']==0) { 
 
 
 
@@ -41,6 +41,7 @@ function membergenerate_node_presave($node) {
 
 
       //The General Info node 
+
 
       //Creation
       $node_info = new StdClass();
