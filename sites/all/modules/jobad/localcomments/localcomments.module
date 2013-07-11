@@ -139,7 +139,7 @@ function localcomments_form($form, &$form_state) {
 
   $form['localcomments_commenticons'] = array(
     '#type' => 'textarea',
-    '#title' => t('Active Content Types'),
+    '#title' => t('Icons for comments'),
     '#default_value' => variable_get('localcomments_commenticons', "info\nerror"),
     '#description' => t('Icons for comment types, one per line. May be urls or JOBAD Icons. '),
   );
