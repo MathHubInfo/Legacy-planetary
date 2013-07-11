@@ -68,7 +68,7 @@ JOBAD.modules.register({
     var res = {}; 
 
     for(var i=0;i<types.length;i++){
-      res[types[i]] = icons[i]; 
+      res[types[i]] = icons[i].replace("\r", ""); 
     }
 
     return res; 
