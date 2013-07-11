@@ -1245,7 +1245,7 @@ Editable',
         'module' => 'og',
         'settings' => array(),
         'type' => 'og_complex',
-        'weight' => '5',
+        'weight' => 5,
       ),
     ),
   );
