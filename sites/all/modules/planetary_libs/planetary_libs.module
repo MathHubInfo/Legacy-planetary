@@ -34,8 +34,8 @@ function planetary_libs_js_alter(&$javascript) {
   $base_path = drupal_get_path('module', 'planetary_libs');
 
   //jQuery
-  $javascript['misc/jquery.js']['data']    =  $base_path . '/libs/jquery/jquery-1.9.1.js';
-  $javascript['misc/jquery.js']['version'] = '1.9.1';
+  $javascript['misc/jquery.js']['data']    =  $base_path . '/libs/jquery/jquery-1.10.2.js';
+  $javascript['misc/jquery.js']['version'] = '1.10.2';
 
   $hooked_in_ui = false;
 
