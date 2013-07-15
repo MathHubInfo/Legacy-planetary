@@ -1,13 +1,12 @@
 /* Utility functions and state provided for MMT/OMDoc-based html documents */
 
-// the following functions jQuery.fn.f add functionality to jQuery and can be used as $(...).f
+// the following functions $.fn.f add functionality to jQuery and can be used as $(...).f
 
 // contrary to the built-in jQuery analogues, these work for 'pref:name' attributes and math elements
 // do not replace calls to these function with the jQuery analogues!
+$ = jQuery;
 
-(function($) {
-
-jQuery.fn.hasAttribute = function(name) {  
+$.fn.hasAttribute = function(name) {  
 	return (typeof this.attr(name) !== 'undefined' && this.attr(name) !== false);
 };
 
@@ -18,7 +17,7 @@ function getClassArray(elem) {
 }
 
 /* add a class cl to all matched elements */
-jQuery.fn.addMClass = function(cl){
+$.fn.addMClass = function(cl){
    this.each(function(){
       if (this.hasAttribute('class'))
          $(this).attr('class', $(this).attr('class') + ' ' + cl);   
@@ -28,7 +27,7 @@ jQuery.fn.addMClass = function(cl){
    return this;
 }
 /* remove a class cl from all matched elements */
-jQuery.fn.removeMClass = function(cl){
+$.fn.removeMClass = function(cl){
    this.each(function(){
       var classes = getClassArray(this);
       var newclasses = classes.filter(function(elem){return (elem !== cl) && (elem !== "")});
@@ -41,7 +40,7 @@ jQuery.fn.removeMClass = function(cl){
    return this;
 }
 /* toggle class cl in all matched elements */
-jQuery.fn.toggleMClass = function(cl){
+$.fn.toggleMClass = function(cl){
    this.each(function(){
       var classes = getClassArray(this);
       if (classes.indexOf(cl) == -1)
@@ -52,13 +51,13 @@ jQuery.fn.toggleMClass = function(cl){
    return this;
 }
 /* keep elements that have class cl */
-jQuery.fn.filterMClass = function(cl){
+$.fn.filterMClass = function(cl){
    return this.filter(function(){
       var classes = getClassArray(this);
       return (classes.indexOf(cl) !== -1)
    });
 }
-// end jQuery.fn.f functions
+// end $.fn.f functions
 
 
 /* some common URIs */
@@ -132,26 +131,28 @@ var mmt = {
 			var pres = "_present_" + this.notstyle;
 		else
 			var pres = '';
-        var relativeURL = '/:mmt?' + doc + '?' + mod + '?' + sym + '?' + act + pres;
+      var relativeURL = '/:mmt?' + doc + '?' + mod + '?' + sym + '?' + act + pres;
 		return this.makeURL(relativeURL);
 	},
 
-    ajaxReplaceIn : function (url, targetid) {
+    ajaxReplaceIn : function (url, targetid, async) {
 		function cont(data) {
-			var targetnode = $('#' + targetid).children('div');
+			var targetnode = $('#' + targetid).children();
 			targetnode.replaceWith(data.firstChild);
 		}
-		jQuery.ajax({ 'url': url,
+		if (async == null) async = true;
+		$.ajax({ 'url': url,
 				 'dataType': 'xml',
+				 'async': async,
 				 'success': cont
 			   });
 	},
-		
+	
 	load : function (elem) {
 	   if (elem.hasAttribute('jobad:load')) {
          var url = this.adaptMMTURI(elem.getAttribute('jobad:load'), '', true);
          var res = null;
-         jQuery.ajax({ 'url': url,
+         $.ajax({ 'url': url,
                 'dataType': 'xml',
                 'async': false,
                 'success': function cont(data) {res = data;}
@@ -176,6 +177,15 @@ var mmt = {
 		window.open(url, '_blank', '', false);
 	},
 	
+	sideBarClick : function(event,p) {
+	      if (event.detail == 1) navigation.navigate(p);
+	      else if (event.detail == 2) {
+	         if (graphWindow == null)
+	            openGraph(p);
+	         else
+	            graphWindow.navigateGraph(p);
+	      }
+	},
 
 	/*
 	  There are some small UI problems left to fix:
@@ -185,11 +195,11 @@ var mmt = {
 	  - title bar should only show the cd and name component, but not the cdbase of the symbol href (full href should be shown as @title)
 	*/
 	setLatinDialog : function (content, title){
-        console.log("got here");
-		var dia = $("#latin-dialog");
-		dia.dialog('option', 'title', title);
+		var dia = $("<div><span></span></div>");//$("#latin-dialog");
+		console.log(dia);
+		dia.dialog({'title': title});
 		dia[0].replaceChild(content, dia[0].firstChild);
-		dia.dialog('open');
+		//dia.dialog('open');
 	},
 	
 	getSelectedParent : function (elem){
@@ -278,7 +288,7 @@ var qmt = {
 	/* executes a QMT query (as constructed by helper functions) via ajax and runs a continuation on the result */
     exec : function (q, cont) {
 	   var qUrl = mmt.makeURL('/:query');
-		jQuery.ajax({
+		$.ajax({
 			url:qUrl, 
 			type:'POST',
 			data:q,
@@ -289,5 +299,3 @@ var qmt = {
 		});
 	},
 };
-    window.mmt = mmt;
-})(jQuery);

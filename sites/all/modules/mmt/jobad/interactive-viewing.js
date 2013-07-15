@@ -1,6 +1,4 @@
-(function($){
-
-	var interactiveViewing = {
+var interactiveViewing = {
 	/* JOBAD Interface  */ 
 	info: {
 		'identifier' : 'kwarc.mmt.intvw',
@@ -28,8 +26,13 @@
 				res["open in new window"] = function() {mmt.openCurrent();};
 				//res["get OMDoc"] = mmt.openCurrentOMDoc();
 			}
+			var folded = $(mmt.focus).closest('.math-folded');
+         if (folded.length !== 0)
+            res['unfold'] = function(){folded.removeMClass('math-folded');};
+         else
+            res['fold'] = function(){$(mmt.focus).addMClass('math-folded');};
 			return res;
-		} else if ($(target).hasClass('folder') || mmt.focusIsMath) {
+		} else if ($(target).hasClass('folder')) {
 			return res;
 		} else {
 			return false;
@@ -97,10 +100,9 @@
 			"implicit arguments" : this.visibSubmenu('implicit-arg'),
 			"redundant brackets" : this.visibSubmenu('brackets'),
 		}
-	},		
+	},
 };
 
 JOBAD.modules.register(interactiveViewing);
 
 
-})(jQuery);

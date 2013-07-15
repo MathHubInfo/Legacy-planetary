@@ -545,7 +545,7 @@ function mmt_node_view($node, $view_mode, $langcode) {
   if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
     $inst_id = mmt_initialize();
     $content = $node->content['field_external'][0]['content']['#markup'];
-    $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '">' . $content . '</div>' ;
+    $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '">' . $content . '</div>'; 
   }
 }
 
@@ -628,7 +628,7 @@ function mmt_get_content($path) {
 function mmt_get_dependencies($mpath) {
   $mmtUrl = variable_get('mmtUrl');
   $url = $mmtUrl . '/:query';
-  $data = '<related><individual uri="'.$mpath.'"/><transitive><toobject relation="Includes"/></transitive></related>';
+  $data = '<related><individual uri="'.$mpath.'"/><toobject relation="Includes"/></related>';
 
   $options = array(
     'http' => array(
