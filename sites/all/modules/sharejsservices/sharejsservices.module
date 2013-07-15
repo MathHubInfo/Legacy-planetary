@@ -81,7 +81,7 @@ function editor_service_getDependencies() {
 	$res = mmt_get_dependencies($path);
 	$rr = array();
 	foreach ($res[0] as $key) {
-		array_push($rr, str_replace("http://docs.omdoc.org", "http://docs.omdoc.org/smglo", $key));
+		array_push($rr, $key);//str_replace("http://docs.omdoc.org", "http://docs.omdoc.org/smglo", $key));
 	}
     drupal_json_output($rr);
 }
