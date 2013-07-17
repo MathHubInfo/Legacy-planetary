@@ -1,24 +1,94 @@
 <?php
 
+function localcomments_views_api() {
+  return array("api" => "3.0");
+}
+
 /**
  * implements hook_node_view() - Called on page load
  */
 function localcomments_node_view($node, $view_mode, $langcode){
-  $modules_url = url(drupal_get_path("module", "localcomments"));
-  jobad_add_module($modules_url."/planetary.local_comments.js", "planetary.local_comments");
-  jobad_initialize();
+  if($view_mode == "full" and localcomments_active_for_type(node_type_get_type($node)->type)){
+    drupal_add_js(array(
+        "localcomments" => array(
+            "nid" => $node->nid,
+            "comments" => localcomments_getcomments($node->nid),
+            "shows_add_menu_entry" => user_access('create forum content'),
+            "comment_types" => explode("\n", variable_get('localcomments_commenttypes', "question\nerror")),
+            "comment_icons" => explode("\n", variable_get('localcomments_commenticons', "info\nerror")),
+          )
+    ), 'setting');
+    $modules_url = url(drupal_get_path("module", "localcomments"));
+    jobad_add_module($modules_url."/planetary.local_comments.js", "planetary.local_comments");
+    jobad_initialize("#node-" . ($node->nid));
+    drupal_add_css(".ui-menu { width: 150px; }", "inline");
+  }
+}
+
+function localcomments_active_for_type($type){
+  $types = explode("\n", variable_get('localcomments_contenttypes', ''));
+  return in_array($type, $types);
+}
+
+function localcomments_getcomments($uri){
+    $view = views_get_view('local_comments');
+    $view->init();
+    $view->set_display('block');
+    $view->exposed_input["field_uri_value"] = $uri;
+    $view->execute(); 
+
+    $results = array();
+
+    foreach($view->result as $res){
+      $node = node_load($res->nid);
+
+      $id = $node->field_id;
+      $id = @$id['und'][0]['value'] or "";  
+
+      $type = $node->field_type;
+      $type = @$type['und'][0]['value'] or "";
+
+      $time = $node->last_comment_timestamp;
+      $url = url("node/" . $res->nid); 
+
+      $node = $node->body; 
+      $sum = @$node['und'][0]['summary'] or ""; 
+      $con = @$node['und'][0]['value'] or "";
+
+      array_push($results, array(
+          "id" => $id,
+          "summary" => $sum, 
+          "content" => $con,
+          "last_update" => $time,
+          "dest_url" => $url,
+          "type" => $type,
+          "uri" => $uri
+        )
+      );
+    }
+
+    return $results; 
 }
 
 /**
  * implements hook_menu() - Called when loading the menu to create a new message
  */
 function localcomments_menu() {
-  $items['localcomment/%/%'] = array( // Using the '%node' load argument ensures that the nid attempting to be accessed belongs to an existing node.
+  $items['localcomment/%/%/%'] = array( // Using the '%node' load argument ensures that the nid attempting to be accessed belongs to an existing node.
     'title' => 'Send Message',
     'description' => 'Send a message',
     'page callback' => 'localcomments_message_form',
-    'page arguments' => array(1, 2),
-    'access callback' => TRUE
+    'page arguments' => array(1, 2, 3),
+    'access arguments' => array('create forum content'),
+  );
+
+  $items['admin/config/content/localcomments'] = array(
+    'title' => 'Local Comments configuration',
+    'description' => 'Configure local comments. ',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('localcomments_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
   );
 
   return $items;
@@ -27,17 +97,22 @@ function localcomments_menu() {
 /**
 * Callback for the menu
 */
-function localcomments_message_form($url, $id) {
+function localcomments_message_form($url, $id, $type) {
   module_load_include('inc', 'node', 'node.pages');
   $content_type = 'forum';
   $form = node_add($content_type);
-  $form["title"]["#value"] = "Hello World";
   $form["field_uri"]["und"][0]["value"]["#value"] = $url;
   $form["field_id"]["und"][0]["value"]["#value"] = $id;
+  $form["field_type"]["und"][0]["value"]["#value"] = $type;
 
   // Just print the form directly if this is an AJAX request
   if (isset($_GET['ajax'])) {
+    echo "<html><head><title>Add a comment</title>";
+    echo drupal_get_js(); 
+    echo drupal_get_css();
+    echo "</head><body>"; 
     echo render($form);
+    echo "</body></html>"; 
 
     // Halt page processing
     drupal_exit();
@@ -45,4 +120,29 @@ function localcomments_message_form($url, $id) {
 
   // Otherwise return the form as normal
   return $form;
+}
+
+function localcomments_form($form, &$form_state) {
+  $form['localcomments_contenttypes'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Active Content Types'),
+    '#default_value' => variable_get('localcomments_contenttypes', ''),
+    '#description' => t('Content Types on which Local Comments should be enabled? One per line. '),
+  );
+
+  $form['localcomments_commenttypes'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Types of comments'),
+    '#default_value' => variable_get('localcomments_commenttypes', "question\nerror"),
+    '#description' => t('Comment Types, one per line. '),
+  );
+
+  $form['localcomments_commenticons'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Icons for comments'),
+    '#default_value' => variable_get('localcomments_commenticons', "info\nerror"),
+    '#description' => t('Icons for comment types, one per line. May be urls or JOBAD Icons. '),
+  );
+
+  return system_settings_form($form);
 }

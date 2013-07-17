@@ -33,6 +33,8 @@ function startsWith($haystack, $needle)
 function planetary_libs_js_alter(&$javascript) {
   $base_path = drupal_get_path('module', 'planetary_libs');
 
+  $old_patches = array("sites/all/modules/views/js/jquery.ui.dialog.patch.js"); //Stuff we no longer need for the new jquersy version
+
   //jQuery
   $javascript['misc/jquery.js']['data']    =  $base_path . '/libs/jquery/jquery-1.10.2.js';
   $javascript['misc/jquery.js']['version'] = '1.10.2';
@@ -47,6 +49,8 @@ function planetary_libs_js_alter(&$javascript) {
       } else {
         unset($javascript[$filename]);
       }
+    } else if(in_array($filename, $old_patches) && !is_numeric($filename)){
+      unset($javascript[$filename]);
     }
   }
 

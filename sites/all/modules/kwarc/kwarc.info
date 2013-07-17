@@ -1,0 +1,4 @@
+name = KWARC Modules
+description = KWARC Modules
+core = 7.x
+package     = Planetary Modules

@@ -1,0 +1,190 @@
+<?php
+
+/**
+ *@file
+ *membergenerate.module
+ */
+
+
+
+
+/*
+**Implements hook_node_presave() .
+**/
+
+  
+
+function membergenerate_node_presave($node) {
+
+
+   if ($node->type=="member_profile")
+
+
+
+
+    if ($node->field_groupid['und']['0']['value']==0) { 
+
+
+
+      //Create the new content group
+
+      $newnode = new StdClass();
+      $newnode->type  = "content_group";
+      $newnode->status = 1;
+      $newnode->title = ($node->title)." ";
+      $newnode->og_menu = true;
+      node_save($newnode);
+
+      $node->field_groupid['und']['0']['value'] = $newnode->nid;
+
+
+
+
+      //The General Info node 
+
+
+      //Creation
+      $node_info = new StdClass();
+      $node_info->type = "general_info_page";
+      $node_info->status = 1;
+      $node_info->title = ($node->title)." - General Info";
+      node_save($node_info);
+
+      //Add to group
+      og_group("node",$newnode->nid, array("entity_type" => "node", "entity" => ($node_info)));
+
+      //Add link to og-menu
+      $item = array(
+        "link_title" => "{$node_info->title}",
+        "link_path" => "node/"."{$node_info->nid}",
+        "menu_name" => "menu-og-"."{$newnode->nid}"
+      );
+      menu_link_save($item);
+      menu_cache_clear_all();
+
+
+
+
+      //The CV node 
+
+      //Creation
+      $node_cv = new StdClass();
+      $node_cv->type = "page";
+      $node_cv->status = 1;
+      $node_cv->title = ($node->title)." - CV";
+      node_save($node_cv);
+
+      //Add to group
+      og_group("node",$newnode->nid, array("entity_type" => "node", "entity" => ($node_cv)));
+
+      //Add link to og-menu
+      $item2 = array(
+        "link_title" => "{$node_cv->title}",
+        "link_path" => "node/"."{$node_cv->nid}",
+        "menu_name" => "menu-og-"."{$newnode->nid}"
+      );
+      menu_link_save($item2);
+      menu_cache_clear_all();
+
+
+
+
+      //The Publications link
+
+      $item3 = array(
+        "link_title" => (($node->title)." - Publications"),
+        "link_path" => "biblio/author/"."{$node->field_publications_id['und']['0']['value']}",
+        "menu_name" => "menu-og-"."{$newnode->nid}"
+      );
+      $my_mlid = menu_link_save($item3);
+      menu_cache_clear_all();
+      $node->field_linkid['und']['0']['value'] = $my_mlid;
+
+
+
+
+
+
+      //Create user
+
+      $new_user = array(
+        "name" => ($node->field_username['und']['0']['value']),
+        "mail" =>($node->field_email['und']['0']['value']),
+        "status" => 1,
+        "roles" => array(8 => "KWARC Member"),
+        "field_group_role" => array("und" => array("0" => array("tid" => ($node->field_role['und']['0']['tid'])))),
+        "field_home_node" => array("und" => array("0" => array("value" => ($node_info->nid)))),
+        "field_full_name" => array("und" => array("0" => array("value" => ($node->title)))),
+      );
+
+      $account = user_save(null,$new_user);
+
+      //  Welcome message - password -  one-time-login-url
+      $op = "register_admin_created";
+      _user_mail_notify($op,$account);
+
+      //  Update userid
+      $node->field_userid['und']['0']['value'] = $account->uid;
+
+
+      //Add user to OG
+      og_group("node",$newnode->nid, array("entity_type" => "user", "entity" => $account));
+
+      //Give administrator member role to a user
+      og_role_grant("node",$newnode->nid,$account->uid,3);
+      
+
+      }
+
+      
+
+      else
+
+      { 
+
+        //Edit the user
+
+        $new_user = array(
+        "name" => ($node->field_username['und']['0']['value']),
+        "mail" =>($node->field_email['und']['0']['value']),
+        "field_group_role" => array("und" => array("0" => array("tid" => ($node->field_role['und']['0']['tid'])))),
+        //"field_full_name" => array("und" => array("0" => array("value" => ($node->title)))),
+        );
+
+
+        $account = user_load($node->field_userid['und']['0']['value']);
+        $account_edited = user_save($account,$new_user);
+
+
+
+        //Edit Publications Id
+
+        menu_link_delete($node->field_linkid['und']['0']['value']);
+        $new_item3 = array(
+           "link_title" => (($node->title)." - Publications"),
+           "link_path" => "biblio/author/"."{$node->field_publications_id['und']['0']['value']}",
+           "menu_name" => "menu-og-"."{$node->field_groupid['und']['0']['value']}"
+          );
+
+        $my_mlid = menu_link_save($new_item3);
+        menu_cache_clear_all();
+
+        $node->field_linkid['und']['0']['value'] = $my_mlid;
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+}
