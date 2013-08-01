@@ -1,0 +1,10 @@
+name = Hidden Field Widgets
+description = Provides support for hidden and value field widgets.
+core = 7.x
+
+; Information added by drupal.org packaging script on 2012-06-24
+version = "7.x-1.0-beta1"
+core = "7.x"
+project = "hidden_field"
+datestamp = "1340520984"
+
