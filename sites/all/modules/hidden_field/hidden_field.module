@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * @file
+ * Defines simple hidden field widgets.
+ */
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function hidden_field_field_widget_info() {
+  return array(
+    'hidden_hidden' => array(
+      'label' => t('Hidden field'),
+      'field types' => array('text', 'number_integer', 'number_decimal', 'number_float', 'list_boolean'),
+    ),
+    'hidden_value' => array(
+      'label' => t('Server side only'),
+      'field types' => array('text', 'text_long', 'number_integer', 'number_decimal', 'number_float', 'list_boolean'),
+    ),
+    'hidden_item' => array(
+      'label' => t('Item field'),
+      'field types' => array('text', 'text_long', 'number_integer', 'number_decimal', 'number_float', 'list_boolean'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function hidden_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+
+  $base = $element;
+  if ($instance['widget']['type'] == 'hidden_hidden') {
+    $type = 'hidden';
+    $key = '#default_value';
+  }
+  else {
+    $type = 'value';
+    $key = '#value';
+  }
+
+  foreach ($field['columns'] as $column => $field_column) {
+    // The item fields are rendered twice due to the input format.
+    if ($type == 'item' && $column == 'format') {
+      continue;
+    }
+
+    // Try to make sure the #value is not NULL so the user can't tamper a #type
+    // value.
+    $value = '';
+    if (isset($items[$delta]['value']) && $column != 'format') {
+      $value = $items[$delta]['value'];
+    }
+    elseif (isset($items[$delta][$column])) {
+      $value = $items[$delta][$column];
+    }
+    elseif (isset($field_column['default'])) {
+      $value = $field_column['default'];
+    }
+    elseif (in_array($field_column['type'], array('int', 'numeric', 'float'))) {
+      $value = 0;
+    }
+
+    $element[$column] = $base + array(
+      '#type' => $type,
+      $key => $value,
+    );
+  }
+
+  return $element;
+}

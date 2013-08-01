@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Project Generation Feature feature.
+ */
+
+include_once 'project_generation_feature.features.inc';
