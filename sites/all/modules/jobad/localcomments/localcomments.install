@@ -1,0 +1,98 @@
+<?php 
+
+function localcomments_install() {
+  // definiting field types
+  if (!field_info_field('field_lc_nid')) {
+    $field = array(
+        'field_name' => 'field_lc_nid',
+        'type' => 'text', //declared in drupal core (hook_field_info)
+    );
+    field_create_field($field);
+  }
+
+  if (!field_info_field('field_lc_elid')) {
+    $field = array(
+        'field_name' => 'field_lc_elid',
+        'type' => 'text', //declared in drupal core (hook_field_info)
+    );
+    field_create_field($field);
+  }
+
+  if (!field_info_field('field_lc_type')) {
+    $field = array(
+        'field_name' => 'field_lc_type',
+        'type' => 'text', //declared in drupal core (hook_field_info)
+    );
+    field_create_field($field);
+  }
+
+  //Local Comment defautl Content Type
+  $comment = (object) array(
+    'type' => 'local_comment',
+    'name' => 'Local Comment',
+    'base' => 'node_content',
+    'description' => 'A node representing a local comment',
+    'body_label' => 'Module Body',
+    'has_title' => true,
+    'has_bod'
+  ); 
+  node_type_save($comment);
+  
+  // Create field instances on the bundle.
+  $nid_inst = array(
+    'field_name' => 'field_lc_nid',
+    'entity_type' => 'node',
+    'label' => 'Local Comment Node ID',
+    'bundle' => 'local_comment',
+    'required' => TRUE,
+  );
+  field_create_instance($nid_inst);
+  
+  $elid_inst = array(
+    'field_name' => 'field_lc_elid',
+    'entity_type' => 'node',
+    'label' => 'Local Comment Element ID',
+    'bundle' => 'local_comment',
+    'required' => TRUE,
+  );
+  field_create_instance($elid_inst);
+
+  $type_inst = array(
+    'field_name' => 'field_lc_type',
+    'entity_type' => 'node',
+    'label' => 'Local Comment Type',
+    'bundle' => 'local_comment',
+    'required' => TRUE,
+  );
+  field_create_instance($type_inst);
+
+  $body_inst = array(
+    'field_name' => 'body',
+    'entity_type' => 'node',
+    'label' => 'Local Comment Body',
+    'bundle' => 'local_comment',
+    'required' => TRUE,
+  );
+  field_create_instance($body_inst);
+
+}
+
+function localcomments_delete_node_type($node_type_name, $remove_type = true) {
+  // deleting all node instances
+  $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+  node_delete_multiple($nids);
+  //deleting node type
+  if ($remove_type) {
+    node_type_delete($node_type_name);
+  }
+}
+
+function localcomments_uninstall() {
+  //deleting node types
+  localcomments_delete_node_type('local_comment');  
+  drupal_set_message("uninstalled");
+}

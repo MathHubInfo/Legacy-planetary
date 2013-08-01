@@ -18,8 +18,8 @@ function localcomments_node_view($node, $view_mode, $langcode){
             "comment_icons" => explode("\n", variable_get('localcomments_commenticons', "info\nerror")),
           )
     ), 'setting');
-    $modules_url = url(drupal_get_path("module", "localcomments"));
-    jobad_add_module($modules_url."/planetary.local_comments.js", "planetary.local_comments");
+    $lc_path = drupal_get_path("module", "localcomments");
+    jobad_add_module($lc_path . "/planetary.local_comments.js", "planetary.local_comments");
     jobad_initialize("#node-" . ($node->nid));
     drupal_add_css(".ui-menu { width: 150px; }", "inline");
   }
@@ -82,6 +82,13 @@ function localcomments_menu() {
     'access arguments' => array('create forum content'),
   );
 
+  $items['lctest'] = array(
+    'title' => 'Post Comment',
+    'description' => 'Posts a Comment',
+    'page callback' => 'localcomments_post_comment',
+    'access callback' => 'localcomments_check_post',
+  );
+
   $items['admin/config/content/localcomments'] = array(
     'title' => 'Local Comments configuration',
     'description' => 'Configure local comments. ',
@@ -93,6 +100,54 @@ function localcomments_menu() {
 
   return $items;
 }
+
+function localcomments_post_comment() {
+  print_r($_POST);
+
+  $nid = $_POST['url'];
+  $elid = $_POST['id'];
+  $type = $_POST['type'];
+  $body = $_POST['body'];
+  $title = $_POST['title'];
+
+  localcomments_make_node($nid, $elid, $type, $title, $body);
+
+  return true;
+}
+
+/**
+ * helper function for mmt_load_nodes, adds individual node
+ */
+function localcomments_make_node($nid, $elid, $type, $title, $body) {
+  $lang = 'und';
+  $newnode = (object) array(
+    'type' => 'local_comment',
+    'uid' => 0,
+    'created' => strtotime("now"),
+    'changed' => strtotime("now"),
+    'status' => 1,
+    'comment' => 2,
+    'promote' => 0,
+    'moderate' => 0,
+    'sticky' => 0,
+    'language' => $lang  
+  ); 
+  $newnode->title = $title;
+  $newnode->body[$lang][0]['value'] = $body;
+  $newnode->field_lc_nid[$lang][0]['value'] = $nid;
+  $newnode->field_lc_elid[$lang][0]['value'] = $elid;
+  $newnode->field_lc_type[$lang][0]['value'] = $type;
+  
+  node_object_prepare($newnode);//necessary ?
+  print_r($newnode);
+  node_save($newnode);
+  return $newnode->nid;
+}
+
+function localcomments_check_post() {
+  return true; //for now
+}
+
 
 /**
 * Callback for the menu

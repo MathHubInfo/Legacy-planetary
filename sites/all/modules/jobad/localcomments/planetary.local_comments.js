@@ -100,12 +100,62 @@ JOBAD.modules.register({
       var add_comment = function(type){
         var url = Drupal.settings.localcomments.nid; 
 
-        var $dialog = jQuery("<div>");
+        var lc_dialog = jQuery(
+          '<div id="lc-form" title="Add new local comment">' + 
+          '<p class="validateTips">All form fields are required.</p>' + 
+          '<form>' + 
+          ' <fieldset>' + 
+          '   <label for="title">Title</label>' +
+          '   <input type="text" name="title" id="title" class="text ui-widget-content ui-corner-all" />' +
+          '   <label for="body">Body</label>' +
+          '   <textarea rows="5" cols="30" name="body" id="body" class="text ui-widget-content ui-corner-all" />' +
+          ' </fieldset>' +
+          '</form>' +
+          '</div>');
+
+        lc_dialog.dialog({
+          autoOpen: false,
+          height: 300,
+          width: 350,
+          modal: true,
+          buttons: {
+            'Save' : function() {
+              var arr = lc_dialog.find("form").serializeArray();
+              var title = arr[0].value;
+              var body = arr[1].value;
+              $.ajax({
+                url: Drupal.settings.basePath+"?q=lctest", 
+                type:'POST',
+                data: {
+                  'url' : url,
+                  'id' : id,
+                  'type' : type, 
+                  'body' : body,
+                  'title' : title,
+                },
+                error : function(req, status, error) {console.log(error);}
+              });
+              $( this ).dialog( "close" );
+            },
+            'Cancel': function() {
+              $( this ).dialog( "close" );
+            },
+
+          },
+          close: function() {
+            lc_dialog.find("input").removeClass( "ui-state-error" );
+          },  
+        });
+        
+        lc_dialog.dialog("open");
+
+
+        /*
         $dialog
         .attr("title", "New comment for '"+id+"'")
         .append(
           JOBAD.refs.$("<iframe />")
-          .attr("src", Drupal.settings.basePath+"localcomment/"+escape(url)+"/"+escape(id)+"/"+escape(type)+"/?ajax")
+          .attr("src", Drupal.settings.basePath+"?q=localcomment/"+escape(url)+"/"+escape(id)+"/"+escape(type)+"/?ajax")
           .width("100%")
           .height("95%")
         )
@@ -118,9 +168,10 @@ JOBAD.modules.register({
           }
         }).parent().css({
           "position": "fixed",
-          "top": Math.max(0, ((window.innerHeight - $Div.outerHeight()) / 2)),
-          "left": Math.max(0, ((window.innerWidth - $Div.outerWidth()) / 2))
+          "top": Math.max(0, ((window.innerHeight - $dialog.outerHeight()) / 2)),
+          "left": Math.max(0, ((window.innerWidth - $dialog.outerWidth()) / 2))
         });
+        */
       };
 
       result["Add Comment"] = JOBAD.util.map(comment_types, function(icon, type){
