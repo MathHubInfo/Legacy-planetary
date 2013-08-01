@@ -30,12 +30,20 @@ function membergenerate_node_presave($node) {
 
       $newnode = new StdClass();
       $newnode->type  = "content_group";
+      $newnode->language = LANGUAGE_NONE;
       $newnode->status = 1;
       $newnode->title = ($node->title)." ";
       $newnode->og_menu = true;
       node_save($newnode);
 
       $node->field_groupid['und']['0']['value'] = $newnode->nid;
+
+      // Fill in the username_instructor field
+       $username = implode("",explode(".",explode("@",$node->field_email['und']['0']['value'])[0]));
+       $node->field_username['und']["0"]['value'] = $username;
+
+
+
 
 
 
@@ -46,8 +54,15 @@ function membergenerate_node_presave($node) {
       //Creation
       $node_info = new StdClass();
       $node_info->type = "general_info_page";
-      $node_info->status = 1;
       $node_info->title = ($node->title)." - General Info";
+      $node_info->language = LANGUAGE_NONE;
+   
+      node_object_prepare($node_info);
+      $node_info->status = 1;
+     
+     // $node_info->path_set_alias = TRUE;
+      $node_info->uid = 37;
+      node_submit($node_info);
       node_save($node_info);
 
       //Add to group
@@ -70,6 +85,7 @@ function membergenerate_node_presave($node) {
       //Creation
       $node_cv = new StdClass();
       $node_cv->type = "page";
+      $node_cv->language = LANGUAGE_NONE;
       $node_cv->status = 1;
       $node_cv->title = ($node->title)." - CV";
       node_save($node_cv);

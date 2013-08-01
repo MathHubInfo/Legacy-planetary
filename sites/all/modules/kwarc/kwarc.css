@@ -1,0 +1,77 @@
+.view-grouping-header {
+font-size: 2.0em;
+}
+
+
+
+
+/*Project Description Full View*/
+
+.project-desc-img-full{
+	float:right; 
+	margin-right: 30px; 
+	margin-left: 30px;
+}
+
+
+
+.project-desc-desc-full{
+	margin-top: 30px;
+}
+
+.project-desc-small-full{
+	display:none;
+}	
+
+
+
+
+.project-desc-dateandpeople-full{
+	clear:both; 
+	margin-top: 30px; 
+}
+
+.project-desc-people-full{
+	float:left; 
+	width:30%;
+	
+}
+
+.project-desc-date-full{
+	float:left;
+	width:40%;
+	margin-left:30px;
+}
+
+
+
+/*Project Description Teaser View*/
+
+.project-desc-img-teaser{
+	display:none;
+}
+
+
+
+.project-desc-desc-teaser{
+	display:none;
+}
+
+.project-desc-small-teaser{
+	/*display:none;*/
+}	
+
+
+
+
+.project-desc-dateandpeople-teaser{
+	display:none;
+}
+
+.project-desc-people-teaser{
+	display:none;
+}
+
+.project-desc-date-teaser{
+	display:none;
+}
