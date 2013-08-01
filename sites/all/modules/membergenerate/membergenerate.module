@@ -39,8 +39,8 @@ function membergenerate_node_presave($node) {
       $node->field_groupid['und']['0']['value'] = $newnode->nid;
 
       // Fill in the username_instructor field
-       $username = implode("",explode(".",explode("@",$node->field_email['und']['0']['value'])[0]));
-       $node->field_username['und']["0"]['value'] = $username;
+     //  $username = implode("",explode(".",explode("@",$node->field_email['und']['0']['value'])[0]));
+     //  $node->field_username['und']["0"]['value'] = $username;
 
 
 
