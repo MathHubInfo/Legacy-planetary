@@ -192,7 +192,7 @@ function kwarc_members_contenttypes_field_default_fields() {
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
-      'type' => 'text_long',
+      'type' => 'text_with_summary',
     ),
     'field_instance' => array(
       'bundle' => 'general_info_page',
@@ -205,7 +205,7 @@ function kwarc_members_contenttypes_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '3',
+          'weight' => 5,
         ),
         'teaser' => array(
           'label' => 'above',
@@ -217,19 +217,108 @@ function kwarc_members_contenttypes_field_default_fields() {
       'entity_type' => 'node',
       'field_name' => 'field_contact_details',
       'label' => 'Contact Details',
-      'required' => 1,
+      'required' => 0,
       'settings' => array(
-        'text_processing' => '0',
+        'display_summary' => 0,
+        'text_processing' => '1',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
         'module' => 'text',
         'settings' => array(
-          'rows' => '5',
+          'rows' => '20',
+          'summary_rows' => 5,
         ),
-        'type' => 'text_textarea',
-        'weight' => '1',
+        'type' => 'text_textarea_with_summary',
+        'weight' => '3',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-general_info_page-field_end_date'.
+  $fields['node-general_info_page-field_end_date'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_end_date',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'date',
+      'settings' => array(
+        'cache_count' => '4',
+        'cache_enabled' => 0,
+        'granularity' => array(
+          'day' => 0,
+          'hour' => 0,
+          'minute' => 0,
+          'month' => 'month',
+          'second' => 0,
+          'year' => 'year',
+        ),
+        'timezone_db' => '',
+        'todate' => '',
+        'tz_handling' => 'none',
+      ),
+      'translatable' => '0',
+      'type' => 'date',
+    ),
+    'field_instance' => array(
+      'bundle' => 'general_info_page',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'long',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+          ),
+          'type' => 'date_default',
+          'weight' => 7,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_end_date',
+      'label' => 'End Date',
+      'required' => 0,
+      'settings' => array(
+        'default_value' => 'now',
+        'default_value2' => 'same',
+        'default_value_code' => '',
+        'default_value_code2' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'date',
+        'settings' => array(
+          'display_all_day' => 0,
+          'increment' => '15',
+          'input_format' => 'Y-m-d H:i:s',
+          'input_format_custom' => '',
+          'label_position' => 'above',
+          'text_parts' => array(),
+          'year_range' => '2000:2030',
+        ),
+        'type' => 'date_select',
+        'weight' => '5',
       ),
     ),
   );
@@ -274,7 +363,7 @@ function kwarc_members_contenttypes_field_default_fields() {
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
-            'image_style' => '',
+            'image_style' => 'medium',
           ),
           'type' => 'image',
           'weight' => '0',
@@ -310,6 +399,93 @@ function kwarc_members_contenttypes_field_default_fields() {
         ),
         'type' => 'image_image',
         'weight' => '-3',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-general_info_page-field_start_date'.
+  $fields['node-general_info_page-field_start_date'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_start_date',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'date',
+      'settings' => array(
+        'cache_count' => '4',
+        'cache_enabled' => 0,
+        'granularity' => array(
+          'day' => 0,
+          'hour' => 0,
+          'minute' => 0,
+          'month' => 'month',
+          'second' => 0,
+          'year' => 'year',
+        ),
+        'timezone_db' => '',
+        'todate' => '',
+        'tz_handling' => 'none',
+      ),
+      'translatable' => '0',
+      'type' => 'date',
+    ),
+    'field_instance' => array(
+      'bundle' => 'general_info_page',
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'date',
+          'settings' => array(
+            'format_type' => 'long',
+            'fromto' => 'both',
+            'multiple_from' => '',
+            'multiple_number' => '',
+            'multiple_to' => '',
+          ),
+          'type' => 'date_default',
+          'weight' => 6,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_start_date',
+      'label' => 'Start Date',
+      'required' => 0,
+      'settings' => array(
+        'default_value' => 'now',
+        'default_value2' => 'same',
+        'default_value_code' => '',
+        'default_value_code2' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'date',
+        'settings' => array(
+          'display_all_day' => 0,
+          'increment' => '15',
+          'input_format' => 'Y-m-d H:i:s',
+          'input_format_custom' => '',
+          'label_position' => 'above',
+          'text_parts' => array(),
+          'year_range' => '2000:2030',
+        ),
+        'type' => 'date_select',
+        'weight' => '4',
       ),
     ),
   );
@@ -898,6 +1074,9 @@ Editable',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_username',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
       'foreign keys' => array(
         'format' => array(
           'columns' => array(
@@ -943,18 +1122,16 @@ Editable',
       'entity_type' => 'node',
       'field_name' => 'field_username',
       'label' => 'Username',
-      'required' => 1,
+      'required' => 0,
       'settings' => array(
         'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 1,
-        'module' => 'text',
-        'settings' => array(
-          'size' => '60',
-        ),
-        'type' => 'text_textfield',
+        'active' => 0,
+        'module' => 'hidden_field',
+        'settings' => array(),
+        'type' => 'hidden_hidden',
         'weight' => '5',
       ),
     ),
@@ -1079,7 +1256,7 @@ Editable',
       ),
       'entity_type' => 'user',
       'field_name' => 'field_group_role',
-      'label' => 'Group Role',
+      'label' => 'KWARC Role',
       'required' => 0,
       'settings' => array(
         'user_register_form' => 0,
@@ -1245,7 +1422,7 @@ Editable',
         'module' => 'og',
         'settings' => array(),
         'type' => 'og_complex',
-        'weight' => 5,
+        'weight' => '5',
       ),
     ),
   );
@@ -1260,20 +1437,22 @@ Editable',
   t('Editable
 The author id of the member. To be found at: http://test.kwarc.info/biblio?s=author&o=asc . If not found - write 0.');
   t('Email');
+  t('End Date');
   t('Full Name');
   t('Group');
-  t('Group Role');
   t('Group membership');
   t('GroupId');
   t('Groups audience');
   t('Home node');
   t('Image');
+  t('KWARC Role');
   t('LinkId');
   t('Please check the member\'s role in KWARC
 Editable');
   t('Please upload a photo');
   t('Publications ID');
   t('Role');
+  t('Start Date');
   t('Unique username 
 Editable');
   t('UserId');

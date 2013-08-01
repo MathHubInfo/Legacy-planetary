@@ -4,10 +4,12 @@
 function kwarc_theme() {
   return array(
     
+
     'node__pageimagetextrightdown' =>
        array(
 	       'template' => "pageimagetextrightdown",
 	     ),
+
 
     'views_view_list__people' =>
     array(
@@ -21,15 +23,18 @@ function kwarc_theme() {
       'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL, 'wrapper_prefix' => NULL, 'list_type_prefix'=> NULL), 
     ),
 
+    
+
     'node__general_info_page' =>
     array(
       'template' => "general_info_page",
-
     ),
 
 
-
-
+    'node__project_description' => 
+    array(
+      'template' => "project_description",
+    ),
   );
 }
 
