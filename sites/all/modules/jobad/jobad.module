@@ -6,13 +6,43 @@
  * API function for adding a module to JOBAD, currently JOBAD wide, configuring per-instance behaviour is a //TODO
  * @param $file location of the js file implementing the module as string URI
  * @param $id the name (id) of the module, to be used when loading the module to an instance
- * @param $params the paremters to pass to the modle shoudl be an array
+ * @param $params the paremters to pass to the modle should be an array
  */
 function jobad_add_module($file, $id, $params = array() ) {
   $modules_array = variable_get('JOBADModulesArray');
   $modules_array[$id] = array($file, $params);
   variable_set('JOBADModulesArray', $modules_array);
 }
+
+/**
+ * API function for adding an element to the sidebar
+ */
+
+function jobad_add_to_sidebar($instance, $element, $options) {
+  $str = '$(function(){'; //run this once DOM is ready
+  $str .= $instance . ".Sidebar.registerNotification(" . $element . ", { \n";
+
+  if (array_key_exists("class", $options)) {
+    $str .= '"class": "' . $options["class"] . "\",\n";
+  }
+  if (array_key_exists("text", $options)) {
+    $str .= '"text": ' . $options["text"] . "\",\n";
+  }
+  if (array_key_exists("icon", $options)) {
+    $str .= '"icon": "' . $options["icon"] . "\",\n";
+  }
+  if (array_key_exists("click", $options)) {
+    $str .= '"click": ' . $options["click"] . ",\n";
+  }
+  if (array_key_exists("menu", $options)) {
+    $str .= '"menu": ' . $options["menu"] . ",\n";
+  }
+
+  $str .= "});\n";
+  $str .= '});';
+  drupal_add_js($str, 'inline');
+}
+
 
 /**
  * API function for initializing JOBAD
@@ -45,6 +75,7 @@ function jobad_boot() {
   variable_set('JOBADLoaded', false);
   variable_set('JOBADInstances', 0);
   variable_set('JOBADModulesArray', array());
+  variable_set('JOBADJSBuffer', ''); //buffers js to be added to page, is dumped on every jobad_initialize call
 }
 
 /**

@@ -151,10 +151,6 @@ function mmt_get_path_info($location) {
 
 }
 
-
-
-
-
 /**
  * Initialize MMT, loads css and js files and uses jobad API
  */
@@ -544,10 +540,50 @@ function mmt_node_view($node, $view_mode, $langcode) {
 
   if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
     $inst_id = mmt_initialize();
+
+
+    $result = db_query('SELECT e.field_lc_elid_value, t.field_lc_type_value, n.entity_id
+      FROM {field_data_field_lc_nid} n
+      INNER JOIN {field_data_field_lc_elid} e
+       ON n.entity_id = e.entity_id
+      INNER JOIN {field_data_field_lc_type} t
+        ON n.entity_id = t.entity_id
+      WHERE n.field_lc_nid_value = :nid',
+      array(':nid' => $node->nid));
+
+
+    foreach ($result as $record) {
+        $nid = $record->entity_id;
+        $nid = str_replace("\r", '', $nid);
+        $nid = str_replace("\n", '', $nid);
+        $elid = $record->field_lc_elid_value; 
+        $elid = str_replace("\r", '', $elid);
+        $elid = str_replace("\n", '', $elid);
+        $type = $record->field_lc_type_value;
+        $type = str_replace("\r", '', $type);
+        $type = str_replace("\n", '', $type);
+        $icon = $type;
+        if ($icon == "question") {
+          $icon = "warning"; //temporarily using this icon until question available in JOBAD
+        }
+        $options = array();
+        $options['class'] = $icon;
+        $options['click'] = 'function() {window.open("?q=node/' . $nid . '");}';
+        if ($type == "question") {
+           $options['menu'] = '{"Answer" : function(){window.open("?q=node/' . $nid . '");}}';
+        }
+        if ($type == "error") {
+           $options['menu'] = '{"Fix" : function(){window.open("?q=node/' . $node->nid . '/edit", "_self");}}';
+        }
+
+        jobad_add_to_sidebar($inst_id, '$(document.getElementById("' . $elid . '"))', $options);
+    }
+
     $content = $node->content['field_external'][0]['content']['#markup'];
     $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '">' . $content . '</div>'; 
   }
 }
+
 
 function mmt_get_contentPres($path, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
   $mmtUrl = variable_get('mmtUrl');
