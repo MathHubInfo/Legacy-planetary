@@ -16,7 +16,7 @@ function project_generation_feature_filter_default_formats() {
     'name' => 'Filtered HTML',
     'cache' => '1',
     'status' => '1',
-    'weight' => '-9',
+    'weight' => '-10',
     'filters' => array(
       'filter_url' => array(
         'weight' => '0',
@@ -81,7 +81,7 @@ function project_generation_feature_filter_default_formats() {
     'name' => 'LaTeX',
     'cache' => '1',
     'status' => '1',
-    'weight' => '-10',
+    'weight' => '-9',
     'filters' => array(
       'latex' => array(
         'weight' => '0',
