@@ -91,6 +91,12 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['pager']['options']['items_per_page'] = '100';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'node';
+  /* Header: Global: Text area */
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  $handler->display->display_options['header']['area']['content'] = 'The KWARC group has developed various added value services based on OMDoc-encoded content, including a mathematical knowledge base, a semantic search engine, management of change, a semantic wiki, mathematical web services, and invasive OMDoc editing technologies. Furthermore, the group works on the utilization of OMDoc to provide Logic Interoperability and to establish scientific Communities of Practice.';
+  $handler->display->display_options['header']['area']['format'] = 'filtered_html';
   /* Field: Content: Weight in Views */
   $handler->display->display_options['fields']['field_weight_in_views']['id'] = 'field_weight_in_views';
   $handler->display->display_options['fields']['field_weight_in_views']['table'] = 'field_data_field_weight_in_views';
@@ -155,6 +161,8 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['fields']['field_type_domain']['field'] = 'field_type_domain';
   $handler->display->display_options['fields']['field_type_domain']['label'] = '';
   $handler->display->display_options['fields']['field_type_domain']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_type_domain']['empty'] = 'N/A';
+  $handler->display->display_options['fields']['field_type_domain']['group_rows'] = FALSE;
   $handler->display->display_options['fields']['field_type_domain']['delta_offset'] = '0';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -167,6 +175,7 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['sorts']['field_type_domain_tid']['id'] = 'field_type_domain_tid';
   $handler->display->display_options['sorts']['field_type_domain_tid']['table'] = 'field_data_field_type_domain';
   $handler->display->display_options['sorts']['field_type_domain_tid']['field'] = 'field_type_domain_tid';
+  $handler->display->display_options['sorts']['field_type_domain_tid']['order'] = 'DESC';
   /* Sort criterion: Content: Weight in Views (field_weight_in_views) */
   $handler->display->display_options['sorts']['field_weight_in_views_value']['id'] = 'field_weight_in_views_value';
   $handler->display->display_options['sorts']['field_weight_in_views_value']['table'] = 'field_data_field_weight_in_views';
@@ -176,7 +185,7 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
   $handler->display->display_options['sorts']['title']['field'] = 'title';
-  $handler->display->display_options['path'] = 'project-list';
+  $handler->display->display_options['path'] = 'projects';
 
   /* Display: Domain */
   $handler = $view->new_display('page', 'Domain', 'page_1');
@@ -214,6 +223,8 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['fields']['field_type_domain']['field'] = 'field_type_domain';
   $handler->display->display_options['fields']['field_type_domain']['label'] = '';
   $handler->display->display_options['fields']['field_type_domain']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_type_domain']['empty'] = 'N/A';
+  $handler->display->display_options['fields']['field_type_domain']['group_rows'] = FALSE;
   $handler->display->display_options['fields']['field_type_domain']['delta_offset'] = '0';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -226,6 +237,7 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['sorts']['field_type_domain_tid']['id'] = 'field_type_domain_tid';
   $handler->display->display_options['sorts']['field_type_domain_tid']['table'] = 'field_data_field_type_domain';
   $handler->display->display_options['sorts']['field_type_domain_tid']['field'] = 'field_type_domain_tid';
+  $handler->display->display_options['sorts']['field_type_domain_tid']['order'] = 'DESC';
   /* Sort criterion: Content: Weight in Views (field_weight_in_views) */
   $handler->display->display_options['sorts']['field_weight_in_views_value']['id'] = 'field_weight_in_views_value';
   $handler->display->display_options['sorts']['field_weight_in_views_value']['table'] = 'field_data_field_weight_in_views';
@@ -235,7 +247,7 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
   $handler->display->display_options['sorts']['title']['field'] = 'title';
-  $handler->display->display_options['path'] = 'project-list/domain';
+  $handler->display->display_options['path'] = 'projects/domain';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Domain';
   $handler->display->display_options['menu']['weight'] = '0';
@@ -281,6 +293,8 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['fields']['field_type_architectural_layer']['label'] = '';
   $handler->display->display_options['fields']['field_type_architectural_layer']['element_type'] = 'strong';
   $handler->display->display_options['fields']['field_type_architectural_layer']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_type_architectural_layer']['empty'] = 'N/A';
+  $handler->display->display_options['fields']['field_type_architectural_layer']['group_rows'] = FALSE;
   $handler->display->display_options['fields']['field_type_architectural_layer']['delta_offset'] = '0';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -293,6 +307,7 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['sorts']['field_type_architectural_layer_tid']['id'] = 'field_type_architectural_layer_tid';
   $handler->display->display_options['sorts']['field_type_architectural_layer_tid']['table'] = 'field_data_field_type_architectural_layer';
   $handler->display->display_options['sorts']['field_type_architectural_layer_tid']['field'] = 'field_type_architectural_layer_tid';
+  $handler->display->display_options['sorts']['field_type_architectural_layer_tid']['order'] = 'DESC';
   /* Sort criterion: Content: Weight in Views (field_weight_in_views) */
   $handler->display->display_options['sorts']['field_weight_in_views_value']['id'] = 'field_weight_in_views_value';
   $handler->display->display_options['sorts']['field_weight_in_views_value']['table'] = 'field_data_field_weight_in_views';
@@ -302,7 +317,7 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
   $handler->display->display_options['sorts']['title']['field'] = 'title';
-  $handler->display->display_options['path'] = 'project-list/architectural-layer';
+  $handler->display->display_options['path'] = 'projects/architectural-layer';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Architectural Layer';
   $handler->display->display_options['menu']['weight'] = '0';
@@ -346,6 +361,8 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['fields']['field_type_funding_agency']['field'] = 'field_type_funding_agency';
   $handler->display->display_options['fields']['field_type_funding_agency']['label'] = '';
   $handler->display->display_options['fields']['field_type_funding_agency']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_type_funding_agency']['empty'] = 'N/A';
+  $handler->display->display_options['fields']['field_type_funding_agency']['group_rows'] = FALSE;
   $handler->display->display_options['fields']['field_type_funding_agency']['delta_offset'] = '0';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -358,6 +375,7 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['sorts']['field_type_funding_agency_tid']['id'] = 'field_type_funding_agency_tid';
   $handler->display->display_options['sorts']['field_type_funding_agency_tid']['table'] = 'field_data_field_type_funding_agency';
   $handler->display->display_options['sorts']['field_type_funding_agency_tid']['field'] = 'field_type_funding_agency_tid';
+  $handler->display->display_options['sorts']['field_type_funding_agency_tid']['order'] = 'DESC';
   /* Sort criterion: Content: Weight in Views (field_weight_in_views) */
   $handler->display->display_options['sorts']['field_weight_in_views_value']['id'] = 'field_weight_in_views_value';
   $handler->display->display_options['sorts']['field_weight_in_views_value']['table'] = 'field_data_field_weight_in_views';
@@ -367,7 +385,7 @@ function project_generation_feature_views_default_views() {
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
   $handler->display->display_options['sorts']['title']['field'] = 'title';
-  $handler->display->display_options['path'] = 'project-list/funding-agency';
+  $handler->display->display_options['path'] = 'projects/funding-agency';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'Funding Agency';
   $handler->display->display_options['menu']['weight'] = '0';

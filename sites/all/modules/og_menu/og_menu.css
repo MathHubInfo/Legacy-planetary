@@ -1,0 +1,7 @@
+.block-og-menu-inset {
+  margin-bottom: 1.5em;
+}
+
+div.block-og-menu-inset:last-child {
+  margin-bottom: 0em;
+}

@@ -1,0 +1,126 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the og_menu module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function og_menu_schema() {
+  $schema['og_menu'] = array(
+    'description' => 'Stores relationships between organic groups and their custom menus.',
+    'fields' => array(
+      'menu_name' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'gid' => array(
+        'description' => "The group's unique ID.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
+      ),
+      'group_type' => array(
+        'description' => "The group's entity type (e.g., node, comment, etc').",
+        'type' => 'varchar',
+        'length' => '32',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('menu_name'),
+    'foreign keys' => array(
+      'menu_custom' => array(
+        'table' => 'menu_custom',
+        'columns' => array(
+          'menu_name' => 'menu_name',
+        )
+      ),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function og_menu_uninstall() {
+  // List custom vars.
+  $vars = array(
+    'og_menu_assignment',
+    'og_menu_block_links',
+    'og_menu_max_menus_per_group',
+    'og_menu_show_blocks',
+    'og_menu_show_homebox',
+    'og_menu_show_menuposition',
+    'og_menu_show_nodetype',
+  );
+  // List all og_menu related node type settings vars.
+  $node_types = node_type_get_types();
+  foreach ($node_types as $type) {
+    $vars[] = 'og_menu_enable_' . $type->type;
+  }
+  // Finally, delete all the vars we listed.
+  foreach ($vars as $var) {
+    variable_del($var);
+  }
+  // Delete custom menus.
+  $result = db_select('og_menu', 'm')
+    ->fields('m', array('menu_name'))
+    ->execute();
+  while ($record = $result->fetchAssoc()) {
+    if ($menu = menu_load($record['menu_name'])) {
+      menu_delete($menu);
+    }
+  }
+}
+
+/**
+ * Update og_menu schema to store group type in addition to gid.
+ */
+function og_menu_update_7300(&$sandbox) {
+  db_drop_primary_key('og_menu');
+  db_query('ALTER TABLE {og_menu} MODIFY COLUMN menu_name varchar(32) NOT NULL DEFAULT \'\' FIRST');
+  db_change_field('og_menu', 'gid', 'gid', array(
+    'description' => "The group's unique ID.",
+    'type' => 'int',
+    'size' => 'normal',
+    'not null' => TRUE,
+  ));
+  db_add_field('og_menu', 'group_type', array(
+    'description' => "The group's entity type (e.g., node, comment, etc').",
+    'type' => 'varchar',
+    'length' => '32',
+    'not null' => TRUE,
+    'default' => 'node',
+  ));
+  db_field_set_default('og_menu', 'group_type', '');
+  db_add_primary_key('og_menu', array('menu_name'));
+}
+
+/**
+ * Enable OG Menu functionality for all group content types (backwards compatibility).
+ */
+function og_menu_update_7301(&$sandbox) {
+  $node_types = node_type_get_types();
+  $group_content_types = array();
+  foreach ($node_types as $type) {
+    if (og_is_group_content_type('node', $type->type)) {
+      variable_set('og_menu_enable_' . $type->type, TRUE);
+      $group_content_types[$type->type] = $type->name;
+    }
+  }
+  if (!empty($group_content_types)) {
+    drupal_set_message(t("For backwards compatibility reasons, this update has
+      enabled OG Menu functionality for the following group content types:
+      %types. You can manually disable this on the !ctypes settings page.",
+      array(
+        '%types' => implode(', ', $group_content_types),
+        '!ctypes' => l(t('content types'), 'admin/structure/types'))
+      ));
+  }
+}
