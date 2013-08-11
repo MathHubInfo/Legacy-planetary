@@ -34,7 +34,11 @@
 ?>
 <div class="profile"<?php print $attributes; ?>>
 <?php 
-   print render($user_profile['privatemsg_send_new_message']);
+   $path=request_path();
+   if($path!='user')
+     {
+       print render($user_profile['privatemsg_send_new_message']);
+     }
    print render($user_profile['userpoints']);
    print render($user_profile['summary']);
  ?>
@@ -63,6 +67,13 @@
          print render($user_profile['planetmath_coauthored_articles']); 
      }
 
+     if(empty($user_profile['planetmath_user_collections']['#links'])) {
+         hide($user_profile['planetmath_user_collections']);
+     }
+     else {
+         print render($user_profile['planetmath_user_collections']);
+     }
+
 
  ?>
 </td>
@@ -75,14 +86,30 @@
          hide($user_profile['og_group_ref']);
          hide($user_profile['og_user_group_ref']);
          hide($user_profile['og_user_node']);
-         print render($user_profile['planetmath_my_teams']);?>
+         print render($user_profile['planetmath_my_teams']);
+
+     if(empty($user_profile['planetmath_user_problems']['#links'])) {
+         hide($user_profile['planetmath_user_problems']);
+     }
+     else {
+         print render($user_profile['planetmath_user_problems']);
+     }
+
+     if(empty($user_profile['planetmath_user_questions']['#links'])) {
+         hide($user_profile['planetmath_user_questions']);
+     }
+     else {
+         print render($user_profile['planetmath_user_questions']);
+     }
+
+?>
 </td>
 </tr>
 </table>
 
 <?php
-  //dd("USER_PROFILE");
-  //dd($user_profile);
+  //  dd("USER_PROFILE");
+  //  dd($user_profile);
          hide($user_profile['user_track_reading']);
          print render($user_profile); ?>
 </div>
