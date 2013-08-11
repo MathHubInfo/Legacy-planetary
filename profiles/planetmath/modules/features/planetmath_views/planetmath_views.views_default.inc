@@ -159,6 +159,10 @@ function planetmath_views_views_default_views() {
     t('<ul class="action-links"> 
  <li><a href="node/add/question">Ask a Question</a></li> 
 </ul> '),
+    t('AddProblem'),
+    t('<ul class="action-links"> 
+ <li><a href="node/add/question">Add new Question</a></li> 
+</ul> '),
     t('by'),
     t('author'),
     t('last revised'),
@@ -200,10 +204,11 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['label'] = 'Add article';
   $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
- <li><a href="./node/add/article">Add new Article</a></li> 
- <li><a href="./msc_browser">View sorted by MSC</a></li> 
- <li><a href="./articles">View sorted by creation date</a></li> 
- <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+ <li><a href="http://planetmath.org/node/add/article">Add new Article</a></li> 
+ <li><a href="http://planetmath.org/msc_browser">View sorted by MSC</a></li>
+ <li><a href="http://map.mathweb.org">navigate by MSC Map (experimental)</a></li>
+ <li><a href="http://planetmath.org/articles">View sorted by creation date</a></li> 
+ <li><a href="http://planetmath.org/articles/a">A</a> <a href="http://planetmath.org/articles/b">B</a> <a href="http://planetmath.org/articles/c">C</a> <a href="http://planetmath.org/articles/d">D</a> <a href="http://planetmath.org/articles/e">E</a> <a href="http://planetmath.org/articles/f">F</a> <a href="http://planetmath.org/articles/g">G</a> <a href="http://planetmath.org/articles/h">H</a> <a href="http://planetmath.org/articles/i">I</a> <a href="http://planetmath.org/articles/j">J</a> <a href="http://planetmath.org/articles/k">K</a>  <a href="http://planetmath.org/articles/l">L</a>  <a href="http://planetmath.org/articles/m">M</a>  <a href="http://planetmath.org/articles/n">N</a> <a href="http://planetmath.org/articles/o">O</a> <a href="http://planetmath.org/articles/p">P</a>  <a href="http://planetmath.org/articles/q">Q</a> <a href="http://planetmath.org/articles/r">R</a> <a href="http://planetmath.org/articles/s">S</a> <a href="http://planetmath.org/articles/t">T</a>  <a href="http://planetmath.org/articles/u">U</a> <a href="http://planetmath.org/articles/v">V</a> <a href="http://planetmath.org/articles/w">W</a> <a href="http://planetmath.org/articles/x">X</a> <a href="http://planetmath.org/articles/y">Y</a>  <a href="http://planetmath.org/articles/z">Z</a> <a href="http://planetmath.org/articles/0">0-9</a>  <a href="http://planetmath.org/articles/a">other symbols</a> </li>
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   /* No results behavior: Global: Text area */
@@ -296,10 +301,11 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['filters']['field_section_value']['expose']['label'] = 'Major Section (field_section)';
   $handler->display->display_options['filters']['field_section_value']['expose']['operator'] = 'field_section_value_op';
   $handler->display->display_options['filters']['field_section_value']['expose']['identifier'] = 'section';
+  $handler->display->display_options['filters']['field_section_value']['expose']['remember'] = TRUE;
   $handler->display->display_options['filters']['field_section_value']['expose']['remember_roles'] = array(
     2 => '2',
+    3 => '3',
     1 => 0,
-    3 => 0,
   );
 
   /* Display: Page */
@@ -336,10 +342,11 @@ function planetmath_views_views_default_views() {
     t('last »'),
     t('Add article'),
     t('<ul class="action-links"> 
- <li><a href="./node/add/article">Add new Article</a></li> 
- <li><a href="./msc_browser">View sorted by MSC</a></li> 
- <li><a href="./articles">View sorted by creation date</a></li> 
- <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+ <li><a href="http://planetmath.org/node/add/article">Add new Article</a></li> 
+ <li><a href="http://planetmath.org/msc_browser">View sorted by MSC</a></li>
+ <li><a href="http://map.mathweb.org">navigate by MSC Map (experimental)</a></li>
+ <li><a href="http://planetmath.org/articles">View sorted by creation date</a></li> 
+ <li><a href="http://planetmath.org/articles/a">A</a> <a href="http://planetmath.org/articles/b">B</a> <a href="http://planetmath.org/articles/c">C</a> <a href="http://planetmath.org/articles/d">D</a> <a href="http://planetmath.org/articles/e">E</a> <a href="http://planetmath.org/articles/f">F</a> <a href="http://planetmath.org/articles/g">G</a> <a href="http://planetmath.org/articles/h">H</a> <a href="http://planetmath.org/articles/i">I</a> <a href="http://planetmath.org/articles/j">J</a> <a href="http://planetmath.org/articles/k">K</a>  <a href="http://planetmath.org/articles/l">L</a>  <a href="http://planetmath.org/articles/m">M</a>  <a href="http://planetmath.org/articles/n">N</a> <a href="http://planetmath.org/articles/o">O</a> <a href="http://planetmath.org/articles/p">P</a>  <a href="http://planetmath.org/articles/q">Q</a> <a href="http://planetmath.org/articles/r">R</a> <a href="http://planetmath.org/articles/s">S</a> <a href="http://planetmath.org/articles/t">T</a>  <a href="http://planetmath.org/articles/u">U</a> <a href="http://planetmath.org/articles/v">V</a> <a href="http://planetmath.org/articles/w">W</a> <a href="http://planetmath.org/articles/x">X</a> <a href="http://planetmath.org/articles/y">Y</a>  <a href="http://planetmath.org/articles/z">Z</a> <a href="http://planetmath.org/articles/0">0-9</a>  <a href="http://planetmath.org/articles/a">other symbols</a> </li>
 </ul> '),
     t('AddArticle'),
     t('<ul class="action-links"> 
@@ -387,23 +394,22 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['label'] = 'Add article';
+  $handler->display->display_options['header']['area']['empty'] = TRUE;
   $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
- <li><a href="./node/add/article">Add new Article</a></li> 
- <li><a href="./msc_browser">View sorted by MSC</a></li> 
- <li><a href="./revisions">View sorted by revision date</a></li> 
- <li><a href="./articlesicanedit">Only show articles I can edit</a></li> 
- <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+ <li><a href="http://planetmath.org/node/add/article">Add new Article</a></li> 
+ <li><a href="http://planetmath.org/msc_browser">View sorted by MSC</a></li> 
+ <li><a href="http://map.mathweb.org">navigate by MSC Map (experimental)</a></li>
+ <li><a href="http://planetmath.org/revisions?section=All">View sorted by revision date</a></li> 
+ <li><a href="http://planetmath.org/articlesicanedit">Only show articles I can edit</a></li> 
+ <li><a href="http://planetmath.org/articles/a">A</a> <a href="http://planetmath.org/articles/b">B</a> <a href="http://planetmath.org/articles/c">C</a> <a href="http://planetmath.org/articles/d">D</a> <a href="http://planetmath.org/articles/e">E</a> <a href="http://planetmath.org/articles/f">F</a> <a href="http://planetmath.org/articles/g">G</a> <a href="http://planetmath.org/articles/h">H</a> <a href="http://planetmath.org/articles/i">I</a> <a href="http://planetmath.org/articles/j">J</a> <a href="http://planetmath.org/articles/k">K</a>  <a href="http://planetmath.org/articles/l">L</a>  <a href="http://planetmath.org/articles/m">M</a>  <a href="http://planetmath.org/articles/n">N</a> <a href="http://planetmath.org/articles/o">O</a> <a href="http://planetmath.org/articles/p">P</a>  <a href="http://planetmath.org/articles/q">Q</a> <a href="http://planetmath.org/articles/r">R</a> <a href="http://planetmath.org/articles/s">S</a> <a href="http://planetmath.org/articles/t">T</a>  <a href="http://planetmath.org/articles/u">U</a> <a href="http://planetmath.org/articles/v">V</a> <a href="http://planetmath.org/articles/w">W</a> <a href="http://planetmath.org/articles/x">X</a> <a href="http://planetmath.org/articles/y">Y</a>  <a href="http://planetmath.org/articles/z">Z</a> <a href="http://planetmath.org/articles/0">0-9</a>  <a href="http://planetmath.org/articles/a">other symbols</a> </li>
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   /* No results behavior: Global: Text area */
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['label'] = 'AddArticle';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
- <li><a href="node/add/article">Add new Article</a></li> 
-</ul> ';
+  $handler->display->display_options['empty']['area']['content'] = 'This part of the site is empty, maybe you should add something here!';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   /* Relationship: Content: Author */
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
@@ -485,10 +491,11 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['filters']['field_section_value']['expose']['label'] = 'Major Section';
   $handler->display->display_options['filters']['field_section_value']['expose']['operator'] = 'field_section_value_op';
   $handler->display->display_options['filters']['field_section_value']['expose']['identifier'] = 'section';
+  $handler->display->display_options['filters']['field_section_value']['expose']['remember'] = TRUE;
   $handler->display->display_options['filters']['field_section_value']['expose']['remember_roles'] = array(
     2 => '2',
+    3 => '3',
     1 => 0,
-    3 => 0,
   );
   $handler->display->display_options['filters']['field_section_value']['expose']['reduce'] = TRUE;
 
@@ -526,16 +533,14 @@ function planetmath_views_views_default_views() {
     t('last »'),
     t('Add article'),
     t('<ul class="action-links"> 
- <li><a href="./node/add/article">Add new Article</a></li> 
- <li><a href="./msc_browser">View sorted by MSC</a></li> 
- <li><a href="./revisions">View sorted by revision date</a></li> 
- <li><a href="./articlesicanedit">Only show articles I can edit</a></li> 
- <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+ <li><a href="http://planetmath.org/node/add/article">Add new Article</a></li> 
+ <li><a href="http://planetmath.org/msc_browser">View sorted by MSC</a></li> 
+ <li><a href="http://map.mathweb.org">navigate by MSC Map (experimental)</a></li>
+ <li><a href="http://planetmath.org/revisions?section=All">View sorted by revision date</a></li> 
+ <li><a href="http://planetmath.org/articlesicanedit">Only show articles I can edit</a></li> 
+ <li><a href="http://planetmath.org/articles/a">A</a> <a href="http://planetmath.org/articles/b">B</a> <a href="http://planetmath.org/articles/c">C</a> <a href="http://planetmath.org/articles/d">D</a> <a href="http://planetmath.org/articles/e">E</a> <a href="http://planetmath.org/articles/f">F</a> <a href="http://planetmath.org/articles/g">G</a> <a href="http://planetmath.org/articles/h">H</a> <a href="http://planetmath.org/articles/i">I</a> <a href="http://planetmath.org/articles/j">J</a> <a href="http://planetmath.org/articles/k">K</a>  <a href="http://planetmath.org/articles/l">L</a>  <a href="http://planetmath.org/articles/m">M</a>  <a href="http://planetmath.org/articles/n">N</a> <a href="http://planetmath.org/articles/o">O</a> <a href="http://planetmath.org/articles/p">P</a>  <a href="http://planetmath.org/articles/q">Q</a> <a href="http://planetmath.org/articles/r">R</a> <a href="http://planetmath.org/articles/s">S</a> <a href="http://planetmath.org/articles/t">T</a>  <a href="http://planetmath.org/articles/u">U</a> <a href="http://planetmath.org/articles/v">V</a> <a href="http://planetmath.org/articles/w">W</a> <a href="http://planetmath.org/articles/x">X</a> <a href="http://planetmath.org/articles/y">Y</a>  <a href="http://planetmath.org/articles/z">Z</a> <a href="http://planetmath.org/articles/0">0-9</a>  <a href="http://planetmath.org/articles/a">other symbols</a> </li>
 </ul> '),
-    t('AddArticle'),
-    t('<ul class="action-links"> 
- <li><a href="node/add/article">Add new Article</a></li> 
-</ul> '),
+    t('This part of the site is empty, maybe you should add something here!'),
     t('author'),
     t('Updated date'),
     t('Last updated by'),
@@ -578,10 +583,12 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['label'] = 'Add article';
   $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
- <li><a href="./node/add/article">Add new Article</a></li> 
- <li><a href="./msc_browser">View sorted by MSC</a></li> 
- <li><a href="./revisions">View sorted by revision date</a></li> 
- <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+ <li><a href="http://planetmath.org/node/add/article">Add new Article</a></li> 
+ <li><a href="http://planetmath.org/msc_browser">View sorted by MSC</a></li> 
+ <li><a href="http://map.mathweb.org">navigate by MSC Map (experimental)</a></li>
+ <li><a href="http://planetmath.org/revisions">View sorted by revision date</a></li> 
+ <li><a href="http://planetmath.org/articlesicanedit">Only show articles I can edit</a></li> 
+ <li><a href="http://planetmath.org/articles/a">A</a> <a href="http://planetmath.org/articles/b">B</a> <a href="http://planetmath.org/articles/c">C</a> <a href="http://planetmath.org/articles/d">D</a> <a href="http://planetmath.org/articles/e">E</a> <a href="http://planetmath.org/articles/f">F</a> <a href="http://planetmath.org/articles/g">G</a> <a href="http://planetmath.org/articles/h">H</a> <a href="http://planetmath.org/articles/i">I</a> <a href="http://planetmath.org/articles/j">J</a> <a href="http://planetmath.org/articles/k">K</a>  <a href="http://planetmath.org/articles/l">L</a>  <a href="http://planetmath.org/articles/m">M</a>  <a href="http://planetmath.org/articles/n">N</a> <a href="http://planetmath.org/articles/o">O</a> <a href="http://planetmath.org/articles/p">P</a>  <a href="http://planetmath.org/articles/q">Q</a> <a href="http://planetmath.org/articles/r">R</a> <a href="http://planetmath.org/articles/s">S</a> <a href="http://planetmath.org/articles/t">T</a>  <a href="http://planetmath.org/articles/u">U</a> <a href="http://planetmath.org/articles/v">V</a> <a href="http://planetmath.org/articles/w">W</a> <a href="http://planetmath.org/articles/x">X</a> <a href="http://planetmath.org/articles/y">Y</a>  <a href="http://planetmath.org/articles/z">Z</a> <a href="http://planetmath.org/articles/0">0-9</a>  <a href="http://planetmath.org/articles/a">other symbols</a> </li>
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   /* No results behavior: Global: Text area */
@@ -692,10 +699,12 @@ function planetmath_views_views_default_views() {
     t('last »'),
     t('Add article'),
     t('<ul class="action-links"> 
- <li><a href="./node/add/article">Add new Article</a></li> 
- <li><a href="./msc_browser">View sorted by MSC</a></li> 
- <li><a href="./revisions">View sorted by revision date</a></li> 
- <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+ <li><a href="http://planetmath.org/node/add/article">Add new Article</a></li> 
+ <li><a href="http://planetmath.org/msc_browser">View sorted by MSC</a></li> 
+ <li><a href="http://map.mathweb.org">navigate by MSC Map (experimental)</a></li>
+ <li><a href="http://planetmath.org/revisions">View sorted by revision date</a></li> 
+ <li><a href="http://planetmath.org/articlesicanedit">Only show articles I can edit</a></li> 
+ <li><a href="http://planetmath.org/articles/a">A</a> <a href="http://planetmath.org/articles/b">B</a> <a href="http://planetmath.org/articles/c">C</a> <a href="http://planetmath.org/articles/d">D</a> <a href="http://planetmath.org/articles/e">E</a> <a href="http://planetmath.org/articles/f">F</a> <a href="http://planetmath.org/articles/g">G</a> <a href="http://planetmath.org/articles/h">H</a> <a href="http://planetmath.org/articles/i">I</a> <a href="http://planetmath.org/articles/j">J</a> <a href="http://planetmath.org/articles/k">K</a>  <a href="http://planetmath.org/articles/l">L</a>  <a href="http://planetmath.org/articles/m">M</a>  <a href="http://planetmath.org/articles/n">N</a> <a href="http://planetmath.org/articles/o">O</a> <a href="http://planetmath.org/articles/p">P</a>  <a href="http://planetmath.org/articles/q">Q</a> <a href="http://planetmath.org/articles/r">R</a> <a href="http://planetmath.org/articles/s">S</a> <a href="http://planetmath.org/articles/t">T</a>  <a href="http://planetmath.org/articles/u">U</a> <a href="http://planetmath.org/articles/v">V</a> <a href="http://planetmath.org/articles/w">W</a> <a href="http://planetmath.org/articles/x">X</a> <a href="http://planetmath.org/articles/y">Y</a>  <a href="http://planetmath.org/articles/z">Z</a> <a href="http://planetmath.org/articles/0">0-9</a>  <a href="http://planetmath.org/articles/a">other symbols</a> </li>
 </ul> '),
     t('AddArticle'),
     t('<ul class="action-links"> 
@@ -743,11 +752,12 @@ function planetmath_views_views_default_views() {
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['label'] = 'Add article';
   $handler->display->display_options['header']['area']['content'] = '<ul class="action-links"> 
- <li><a href="./node/add/article">Add new Article</a></li> 
- <li><a href="./msc_browser">View sorted by MSC</a></li>
- <li><a href="./revisions">View sorted by revision date</a></li> 
- <li><a href="./articles">Include articles I can\'t edit</a></li> 
- <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+ <li><a href="http://planetmath.org/node/add/article">Add new Article</a></li> 
+ <li><a href="http://planetmath.org/msc_browser">View sorted by MSC</a></li> 
+ <li><a href="http://map.mathweb.org">navigate by MSC Map (experimental)</a></li>
+ <li><a href="http://planetmath.org/revisions">View sorted by revision date</a></li> 
+ <li><a href="http://planetmath.org/articlesicanedit">Only show articles I can edit</a></li> 
+ <li><a href="http://planetmath.org/articles/a">A</a> <a href="http://planetmath.org/articles/b">B</a> <a href="http://planetmath.org/articles/c">C</a> <a href="http://planetmath.org/articles/d">D</a> <a href="http://planetmath.org/articles/e">E</a> <a href="http://planetmath.org/articles/f">F</a> <a href="http://planetmath.org/articles/g">G</a> <a href="http://planetmath.org/articles/h">H</a> <a href="http://planetmath.org/articles/i">I</a> <a href="http://planetmath.org/articles/j">J</a> <a href="http://planetmath.org/articles/k">K</a>  <a href="http://planetmath.org/articles/l">L</a>  <a href="http://planetmath.org/articles/m">M</a>  <a href="http://planetmath.org/articles/n">N</a> <a href="http://planetmath.org/articles/o">O</a> <a href="http://planetmath.org/articles/p">P</a>  <a href="http://planetmath.org/articles/q">Q</a> <a href="http://planetmath.org/articles/r">R</a> <a href="http://planetmath.org/articles/s">S</a> <a href="http://planetmath.org/articles/t">T</a>  <a href="http://planetmath.org/articles/u">U</a> <a href="http://planetmath.org/articles/v">V</a> <a href="http://planetmath.org/articles/w">W</a> <a href="http://planetmath.org/articles/x">X</a> <a href="http://planetmath.org/articles/y">Y</a>  <a href="http://planetmath.org/articles/z">Z</a> <a href="http://planetmath.org/articles/0">0-9</a>  <a href="http://planetmath.org/articles/a">other symbols</a> </li>
 </ul> ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   /* No results behavior: Global: Text area */
@@ -895,11 +905,12 @@ function planetmath_views_views_default_views() {
     t('last »'),
     t('Add article'),
     t('<ul class="action-links"> 
- <li><a href="./node/add/article">Add new Article</a></li> 
- <li><a href="./msc_browser">View sorted by MSC</a></li>
- <li><a href="./revisions">View sorted by revision date</a></li> 
- <li><a href="./articles">Include articles I can\'t edit</a></li> 
- <li><a href="./articles/a">A</a> <a href="./articles/b">B</a> <a href="./articles/c">C</a> <a href="./articles/d">D</a> <a href="./articles/e">E</a> <a href="./articles/f">F</a> <a href="./articles/g">G</a> <a href="./articles/h">H</a> <a href="./articles/i">I</a> <a href="./articles/j">J</a> <a href="./articles/k">K</a>  <a href="./articles/l">L</a>  <a href="./articles/m">M</a>  <a href="./articles/n">N</a> <a href="./articles/o">O</a> <a href="./articles/p">P</a>  <a href="./articles/q">Q</a> <a href="./articles/r">R</a> <a href="./articles/s">S</a> <a href="./articles/t">T</a>  <a href="./articles/u">U</a> <a href="./articles/v">V</a> <a href="./articles/w">W</a> <a href="./articles/x">X</a> <a href="./articles/y">Y</a>  <a href="./articles/z">Z</a> <a href="./articles/0">0-9</a>  <a href="./articles/a">other symbols</a> </li>
+ <li><a href="http://planetmath.org/node/add/article">Add new Article</a></li> 
+ <li><a href="http://planetmath.org/msc_browser">View sorted by MSC</a></li> 
+ <li><a href="http://map.mathweb.org">navigate by MSC Map (experimental)</a></li>
+ <li><a href="http://planetmath.org/revisions">View sorted by revision date</a></li> 
+ <li><a href="http://planetmath.org/articlesicanedit">Only show articles I can edit</a></li> 
+ <li><a href="http://planetmath.org/articles/a">A</a> <a href="http://planetmath.org/articles/b">B</a> <a href="http://planetmath.org/articles/c">C</a> <a href="http://planetmath.org/articles/d">D</a> <a href="http://planetmath.org/articles/e">E</a> <a href="http://planetmath.org/articles/f">F</a> <a href="http://planetmath.org/articles/g">G</a> <a href="http://planetmath.org/articles/h">H</a> <a href="http://planetmath.org/articles/i">I</a> <a href="http://planetmath.org/articles/j">J</a> <a href="http://planetmath.org/articles/k">K</a>  <a href="http://planetmath.org/articles/l">L</a>  <a href="http://planetmath.org/articles/m">M</a>  <a href="http://planetmath.org/articles/n">N</a> <a href="http://planetmath.org/articles/o">O</a> <a href="http://planetmath.org/articles/p">P</a>  <a href="http://planetmath.org/articles/q">Q</a> <a href="http://planetmath.org/articles/r">R</a> <a href="http://planetmath.org/articles/s">S</a> <a href="http://planetmath.org/articles/t">T</a>  <a href="http://planetmath.org/articles/u">U</a> <a href="http://planetmath.org/articles/v">V</a> <a href="http://planetmath.org/articles/w">W</a> <a href="http://planetmath.org/articles/x">X</a> <a href="http://planetmath.org/articles/y">Y</a>  <a href="http://planetmath.org/articles/z">Z</a> <a href="http://planetmath.org/articles/0">0-9</a>  <a href="http://planetmath.org/articles/a">other symbols</a> </li>
 </ul> '),
     t('AddArticle'),
     t('<ul class="action-links"> 
@@ -1516,10 +1527,11 @@ else if (!$field_correction_closed){
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['style_plugin'] = 'grid';
   $handler->display->display_options['style_options']['columns'] = '2';
-  $handler->display->display_options['style_options']['fill_single_line'] = FALSE;
   $handler->display->display_options['row_plugin'] = 'fields';
-  $handler->display->display_options['row_options']['hide_empty'] = TRUE;
-  $handler->display->display_options['row_options']['default_field_elements'] = FALSE;
+  $handler->display->display_options['row_options']['inline'] = array(
+    'title' => 'title',
+    'gallery_image' => 'gallery_image',
+  );
   /* Header: Global: Text area */
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
@@ -1635,8 +1647,12 @@ else if (!$field_correction_closed){
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['style_plugin'] = 'list';
   $handler->display->display_options['row_plugin'] = 'fields';
+  /* Relationship: Content: Author */
+  $handler->display->display_options['relationships']['uid']['id'] = 'uid';
+  $handler->display->display_options['relationships']['uid']['table'] = 'node';
+  $handler->display->display_options['relationships']['uid']['field'] = 'uid';
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -1648,6 +1664,12 @@ else if (!$field_correction_closed){
   $handler->display->display_options['fields']['type']['id'] = 'type';
   $handler->display->display_options['fields']['type']['table'] = 'node';
   $handler->display->display_options['fields']['type']['field'] = 'type';
+  /* Field: User: Name */
+  $handler->display->display_options['fields']['name']['id'] = 'name';
+  $handler->display->display_options['fields']['name']['table'] = 'users';
+  $handler->display->display_options['fields']['name']['field'] = 'name';
+  $handler->display->display_options['fields']['name']['relationship'] = 'uid';
+  $handler->display->display_options['fields']['name']['label'] = 'by';
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
@@ -1693,7 +1715,9 @@ else if (!$field_correction_closed){
     t('‹ previous'),
     t('next ›'),
     t('last »'),
+    t('author'),
     t('Type'),
+    t('by'),
     t('Page'),
   );
   $export['new_stuff'] = $view;
@@ -2123,17 +2147,46 @@ else if (!$field_correction_closed){
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-  $handler->display->display_options['style_plugin'] = 'default';
-  $handler->display->display_options['style_options']['grouping'] = array(
-    0 => array(
-      'field' => 'title',
-      'rendered' => 1,
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'title' => 'title',
+    'name' => 'name',
+    'changed' => 'name',
+    'field_question_fulfiller' => 'field_question_fulfiller',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'title' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => 'views-align-left',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'name' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => ' - ',
+      'empty_column' => 0,
+    ),
+    'changed' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'field_question_fulfiller' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
     ),
   );
-  $handler->display->display_options['row_plugin'] = 'fields';
-  $handler->display->display_options['row_options']['inline'] = array(
-    'title' => 'title',
-  );
+  $handler->display->display_options['style_options']['override'] = FALSE;
+  $handler->display->display_options['style_options']['sticky'] = TRUE;
   /* Header: Global: Text area */
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
@@ -2168,8 +2221,7 @@ else if (!$field_correction_closed){
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['title']['label'] = 'Question';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
@@ -2178,18 +2230,18 @@ else if (!$field_correction_closed){
   $handler->display->display_options['fields']['name']['table'] = 'users';
   $handler->display->display_options['fields']['name']['field'] = 'name';
   $handler->display->display_options['fields']['name']['relationship'] = 'uid';
-  $handler->display->display_options['fields']['name']['label'] = 'by';
+  $handler->display->display_options['fields']['name']['label'] = 'Asked by';
   /* Field: Content: Updated date */
   $handler->display->display_options['fields']['changed']['id'] = 'changed';
   $handler->display->display_options['fields']['changed']['table'] = 'node';
   $handler->display->display_options['fields']['changed']['field'] = 'changed';
   $handler->display->display_options['fields']['changed']['label'] = 'last revised';
-  $handler->display->display_options['fields']['changed']['date_format'] = 'privatemsg_current_day';
+  $handler->display->display_options['fields']['changed']['date_format'] = 'short';
   /* Field: Content: Reference to the user who fulfilled i.e. answered the question */
   $handler->display->display_options['fields']['field_question_fulfiller']['id'] = 'field_question_fulfiller';
   $handler->display->display_options['fields']['field_question_fulfiller']['table'] = 'field_data_field_question_fulfiller';
   $handler->display->display_options['fields']['field_question_fulfiller']['field'] = 'field_question_fulfiller';
-  $handler->display->display_options['fields']['field_question_fulfiller']['label'] = 'Question answered by';
+  $handler->display->display_options['fields']['field_question_fulfiller']['label'] = 'Answered by';
   $handler->display->display_options['fields']['field_question_fulfiller']['hide_empty'] = TRUE;
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
@@ -2250,10 +2302,16 @@ else if (!$field_correction_closed){
 <li><a href="answered-questions">Answered questions</a></li>
  <li><a href="node/add/question">Ask a Question</a></li> 
 </ul> '),
+    t('AddQuestion'),
+    t('<ul class="action-links"> 
+ <li><a href="node/add/question">Add new Question</a></li> 
+</ul> '),
     t('by'),
     t('author'),
+    t('Question'),
+    t('Asked by'),
     t('last revised'),
-    t('Question answered by'),
+    t('Answered by'),
     t('Page'),
     t('Feed'),
   );
@@ -2434,7 +2492,10 @@ else if (!$field_correction_closed){
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '20';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['style_options']['grouping'] = array(
     0 => array(
@@ -2451,7 +2512,6 @@ else if (!$field_correction_closed){
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['label'] = 'AddArticle';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
   $handler->display->display_options['empty']['area']['content'] = '<ul class="action-links"> 
  <li><a href="node/add/article">Add new Article</a></li> 
 </ul> ';
