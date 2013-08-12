@@ -17,7 +17,7 @@ font-size: 2.0em;
 
 .project-desc-desc-full{
 	margin-top: 30px;
-}
+}i
 
 .project-desc-small-full{
 	display:none;
@@ -78,4 +78,18 @@ font-size: 2.0em;
 
 .project-desc-date-teaser{
 	display:none;
+}
+
+
+.item-list-project-view{
+	/*display:none;*/
+}
+
+.project-view-list-class{
+
+}
+
+
+.title-views-proj{
+	
 }
