@@ -10,11 +10,11 @@
 function project_generation_feature_menu_default_menu_links() {
   $menu_links = array();
 
-  // Exported menu link: main-menu:project-list
-  $menu_links['main-menu:project-list'] = array(
+  // Exported menu link: main-menu:projects
+  $menu_links['main-menu:projects'] = array(
     'menu_name' => 'main-menu',
-    'link_path' => 'project-list',
-    'router_path' => 'project-list',
+    'link_path' => 'projects',
+    'router_path' => 'projects',
     'link_title' => 'Projects',
     'options' => array(
       'attributes' => array(
@@ -26,7 +26,7 @@ function project_generation_feature_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-47',
   );
   // Translatables
   // Included for use with string extractors like potx.

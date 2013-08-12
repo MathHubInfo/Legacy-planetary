@@ -136,10 +136,9 @@ function project_generation_feature_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'module' => 'og_ui',
+          'label' => 'hidden',
           'settings' => array(),
-          'type' => 'og_list_default',
+          'type' => 'hidden',
           'weight' => '1',
         ),
         'teaser' => array(
@@ -703,7 +702,7 @@ function project_generation_feature_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 11,
+          'weight' => '9',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -850,7 +849,7 @@ function project_generation_feature_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 2,
+          'weight' => '2',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -930,7 +929,7 @@ function project_generation_feature_field_default_fields() {
             'multiple_to' => '',
           ),
           'type' => 'date_default',
-          'weight' => 9,
+          'weight' => '8',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -960,7 +959,7 @@ function project_generation_feature_field_default_fields() {
           'input_format_custom' => '',
           'label_position' => 'above',
           'text_parts' => array(),
-          'year_range' => '2000:2030',
+          'year_range' => '1990:2030',
         ),
         'type' => 'date_select',
         'weight' => '10',
@@ -1006,10 +1005,9 @@ function project_generation_feature_field_default_fields() {
       'display' => array(
         'default' => array(
           'label' => 'above',
-          'module' => 'text',
           'settings' => array(),
-          'type' => 'text_default',
-          'weight' => 10,
+          'type' => 'hidden',
+          'weight' => '10',
         ),
         'teaser' => array(
           'label' => 'hidden',
@@ -1023,7 +1021,7 @@ function project_generation_feature_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_project_small_description',
-      'label' => 'Project Small Description',
+      'label' => 'One-line project description',
       'required' => 0,
       'settings' => array(
         'display_summary' => 0,
@@ -1092,7 +1090,7 @@ function project_generation_feature_field_default_fields() {
             'multiple_to' => '',
           ),
           'type' => 'date_default',
-          'weight' => 8,
+          'weight' => '7',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1106,7 +1104,7 @@ function project_generation_feature_field_default_fields() {
       'label' => 'Project Start Date',
       'required' => 0,
       'settings' => array(
-        'default_value' => 'blank',
+        'default_value' => 'now',
         'default_value2' => 'same',
         'default_value_code' => '',
         'default_value_code2' => '',
@@ -1122,7 +1120,7 @@ function project_generation_feature_field_default_fields() {
           'input_format_custom' => '',
           'label_position' => 'above',
           'text_parts' => array(),
-          'year_range' => '2000:2030',
+          'year_range' => '1990:2030',
         ),
         'type' => 'date_select',
         'weight' => '9',
@@ -1178,7 +1176,7 @@ function project_generation_feature_field_default_fields() {
           'module' => 'taxonomy',
           'settings' => array(),
           'type' => 'taxonomy_term_reference_link',
-          'weight' => 6,
+          'weight' => '5',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1252,7 +1250,7 @@ function project_generation_feature_field_default_fields() {
           'module' => 'taxonomy',
           'settings' => array(),
           'type' => 'taxonomy_term_reference_link',
-          'weight' => 5,
+          'weight' => '4',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1326,7 +1324,7 @@ function project_generation_feature_field_default_fields() {
           'module' => 'taxonomy',
           'settings' => array(),
           'type' => 'taxonomy_term_reference_link',
-          'weight' => 7,
+          'weight' => '6',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1391,7 +1389,7 @@ function project_generation_feature_field_default_fields() {
             'thousand_separator' => ' ',
           ),
           'type' => 'number_integer',
-          'weight' => 4,
+          'weight' => '3',
         ),
         'teaser' => array(
           'label' => 'above',
@@ -1759,10 +1757,10 @@ function project_generation_feature_field_default_fields() {
   t('Group Project ID');
   t('Groups audience');
   t('Image');
+  t('One-line project description');
   t('People List');
   t('Project Description');
   t('Project End Date');
-  t('Project Small Description');
   t('Project Start Date');
   t('Text Near Image');
   t('This will be shown in the teasers');

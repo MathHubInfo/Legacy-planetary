@@ -113,6 +113,30 @@ function project_generation_node_presave($node){
 
 
 
+
+      // Notify people of their group membership - only first responsibles
+      
+
+      foreach($node->field_people_list['und'] as $user){
+
+        $account = user_load($user['uid']);
+        $to = $account->mail;
+
+        $email_from = "admin@test.kwarc.info";
+
+        $params['name'] = $account->field_full_name["und"]['0']['value'];
+        $params['project'] = $node->title;
+
+        $sent = drupal_mail("project_generation", "key", $to, language_default(), $params, $email_from, TRUE);
+
+
+      }
+
+
+
+
+
+
   }
 
 
@@ -194,11 +218,32 @@ function project_generation_node_view($node, $view_mode, $langcode) {
 
 
 
+function project_generation_mail($key, &$message, $params){
+    $language = $message["language"];
+    switch($key){
+
+      case "key":
+        $message["subject"] = t('KWARC Website - Projects');
+        $message['body'][] = 
+            'Dear '.$params["name"].',
+
+You have been added as an administrator in the new KWARC website for the following KWARC project: 
+
+            - '. $params['project']. '
+
+            
+You can now go to http://test.kwarc.info/projects, find your project and edit/add the respective pages. 
 
 
+KWARC Admin
+            '
 
-//margin-top: 30px
+      
+      ;
+      break;
 
+    }
+}
 
 
 
