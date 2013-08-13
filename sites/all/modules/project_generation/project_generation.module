@@ -267,6 +267,13 @@ function project_generation_block_info() {
     'region' => 'sidebar_first',
   );
 
+  $blocks['old_new_proj'] = array(
+    'info' => t('Projects - old and new'),
+    'region' => 'sidebar_first',
+  );
+
+
+
   return $blocks;
 }
 
@@ -289,6 +296,14 @@ function project_generation_block_view($delta = '') {
 
       break;
 
+    case 'old_new_proj':
+      $block['subject'] = t('Projects');
+      $block['content'] = getLinks();
+
+      break;
+
+
+
 
   }
 
@@ -308,6 +323,37 @@ function getBlock(){
 
   $result.="<strong>";
   $result.=l(t("Project Administration"), "project-administration");
+  $result.="</strong><br><br>";
+
+
+  return $result;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+function getLinks(){
+
+  $result = "";
+
+
+  $result.="<strong>";
+  $result.=l(t("Current Projects"), "projects");
+  $result.="</strong><br><br>";
+
+
+  $result.="<strong>";
+  $result.=l(t("Former Projects"), "former-projects");
   $result.="</strong><br><br>";
 
 
