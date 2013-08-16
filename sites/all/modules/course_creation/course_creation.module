@@ -1,0 +1,649 @@
+<?php
+
+/**
+ *@file
+ *course_creation.module
+ */
+ 
+
+
+ /*
+**Implements hook_node_presave() .
+**/
+
+function course_creation_node_presave($node){
+
+
+	// Create New Course
+
+
+
+	if ( ($node->type == "course_creation_form") && ($node->field_group_id["und"]['0']["value"] == 0) ){
+
+		// Fill in the username_instructor field
+		$username = implode("",explode(".",explode("@",$node->field_email_instructor['und']['0']['value'])[0]));
+		$node->field_username_instructor['und']["0"]['value'] = $username;
+
+
+
+
+		// Course Group node
+
+		$node_group = new StdClass();
+		$node_group->type = "course_group";
+		$node_group->language = LANGUAGE_NONE;
+		$node_group->status = 1;
+		$node_group->title = ($node->title)." Course Group";
+		$node_group->og_menu = true;
+		$node_group->field_general_course_id["und"]["0"]["value"] = $node->field_general_course["und"]["0"]["nid"];
+		node_save($node_group);
+
+		$node->field_group_id['und']['0']['value'] = $node_group->nid;
+
+
+
+
+
+
+
+		// Course Description node
+
+		//Creation
+		$node_description = new StdClass();
+		$node_description->type = "course_description";
+		$node_description->language = LANGUAGE_NONE;
+		$node_description->status = 1;
+		$node_description->title = ($node->title)." Course Description";
+		node_save($node_description);
+
+		// Add to group
+		//og_group("node", $node_group->nid, array("entity_type" => "node", "entity" => ($node_description)));
+		// MOVED after the Instructor General Info node
+
+		// Add link to og-menu
+		$item_description = array(
+			"link_title" => "{$node_description->title}",
+			"link_path" => "node/"."{$node_description->nid}",
+			"menu_name" => "menu-og-"."{$node_group->nid}",
+		);
+		menu_link_save($item_description);
+		menu_cache_clear_all();
+
+
+	
+
+
+
+
+
+
+
+
+		// Instructor General Info node
+
+		//Creation
+		$node_instructor = new StdClass();
+		$node_instructor->type = "instructor_general_info";
+		$node_instructor->language = LANGUAGE_NONE;
+		$node_instructor->status = 1;
+		$node_instructor->title = $node->field_name_instructor['und']['0']['value']." Instructor General Info";
+		node_save($node_instructor);
+
+		// Add to group
+		og_group("node", $node_group->nid, array("entity_type" => "node", "entity" => ($node_instructor)));
+
+		// Add link to og-menu
+		$item_instructor = array(
+			"link_title" => "{$node_instructor->title}",
+			"link_path" => "node/"."{$node_instructor->nid}",
+			"menu_name" => "menu-og-"."{$node_group->nid}",
+		);
+		menu_link_save($item_instructor);
+		menu_cache_clear_all();
+
+		// Update Course Description instructor field
+		$node_description->field_instructor_name["und"]["0"]["nid"] = $node_instructor->nid;
+		node_save($node_description);
+
+		// Add Course Description node to group
+		og_group("node", $node_group->nid, array("entity_type" => "node", "entity" => ($node_description)));
+
+
+
+
+
+
+
+
+
+
+
+		// Instructor user account
+
+		$account_check = user_load_multiple(array(), array("mail" => ($node->field_email_instructor['und']['0']['value']) ));
+
+
+		if(count($account_check)){
+			// OLD USER update
+			$account_check = array_values($account_check)[0];
+
+			$updated_role = $account_check->roles;
+			$updated_role[9] = "Course Instructor";
+
+			$updated_user = array(
+				"roles" => $updated_role,
+			);
+			$account_check = user_save($account_check,$updated_user);
+
+
+
+
+			// Add user to OG
+			og_group("node", $node_group->nid, array("entity_type" => "user", "entity" => $account_check));
+
+			// Give administrator member role to a user in the OG
+			og_role_grant("node", $node_group->nid, $account_check->uid, 6);
+		}
+
+
+
+		else{
+
+			//NEW USER
+
+			// Create user
+			$new_user = array(
+				"name" => $node->field_username_instructor['und']['0']['value'],
+				"mail" => $node->field_email_instructor['und']['0']['value'],
+				"status" => 1,
+				"roles" => array(9 => "Course Instructor"),
+				"field_full_name" => array("und" => array("0" => array("value" => ($node->field_name_instructor['und']['0']['value'])))), 
+			);
+
+			// Save user
+			$account = user_save(null, $new_user);
+
+			// Send e-mail
+			$op = "register_admin_created";
+	      	_user_mail_notify($op,$account);
+
+	      	// Add user to OG
+	      	og_group("node", $node_group->nid, array("entity_type" => "user", "entity" => $account));
+
+
+	      	// Give administrator member role to a user in the OG
+	      	og_role_grant("node", $node_group->nid, $account->uid, 6);
+			
+
+
+		}
+
+
+
+	
+
+
+	}
+
+
+
+	// Create New TA
+
+
+	if ( ($node->type == "teacher_assistant") && ($node->field_ta_group_id["und"]['0']["value"] == 0) ){
+
+		// Fill in the ta_username field
+		$username = implode("",explode(".",explode("@",$node->field_email_ta['und']['0']['value'])[0]));
+		$node->field_ta_username['und']["0"]['value'] = $username;
+
+
+
+
+
+    	// TA Group node
+
+		$node_ta_group = new StdClass();
+		$node_ta_group->type = "ta_group";
+		$node_ta_group->language = LANGUAGE_NONE;
+		$node_ta_group->status = 1;
+		$node_ta_group->title = ($node->title)." TA Group";
+		$node_ta_group->og_menu = true;
+		node_save($node_ta_group);
+
+		// Update field_ta_group_id
+		$node->field_ta_group_id['und']['0']['value'] = $node_ta_group->nid;
+
+		// Add TA Group node to Course Group
+		og_group("node", $node->og_group_ref['und']['0']['target_id'] , array("entity_type" => "node", "entity" => ($node_ta_group)));
+
+
+
+
+
+
+
+		// TA General Info node
+
+
+		//Creation
+		$node_ta_general_info = new StdClass();
+		$node_ta_general_info->type = "ta_general_info";
+		$node_ta_general_info->language = LANGUAGE_NONE;
+		$node_ta_general_info->status = 1;
+		$node_ta_general_info->title = ($node->title)." TA General Info";
+		node_save($node_ta_general_info);
+
+		// Add to group
+		og_group("node", $node_ta_group->nid, array("entity_type" => "node", "entity" => ($node_ta_general_info)));
+
+		// Add link to og-menu
+		$item_ta_general_info = array(
+			"link_title" => "{$node_ta_general_info->title}",
+			"link_path" => "node/"."{$node_ta_general_info->nid}",
+			"menu_name" => "menu-og-"."{$node_ta_group->nid}",
+		);
+		menu_link_save($item_ta_general_info);
+		menu_cache_clear_all();
+
+		// Add TA General Info node to Course Group
+		og_group("node", $node->og_group_ref['und']['0']['target_id'] , array("entity_type" => "node", "entity" => ($node_ta_general_info)));
+
+
+
+		// Add TA General Info node to Course Description
+		$course_description = node_load(node_load($node->og_group_ref['und']['0']['target_id'])->field_course_description_id["und"]["0"]["value"]);
+		
+		if($course_description->field_tas == NULL)
+			$course_description->field_tas["und"] = array();
+
+		if($course_description->field_schedule == NULL)
+			$course_description->field_schedule = array();
+
+		if($course_description->field_assignments == NULL) 
+			$course_description->field_assignments = array();
+
+		array_push($course_description->field_tas["und"], array("nid" => ($node_ta_general_info->nid)));
+
+		node_save($course_description);		
+
+
+
+
+		// Add TA General Info node to Course OG Menu
+		$item_ta = array(
+			"link_title" => "{$node_ta_general_info->title}",
+			"link_path" => "node/"."{$node_ta_general_info->nid}",
+			"menu_name" => "menu-og-"."{$node->og_group_ref['und']['0']['target_id']}",
+		);
+		menu_link_save($item_ta);
+		menu_cache_clear_all();
+
+
+		
+
+
+
+
+
+
+
+
+
+
+		// TA user account
+
+		$account_ta_check = user_load_multiple(array(), array("mail" => ($node->field_email_ta['und']['0']['value']) ));
+
+
+		if(count($account_ta_check)){
+			// OLD USER update
+			$account_ta_check = array_values($account_ta_check)[0];
+
+			$updated_ta_role = $account_ta_check->roles;
+			$updated_ta_role[10] = "Teacher Assistant";
+
+			$updated_user = array(
+				"roles" => $updated_ta_role,
+			);
+
+			$account_ta_check = user_save($account_ta_check,$updated_user);
+
+
+
+			// Add user to  TA group
+			og_group("node", $node_ta_group->nid, array("entity_type" => "user", "entity" => $account_ta_check));
+
+			// Give member role to a user in the TA group
+			og_role_grant("node", $node_ta_group->nid, $account_ta_check->uid, 8);
+
+
+
+			// Add user to Course group
+			og_group("node", $node->og_group_ref['und']['0']['target_id'], array("entity_type" => "user", "entity" => $account_ta_check));
+
+			// Give TA role to a user in the TA group
+			og_role_grant("node", $node->og_group_ref['und']['0']['target_id'], $account_ta_check->uid, 10);
+
+		}
+
+
+
+		else{
+
+			//NEW USER
+
+			// Create user
+			$new_ta_user = array(
+				"name" => $node->field_ta_username['und']['0']['value'],
+				"mail" => $node->field_email_ta['und']['0']['value'],
+				"status" => 1,
+				"roles" => array(10 => "Teacher Assistant"),  /// MORE WORK TO DO HERE
+				"field_full_name" => array("und" => array("0" => array("value" => ($node->title)))), 
+			);
+
+			// Save user
+			$account_ta = user_save(null, $new_ta_user);
+
+			// Send e-mail
+			$op = "register_admin_created";
+	      	_user_mail_notify($op,$account_ta);
+
+
+
+	      	// Add user to TA group
+	      	og_group("node", $node_ta_group->nid, array("entity_type" => "user", "entity" => $account_ta));
+
+	      	// Give administrator member role to a user in the OG
+	      	og_role_grant("node", $node_ta_group->nid, $account_ta->uid, 9);
+
+
+
+
+			// Add user to Course group
+			og_group("node", $node->og_group_ref['und']['0']['target_id'], array("entity_type" => "user", "entity" => $account_ta));
+
+			// Give TA role to a user in the TA group
+			og_role_grant("node", $node->og_group_ref['und']['0']['target_id'], $account_ta->uid, 10);
+
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+	}
+
+
+		// Create New General Course
+
+
+	if( ($node->type == "general_course_creation_form") && ($node->field_group_id["und"]["0"]["value"] == 0) ){
+
+		//Fill in the username general course admin field
+		$username = implode("",explode(".",explode("@",$node->field_email_general_course_admin['und']['0']['value'])[0]));
+		$node->field_un_general_course_admin['und']['0']['value'] = $username;
+
+
+
+		// General Course Group Node
+		$node_group = new StdClass();
+		$node_group->type = "general_course_group";
+		$node_group->language = LANGUAGE_NONE;
+		$node_group->status = 1;
+		$node_group->title = ($node->title)." General Course Group";
+		$node_group->og_menu = true;
+		node_save($node_group);
+
+		$node->field_group_id['und']['0']['value'] = $node_group->nid;
+
+
+
+		// General Course Admin user account
+
+		$account_check = user_load_multiple(array(), array("mail" => ($node->field_email_general_course_admin['und']['0']['value']) ));
+
+
+		if(count($account_check)){
+			// OLD USER update
+			$account_check = array_values($account_check)[0];
+
+			$updated_role = $account_check->roles;
+			$updated_role[11] = "General Course Admin";
+
+			$updated_user = array(
+				"roles" => $updated_role,
+			);
+			$account_check = user_save($account_check,$updated_user);
+
+
+
+
+			// Add user to OG
+			og_group("node", $node_group->nid, array("entity_type" => "user", "entity" => $account_check));
+
+			// Give administrator member role to a user in the OG
+			og_role_grant("node", $node_group->nid, $account_check->uid, 17);
+		}
+
+
+
+		else{
+
+			//NEW USER
+
+			// Create user
+			$new_user = array(
+				"name" => $node->field_un_general_course_admin['und']['0']['value'],
+				"mail" => $node->field_email_general_course_admin['und']['0']['value'],
+				"status" => 1,
+				"roles" => array(11 => "General Course Admin"),
+				"field_full_name" => array("und" => array("0" => array("value" => ($node->field_name_general_course_admin['und']['0']['value'])))), 
+			);
+
+			// Save user
+			$account = user_save(null, $new_user);
+
+			// Send e-mail
+			$op = "register_admin_created";
+	      	_user_mail_notify($op,$account);
+
+	      	// Add user to OG
+	      	og_group("node", $node_group->nid, array("entity_type" => "user", "entity" => $account));
+
+
+	      	// Give administrator member role to a user in the OG
+	      	og_role_grant("node", $node_group->nid, $account->uid, 17);
+			
+
+
+		}
+
+
+
+
+
+
+
+	}
+
+
+
+
+
+
+}
+
+
+
+
+/**
+ *	Implements hook_block_info()
+ */
+
+function course_creation_block_info() {
+
+  $blocks['course_management'] = array(
+    'info' => t('Course Management'),
+    'region' => 'sidebar_first',
+  );
+
+  return $blocks;
+}
+
+
+
+
+
+/**
+ * Implements hook_block_view().
+ */
+
+function course_creation_block_view($delta = '') {
+  // This example is adapted from node.module.
+  $block = array();
+
+  switch ($delta) {
+    case 'course_management':
+      $block['subject'] = t('Courses Management');
+	  $block['content'] = getContent();
+
+      break;
+
+
+  }
+
+  return $block;
+}
+
+
+
+function getContent(){
+	$view = views_get_view('test');
+	$view->init();
+    $view->execute();
+
+   	$instructor_membership = array();
+   	$ta_membership = array();
+  	$student_membership = array();
+
+
+    foreach($view->result as $res){
+    	$array_roles = og_get_user_roles("node", $res->og_membership_users_gid, $res->uid);
+    	foreach($array_roles as $r){
+    		if ($r == "Instructor") $instructor_membership[] = $res->og_membership_users_gid;
+    		else if ($r == "TA") $ta_membership[] = $res->og_membership_users_gid; 
+    		else if ($r == "Student") $student_membership[] = $res->og_membership_users_gid;
+    	}
+    }
+
+    $result = "";
+
+
+
+    if(count($instructor_membership)){
+$result.=<<<EOT
+<strong>Instructor in:</strong><br>
+EOT;
+	foreach($instructor_membership as $id){
+		$title = node_load($id)->title;
+$result.=l(t($title), "node/$id");
+$result.="<br>";
+;
+	}
+	$result.= "<br>";
+
+$result.="<strong>";
+$result.=l(t("Add TA"), "node/add/teacher-assistant");
+$result.="</strong><br><br>";
+
+
+}
+
+
+
+if(count($ta_membership)){
+$result.=<<<EOT
+<strong>TA in:</strong><br>
+EOT;
+	foreach($ta_membership as $id){
+		$title = node_load($id)->title;
+$result.=l(t($title), "node/$id");
+$result.="<br>";
+	}
+	$result.= "<br>";
+}
+
+
+
+
+    if(count($student_membership)){
+$result.=<<<EOT
+<strong>Student in:</strong><br>
+EOT;
+	foreach($student_membership as $id){
+		$title = node_load($id)->title;
+$result.=l(t($title), "node/$id");
+$result.="<br>";
+	}
+	$result.= "<br>";
+}
+
+
+
+
+
+    return $result;
+
+
+
+}
+
+
+function course_creation_og_membership_update($og_membership){
+	if($og_membership->state == 1){
+		$group = node_load($og_membership->gid);
+
+		if($group->type == "course_group"){
+
+			$account = user_load($og_membership->etid);
+
+			//Check if the user's role is student
+
+			$roles = og_get_user_roles("node", $group->nid, $og_membership->etid, true);
+			
+
+
+			if(in_array("Student",$roles)){
+
+
+				// Add user to OG
+		      	og_group("node", $group->field_general_course_id["und"]["0"]["value"], array("entity_type" => "user", "entity" => $account));
+
+
+		      	// Give student role to a user in the OG
+		      	og_role_grant("node", $group->field_general_course_id["und"]["0"]["value"], $account->uid, 20);
+		      	dpm("merge");
+		      	//dpm($group);
+		     
+		      	//dpm($account);
+
+			}
+
+			
+
+
+		}
+	}
+
+	
+
+
+}

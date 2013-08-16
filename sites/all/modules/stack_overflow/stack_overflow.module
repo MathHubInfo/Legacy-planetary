@@ -1,0 +1,39 @@
+<?php
+/**
+ * @file
+ * An example module to redirect the path from a node view for at
+ * specific type to a view.
+ */
+
+/**
+ * Implementation of hook_init().
+ */
+function stack_overflow_init() {
+  // Using arg() instead of menu_get_item(). Rumor has it menu_get_item
+  // can occassionally cause WSOD.
+  // We make sure arg(2) is empty so we do not redirect on edit or other
+  // node sub pages.
+  if (arg(0) == 'node' && is_numeric(arg(1)) && arg(2) == '') {
+    $node = node_load(arg(1));
+    if ($node->type == 'answer') {
+      drupal_goto('question/'. $node->field_answer["und"][0]['nid']);
+    }
+    elseif ($node->type == 'question') {
+      drupal_goto('question/'. $node->nid);
+    }
+  }
+}
+
+
+/**
+ * Showing Answer comments  
+ */
+
+
+function stack_overflow_node_view_alter(&$build) {
+  if ($build["#view_mode"] == "full" && $build["#node"]->type == "answer") 
+    {
+      $add = comment_node_page_additions($build["#node"]);
+      $build["comments"] = $add;
+    }
+}

@@ -9,7 +9,9 @@
     attach: function() {
       // Initialize variables
       var originalParent = $('.menu-parent-select').val();  /* : goes to \\: */
-      var originalParent = originalParent.replace(":","\\:");
+      if(originalParent) {
+        var originalParent = originalParent.replace(":","\\:");
+      }
       var enabled = $('#edit-menu-enabled').is(':checked');
 
       var holder = document.createElement('select');
