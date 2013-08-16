@@ -122,7 +122,7 @@ function project_generation_node_presave($node){
         $account = user_load($user['uid']);
         $to = $account->mail;
 
-        $email_from = "admin@test.kwarc.info";
+        $email_from = "kwarc.notifications@gmail.com";
 
         $params['name'] = $account->field_full_name["und"]['0']['value'];
         $params['project'] = $node->title;
@@ -358,6 +358,25 @@ function getLinks(){
 
 
   return $result;
+
+
+
+}
+
+
+
+/**
+ * Implements hook_form_alter()
+ * This hides the Group Audience field when editing a form in General Info Page and Page
+ */
+
+
+function project_generation_form_alter(&$form, &$form_state, $form_id){
+  
+  if ($form_id == 'project_description_node_form') {
+     $form['og_group_ref']['#access'] = FALSE;
+  }
+
 
 
 

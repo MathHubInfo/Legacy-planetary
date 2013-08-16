@@ -10,5 +10,4 @@ dependencies[] = options
 dependencies[] = taxonomy
 features[features_api][] = api:1
 features[field][] = user-user-field_full_name
-features[field][] = user-user-field_group_role
 features[field][] = user-user-field_home_node

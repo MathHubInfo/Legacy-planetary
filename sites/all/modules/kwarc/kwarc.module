@@ -24,17 +24,32 @@ function kwarc_theme() {
     ),
 
     
-
+    
     'node__general_info_page' =>
     array(
       'template' => "general_info_page",
-    ),
+    ), 
 
 
     'node__project_description' => 
     array(
       'template' => "project_description",
     ),
+  
+  
+    'views_view_list__people_ok' =>
+    array(
+      'template' => "views-view-list--people-ok",
+      'original hook' => 'views_view_list',
+      'preprocess functions' => array( 
+         'template_preprocess',
+         'template_preprocess_views_view_list', 
+      ), 
+      'path' => drupal_get_path("module", "kwarc"),
+      'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL, 'wrapper_prefix' => NULL, 'list_type_prefix'=> NULL), 
+    ),
+
+
   );
 }
 
