@@ -8,7 +8,7 @@
     <?php echo drupal_get_js(); ?>
     <?php echo drupal_get_css(); ?>
 </head>
-<body>
+<body style="background:white">
 <div id="JOBAD1">
     <div id='definition'>
         <?php echo $content; ?>
