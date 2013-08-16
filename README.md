@@ -1,6 +1,15 @@
+# About
+
+Since mid-2013, Planetary is the software system that runs [PlanetMath](http://planetmath.org).  The technologies used (including Drupal 7, MathML, and the Virtuoso triple store) comprise an extensible modern platform, suitable for further development and stand-alone deployments.  
+
+Planetary is already in use as a course forum and as the frontend to a
+formal mathematics system.
+
 # Our development style
 
-We have relatively small [milestones](https://github.com/KWARC/planetary/issues/milestones), due approximately every two months.
+We try to maintain relatively small [milestones](https://github.com/KWARC/planetary/issues/milestones) that are due approximately every two months.
+
+In addition to the installation instructions below, we have [developer docs](https://github.com/KWARC/planetary/wiki/Planetary-Developer-Docs:-Drupal-by-Example) on our wiki.
 
 We're happy to mentor newcomers - pick a [minor issue](https://github.com/KWARC/planetary/issues?labels=minor&milestone=&page=1&state=open) and we'll walk you through the steps to solve it.
 
