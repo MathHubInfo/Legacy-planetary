@@ -74,76 +74,6 @@ function user_fields_feature_field_default_fields() {
     ),
   );
 
-  // Exported field: 'user-user-field_group_role'.
-  $fields['user-user-field_group_role'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_group_role',
-      'foreign keys' => array(
-        'tid' => array(
-          'columns' => array(
-            'tid' => 'tid',
-          ),
-          'table' => 'taxonomy_term_data',
-        ),
-      ),
-      'indexes' => array(
-        'tid' => array(
-          0 => 'tid',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'taxonomy',
-      'settings' => array(
-        'allowed_values' => array(
-          0 => array(
-            'vocabulary' => 'kwarc_role',
-            'parent' => '0',
-          ),
-        ),
-        'profile2_private' => FALSE,
-      ),
-      'translatable' => '0',
-      'type' => 'taxonomy_term_reference',
-    ),
-    'field_instance' => array(
-      'bundle' => 'user',
-      'default_value' => array(
-        0 => array(
-          'tid' => '24',
-        ),
-      ),
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'taxonomy',
-          'settings' => array(),
-          'type' => 'taxonomy_term_reference_link',
-          'weight' => '1',
-        ),
-      ),
-      'entity_type' => 'user',
-      'field_name' => 'field_group_role',
-      'label' => 'KWARC Role',
-      'required' => 0,
-      'settings' => array(
-        'user_register_form' => 0,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'options',
-        'settings' => array(),
-        'type' => 'options_select',
-        'weight' => '1',
-      ),
-    ),
-  );
-
   // Exported field: 'user-user-field_home_node'.
   $fields['user-user-field_home_node'] = array(
     'field_config' => array(
@@ -211,7 +141,6 @@ function user_fields_feature_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Full Name');
   t('Home node');
-  t('KWARC Role');
 
   return $fields;
 }
