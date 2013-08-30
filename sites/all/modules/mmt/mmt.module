@@ -75,7 +75,6 @@ function mmt_setup_access() {
   }
 }
 
-
 function mmt_archives() {
   //TODO change generation mode for this page
   $htmlText = '
@@ -86,7 +85,7 @@ function mmt_archives() {
      <li> <a href="?q=/http%3A//docs.omdoc.org/latin">LATIN</a> - logic atlas</li>
      <li> <a href="?q=/http%3A//www.openmath.org">OpenMath</a> - a content dictionary with Scala-based computational semantics </li>
      <li> <a href="?q=/http%3A//docs.omdoc.org/smglo">SMGlo</a> - a semantic glossary of mathematics (in progress) </li>
-
+     <li> <a href="?q=/http%3A//docs.omdoc.org/complog">Complog</a> - Computational Logic notes </li>
     </ul>
 	';
   return $htmlText;
@@ -100,6 +99,7 @@ function mmt_get_path_info($location) {
     'latin' => 'http://docs.omdoc.org/latin/',
     'urtheories' => 'http://docs.omdoc.org/urtheories/' ,
     'openmath' => 'http://www.openmath.org/',
+    'complog' => 'http://docs.omdoc.org/complog/'
   ); //hardcoded for now, get be gotten from MMT using archive name
 
   $lparts = explode('/', $location); //format is <archive-name>/source/<fragment path>
@@ -239,7 +239,7 @@ function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cac
   $response = mmt_get_compiled($text, $dpath, $format);
 
   $key = md5($text);
-  _drutexml_cache_set($key, $response);	
+  _drutexml_cache_set($key, utf8_encode($response));	
  
   if (isset($filter_debug)) {
 	  $filter_debug["mmt_compilation"] = array("mmt/comp", array($key));
@@ -342,19 +342,30 @@ function mmt_create_nodes() {
     'latin' => 'elf',
     'urtheories' => 'mmt',
     'openmath' => 'mmt',
+    'complog' => 'stex_omdoc',
     );
 
   $node_types = array(
     'tex' => 'glossary', //glossary_entry for smglo
     'elf' => 'mmtdoc', //lf format
     'mmt' => 'mmtdoc', //mmt format
+    'stex_omdoc' => 'mmtdoc',
   );
+
+  $extensions = array(
+    'tex' => 'tex', 
+    'elf' => 'elf', 
+    'mmt' => 'mmt', 
+    'stex_omdoc' => 'omdoc',
+  );
+
 
   $res = planetary_repo_local_list("");
   foreach ($res as $file) {
     if (array_key_exists($file, $formats)) {
       $format = $formats[$file];
-      _mmt_create_nodes($file . "/source", $format, $node_types[$format]);
+      $ext = $extensions[$format];
+      _mmt_create_nodes($file . "/source", $format, $ext, $node_types[$format]);
 
     }
   }
@@ -362,7 +373,7 @@ function mmt_create_nodes() {
   return "Success";
 }
 
-function _mmt_create_nodes($path, $format, $node_type) {
+function _mmt_create_nodes($path, $format, $extension, $node_type) {
   $res = planetary_repo_local_list($path);
   $title = $path;
   $body = '';
@@ -370,14 +381,14 @@ function _mmt_create_nodes($path, $format, $node_type) {
     $fpath = $path . "/" .$file;
     if($file[0] != '.') {
       if (planetary_repo_is_dir($fpath)) {         
-        _mmt_create_nodes($fpath, $format, $node_type);
+        _mmt_create_nodes($fpath, $format, $extension, $node_type);
         $path_info = mmt_get_path_info($fpath);
         $dpath = $path_info['dpath'];          
         $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
       } else {
         $parts = explode('.', $file);
         $ext = $parts[count($parts) - 1];
-        if ($ext == $format) {
+        if ($ext == $extension) {
           $module = $parts[0];
           $lang = 'und'; //default
           if (count($parts) == 3) {
@@ -542,12 +553,14 @@ function mmt_node_view($node, $view_mode, $langcode) {
     $inst_id = mmt_initialize();
 
 
-    $result = db_query('SELECT e.field_lc_elid_value, t.field_lc_type_value, n.entity_id
+    $result = db_query('SELECT e.field_lc_elid_value, t.field_lc_type_value, n.entity_id, node.title
       FROM {field_data_field_lc_nid} n
       INNER JOIN {field_data_field_lc_elid} e
        ON n.entity_id = e.entity_id
       INNER JOIN {field_data_field_lc_type} t
         ON n.entity_id = t.entity_id
+      INNER JOIN {node}
+        ON n.entity_id = node.nid
       WHERE n.field_lc_nid_value = :nid',
       array(':nid' => $node->nid));
 
@@ -562,12 +575,14 @@ function mmt_node_view($node, $view_mode, $langcode) {
         $type = $record->field_lc_type_value;
         $type = str_replace("\r", '', $type);
         $type = str_replace("\n", '', $type);
+        $title = $record->title;
         $icon = $type;
         if ($icon == "question") {
           $icon = "warning"; //temporarily using this icon until question available in JOBAD
         }
         $options = array();
         $options['class'] = $icon;
+        $options['text'] = $title;
         $options['click'] = 'function() {window.open("?q=node/' . $nid . '");}';
         if ($type == "question") {
            $options['menu'] = '{"Answer" : function(){window.open("?q=node/' . $nid . '");}}';
@@ -625,6 +640,7 @@ function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styl
 function mmt_get_compiled($body, $dpath, $format) {
   $mmtUrl = variable_get('mmtUrl');
   $url = $mmtUrl . '/:planetary/getCompiled';
+
   $data = array('body' => $body, 'format' => $format);
   if (isset($dpath)) {
     $data['dpath'] = $dpath;
@@ -633,14 +649,13 @@ function mmt_get_compiled($body, $dpath, $format) {
   $options = array(
     'http' => array(
         'header'  => "Content-type: application/json\r\n",
-        'method'  => 'POST',
-        'content' => json_encode($data),
+        'method'  => 'POST'
+,        'content' => json_encode($data),
     ),
   );
   $context  = stream_context_create($options);
   $response = file_get_contents($url, false, $context);
-  $result = json_decode($response, true);
- 
+  $result = json_decode($response, true); 
   return $response;
 }
 

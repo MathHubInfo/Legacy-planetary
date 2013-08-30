@@ -26,7 +26,7 @@ function jobad_add_to_sidebar($instance, $element, $options) {
     $str .= '"class": "' . $options["class"] . "\",\n";
   }
   if (array_key_exists("text", $options)) {
-    $str .= '"text": ' . $options["text"] . "\",\n";
+    $str .= '"text": "' . $options["text"] . "\",\n";
   }
   if (array_key_exists("icon", $options)) {
     $str .= '"icon": "' . $options["icon"] . "\",\n";
