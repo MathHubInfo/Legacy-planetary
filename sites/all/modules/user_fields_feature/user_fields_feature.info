@@ -1,0 +1,13 @@
+name = User Fields Feature
+core = 7.x
+package = KWARC
+php = 5.2.4
+dependencies[] = entityreference
+dependencies[] = features
+dependencies[] = og
+dependencies[] = og_ui
+dependencies[] = options
+dependencies[] = taxonomy
+features[features_api][] = api:1
+features[field][] = user-user-field_full_name
+features[field][] = user-user-field_home_node

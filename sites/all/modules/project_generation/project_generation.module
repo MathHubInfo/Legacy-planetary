@@ -1,0 +1,383 @@
+<?php
+
+/**
+ * @file
+ * project_generation.module
+ */
+
+
+
+ /*
+**Implements hook_node_presave() .
+**/
+
+function project_generation_node_presave($node){
+
+
+  // Create New Project
+
+
+  if ( ($node->type == "project_creation_form") && ($node->field_group_project_id["und"]['0']["value"] == 0) ){
+
+
+
+
+      // Project Group node
+
+      $node_group = new StdClass();
+      $node_group->type = "project_group";
+      $node_group->language = LANGUAGE_NONE;
+      $node_group->status = 1;
+      //$node_group->title = ($node->title)." Project Group";
+      $node_group->title = ($node->title);   
+      $node_group->og_menu = true;
+      node_save($node_group);
+
+      $node->field_group_project_id['und']['0']['value'] = $node_group->nid;
+
+
+
+
+
+
+      // The Project Description node 
+
+
+      // Creation
+      $node_info = new StdClass();
+      $node_info->type = "project_description";
+    //  $node_info->title = ($node->title)." - Description";
+      $node_info->title = ($node->title);
+      $node_info->language = LANGUAGE_NONE;
+      node_object_prepare($node_info);
+      $node_info->status = 1;
+      node_save($node_info);
+
+     
+
+      // Add Project Description link to og-menu
+      $item = array(
+        "link_title" => "{$node_info->title} Description",
+        "link_path" => "node/"."{$node_info->nid}",
+        "menu_name" => "menu-og-"."{$node_group->nid}"
+      );
+      menu_link_save($item);
+      menu_cache_clear_all();
+
+
+      // Add "Add New Page" link to OG menu    
+
+     
+
+
+
+
+
+
+
+      $node_group->field_description_id["und"]["0"]["value"] = $node_info->nid;
+      node_save($node_group);
+
+
+
+
+
+
+
+      // People
+
+
+      foreach($node->field_people_list['und'] as $user){
+
+        $account = user_load($user['uid']);
+
+        //Add user to OG
+        og_group("node",$node_group->nid, array("entity_type" => "user", "entity" => $account));
+
+        //Give administrator member role to a user in Project Group
+        og_role_grant("node", $node_group->nid, $account->uid, 14);
+
+
+
+      }
+
+
+
+
+       //Add to group
+      og_group("node",$node_group->nid, array("entity_type" => "node", "entity" => ($node_info)));
+
+
+
+
+
+
+
+
+      // Notify people of their group membership - only first responsibles
+      
+
+      foreach($node->field_people_list['und'] as $user){
+
+        $account = user_load($user['uid']);
+        $to = $account->mail;
+
+        $email_from = "kwarc.notifications@gmail.com";
+
+        $params['name'] = $account->field_full_name["und"]['0']['value'];
+        $params['project'] = $node->title;
+
+        $sent = drupal_mail("project_generation", "key", $to, language_default(), $params, $email_from, TRUE);
+
+
+      }
+
+
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+    /**
+     * Get all users of a group
+     */
+    function _get_users_in_group($gid) {
+      $query = db_select('users', 'u');
+     
+      $query
+        ->condition('u.uid', 0, '<>')
+        ->condition('u.status', 1, '=')
+        ->fields('u', array('uid', 'name'))
+        ->join('og_membership', 'ogm', "ogm.gid = :gid AND u.uid = ogm.etid AND ogm.entity_type = 'user'", array(':gid' => $gid));
+      return $query->execute();
+    }
+
+
+
+
+function project_generation_node_view($node, $view_mode, $langcode) {
+
+  
+  if($node->type == "project_description"){
+
+      $result = "<strong>People:</strong><br>";
+
+
+     $group_members = _get_users_in_group($node->og_group_ref["und"]["0"]["target_id"]);
+
+      foreach ($group_members AS $member) {
+        // Load the user object if necessary
+        $user = user_load($member->uid);
+        $node_id = $user->field_home_node["und"]["0"]["value"];
+        $title = $user->field_full_name["und"]["0"]["value"];
+        $result.=l(t($title), "node/$node_id");
+        $result.="<br>";
+      }
+
+
+    
+      $node->content['my_additional_field'] = array(
+        "#weight" => 5,
+        "#markup" => $result
+     );
+
+
+
+  }
+
+}
+
+
+
+
+
+function project_generation_mail($key, &$message, $params){
+    $language = $message["language"];
+    switch($key){
+
+      case "key":
+        $message["subject"] = t('KWARC Website - Projects');
+        $message['body'][] = 
+            'Dear '.$params["name"].',
+
+You have been added as an administrator in the new KWARC website for the following KWARC project: 
+
+            - '. $params['project']. '
+
+            
+You can now go to http://test.kwarc.info/projects, find your project and edit/add the respective pages. 
+
+
+KWARC Admin
+            '
+
+      
+      ;
+      break;
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ *  Implements hook_block_info()
+ */
+
+function project_generation_block_info() {
+
+  $blocks['administer_block'] = array(
+    'info' => t('Administration Block'),
+    'region' => 'sidebar_first',
+  );
+
+  $blocks['old_new_proj'] = array(
+    'info' => t('Projects - old and new'),
+    'region' => 'sidebar_first',
+  );
+
+
+
+  return $blocks;
+}
+
+
+
+
+
+/**
+ * Implements hook_block_view().
+ */
+
+function project_generation_block_view($delta = '') {
+  // This example is adapted from node.module.
+  $block = array();
+
+  switch ($delta) {
+    case 'administer_block':
+      $block['subject'] = t('Administration');
+      $block['content'] = getBlock();
+
+      break;
+
+    case 'old_new_proj':
+      $block['subject'] = t('Projects');
+      $block['content'] = getLinks();
+
+      break;
+
+
+
+
+  }
+
+  return $block;
+} 
+
+
+function getBlock(){
+
+  $result = "";
+
+
+  $result.="<strong>";
+  $result.=l(t("Add Page"), "node/add");
+  $result.="</strong><br><br>";
+
+
+  $result.="<strong>";
+  $result.=l(t("Project Administration"), "project-administration");
+  $result.="</strong><br><br>";
+
+
+  return $result;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+function getLinks(){
+
+  $result = "";
+
+
+  $result.="<strong>";
+  $result.=l(t("Current Projects"), "projects");
+  $result.="</strong><br><br>";
+
+
+  $result.="<strong>";
+  $result.=l(t("Former Projects"), "former-projects");
+  $result.="</strong><br><br>";
+
+
+  return $result;
+
+
+
+}
+
+
+
+/**
+ * Implements hook_form_alter()
+ * This hides the Group Audience field when editing a form in General Info Page and Page
+ */
+
+
+function project_generation_form_alter(&$form, &$form_state, $form_id){
+  
+  if ($form_id == 'project_description_node_form') {
+     $form['og_group_ref']['#access'] = FALSE;
+  }
+
+
+
+
+}

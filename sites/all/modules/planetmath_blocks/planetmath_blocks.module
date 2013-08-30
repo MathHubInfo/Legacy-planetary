@@ -89,10 +89,10 @@ function planetmath_blocks_queryEncyclopedia() {
  * (i.e. we're at version 1).
  */
 function planetmath_blocks_queryRevisions($type, $sortBy = 'n.created') {
-  $results = db_query("SELECT n.nid AS nid, n.title AS title, n.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
+  $results = db_query("SELECT n.nid AS nid, n.title AS title, nr.uid, fdb.body_value AS body, u.`name` AS username, n.created, n.changed
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
-    INNER JOIN node_revision nr ON n.vid = nr.vid
+    INNER JOIN node_revision nr ON n.nid = nr.nid AND n.vid = nr.vid 
     INNER JOIN users u ON u.uid = nr.uid
     INNER JOIN field_data_field_published f ON n.nid = f.entity_id
     WHERE n.`type` = :type 
@@ -122,16 +122,18 @@ function planetmath_blocks_queryPersonalResponses($uid) {
 // I want the non-encyclopedia articles to show up here in addition to all the 
 // other stuff... I think maybe easiest way to achieve this is with a UNION?
 function planetmath_blocks_queryEverythingElse() {
-  $results = db_query("(SELECT n.nid AS nid, n.title AS title, n.type as type, n.uid, fdb.body_value AS body, u.`name` AS username, n.created AS created, n.changed, 'foo' AS metadata
+  $results = db_query("(SELECT n.nid AS nid, n.title AS title, n.type as type, nr.uid, fdb.body_value AS body, u.`name` AS username, n.created AS created, n.changed, 'foo' AS metadata
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
+    INNER JOIN node_revision nr ON n.nid = nr.nid AND n.vid = nr.vid
     INNER JOIN users u ON u.uid = n.uid
     WHERE n.`type` IN (:type) ORDER BY n.changed DESC)
 UNION ALL
-   (SELECT n.nid AS nid, n.title AS title, n.type as type, n.uid, fdb.body_value AS body, u.`name` AS username, n.created AS created, n.changed, s.field_section_value AS metadata 
+   (SELECT n.nid AS nid, n.title AS title, n.type as type, nr.uid, fdb.body_value AS body, u.`name` AS username, n.created AS created, n.changed, s.field_section_value AS metadata 
     FROM node n 
     LEFT JOIN field_data_body fdb ON n.nid = fdb.entity_id 
-    INNER JOIN users u ON u.uid = n.uid
+    INNER JOIN node_revision nr ON n.nid = nr.nid AND n.vid = nr.vid
+    INNER JOIN users u ON u.uid = nr.uid
     INNER JOIN field_data_field_published f ON n.nid = f.entity_id
     INNER JOIN field_data_field_section s ON n.nid = s.entity_id
     WHERE n.`type` = 'article'

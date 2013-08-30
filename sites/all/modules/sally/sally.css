@@ -1,0 +1,11 @@
+annotation-xml {
+	display:none;
+}
+
+span.omdoc-term {
+	color: blue;
+}
+
+mo {
+	display: none;
+}

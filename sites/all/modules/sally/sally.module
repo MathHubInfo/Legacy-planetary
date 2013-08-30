@@ -22,19 +22,23 @@ function sally_menu() {
 		"page callback" => "sally_formula_explorer",
 		"access callback" => true,
 	);
+
+	
 	return $item;
 }
 
 function _enable_jobad() {
 	drupal_add_library('system','ui');
+	libraries_load("underscore");
 	libraries_load("jobad");
 }
 
 function sally_init() {
-	 //_enable_jobad();
+	_enable_jobad();
 }
 
 function sally_theme($existing, $type, $theme, $path) {
+		_enable_jobad();
 	return array(
 			'sally_show_definition' => array(
 					'variables' => array('content' => NULL),
@@ -61,9 +65,18 @@ function sally_theme($existing, $type, $theme, $path) {
 function sally_show_definition($cd, $name, $token) {
 	drupal_add_http_header('Content-Type', 'application/xhtml+xml; utf-8');
 	$url = "https://tnt.kwarc.info/tntbase/stc/restful/jobad/basic?action=expandDefinition&cd=$cd&symbol=$name";
+
 	$result = tntbase_get( $url );
+
 	$sally = url("<front>", array("absolute"=>true)).drupal_get_path("module","sally");
 	$jobad = url("<front>", array("absolute"=>true)).drupal_get_path("module","jobad");
+
+	$modules_url = url(drupal_get_path("module", "sally")."/jobad");
+  	jobad_add_module($modules_url."/opendef.js", "opendef", array(url("<front>", array("absolute"=>true)), "faketoken"));
+  	jobad_initialize();
+
+  	drupal_add_css(drupal_get_path("module","sally")."/sally.css", "file");
+
 	echo theme("sally_show_definition", array("content"=>$result, "jobad"=>$jobad, "sally"=>$sally, "token"=>$token));
 }
 /*
