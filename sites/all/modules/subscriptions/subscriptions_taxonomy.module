@@ -1,0 +1,270 @@
+<?php
+
+/**
+ * @file
+ * Subscriptions to taxonomy terms.
+ *
+ * Subscriptions_taxonomy extends the subscription module to allow users to
+ * subscribe by taxonomy term. If a user subscribes to a term he will receive
+ * notifications each time a node is published to that taxonomy term. The user
+ * can also select to receive notifications when such a node is updated or
+ * commented.
+ */
+
+/**
+ * Implements hook_subscriptions().
+ *
+ * @param $op
+ * @param null $arg0
+ * @param null $arg1
+ * @param null $arg2
+ *
+ * @return array|null
+ *
+ * @ingroup hooks
+ */
+function subscriptions_taxonomy_subscriptions($op, $arg0 = NULL, $arg1 = NULL, $arg2 = NULL) {
+  static $stypes = array('taxa' => array('node', 'tid'));
+  $function = '_subscriptions_taxonomy_' . $op;
+  if (function_exists($function)) {
+    return $function($arg0, $arg1, $arg2);
+  }
+  switch ($op) {
+    case 'queue':
+      // $arg0 is $event array.
+      if ($arg0['module'] == 'node') {
+        $node = $arg0['node'];
+        $params['node']['tid'] = array(
+          'join' => array('table' => 'taxonomy_index', 'alias' => 'tn', 'on' => (db_driver() != 'pgsql' ? 's.value = tn.tid' : 's.value = CAST(tn.tid AS VARCHAR)')),
+          'where' => array(array('tn.nid', $node->nid, '=')),
+          'groupby' => 'tn.nid',
+        );
+        if ($arg0['type'] == 'comment') {
+          $params['node']['tid']['where'][] = array('s.send_comments', 1, '=');
+        }
+        elseif ($arg0['type'] == 'node' && $arg0['action'] == 'update') {
+          $params['node']['tid']['where'][] = array('s.send_updates', 1, '=');
+        }
+        return $params;
+      }
+      break;
+
+    case 'fields': // $arg0 is module.
+      if ($arg0 == 'node' || $arg0 == 'comment') {
+        $tr = 't';
+        return array(
+          'tid' => array(
+            'data_function' => 'subscriptions_taxonomy_data',
+            'subs_mod' => 'subscriptions_taxonomy',
+            'subs_type' => $tr('category'),
+            'mailkey' => 'node-type-',
+          ),
+        );
+      }
+      break;
+
+    case 'stypes':
+      return $stypes;
+
+    case 'stype':
+      return (isset($stypes[$arg0]) ? array_merge( $stypes[$arg0], array($arg1, $arg2)) : NULL);
+  }
+  return NULL;
+}
+
+/**
+ * Implements _hook_node_options(), subhook of hook_subscriptions().
+ *
+ * This is called by subscriptions_ui_node_form() in subscriptions_ui.module.
+ *
+ * @param $account
+ * @param $node
+ *
+ * @return array|null
+ *
+ * @ingroup form
+ * @ingroup hooks
+ *
+ * @see subscriptions_ui_node_form()
+ */
+function _subscriptions_taxonomy_node_options($account, $node) {
+  if (!user_access('subscribe to taxonomy terms')) {
+    return NULL;
+  }
+  $options = array();
+  /** @var $vids_to_omit array */
+  $vids_to_omit = variable_get('subscriptions_omitted_taxa', array());
+  foreach ((array) $node as $field_key => $field_value) {
+    if (is_array($field_value)) {
+      foreach ($field_value as $lang_key => $field_lang_value) {
+        if (is_array($field_lang_value)) {
+          foreach ($field_lang_value as $item) {
+            if (is_array($item)) {
+              if (isset($item['taxonomy_term'])) {
+                $term = $item['taxonomy_term'];
+                if (!in_array($term->vid, $vids_to_omit)) {
+                  $tid = $term->tid;
+                  $options['tid'][] = array(
+                    'name' => t('To content in %term', array('%term' => $term->name)),
+                    'params' => array('module' => 'node', 'field' => 'tid', 'value' => $tid),
+                    'link' => 'taxa/' . $tid,
+                  );
+                  $options['tid'][] = array(
+                    'name' => t('To content in %term by %name', array('%term' => $term->name, '%name' => format_username(user_load($node->uid)))),
+                    'params' => array('module' => 'node', 'field' => 'tid', 'value' => $tid, 'author_uid' => $node->uid),
+                    'link' => 'taxa/' . $tid . '/' . $node->uid,
+                  );
+                  if ($field_key == 'taxonomy_forums') {
+                    // Move forum items to the top.
+                    array_unshift($options['tid'], array_pop($options['tid']));
+                    array_unshift($options['tid'], array_pop($options['tid']));
+                  }
+                  $options['tid']['weight'] = -1;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return $options;
+}
+
+/**
+ * Implements _hook_types(), subhook of hook_subscriptions().
+ *
+ * This is called by subscriptions_types() in subscriptions.module.
+ *
+ * @return array
+ *   Returns information about types for Subscriptions module interface.
+ *
+ * @ingroup form
+ * @ingroup hooks
+ *
+ * @see subscriptions_types()
+ */
+function _subscriptions_taxonomy_types() {
+  $types['taxa'] = array(
+    'title'      => 'Categories',
+    'page'       => 'subscriptions_taxonomy_page_taxa',
+    'fields'     => array('node', 'tid'),
+    'weight'     => -20,
+    'access'     => 'subscribe to taxonomy terms',
+    'permission' => array(
+      'title'       => t('Subscribe to taxonomy terms'),
+      'description' => t('Subscribe to the available taxonomy terms.')
+    ),
+  );
+  return $types;
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Adds the Taxonomy Settings part to SUBSCRIPTIONS_CONFIG_PATH.
+ *
+ * @param array $form
+ * @param array $form_state
+ *
+ * @ingroup hooks
+ * @ingroup form
+ */
+function subscriptions_taxonomy_form_subscriptions_settings_form_alter(array &$form, array &$form_state) {
+  _subscriptions_module_load_include('subscriptions_taxonomy', 'admin.inc');
+  _subscriptions_taxonomy_form_subscriptions_settings_form_alter($form, $form_state);
+}
+
+/**
+ * Returns a list of taxonomy subscriptions.
+ *
+ * @param array $form
+ * @param int $uid
+ *   ID of a user if >0 or of a role if <0.
+ *
+ * @return array
+ *
+ * @ingroup form
+ */
+function subscriptions_taxonomy_page_taxa(array $form, $uid) {
+  // traverse the taxonomy tree
+  $vocabularies = function_exists('taxonomy_help') ? taxonomy_get_vocabularies() : array();
+
+  // omit undesired vocabularies from listing
+  $omits = variable_get('subscriptions_omitted_taxa', array());
+  foreach ($omits as $omit) {
+    unset($vocabularies[$omit]);
+  }
+  if ($vocabularies) {
+    _subscriptions_module_load_include('subscriptions_taxonomy', 'admin.inc');
+    return _subscriptions_taxonomy_taxa_form($form, $uid, $vocabularies);
+  }
+  else {
+    return array(array('#markup' => t('There are no available category groups.')));
+  }
+}
+
+/**
+ * Provides the data for resolving tokens.
+ *
+ * @param array $data
+ * @param $node
+ * @param array $subs
+ */
+function subscriptions_taxonomy_data(array &$data, $node, array $queue_item) {
+  $data['subs']['category'] = taxonomy_term_load($queue_item['value']);
+  subscriptions_content_data($data, $node, $queue_item);
+}
+
+/**
+ * Implements hook_taxonomy().
+ *
+ * Remove taxonomy subscriptions when the underlying terms or vocabularies are removed.
+ *
+ * @param $op
+ * @param $type
+ * @param $array
+ *
+ * @return
+ *
+ * @ingroup hooks
+ */
+function subscriptions_taxonomy_taxonomy($op, $type, $array) {
+  if ($op != 'delete') {
+    return;
+  }
+  switch ($type) {
+    case 'term':
+      $tid = $array['tid'];
+      db_delete('subscriptions_queue')
+        ->condition('module', 'node')
+        ->condition('field', 'tid')
+        ->condition('value', $tid)
+        ->execute();
+      subscriptions_delete_for_all_users('node', 'tid', $tid);
+      break;
+    case 'taxonomy_vocabulary':
+      $vid = $array['vid'];
+      foreach (array('omitted', 'restricted') as $key) {
+        $array = variable_get('subscriptions_' . $key . '_taxa', array());
+        unset($array[$vid]);
+        variable_set('subscriptions_' . $key . '_taxa', $array);
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_disable().
+ *
+ * Remove our queue items.
+ *
+ * @ingroup hooks
+ */
+function subscriptions_taxonomy_disable() {
+  db_delete('subscriptions_queue')
+    ->condition('module', 'node')
+    ->condition('field', 'tid')
+    ->execute();
+}
+

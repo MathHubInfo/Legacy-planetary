@@ -1,0 +1,104 @@
+<?php
+
+/**
+ * @file
+ * Subscriptions Content module installation.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function subscriptions_content_install() {
+  // subscriptions_content.module needs to be heavier than taxonomy.module --
+  // otherwise term_node record has not been written when subscriptions_queue() is called!
+  // subscriptions_content_cron() will ensure this constraint at run-time.
+  $weight = 1 + db_select('system', 's')
+    ->fields('s', array('weight'))
+    ->condition('s.name', 'taxonomy')
+    ->condition('s.type', 'module')
+    ->execute()
+    ->fetchField();
+  db_update('system')
+    ->fields(array('weight' => $weight))
+    ->condition('type', 'module')
+    ->condition('name', 'subscriptions_content')
+    ->execute();
+}
+
+/**
+ * Implements hook_update_last_removed().
+ *
+ * @return int
+ */
+function subscriptions_content_update_last_removed() {
+  return 1;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function subscriptions_content_uninstall() {
+}
+
+/**
+ * Update the '!variables' in the stored templates to their corresponding
+ * new Drupal 7 '[tokens]'.
+ */
+function subscriptions_content_update_7001() {
+  if (!db_table_exists('mail_edit')) {
+    return;
+  }
+
+  $tokens = array(
+    '!nid'                  => '[node:nid]',
+    '!title'                => '[node:title]',
+    '!teaser'               => '[node:summary]',
+    '!body'                 => '[node:body]',
+    '!full_node'            => '[node:body]',
+    '!node_type'            => '[node:content-type:name]',
+    '!revision_name'        => '[user:name]',
+    '!revision_log'         => '[node:log]',
+    '!url'                  => '[node:url]',
+    '!term_name'            => '[term:name]',
+    '!is_published'         => '[subs:is-published]',  // (Unpublished nodes are sent to users with the administer nodes permission only.)
+    '!bodies'               => "[subs:nodes:join:\n]",
+    '!comments'             => "[subs:comments:join:\n]",
+    '!comment_name'         => '[comment:author:name]',
+    '!comment_realname'     => '[comment:author:name]',
+    '!comment_uid'          => '[comment:author:uid]',
+    '!comment_title'        => '[comment:title]',
+    '!comment_text'         => '[comment:body]',
+    '!comment_cid'          => '[comment:cid]',
+    '!comment_nid'          => '[comment:node:nid]',
+    '!comment_url'          => '[comment:url]',
+    '!comment_is_new'       => '[subs:is-new]',
+    '!comment_is_published' => '[subs:is-published]',
+  );
+  $query = db_select('mail_edit', 'me', array('fetch' => PDO::FETCH_ASSOC));
+  $query->join('mail_edit_registry', 'mer', 'mer.id = me.id');
+  $result = $query
+    ->fields('me')
+    ->condition('mer.module', array('subscriptions_content', 'subscriptions_taxonomy'), 'IN')
+    ->execute();
+  foreach ($result as $row) {
+    $id = $row['id'];
+    $langcode = $row['language'];
+    unset($row['id']);
+    unset($row['language']);
+    $row['subject'] = strtr($row['subject'], $tokens);
+    $row['body'] = strtr($row['body'], $tokens);
+    db_update('mail_edit')
+      ->fields($row)
+      ->condition('id', $id)
+      ->condition('language', $langcode)
+      ->execute();
+  }
+}
+
+  /**
+   * Remove the obsolete subscriptions_generate_full_node variable.
+   */
+function subscriptions_content_update_7002() {
+  variable_del('subscriptions_generate_full_node');
+}
+

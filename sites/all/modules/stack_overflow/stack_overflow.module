@@ -15,25 +15,302 @@ function stack_overflow_init() {
   // node sub pages.
   if (arg(0) == 'node' && is_numeric(arg(1)) && arg(2) == '') {
     $node = node_load(arg(1));
-    if ($node->type == 'answer') {
+    if (($node) && ($node->type == 'answer')) {
       drupal_goto('question/'. $node->field_answer["und"][0]['nid']);
     }
-    elseif ($node->type == 'question') {
-      drupal_goto('question/'. $node->nid);
+    elseif (($node) && ($node->type == 'question')) {
+       drupal_goto('question/'. $node->nid);
     }
   }
 }
 
 
 /**
- * Showing Answer comments  
+ * Showing Answer comments in the view
+ * Show Subscription_ui in the view
+ * Show links for COMMENT/ANSWER add
+ * Erase predefined Comment add
+ * 
  */
 
 
 function stack_overflow_node_view_alter(&$build) {
-  if ($build["#view_mode"] == "full" && $build["#node"]->type == "answer") 
+  if ($build["#view_mode"] == "full" && ($build["#node"]->type == "answer"  || $build["#node"]->type == "question") )
     {
+
       $add = comment_node_page_additions($build["#node"]);
       $build["comments"] = $add;
+      
+
+
+
+      if(!array_key_exists("subscriptions_ui", $build)){
+
+        $node = node_load($build["#contextual_links"]["node"]['1']['0']);
+        if ($form = drupal_get_form('subscriptions_ui_node_form', $node, FALSE)) {
+          $build['subscriptions_ui'] = array(
+            'subscriptions_ui_form' => $form, 
+            '#weight' => 100,
+          );
+        
+        }
+
+      }
+
+
+      if($build["#node"]->type == "answer"){
+
+
+          $my_id = $build["#node"]->field_answer["und"]["0"]["nid"];
+          $my_ans_id = $build["#node"]->nid;
+
+          $result = "<strong><div style='float: right'>";
+          $result .= l(t("Post another Answer"), "node/add/answer/{$my_id}", array('query' => array('destionation' => "node/{$my_id}")));
+          $result .= "</strong></div><br><div style='float: right'>".l(t("Comment to this Answer"), "comment/reply/{$my_ans_id}", array("fragment" => "comment-form"))."</div>";
+
+          $build['my_additional_answer_link'] = array(
+            "#weight" => 195,
+            "#markup" => $result
+         );
+      
+          $build['links']['comment'] = NULL;
+
+      }
+
+
+        if($build["#node"]->type == "question"){
+
+
+          $my_id = $build["#node"]->nid;
+  
+
+          $result = "<strong><div style='float: right'>";
+          $result .= l(t("Answer this Question"), "node/add/answer/{$my_id}", array('query' => array('destionation' => "node/{$my_id}")));
+          $result .= "</div></strong><br><div style='float: right'>".l(t("Comment to this Question"), "comment/reply/{$my_id}", array("fragment" => "comment-form"))."</div>";
+
+          $build['my_additional_answer_link'] = array(
+            "#weight" => 195,
+            "#markup" => $result
+         );
+        
+       
+          $build['links']['comment'] = NULL;
+          $build['links']['nodereference_url'] = NULL;
+          
+          
+        //  dpm($build);
+
+      }
+
+
+
+
+
+    }
+
+
+}
+
+
+    /**
+     * Get all users of a group
+     */
+    function _get_users_in_group($gid) {
+      $query = db_select('users', 'u');
+     
+      $query
+        ->condition('u.uid', 0, '<>')
+        ->condition('u.status', 1, '=')
+        ->fields('u', array('uid', 'name'))
+        ->join('og_membership', 'ogm', "ogm.gid = :gid AND u.uid = ogm.etid AND ogm.entity_type = 'user'", array(':gid' => $gid));
+      return $query->execute();
+    }
+
+
+
+
+
+
+
+
+/*
+  This will configure the e-mail that will be sent to all the members of the group
+*/
+
+function stack_overflow_mail($key, &$message, $params){
+    $language = $message["language"];
+    switch($key){
+
+      case "key":
+        $message["subject"] = t('PantaRhei Notification');
+        $message['body'][] = 
+            'Dear '.$params["name"].',
+
+An announcement was posted by '. $params['author']. ' in the '. $params['course_name'] .'.
+
+ANNOUNCEMENT: '.$params["question"].'
+
+            
+You can view it '.$params['link'].'.
+
+
+PantaRhei Admin
+            '
+
+      
+      ;
+      break;
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+/**
+ * Implements hook_node_insert()
+ * This will add Answer node to the question's course group
+ *
+ * This will send notifications to all group members, when a question is added ( by the right role )
+ **/
+
+function stack_overflow_node_insert($node){
+  if($node->type == "answer") {
+    og_group("node", node_load($node->field_answer['und']['0']['nid'])->og_group_ref['und']['0']['target_id'], array("entity_type" => "node", "entity" => ($node)));   
+  }
+
+
+  if($node->type == "question" && $node->field_notify_group['und']['0']['value'] == 1) {
+    $group_id = $node->og_group_ref['und']['0']['target_id'];
+    $group_members = _get_users_in_group($node->og_group_ref['und']['0']['target_id']);
+
+     foreach ($group_members AS $member) {
+      $user = user_load($member->uid);
+     // dpm($user);
+      
+
+      $user_membership = og_get_membership("node", $group_id, "user", $user->uid);
+      
+
+      if ($user_membership)
+        if($user_membership->state == 1){
+          //dpm($user);
+
+          $to = $user->mail;
+          $params["name"] = $user->name;
+          $params["author"] = $node->name;
+          $params["course_name"] = node_load($node->og_group_ref["und"]["0"]["target_id"])->title;
+          $params["link"] = l(t("here"),"node/".$node->nid);
+          $params["question"] = $node->title;
+          $email_from = "admin@panta.kwarc.info";
+
+         //dpm($to);
+         //dpm($params);
+         //dpm($email_from);
+
+          $sent = drupal_mail("stack_overflow", "key", $to, language_default(), $params, $email_from, TRUE);
+
+        }
+
+     }
+  }
+
+}
+
+
+/**
+ *  Implements hook_form_alter()
+ *  This will hide the Group Audience field in the Answer edit form 
+ **/
+
+
+
+function stack_overflow_form_alter(&$form, &$form_state, $form_id){
+  
+  if ($form_id == 'answer_node_form') {
+    $form['og_group_ref']['#access'] = FALSE;
+    $form["group_content_access"]["#access"] = FALSE;
+  }
+
+  if ($form_id == "question_node_form"){
+    $form["group_content_access"]["#access"] = FALSE;
+  //  dpm($form);
+
+    global $user;
+    $mygroup = $form["og_group_ref"]["und"]["0"]["default"]["#default_value"]["0"];
+    //dpm(og_get_user_roles("node", $mygroup, $user->uid));
+   //  $memb = og_get_membership("node", $mygroup, "user", $user->uid);
+   //  dpm($memb);
+
+    $roles = og_get_user_roles("node", $mygroup, $user->uid, true);
+   // dpm($roles);
+
+
+    if(!in_array("Instructor",$roles)){
+      $form["field_notify_group"]["#access"] = FALSE;
+    }
+
+
+  }
+
+
+
+
+}
+
+
+
+
+
+/**
+ * Implements hook_subscriptions_reference_info()
+ * This will allow users to receive notifications about new answers created for questions they are subscribed to
+ */
+
+
+
+function stack_overflow_subscriptions_reference_info() {
+  return array(
+    'question_answers' => array(
+      'parent' => 'question',
+      'child' => 'answer',
+      'field' => 'field_answer',
+      'ref_item' => 'nid', // this will be 'target_id' for entity reference
+  ));
+}
+
+
+
+// Some theming
+
+function stack_overflow_theme() {
+  return array(
+    
+ 
+  
+    'views_view__stack_overflow_list' =>
+    array(
+      'template' => "views-view--stack-overflow-list",
+      'original hook' => 'views_view',
+      'preprocess functions' => array( 
+         'template_preprocess',
+         'template_preprocess_views_view', 
+      ), 
+      'path' => drupal_get_path("module", "stack_overflow"),
+      'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL, 'wrapper_prefix' => NULL, 'list_type_prefix'=> NULL), 
+    ),
+
+
+
+  );
+
+}
+
+
+

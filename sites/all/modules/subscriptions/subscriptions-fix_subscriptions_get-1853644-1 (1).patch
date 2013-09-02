@@ -1,0 +1,12 @@
+diff --git a/subscriptions.module b/subscriptions.module
+index be25fbd..1f4b07e 100644
+--- a/subscriptions.module
++++ b/subscriptions.module
+@@ -671,6 +671,7 @@ function subscriptions_get(array $params) {
+   $subscriptions = array();
+   // Build query
+   $query = db_select('subscriptions', 's');
++  $query->fields('s');
+   foreach ($params as $field => $value) {
+     $query->condition($field, $value);
+   }

@@ -1,0 +1,19 @@
+<?php
+/**
+ * @file
+ * subscriptions_reference.install
+ */
+
+/**
+ * Implements hook_disable().
+ */
+function subscriptions_reference_disable() {
+  // Remove our queue items that have reference fields
+  // exposed via hook_subscriptions_reference_info().
+  foreach (_subscriptions_reference_available_fields() as $key => $info) {
+    db_delete('subscriptions_queue')
+        ->condition('module', SUBSCRIPTIONS_REFERENCE_MODULE)
+        ->condition('field', $info['field'])
+        ->execute();
+  }
+}
