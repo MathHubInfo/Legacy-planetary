@@ -1,0 +1,353 @@
+<?php
+
+/**
+ * @file
+ * subscriptoins_reference.module
+ */
+
+define('SUBSCRIPTIONS_REFERENCE_MODULE', 'node');
+
+/**
+ * Implements hook_subscriptions().
+ */
+function subscriptions_reference_subscriptions($op, $arg0 = NULL, $arg1 = NULL, $arg2 = NULL) {
+  $function = '_subscriptions_reference_' . $op;
+  if (function_exists($function)) {
+    return $function($arg0, $arg1, $arg2);
+  }
+
+  static $stypes = array();
+  foreach (_subscriptions_reference_available_fields() as $key => $info) {
+    $stypes[$key] = array(SUBSCRIPTIONS_REFERENCE_MODULE, $info['field']);
+  }
+
+  switch ($op) {
+    case 'queue':
+      // $arg0 is $event array.
+      subscriptions_reference_queue_send($arg0);
+      return NULL;
+
+    case 'fields':
+      // $arg0 is module.
+      if ($arg0 == SUBSCRIPTIONS_REFERENCE_MODULE) {
+        $fields = array();
+        foreach (_subscriptions_reference_available_fields() as $key => $info) {
+          $fields[$info['field']] = array(
+            'data_function' => 'subscriptions_content_data',
+            'subs_mod' => 'subscriptions_content',
+            'subs_type' => t('thread'),
+            'mailkey' => subscriptions_reference_get_maikey($info['field']),
+          );
+        }
+        return $fields;
+      }
+      break;
+
+    case 'mailkeys':
+      $mailkeys = array();
+      foreach (_subscriptions_reference_available_fields() as $key => $info) {
+        // Construct mailkeys for new mails.
+        $mailkeys[subscriptions_reference_get_maikey($info['field'])]
+          = t('Notifications for new %child that references %parent via field %field',
+            array(
+              '%child' => $info['child'] ,
+              '%parent' => $info['parent'],
+              '%field' => $info['field']));
+      }
+      return $mailkeys;
+
+    case 'stypes':
+      // @todo where is this used??
+      return $stypes;
+
+    case 'stype':
+      return (isset($stypes[$arg0]) ? array_merge($stypes[$arg0], array($arg1, $arg2)) : NULL);
+
+    case 'token_types':
+      if (strpos($arg0, 'node-reference-') === 0) {
+        return array('node');
+      }
+      break;
+  }
+  return NULL;
+}
+
+/**
+ * Helper function that constructs mailkey for given field name.
+ * 
+ * @param string $field 
+ *   name of the reference field
+ * 
+ * @return string
+ *   mailkey for reference field
+ */
+function subscriptions_reference_get_maikey($field) {
+  return 'node-reference-' . str_replace('_', '-', $field);
+}
+
+/**
+ * Sub hook of hook_subscriptions() for $op == 'queue'.
+ * 
+ * @param array $event 
+ *   contains event properties 
+ * 
+ * @see subscriptions_reference_node_insert()
+ */
+function subscriptions_reference_queue_send($event) {
+  if ($event['module'] == SUBSCRIPTIONS_REFERENCE_MODULE) {
+    if (!isset($event['ref_item'])) {
+      // This is not our event.
+      // @todo log somewhere that we ignored event?
+      return;
+    }
+
+    $node = $event['node'];
+    $field_name = $event['field'];
+    $ref_nids = field_get_items('node', $node, $event['field']);
+    if (!$ref_nids) {
+      // Reference field is empty.
+      return;
+    }
+    // Getting nid from reference field.
+    $ref_nid = $ref_nids[0][$event['ref_item']];
+    // Getting a list of subscriptions for event.
+    $subscriptions = subscriptions_get(array(
+      'module' => SUBSCRIPTIONS_REFERENCE_MODULE,
+      'field' => $field_name,
+      'value' => $ref_nid,
+    ));
+    // Inserting items to subscriptions_queue table.
+    foreach ($subscriptions as $uid => $subscription) {
+      $result = db_insert('subscriptions_queue')
+        ->fields(array(
+          'uid' => $uid,
+          // 'name' => $userrow->name, @todo do we need this?
+          'language' => '',
+          'module' => SUBSCRIPTIONS_REFERENCE_MODULE,
+          'field' => $field_name,
+          'value' => $ref_nid,
+          'send_interval' => 1,
+          'author_uid' => -1,
+          'digest' => -1,
+          'load_args' => $event['load_args'],
+          'load_function' => $event['load_function'],
+          'is_new' => TRUE,)
+          )
+        ->execute();
+    }
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function subscriptions_reference_node_insert($node) {
+
+  $field_info = subscriptions_reference_get_info($node, 'child');
+  if (!$field_info) {
+    return;
+  }
+
+  $event = array(
+    'module' => SUBSCRIPTIONS_REFERENCE_MODULE,
+    'uid' => $node->uid,
+    'load_function' => 'subscriptions_content_load_node',
+    'load_args' => $node->nid,
+    'type' => 'node',
+    'action' => 'insert',
+    'is_new' => TRUE,
+    'node' => $node,
+    'field' => $field_info['field'],
+    'ref_item' => $field_info['ref_item'],
+  );
+
+  if (!subscriptions_content_suppress_notifications()) {
+    subscriptions_queue($event);
+  }
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function subscriptions_reference_node_delete($node) {
+  $field_name = subscriptions_reference_get_field_name($node, 'parent');
+  if (!$field_name) {
+    return;
+  }
+  subscriptions_delete_for_all_users('node', $field_name, $node->nid);
+}
+
+/**
+ * Implements _hook_node_options(), subhook of hook_subscriptions().
+ *
+ * This is called by subscriptions_ui_node_form() in subscriptions_ui.module.
+ * 
+ * @see subscriptions_ui_node_form()
+ */
+function _subscriptions_reference_node_options($account, $node) {
+  $permission_name = subscriptions_reference_permission_string($node->type);
+  if (!user_access($permission_name)) {
+    return NULL;
+  }
+  $options = array();
+  $field_name = subscriptions_reference_get_field_name($node, 'parent');
+  if ($field_name) {
+    $options['reference'][] = array(
+      'name' => t('Get notificatians when Answers are posted'),
+      'params' => array(
+        'module' => SUBSCRIPTIONS_REFERENCE_MODULE,
+        'field' => $field_name,
+        'value' => $node->nid,),
+      'link' => 'node/' . $node->nid,
+    );
+    $options['reference']['weight'] = -4;
+  }
+  return $options;
+}
+
+/**
+ * Gets info for reference field for the node.
+ * 
+ * @param object $node 
+ *   node object
+ * @param string $op 
+ *   can be either child or parent
+ * 
+ * @return array
+ *   info about the reference subscription
+ */
+function subscriptions_reference_get_info($node, $op = 'child') {
+  foreach (_subscriptions_reference_available_fields() as $key => $info) {
+    if ($info[$op] === $node->type) {
+      return $info;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Gets the name of the reference field for the node.
+ * 
+ * @param object $node 
+ *   node object
+ * @param string $op 
+ *   can be either child or parent
+ * 
+ * @return string 
+ *   name of the reference field
+ */
+function subscriptions_reference_get_field_name($node, $op = 'child') {
+  $info = subscriptions_reference_get_info($node, $op);
+  return $info ? $info['field'] : FALSE;
+}
+
+/**
+ * Gets all reference fields exposed by other modules modules. 
+ * 
+ * @see hook_subscriptions_reference_info()
+ */
+function _subscriptions_reference_available_fields() {
+  // @todo implement cache
+  $fields = array();
+  foreach (module_implements('subscriptions_reference_info') as $module) {
+    $refs_info = module_invoke($module, 'subscriptions_reference_info');
+    foreach ($refs_info as $key => $info) {
+      $fields[$key] = $info;
+    }
+  }
+  return $fields;
+}
+
+/**
+ * Implements _hook_types(), subhook of hook_subscriptions().
+ *
+ * @see subscriptions_types()
+ */
+function _subscriptions_reference_types() {
+  $types = array();
+  foreach (_subscriptions_reference_available_fields() as $key => $field) {
+    $type_name = node_type_get_name($field['parent']);
+    $child_type_name = node_type_get_name($field['child']);
+    $types[$key] = array(
+      'title' => 'Reference ' . $field['child'] . '->' . $field['parent'],
+      'page' => 'subscriptions_reference_page_admin',
+      'fields' => array(SUBSCRIPTIONS_REFERENCE_MODULE, $field['field']),
+      'weight' => -20,
+      'access' => subscriptions_reference_permission_string($field['parent']),
+      'permission' => array(
+        'title' => t('Subscribe to !type referencies', array('!type' => $type_name)),
+        'description' => t('Allows user to subscribe to new %child via reference to %parent',
+            array('%child' => $child_type_name, '%parent' => $type_name)),
+      ),
+    );
+  }
+
+  
+  return $types;
+}
+
+/**
+ * Builds permission string for given content type.
+ * 
+ * @param sting $type 
+ *   content type
+ * 
+ * @return string 
+ *   permission string
+ */
+function subscriptions_reference_permission_string($type) {
+  $type_name = node_type_get_name($type);
+  return 'subscribe to ' . strtolower($type_name) . ' reference';
+}
+
+/**
+ * Checks wether use has access to subscription.
+ * @TODO: barinder user_access
+ */
+function subscriptions_reference_subscribe_access() {
+  return TRUE;
+}
+
+/**
+ * Returns a list of reference subscriptions.
+ */
+function subscriptions_reference_page_admin(array $form, $uid) {
+  _subscriptions_module_load_include('subscriptions_reference', 'admin.inc');
+  return _subscriptions_reference_form($form, $uid);
+}
+
+/**
+ * Rules subscribe action callback.
+ */
+function subscriptions_reference_subscribe($node, $user) {
+  $reference_field = subscriptions_reference_get_field_name($node, 'parent');
+  if (!$reference_field) {
+    return;
+  }
+  // Write subscription to database.
+  subscriptions_write_subscription(SUBSCRIPTIONS_REFERENCE_MODULE, $reference_field, $node->nid, -1, $user->uid);
+}
+
+
+/**
+ * Rules unsubscribe action callback.
+ * 
+ * @param object $node
+ *   node object from which user will be unsubscribed
+ * @param object $user
+ *   account object of user that will be unsubscribed
+ */
+function subscriptions_reference_unsubscribe($node, $user) {
+  $reference_field = subscriptions_reference_get_field_name($node, 'parent');
+  if (!$reference_field) {
+    return;
+  }
+
+  db_delete('subscriptions')
+      ->condition('module', SUBSCRIPTIONS_REFERENCE_MODULE)
+      ->condition('field', $reference_field)
+      ->condition('value', $node->nid)
+      ->condition('author_uid', -1)
+      ->condition('recipient_uid', $user->uid)
+      ->execute();
+}

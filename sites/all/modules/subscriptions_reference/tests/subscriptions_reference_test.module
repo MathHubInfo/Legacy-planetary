@@ -1,0 +1,46 @@
+<?php
+/**
+ * @file
+ * Code for the subscriptions_reference_test feature.
+ * 
+ * This code is for automated testing of subscriptions_reference module
+ */
+
+/**
+ * Implements hook_node_info().
+ */
+function subscriptions_reference_test_node_info() {
+  $items = array(
+    'test_child' => array(
+      'name' => t('Test Child'),
+      'base' => 'node_content',
+      'description' => t('Represents content type that will have a reference field pointing at test_parent content type.'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+    'test_parent' => array(
+      'name' => t('Test Parent'),
+      'base' => 'node_content',
+      'description' => t('Represents parent content that will be referenced via reference field from other content type.'),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_subscriptions_reference_info().
+ */
+function subscriptions_reference_test_subscriptions_reference_info() {
+  return array(
+    'test_relationship' => array(
+      'parent' => 'test_parent',
+      'child' => 'test_child',
+      'field' => 'field_test_parent',
+      'ref_item' => 'target_id',
+    ),
+  );
+}

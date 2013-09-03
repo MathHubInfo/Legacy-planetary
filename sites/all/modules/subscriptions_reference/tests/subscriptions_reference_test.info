@@ -1,0 +1,25 @@
+name = Subscriptions Reference Test
+description = Module for automated testing of subscription reference module
+core = 7.x
+package = Subscriptions
+hidden = TRUE
+
+dependencies[] = ctools
+dependencies[] = entityreference
+dependencies[] = features
+dependencies[] = strongarm
+
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:1
+features[field_base][] = field_test_parent
+features[node][] = test_child
+features[node][] = test_parent
+
+features[field_instance][] = node-test_child-field_test_parent
+
+; Information added by drupal.org packaging script on 2013-07-02
+version = "7.x-1.0"
+core = "7.x"
+project = "subscriptions_reference"
+datestamp = "1372767356"
+
