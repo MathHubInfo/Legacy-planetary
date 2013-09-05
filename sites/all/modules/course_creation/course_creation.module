@@ -143,9 +143,11 @@ function course_creation_node_presave($node){
 			$account_check = array_values($account_check)[0];
 
 			$updated_role = $account_check->roles;
-			$updated_role[4] = "Course Instructor";
+			//$updated_role[4] = "Course Instructor";
 			//$updated_role[9] = "Course Instructor";
 			//Take care here ^
+			$myrid = get_role_by_name("Course Instructor");
+			$updated_role[$myrid] = "Course Instructor";
 
 			$updated_user = array(
 				"roles" => $updated_role,
@@ -160,8 +162,13 @@ function course_creation_node_presave($node){
 
 			// Give Instructor role to a user in the OG
 			//og_role_grant("node", $node_group->nid, $account_check->uid, 6);
-			og_role_grant("node", $node_group->nid, $account_check->uid, 11);
+			//og_role_grant("node", $node_group->nid, $account_check->uid, 11);
 			// Take care here ^
+
+			$my_rids = get_role_by_name_in_gryoup("Instructor", "course_group");
+			foreach ($my_rids AS $r){
+				og_role_grant("node", $node_group->nid, $account_check->uid, $r->rid);
+			}
 
 
 
@@ -170,7 +177,12 @@ function course_creation_node_presave($node){
 			og_group("node", $node->field_general_course["und"]["0"]["nid"], array("entity_type" => "user", "entity" => $account_check));
 
 			// Give Instructor role to a user in the General Course Group
-			og_role_grant("node", $node->field_general_course["und"]["0"]["nid"], $account_check->uid, 14);
+
+			$my_rids = get_role_by_name_in_gryoup("Instructor", "general_course_group");
+			foreach ($my_rids AS $r){
+				og_role_grant("node", $node->field_general_course["und"]["0"]["nid"], $account_check->uid, $r->rid);
+			}
+			
 
 		}
 
@@ -181,14 +193,19 @@ function course_creation_node_presave($node){
 			//NEW USER
 
 			// Create user
+
+			$myrid = get_role_by_name("Course Instructor");
+
 			$new_user = array(
 				"name" => $node->field_username_instructor['und']['0']['value'],
 				"mail" => $node->field_email_instructor['und']['0']['value'],
 				"status" => 1,
 				//"roles" => array(9 => "Course Instructor"),
-				"roles" => array(4 => "Course Instructor"),
+				"roles" => array($myrid => "Course Instructor"),
 				"field_full_name" => array("und" => array("0" => array("value" => ($node->field_name_instructor['und']['0']['value'])))), 
 			);
+
+			//dpm(get_role_by_name("Course Instructor"));
 
 			// Save user
 			$account = user_save(null, $new_user);
@@ -203,8 +220,13 @@ function course_creation_node_presave($node){
 
 	      	// Give administrator member role to a user in the OG
 	      	//og_role_grant("node", $node_group->nid, $account->uid, 6);
-			og_role_grant("node", $node_group->nid, $account->uid, 11);
-			// Take care here ^
+
+	      	$my_rids = get_role_by_name_in_gryoup("Instructor", "course_group");
+			foreach ($my_rids AS $r){
+				og_role_grant("node", $node_group->nid, $account->uid, $r->rid);
+			}
+
+
 
 
 
@@ -214,7 +236,12 @@ function course_creation_node_presave($node){
 			og_group("node", $node->field_general_course["und"]["0"]["nid"], array("entity_type" => "user", "entity" => $account));
 
 			// Give Instructor role to a user in the General Course Group
-			og_role_grant("node", $node->field_general_course["und"]["0"]["nid"], $account->uid, 14);
+
+			$my_rids = get_role_by_name_in_gryoup("Instructor", "general_course_group");
+			foreach ($my_rids AS $r){
+				og_role_grant("node", $node->field_general_course["und"]["0"]["nid"], $account->uid, $r->rid);
+			}
+			
 
 		}
 
@@ -490,7 +517,10 @@ function course_creation_node_presave($node){
 
 			$updated_role = $account_check->roles;
 			//$updated_role[11] = "General Course Admin";
-			$updated_role[5] = "General Course Admin";
+
+			$myrid = get_role_by_name("General Course Admin");
+
+			$updated_role[$myrid] = "General Course Admin";
 
 			$updated_user = array(
 				"roles" => $updated_role,
@@ -505,8 +535,13 @@ function course_creation_node_presave($node){
 
 			// Give administrator member role to a user in the OG
 			//og_role_grant("node", $node_group->nid, $account_check->uid, 17);
-			og_role_grant("node", $node_group->nid, $account_check->uid, 6);
+			
 			// Take care here ^
+			$my_rids = get_role_by_name_in_gryoup("administrator member", "general_course_group");
+			foreach ($my_rids AS $r){
+				og_role_grant("node", $node_group->nid, $account_check->uid, $r->rid);
+			}
+
 		}
 
 
@@ -515,13 +550,16 @@ function course_creation_node_presave($node){
 
 			//NEW USER
 
+
+			$myrid = get_role_by_name("General Course Admin");
+
 			// Create user
 			$new_user = array(
 				"name" => $node->field_un_general_course_admin['und']['0']['value'],
 				"mail" => $node->field_email_general_course_admin['und']['0']['value'],
 				"status" => 1,
 				//"roles" => array(11 => "General Course Admin"),
-				"roles" => array(5 => "General Course Admin"),
+				"roles" => array($myrid => "General Course Admin"),
 				"field_full_name" => array("und" => array("0" => array("value" => ($node->field_name_general_course_admin['und']['0']['value'])))), 
 			);
 
@@ -538,8 +576,13 @@ function course_creation_node_presave($node){
 
 	      	// Give administrator member role to a user in the OG
 	      	//og_role_grant("node", $node_group->nid, $account->uid, 17);
-	      	og_role_grant("node", $node_group->nid, $account->uid, 6);
+	      	//og_role_grant("node", $node_group->nid, $account->uid, 6);
 			// Take care here ^
+
+			$my_rids = get_role_by_name_in_gryoup("administrator member", "general_course_group");
+			foreach ($my_rids AS $r){
+				og_role_grant("node", $node_group->nid, $account->uid, $r->rid);
+			}
 
 
 		}
@@ -764,11 +807,12 @@ function course_creation_og_membership_update($og_membership){
 
 		      	// Give Student role to a user in the General Course Group
 		      	//og_role_grant("node", $group->field_general_course_id["und"]["0"]["value"], $account->uid, 20);
-		      	og_role_grant("node", $group->field_general_course_id["und"]["0"]["value"], $account->uid, 16);
-		      	//dpm("merge");
-		      	//dpm($group);
-		     
-		      	//dpm($account);
+		      	//og_role_grant("node", $group->field_general_course_id["und"]["0"]["value"], $account->uid, 16);
+		      	
+		      	$my_rids = get_role_by_name_in_gryoup("Student", "general_course_group");
+				foreach ($my_rids AS $r){
+					og_role_grant("node", $group->field_general_course_id["und"]["0"]["value"], $account->uid, $r->rid);
+				}
 
 			}
 
@@ -783,7 +827,13 @@ function course_creation_og_membership_update($og_membership){
 
 		      	// Give TA role to a user in the General Course Group
 		      	//og_role_grant("node", $group->field_general_course_id["und"]["0"]["value"], $account->uid, 20);
-		      	og_role_grant("node", $group->field_general_course_id["und"]["0"]["value"], $account->uid, 15);
+		      	
+
+		      	$my_rids = get_role_by_name_in_gryoup("TA", "general_course_group");
+				foreach ($my_rids AS $r){
+					og_role_grant("node", $group->field_general_course_id["und"]["0"]["value"], $account->uid, $r->rid);
+				}
+
 
 
 			}
@@ -903,4 +953,22 @@ function course_creation_form_alter(&$form, &$form_state, $form_id){
 
 
 
+}
+
+
+
+
+function get_role_by_name($name) {
+  $roles = user_roles();
+  return array_search($name, $roles);
+}
+
+function get_role_by_name_in_gryoup($name, $gr_bundle){
+      $query = db_select('og_role', 'r');
+     
+      $query
+        ->condition('r.name', $name, '=')
+        ->condition('r.group_bundle', $gr_bundle, '=')
+        ->fields('r', array('rid'));
+      return $query->execute();
 }
