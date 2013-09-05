@@ -154,19 +154,6 @@ function stack_overflow_general_user_default_permissions() {
     'module' => 'subscriptions',
   );
 
-  // Exported permission: 'subscribe to question reference'.
-  $permissions['subscribe to question reference'] = array(
-    'name' => 'subscribe to question reference',
-    'roles' => array(
-      'Course Instructor' => 'Course Instructor',
-      'General Course Admin' => 'General Course Admin',
-      'Student' => 'Student',
-      'Teacher Assistant' => 'Teacher Assistant',
-      'administrator' => 'administrator',
-    ),
-    'module' => 'subscriptions',
-  );
-
   // Exported permission: 'subscribe to taxonomy terms'.
   $permissions['subscribe to taxonomy terms'] = array(
     'name' => 'subscribe to taxonomy terms',

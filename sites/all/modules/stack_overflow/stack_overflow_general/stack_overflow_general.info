@@ -52,7 +52,6 @@ features[user_permission][] = edit own question content
 features[user_permission][] = subscribe to all content types
 features[user_permission][] = subscribe to content
 features[user_permission][] = subscribe to content types
-features[user_permission][] = subscribe to question reference
 features[user_permission][] = subscribe to taxonomy terms
 features[user_permission][] = suspend own subscriptions
 features[user_permission][] = view rate results page
