@@ -21,7 +21,8 @@ function course_creation_node_presave($node){
 	if ( ($node->type == "course_creation_form") && ($node->field_group_id["und"]['0']["value"] == 0) ){
 
 		// Fill in the username_instructor field
-		$username = implode("",explode(".",explode("@",$node->field_email_instructor['und']['0']['value'])[0]));
+		$help = explode("@",$node->field_email_instructor['und']['0']['value']); 
+		$username = implode("" , explode(".", $help[0]) );
 		$node->field_username_instructor['und']["0"]['value'] = $username;
 
 
@@ -488,7 +489,8 @@ function course_creation_node_presave($node){
 	if( ($node->type == "general_course_creation_form") && ($node->field_group_id["und"]["0"]["value"] == 0) ){
 
 		//Fill in the username general course admin field
-		$username = implode("",explode(".",explode("@",$node->field_email_general_course_admin['und']['0']['value'])[0]));
+		$help = explode("@",$node->field_email_general_course_admin['und']['0']['value']);
+		$username = implode("",explode(".", $help[0]));
 		$node->field_un_general_course_admin['und']['0']['value'] = $username;
 
 
