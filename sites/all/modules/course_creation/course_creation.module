@@ -141,7 +141,8 @@ function course_creation_node_presave($node){
 
 		if(count($account_check)){
 			// OLD USER update
-			$account_check = array_values($account_check)[0];
+			$help = array_values($account_check);
+			$account_check = $help[0];
 
 			$updated_role = $account_check->roles;
 			//$updated_role[4] = "Course Instructor";
@@ -515,7 +516,8 @@ function course_creation_node_presave($node){
 
 		if(count($account_check)){
 			// OLD USER update
-			$account_check = array_values($account_check)[0];
+			$help = array_values($account_check);
+			$account_check = $help[0];
 
 			$updated_role = $account_check->roles;
 			//$updated_role[11] = "General Course Admin";
