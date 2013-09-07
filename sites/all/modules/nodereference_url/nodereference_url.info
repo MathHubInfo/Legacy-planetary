@@ -1,0 +1,13 @@
+name = Node Reference URL Widget
+description = Adds an additional widget to the Node Reference field that prepopulates a reference by the URL.
+dependencies[] = node_reference
+files[] = nodereference_url.module
+package = Fields
+core = 7.x
+
+; Information added by drupal.org packaging script on 2011-09-24
+version = "7.x-1.12"
+core = "7.x"
+project = "nodereference_url"
+datestamp = "1316903507"
+
