@@ -487,6 +487,7 @@ function course_creation_features_user_default_permissions() {
   $permissions['create course_creation_form content'] = array(
     'name' => 'create course_creation_form content',
     'roles' => array(
+      'General Course Admin' => 'General Course Admin',
       'administrator' => 'administrator',
     ),
     'module' => 'node',
