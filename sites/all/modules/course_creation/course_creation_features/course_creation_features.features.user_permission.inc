@@ -1200,7 +1200,6 @@ function course_creation_features_user_default_permissions() {
     'name' => 'use text format filtered_html',
     'roles' => array(
       'administrator' => 'administrator',
-      'authenticated user' => 'authenticated user',
     ),
     'module' => 'filter',
   );
@@ -1218,7 +1217,7 @@ function course_creation_features_user_default_permissions() {
   $permissions['use text format latex'] = array(
     'name' => 'use text format latex',
     'roles' => array(
-      'authenticated user' => 'authenticated user',
+      'administrator' => 'administrator',
     ),
     'module' => 'filter',
   );
