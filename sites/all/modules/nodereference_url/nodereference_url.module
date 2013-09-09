@@ -183,7 +183,8 @@ function nodereference_url_build_link($node, $instance, $view_mode = 'full', $al
         }
 
         if ($group_entity) {
-          $link['query']['gids'] = array($group_entity->gid);
+          //dpm($group_entity);
+          //$link['query']['gids'] = array($group_entity->gid);
         }
       }
     }

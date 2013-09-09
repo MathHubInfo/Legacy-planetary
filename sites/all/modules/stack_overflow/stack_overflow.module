@@ -42,7 +42,7 @@ function stack_overflow_node_view_alter(&$build) {
       $build["comments"] = $add;
       
 
-
+/*
 
       if(!array_key_exists("subscriptions_ui", $build)){
 
@@ -56,8 +56,8 @@ function stack_overflow_node_view_alter(&$build) {
         }
 
       }
-
-
+*/
+   
       if($build["#node"]->type == "answer"){
 
 
@@ -67,6 +67,7 @@ function stack_overflow_node_view_alter(&$build) {
           $result = "<strong><div style='float: right'>";
           $result .= l(t("Post another Answer"), "node/add/answer/{$my_id}", array('query' => array('destionation' => "node/{$my_id}")));
           $result .= "</strong></div><br><div style='float: right'>".l(t("Comment to this Answer"), "comment/reply/{$my_ans_id}", array("fragment" => "comment-form"))."</div>";
+          $result .= "<br><strong><div style='float: right'>".l(t("Subscribe to this Answer"), "node/{$my_ans_id}/subscribe", array("fragment" => "subscribe"))."</strong></div>";
 
           $build['my_additional_answer_link'] = array(
             "#weight" => 195,
@@ -74,6 +75,7 @@ function stack_overflow_node_view_alter(&$build) {
          );
       
           $build['links']['comment'] = NULL;
+          $build['links']['node'] = NULL;
 
       }
 
@@ -87,6 +89,7 @@ function stack_overflow_node_view_alter(&$build) {
           $result = "<strong><div style='float: right'>";
           $result .= l(t("Answer this Question"), "node/add/answer/{$my_id}", array('query' => array('destionation' => "node/{$my_id}")));
           $result .= "</div></strong><br><div style='float: right'>".l(t("Comment to this Question"), "comment/reply/{$my_id}", array("fragment" => "comment-form"))."</div>";
+          $result .= "<br><strong><div style='float: right'>".l(t("Subscribe to this Question"), "node/{$my_id}/subscribe", array("fragment" => "subscribe"))."</strong></div>";
 
           $build['my_additional_answer_link'] = array(
             "#weight" => 195,
@@ -96,11 +99,15 @@ function stack_overflow_node_view_alter(&$build) {
        
           $build['links']['comment'] = NULL;
           $build['links']['nodereference_url'] = NULL;
+          $build['links']['node'] = NULL;
+
           
           
         //  dpm($build);
 
       }
+
+
 
 
 
@@ -311,6 +318,5 @@ function stack_overflow_theme() {
   );
 
 }
-
 
 
