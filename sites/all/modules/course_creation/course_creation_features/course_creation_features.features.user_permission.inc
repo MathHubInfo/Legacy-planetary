@@ -1217,7 +1217,12 @@ function course_creation_features_user_default_permissions() {
   $permissions['use text format latex'] = array(
     'name' => 'use text format latex',
     'roles' => array(
+      'Course Instructor' => 'Course Instructor',
+      'General Course Admin' => 'General Course Admin',
+      'Student' => 'Student',
+      'Teacher Assistant' => 'Teacher Assistant',
       'administrator' => 'administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'filter',
   );

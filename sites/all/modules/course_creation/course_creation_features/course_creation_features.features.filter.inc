@@ -16,7 +16,7 @@ function course_creation_features_filter_default_formats() {
     'name' => 'Filtered HTML',
     'cache' => 1,
     'status' => 1,
-    'weight' => -10,
+    'weight' => -8,
     'filters' => array(
       'filter_url' => array(
         'weight' => 0,
@@ -53,7 +53,7 @@ function course_creation_features_filter_default_formats() {
     'name' => 'Full HTML',
     'cache' => 1,
     'status' => 1,
-    'weight' => -8,
+    'weight' => -7,
     'filters' => array(
       'filter_url' => array(
         'weight' => 0,
@@ -84,7 +84,7 @@ function course_creation_features_filter_default_formats() {
     'weight' => -9,
     'filters' => array(
       'latex' => array(
-        'weight' => 0,
+        'weight' => -41,
         'status' => 1,
         'settings' => array(
           'latexml_url' => 'http://latexml.mathweb.org/convert',
@@ -93,7 +93,7 @@ function course_creation_features_filter_default_formats() {
         ),
       ),
       'filter_htmlcorrector' => array(
-        'weight' => 10,
+        'weight' => -40,
         'status' => 1,
         'settings' => array(),
       ),
@@ -106,7 +106,7 @@ function course_creation_features_filter_default_formats() {
     'name' => 'Plain text',
     'cache' => 1,
     'status' => 1,
-    'weight' => -7,
+    'weight' => -10,
     'filters' => array(
       'filter_html_escape' => array(
         'weight' => 0,
