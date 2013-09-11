@@ -259,7 +259,7 @@ function stack_overflow_form_alter(&$form, &$form_state, $form_id){
    // dpm($roles);
 
 
-    if(!in_array("Instructor",$roles)){
+    if(!in_array("Instructor",$roles) && !in_array("TA", $roles)){
       $form["field_notify_group"]["#access"] = FALSE;
     }
 
