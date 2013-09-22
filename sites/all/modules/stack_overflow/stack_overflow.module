@@ -318,5 +318,39 @@ function stack_overflow_theme() {
   );
 
 }
+/**
+  * Implements hook_menu()
+  * Change of the name of the views - fixing
+  * Redirects stack-overflow/15 and stack-overflow/34 to course-forum/15 or course-forum/34
+  **/
 
 
+
+function stack_overflow_menu() {
+  $items = array();
+
+  $items['stack-overflow/15'] = array(
+    'title' => 'Redirect', 
+    'page callback' => 'stack_overflow_redirect1', 
+    'access callback' => TRUE, 
+    'type' => MENU_CALLBACK,
+  );
+
+    $items['stack-overflow/34'] = array(
+    'title' => 'Redirect', 
+    'page callback' => 'stack_overflow_redirect2', 
+    'access callback' => TRUE, 
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+
+function stack_overflow_redirect1() {
+  drupal_goto(url("course-forum/15"), array('external' => TRUE));
+}
+
+function stack_overflow_redirect2() {
+  drupal_goto(url("course-forum/34"), array('external' => TRUE));
+}

@@ -75,8 +75,8 @@ function course_creation_node_presave($node){
 
 		// Add Stack Overflow link to og-menu	
 		$item_stack = array(
-			"link_title" => "Stack Overflow",
-			"link_path" => "stack-overflow/"."{$node_group->nid}",
+			"link_title" => "Course Forum",
+			"link_path" => "course-forum/"."{$node_group->nid}",
 			"menu_name" => "menu-og-"."{$node_group->nid}",
 		);
 		menu_link_save($item_stack);
