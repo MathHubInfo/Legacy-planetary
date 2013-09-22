@@ -33,7 +33,7 @@
   $memb = og_get_membership("node", $mygroup, "user", $user->uid);
   if ($memb)
     if($memb->state == 1){
-      $header = l(t("Add new question"), "node/add/question", array('query' => array('og_group_ref' => $mygroup)));
+      $header = "<br><strong>".l(t("Add new question"), "node/add/question", array('query' => array('og_group_ref' => $mygroup)))."</strong><br><br>";
     }
   
 
