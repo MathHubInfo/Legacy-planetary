@@ -78,6 +78,7 @@ function course_creation_node_presave($node){
 			"link_title" => "Course Forum",
 			"link_path" => "course-forum/"."{$node_group->nid}",
 			"menu_name" => "menu-og-"."{$node_group->nid}",
+			"weight" => 100,
 		);
 		menu_link_save($item_stack);
 		menu_cache_clear_all();		
