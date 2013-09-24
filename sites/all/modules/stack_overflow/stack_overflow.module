@@ -265,7 +265,7 @@ function stack_overflow_node_insert($node){
 
 function stack_overflow_form_alter(&$form, &$form_state, $form_id){
   
-  dpm($form);
+  //dpm($form);
 
 
   if ($form_id == 'answer_node_form') {
