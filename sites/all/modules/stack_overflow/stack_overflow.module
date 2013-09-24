@@ -178,9 +178,9 @@ function stack_overflow_mail($key, &$message, $params){
         $message['body'][] = 
             'Dear '.$params["name"].',
 
-An announcement was posted by '. $params['author']. ' in the '. $params['course_name'] .'.
+Your membership in '. $params['course_name'] .' notifies you of the following post:
 
-ANNOUNCEMENT: '.$params["question"].'
+'.$params['author'].' : '.$params["question"].'
 
             
 You can view it '.$params['link'].'.
