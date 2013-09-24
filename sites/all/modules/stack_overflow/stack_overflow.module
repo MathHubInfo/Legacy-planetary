@@ -64,7 +64,21 @@ function stack_overflow_node_view_alter(&$build) {
           $my_id = $build["#node"]->field_answer["und"]["0"]["nid"];
           $my_ans_id = $build["#node"]->nid;
 
-          $result = "<strong><div style='float: right'>";
+          $result = "";
+
+          //Show Edit Link only to those who have the privillege to edit the node
+          $node_to_edit = node_load($my_ans_id);
+          global $user;
+
+          if(node_access("update", $node_to_edit, $user))
+            $result .= l(t("Edit Answer"), "node/{$my_ans_id}/edit", array('query' => array()));
+         
+
+
+
+
+
+          $result .= "<strong><div style='float: right'>";
           $result .= l(t("Post another Answer"), "node/add/answer/{$my_id}", array('query' => array('destionation' => "node/{$my_id}")));
           $result .= "</strong></div><br><div style='float: right'>".l(t("Comment to this Answer"), "comment/reply/{$my_ans_id}", array("fragment" => "comment-form"))."</div>";
           $result .= "<br><strong><div style='float: right'>".l(t("Subscribe to this Answer"), "node/{$my_ans_id}/subscribe", array("fragment" => "subscribe"))."</strong></div>";
@@ -84,9 +98,20 @@ function stack_overflow_node_view_alter(&$build) {
 
 
           $my_id = $build["#node"]->nid;
-  
 
-          $result = "<strong><div style='float: right'>";
+          $result = "";
+
+          //Show Edit Link only to those who have the privillege to edit the node
+          $node_to_edit = node_load($my_id);
+          global $user;
+
+          if(node_access("update", $node_to_edit, $user)) 
+            $result .= l(t("Edit Question"), "node/{$my_id}/edit", array());
+          
+
+
+
+          $result .= "<strong><div style='float: right'>";
           $result .= l(t("Answer this Question"), "node/add/answer/{$my_id}", array('query' => array('destionation' => "node/{$my_id}")));
           $result .= "</div></strong><br><div style='float: right'>".l(t("Comment to this Question"), "comment/reply/{$my_id}", array("fragment" => "comment-form"))."</div>";
           $result .= "<br><strong><div style='float: right'>".l(t("Subscribe to this Question"), "node/{$my_id}/subscribe", array("fragment" => "subscribe"))."</strong></div>";
@@ -240,6 +265,9 @@ function stack_overflow_node_insert($node){
 
 function stack_overflow_form_alter(&$form, &$form_state, $form_id){
   
+  dpm($form);
+
+
   if ($form_id == 'answer_node_form') {
     $form['og_group_ref']['#access'] = FALSE;
     $form["group_content_access"]["#access"] = FALSE;
@@ -247,21 +275,30 @@ function stack_overflow_form_alter(&$form, &$form_state, $form_id){
 
   if ($form_id == "question_node_form"){
     $form["group_content_access"]["#access"] = FALSE;
-  //  dpm($form);
+  
+
+
+//  Let only some roles have the oprion to notify the group with a question
 
     global $user;
-    $mygroup = $form["og_group_ref"]["und"]["0"]["default"]["#default_value"]["0"];
-    //dpm(og_get_user_roles("node", $mygroup, $user->uid));
-   //  $memb = og_get_membership("node", $mygroup, "user", $user->uid);
-   //  dpm($memb);
+    $helper = $form["og_group_ref"]["und"]["0"]["default"]["#default_value"];
+    
+    if(count($helper))
+    {
+          $mygroup = $helper["0"];
+          $roles = og_get_user_roles("node", $mygroup, $user->uid, true);
+          if(!in_array("Instructor",$roles) && !in_array("TA", $roles) && !in_array("Student", $roles)){
+            $form["field_notify_group"]["#access"] = FALSE;
+          }
+    }
 
-    $roles = og_get_user_roles("node", $mygroup, $user->uid, true);
-   // dpm($roles);
 
 
-    if(!in_array("Instructor",$roles) && !in_array("TA", $roles) && !in_array("Student", $roles)){
+    // Hide Notify Members fields when editing
+    if($form["nid"]["#value"]){
       $form["field_notify_group"]["#access"] = FALSE;
     }
+
 
 
   }
