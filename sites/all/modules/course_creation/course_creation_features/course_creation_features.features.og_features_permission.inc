@@ -81,9 +81,7 @@ function course_creation_features_og_features_default_permissions() {
 
   // Exported og permission: 'node:course_group:delete any answer content'
   $permissions['node:course_group:delete any answer content'] = array(
-    'roles' => array(
-      'Instructor' => 'Instructor',
-    ),
+    'roles' => array(),
   );
 
   // Exported og permission: 'node:course_group:delete any course_description content'
@@ -98,9 +96,7 @@ function course_creation_features_og_features_default_permissions() {
 
   // Exported og permission: 'node:course_group:delete any question content'
   $permissions['node:course_group:delete any question content'] = array(
-    'roles' => array(
-      'Instructor' => 'Instructor',
-    ),
+    'roles' => array(),
   );
 
   // Exported og permission: 'node:course_group:delete any ta_general_info content'
@@ -205,9 +201,7 @@ function course_creation_features_og_features_default_permissions() {
 
   // Exported og permission: 'node:course_group:update any answer content'
   $permissions['node:course_group:update any answer content'] = array(
-    'roles' => array(
-      'Instructor' => 'Instructor',
-    ),
+    'roles' => array(),
   );
 
   // Exported og permission: 'node:course_group:update any course_description content'
@@ -226,9 +220,7 @@ function course_creation_features_og_features_default_permissions() {
 
   // Exported og permission: 'node:course_group:update any question content'
   $permissions['node:course_group:update any question content'] = array(
-    'roles' => array(
-      'Instructor' => 'Instructor',
-    ),
+    'roles' => array(),
   );
 
   // Exported og permission: 'node:course_group:update any ta_general_info content'
