@@ -1,0 +1,125 @@
+<?php
+
+/**
+ * Implementing hook_menu()
+ */
+function mws_menu() {
+
+  $items['mws/search'] = array(
+    'title' => "Archive Callback",
+	'page callback' => 'mws_search',
+	'access callback' => true,
+    'menu_name' => 'main-menu',
+    'weight' => 10,
+    'type' => MENU_CALLBACK,
+	);
+
+  $items['mws/query'] = array(
+    'title' => "Archive Callback",
+	'page callback' => 'mws_query',
+	'access callback' => true,
+    'menu_name' => 'main-menu',
+    'weight' => 10,
+    'type' => MENU_CALLBACK,
+	);
+
+  return $items;
+
+}
+
+
+function mws_search() { 
+  $htmlText = '
+  <script>
+  function mws_search() {
+  	var query = jQuery("#mws_query").get(0).value;
+	jQuery.ajax({
+      url: Drupal.settings.basePath+"?q=mws/query", 
+      type:"POST",
+      data: {
+        "body" : query,
+        "format" : "mathml",
+      },
+    });
+  }
+  </script>
+  <input id="mws_query" type="text" name="mws/query"/>
+  <button onclick="mws_search()">Search</button>
+	';
+  return $htmlText;
+}
+
+
+function mws_query() {
+  $query = $_POST['body'];
+  $format = $_POST['format'];
+  $mathmlQuery = mws_get_mathml_query($query, $format);
+  $response = mws_get_response($mathmlQuery);
+  return $reponse;
+}
+
+function mws_get_mathml_query($query, $format) {
+  if ($format == 'latex') {
+  	mws_get_compiled_latex($query);
+  }	else if ($format == 'mmt') {
+    mws_get_compiled_mmt($query);
+  } else {
+  	return $query;
+  }
+}
+
+function mws_get_response($query) {
+  print_r($query);
+  $mwsUrl = variable_get('mwsUrl');
+  $url = $mwsUrl;
+  $data = $query;
+
+  $options = array(
+    'http' => array(
+        'header'  => "Content-type: application/xml\r\n",
+        'method'  => 'POST',
+        'content' => $data,
+    ),
+  );
+
+  $context  = stream_context_create($options);
+  $response = file_get_contents($url, false, $context);
+  return $response;
+}
+
+
+function mws_get_compiled_latex($query) {
+  $latexmlUrl = variable_get('lateXMLUrl');
+  $url = $lateXMLUrl;
+
+  $data = $query;	
+   $options = array(
+    'http' => array(
+        'header'  => "Content-type: application/xml\r\n",
+        'method'  => 'POST',
+        'content' => $data,
+    ),
+  );
+  
+  $context  = stream_context_create($options);
+  $response = file_get_contents($url, false, $context);
+  return $response;
+}
+
+
+function mws_get_compiled_mmt($query) {
+  $mmtUrl = variable_get('mmtUrl');
+  $url = $mmtUrl . '/:planetary/mwsquery';
+  $data = $query;	
+   $options = array(
+    'http' => array(
+        'header'  => "Content-type: application/xml\r\n",
+        'method'  => 'POST',
+        'content' => $data,
+    ),
+  );
+  
+  $context  = stream_context_create($options);
+  $response = file_get_contents($url, false, $context);
+  return $response;
+}

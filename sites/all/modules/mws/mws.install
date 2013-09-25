@@ -1,0 +1,23 @@
+ <?php
+
+function mws_install() {
+  variable_set('mws_mlids', array());
+  $search_item = array(
+    'link_path' => drupal_get_normal_path('mws/search'),
+    'link_title' => "Search",
+    'menu_name' => 'main-menu'
+  );
+  $id = menu_link_save($search_item);
+  //gathering set mlids to cleanup nicely on reinstall 
+  $mlids = variable_get('mws_mlids');
+  $mlids[] = $id; 
+  variable_set('mws_mlids', $mlids);
+}
+
+function mws_uninstall() {
+  $mlids = variable_get('mws_mlids');
+  foreach ($mlids as $mlid) {
+	menu_link_delete($mlid);
+  }
+  drupal_set_message("uninstalled");
+}
