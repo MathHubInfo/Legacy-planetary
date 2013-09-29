@@ -682,7 +682,7 @@ function getContent(){
     	$array_roles = og_get_user_roles("node", $res->og_membership_users_gid, $res->uid);
 
     	foreach($array_roles as $r){
-    		dd($r);
+    		//dd($r);
 
 
     		if (node_load($res->og_membership_users_gid)->type == "course_group") 
