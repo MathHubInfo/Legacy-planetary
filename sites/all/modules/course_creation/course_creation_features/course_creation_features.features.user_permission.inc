@@ -1199,6 +1199,7 @@ function course_creation_features_user_default_permissions() {
   $permissions['use text format filtered_html'] = array(
     'name' => 'use text format filtered_html',
     'roles' => array(
+      'Course Instructor' => 'Course Instructor',
       'administrator' => 'administrator',
     ),
     'module' => 'filter',
