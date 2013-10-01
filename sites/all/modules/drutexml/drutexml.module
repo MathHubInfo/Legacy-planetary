@@ -328,7 +328,7 @@ function _drutexml_cache_read($md5) {
 	if (count($cache)==0) {
 		return;
 	}
-	return $cache[0]->xhtml;
+  return base64_decode($cache[0]->xhtml);
 }
 
 function _drutexml_cache_set($md5, $xhtml, $etid = NULL) {
@@ -341,7 +341,7 @@ function _drutexml_cache_set($md5, $xhtml, $etid = NULL) {
 	  ->key(array("cachemd5" => $md5))
 	  ->fields(array(
 		"cachemd5" => $md5,
-		"xhtml" => $xhtml,
+    "xhtml" => base64_encode($xhtml),
                 "etid" => $etid
 			 )
 		   )
