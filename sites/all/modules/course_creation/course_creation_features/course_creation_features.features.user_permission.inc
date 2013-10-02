@@ -1201,6 +1201,7 @@ function course_creation_features_user_default_permissions() {
     'roles' => array(
       'Course Instructor' => 'Course Instructor',
       'administrator' => 'administrator',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'filter',
   );
