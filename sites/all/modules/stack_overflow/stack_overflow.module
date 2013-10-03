@@ -402,7 +402,7 @@ function stack_overflow_theme() {
       'path' => drupal_get_path("module", "stack_overflow"),
       'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL, 'wrapper_prefix' => NULL, 'list_type_prefix'=> NULL), 
     ),
-
+/*
     'views_view_field__stack_overflow_list__field_number_of_answers' =>
     array(
       'arguments' => array('view' => NULL, 'field' => NULL, 'row' => NULL, 'output' => NULL),
@@ -410,7 +410,7 @@ function stack_overflow_theme() {
       'original hook' => 'views_view_field',
       'path' => drupal_get_path('module', 'stack_overflow'),
     ),
-
+*/
 
 
 

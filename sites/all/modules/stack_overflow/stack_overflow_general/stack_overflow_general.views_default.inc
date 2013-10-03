@@ -216,7 +216,7 @@ function stack_overflow_general_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '25';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '5';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = '9';
@@ -294,15 +294,6 @@ function stack_overflow_general_views_default_views() {
   $handler->display->display_options['fields']['value']['relationship'] = 'votingapi_cache';
   $handler->display->display_options['fields']['value']['label'] = 'Votes';
   $handler->display->display_options['fields']['value']['precision'] = '0';
-  /* Field: Content: Number of answers */
-  $handler->display->display_options['fields']['field_number_of_answers']['id'] = 'field_number_of_answers';
-  $handler->display->display_options['fields']['field_number_of_answers']['table'] = 'field_data_field_number_of_answers';
-  $handler->display->display_options['fields']['field_number_of_answers']['field'] = 'field_number_of_answers';
-  $handler->display->display_options['fields']['field_number_of_answers']['label'] = 'Answers';
-  $handler->display->display_options['fields']['field_number_of_answers']['settings'] = array(
-    'thousand_separator' => ' ',
-    'prefix_suffix' => 1,
-  );
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
@@ -318,13 +309,6 @@ function stack_overflow_general_views_default_views() {
   $handler->display->display_options['sorts']['value']['exposed'] = TRUE;
   $handler->display->display_options['sorts']['value']['expose']['label'] = 'Votes';
   $handler->display->display_options['sorts']['value']['coalesce'] = 1;
-  /* Sort criterion: Content: Number of answers (field_number_of_answers) */
-  $handler->display->display_options['sorts']['field_number_of_answers_value']['id'] = 'field_number_of_answers_value';
-  $handler->display->display_options['sorts']['field_number_of_answers_value']['table'] = 'field_data_field_number_of_answers';
-  $handler->display->display_options['sorts']['field_number_of_answers_value']['field'] = 'field_number_of_answers_value';
-  $handler->display->display_options['sorts']['field_number_of_answers_value']['order'] = 'DESC';
-  $handler->display->display_options['sorts']['field_number_of_answers_value']['exposed'] = TRUE;
-  $handler->display->display_options['sorts']['field_number_of_answers_value']['expose']['label'] = 'Answers';
   /* Contextual filter: Content: Groups audience (og_group_ref) */
   $handler->display->display_options['arguments']['og_group_ref_target_id']['id'] = 'og_group_ref_target_id';
   $handler->display->display_options['arguments']['og_group_ref_target_id']['table'] = 'og_membership';
