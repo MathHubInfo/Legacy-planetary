@@ -134,7 +134,7 @@ function stack_overflow_node_view_alter(&$build) {
             
             $q = node_load($build["#node"]->nid);
             $q->field_number_of_answers["und"]["0"]["value"] = $no_ans;
-            node_save($q);
+           // node_save($q);
           
 
 
