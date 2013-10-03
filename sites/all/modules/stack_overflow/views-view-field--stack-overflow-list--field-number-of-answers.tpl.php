@@ -26,13 +26,14 @@
 
 
  // Unseen answers processing
-
+/*	
     $question_id = $row->nid;
     $views_ans = views_get_view("answers_of_a_question");
     $views_ans->set_arguments(array($question_id));
     $views_ans->init();
 
     $views_ans->execute();
+
 
     $ans_not_viewed = 0;
 
@@ -57,10 +58,7 @@
  		   	}   	
     }
 
-
-
-
-
+/*
 
 
 
