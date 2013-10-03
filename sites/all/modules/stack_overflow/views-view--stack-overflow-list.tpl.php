@@ -26,6 +26,10 @@
  *
  * @ingroup views_templates
  */
+
+
+  // Add new question Link
+
   $header = "";
   global $user;
   $mygroup = arg(1);
@@ -35,6 +39,12 @@
     if($memb->state == 1){
       $header = "<br><strong>".l(t("Add new question"), "node/add/question", array('query' => array('og_group_ref' => $mygroup)))."</strong><br><br>";
     }
+
+
+ 
+
+
+
   
 
 ?>

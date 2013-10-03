@@ -70,6 +70,8 @@ function stack_overflow_node_view_alter(&$build) {
           $node_to_edit = node_load($my_ans_id);
           global $user;
 
+          //dpm(node_view_count_count_node_view(node_load($my_ans_id), $user));
+
           if(node_access("update", $node_to_edit, $user))
             $result .= l(t("Edit Answer"), "node/{$my_ans_id}/edit", array('query' => array()));
          
@@ -100,7 +102,48 @@ function stack_overflow_node_view_alter(&$build) {
       }
 
 
+
+
+
+
+
+
+
+
+
+
+
         if($build["#node"]->type == "question"){
+
+
+
+          // No of asnwers of a question processing
+
+            
+            $views_ans = views_get_view("answers_of_a_question");
+            $views_ans->set_arguments(array($build["#node"]->nid));
+            $views_ans->init();
+
+            $views_ans->execute();
+
+            $no_ans = 0;
+
+            foreach($views_ans->result as $res2){
+              $no_ans++;
+            }
+            
+            $q = node_load($build["#node"]->nid);
+            $q->field_number_of_answers["und"]["0"]["value"] = $no_ans;
+            node_save($q);
+          
+
+
+
+
+
+
+
+          // Add multiple links
 
 
           $my_id = $build["#node"]->nid;
@@ -110,6 +153,8 @@ function stack_overflow_node_view_alter(&$build) {
           //Show Edit Link only to those who have the privillege to edit the node
           $node_to_edit = node_load($my_id);
           global $user;
+
+
 
           if(node_access("update", $node_to_edit, $user)) 
             $result .= l(t("Edit Question"), "node/{$my_id}/edit", array());
@@ -137,7 +182,6 @@ function stack_overflow_node_view_alter(&$build) {
 
           
           
-        //  dpm($build);
 
       }
 
@@ -358,6 +402,16 @@ function stack_overflow_theme() {
       'path' => drupal_get_path("module", "stack_overflow"),
       'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL, 'wrapper_prefix' => NULL, 'list_type_prefix'=> NULL), 
     ),
+
+    'views_view_field__stack_overflow_list__field_number_of_answers' =>
+    array(
+      'arguments' => array('view' => NULL, 'field' => NULL, 'row' => NULL, 'output' => NULL),
+      'template' => 'views-view-field--stack-overflow-list--field-number-of-answers',
+      'original hook' => 'views_view_field',
+      'path' => drupal_get_path('module', 'stack_overflow'),
+    ),
+
+
 
 
 

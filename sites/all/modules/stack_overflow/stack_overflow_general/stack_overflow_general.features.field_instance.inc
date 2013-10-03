@@ -293,7 +293,7 @@ function stack_overflow_general_field_default_field_instances() {
         'label' => 'hidden',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 3,
+        'weight' => 4,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -318,6 +318,50 @@ function stack_overflow_general_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-question-field_number_of_answers'
+  $field_instances['node-question-field_number_of_answers'] = array(
+    'bundle' => 'question',
+    'default_value' => array(
+      0 => array(
+        'value' => 0,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 1,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_number_of_answers',
+    'label' => 'Number of answers',
+    'required' => 1,
+    'settings' => array(
+      'max' => '',
+      'min' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
+      'weight' => 0,
+    ),
+  );
+
   // Exported field_instance: 'node-question-group_content_access'
   $field_instances['node-question-group_content_access'] = array(
     'bundle' => 'question',
@@ -335,7 +379,7 @@ function stack_overflow_general_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 2,
+        'weight' => 3,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -383,7 +427,7 @@ function stack_overflow_general_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 1,
+        'weight' => 2,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -446,6 +490,7 @@ function stack_overflow_general_field_default_field_instances() {
   t('Group content visibility');
   t('Groups audience');
   t('Notify Course Members');
+  t('Number of answers');
 
   return $field_instances;
 }
