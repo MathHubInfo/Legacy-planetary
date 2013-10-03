@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function node_view_count_schema() {  
+  $schema = array();
+  
+  $schema['node_view_count'] = array(
+    'description' => 'The count views of node for every user.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The unique ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'nid' => array(
+        'description' => 'The node ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'The user ID who view of node.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'timestamp' => array(
+        'description' => 'The Unix timestamp when the node was view.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0, 
+      ),
+    ),
+    'primary key' => array('id'),     
+    'indexes' => array(
+      'nid_uid' => array('uid', 'nid'),
+      'timestamp' => array('timestamp'),  
+    ),  
+  );
+  
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function node_view_count_install() {
+  variable_set('node_view_count_node_types_options', array());
+  variable_set('node_view_count_user_roles_options', array());
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function node_view_count_uninstall() {
+  variable_del('node_view_count_node_types_options');
+  variable_del('node_view_count_user_roles_options');
+}
