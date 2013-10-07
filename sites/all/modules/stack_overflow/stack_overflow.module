@@ -141,8 +141,11 @@ function stack_overflow_node_view_alter(&$build) {
           
 
           // Back to Course Forum link
-         $forum_id = node_load($my_id)->og_group_ref['und']['0']['target_id'];
-         $result .= "<br><strong>".l(t("Back to Course Forum"), "course-forum/".$forum_id, array())."</strong>";
+         if(node_load($my_id)){
+           $forum_id = node_load($my_id)->og_group_ref['und']['0']['target_id'];
+           $result .= "<br><strong>".l(t("Back to Course Forum"), "course-forum/".$forum_id, array())."</strong>"; 
+         }
+
 
 
           $result .= "<strong><div style='float: right'>";
