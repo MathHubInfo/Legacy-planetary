@@ -299,6 +299,7 @@ function stack_overflow_general_views_default_views() {
   $handler->display->display_options['fields']['field_number_of_answers']['id'] = 'field_number_of_answers';
   $handler->display->display_options['fields']['field_number_of_answers']['table'] = 'field_data_field_number_of_answers';
   $handler->display->display_options['fields']['field_number_of_answers']['field'] = 'field_number_of_answers';
+  $handler->display->display_options['fields']['field_number_of_answers']['label'] = 'Answers';
   $handler->display->display_options['fields']['field_number_of_answers']['settings'] = array(
     'thousand_separator' => ' ',
     'prefix_suffix' => 1,
