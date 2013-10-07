@@ -27,7 +27,8 @@ function stack_overflow_general_views_default_views() {
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
   /* Field: Content: Title */
@@ -294,6 +295,14 @@ function stack_overflow_general_views_default_views() {
   $handler->display->display_options['fields']['value']['relationship'] = 'votingapi_cache';
   $handler->display->display_options['fields']['value']['label'] = 'Votes';
   $handler->display->display_options['fields']['value']['precision'] = '0';
+  /* Field: Content: Number of answers */
+  $handler->display->display_options['fields']['field_number_of_answers']['id'] = 'field_number_of_answers';
+  $handler->display->display_options['fields']['field_number_of_answers']['table'] = 'field_data_field_number_of_answers';
+  $handler->display->display_options['fields']['field_number_of_answers']['field'] = 'field_number_of_answers';
+  $handler->display->display_options['fields']['field_number_of_answers']['settings'] = array(
+    'thousand_separator' => ' ',
+    'prefix_suffix' => 1,
+  );
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';

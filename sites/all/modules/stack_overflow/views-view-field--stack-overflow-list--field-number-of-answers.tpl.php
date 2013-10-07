@@ -26,30 +26,32 @@
 
 
  // Unseen answers processing
-/*	
+	
     $question_id = $row->nid;
     $views_ans = views_get_view("answers_of_a_question");
     $views_ans->set_arguments(array($question_id));
     $views_ans->init();
 
     $views_ans->execute();
-
+   // dpm($views_ans->result);
 
     $ans_not_viewed = 0;
+    $no_ans = 0;
 
     foreach($views_ans->result as $res2){
+      $no_ans++;
       $id_ans = $res2->nid;
       $ans_visits = node_view_count_count_node_view(node_load($id_ans), $user) ;
       if($ans_visits == 0) $ans_not_viewed++;
     }
-    
+    //dpm($no_ans);
 
 
  
     if(count($row->field_field_number_of_answers) > 0){
-    	print $row->field_field_number_of_answers["0"]["raw"]["value"];
+    	print $no_ans;
  		if ($ans_not_viewed > 0) {
- 				$datetime_develop = date_create('2013-10-03');
+ 				$datetime_develop = date_create('2013-10-06');
  				//  Apply this only since datetime_develop
  				// We don't want all the previous question to look unread
 
@@ -58,7 +60,19 @@
  		   	}   	
     }
 
-/*
+
+
+
+
+
+
+          
+
+
+
+
+
+
 
 
 

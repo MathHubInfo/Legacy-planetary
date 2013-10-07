@@ -117,26 +117,6 @@ function stack_overflow_node_view_alter(&$build) {
 
 
 
-          // No of asnwers of a question processing
-
-            
-            $views_ans = views_get_view("answers_of_a_question");
-            $views_ans->set_arguments(array($build["#node"]->nid));
-            $views_ans->init();
-
-            $views_ans->execute();
-
-            $no_ans = 0;
-
-            foreach($views_ans->result as $res2){
-              $no_ans++;
-            }
-            
-            $q = node_load($build["#node"]->nid);
-            $q->field_number_of_answers["und"]["0"]["value"] = $no_ans;
-           // node_save($q);
-          
-
 
 
 
@@ -402,7 +382,7 @@ function stack_overflow_theme() {
       'path' => drupal_get_path("module", "stack_overflow"),
       'arguments' => array('view' => NULL, 'options' => NULL, 'row' => NULL, 'wrapper_prefix' => NULL, 'list_type_prefix'=> NULL), 
     ),
-/*
+
     'views_view_field__stack_overflow_list__field_number_of_answers' =>
     array(
       'arguments' => array('view' => NULL, 'field' => NULL, 'row' => NULL, 'output' => NULL),
@@ -410,7 +390,7 @@ function stack_overflow_theme() {
       'original hook' => 'views_view_field',
       'path' => drupal_get_path('module', 'stack_overflow'),
     ),
-*/
+
 
 
 
