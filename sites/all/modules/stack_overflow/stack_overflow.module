@@ -308,7 +308,7 @@ function stack_overflow_form_alter(&$form, &$form_state, $form_id){
 
   if ($form_id == "question_node_form"){
     $form["group_content_access"]["#access"] = FALSE;
-  
+    $form["field_number_of_answers"]["#access"] = FALSE;
 
 
 //  Let only some roles have the oprion to notify the group with a question
