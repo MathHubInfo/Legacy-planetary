@@ -4,20 +4,12 @@
  * Implementing hook_menu()
  */
 function mmt_menu() {
-    $items['mmt/setup'] = array(
-	  'title' => "Setup MMT",
-	  'page callback' => 'mmt_setup',
-	  'access callback' => 'mmt_setup_access',
-	  'menu_name' => 'navigation'
-	  );
-
-    $items['mmt/autoload'] = array(
-    'title' => "AutoLoad",
+  $items['mmt/autoload'] = array(
+    'title' => "MMT AutoLoad",
     'page callback' => 'mmt_create_nodes',
     'access callback' => 'mmt_setup_access',
     'menu_name' => 'navigation'
     );
-
   $items['mmt/archives'] = array(
     'title' => "Archive Callback",
 	  'page callback' => 'mmt_archives',
@@ -26,7 +18,6 @@ function mmt_menu() {
     'weight' => 10,
     'type' => MENU_CALLBACK,
 	);
-
   $items['mmt/comp/%/log'] = array(
     'title' => 'MMT->OMDoc log',
     'type' => MENU_LOCAL_ACTION,
@@ -59,8 +50,130 @@ function mmt_menu() {
     'page arguments' => array('mmt_parent'),
     'access arguments' => array('administer blocks'),
   );
+  $items['admin/config/content/mmt'] = array(
+    'title' => 'MMT configuration',
+    'description' => 'Configure MMT Integration. ',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mmt_config_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
   return $items;
 }
+
+function mmt_config_validate($form, &$form_state) {
+  $mmturl = $form_state['values']['mmt_instance_url'];
+  if (trim($mmturl) == '') {
+    form_set_error('mmt_instance_url', t('MMT URL cannot be empty'));
+  }
+
+  $formats_S = $form_state['values']['mmt_archive_formats'];
+  $formats_lines = explode("\n", $formats_S);
+  foreach ($formats_lines as $line) {
+    $pair = explode(' ', $line);
+    if (count($pair) != 2) {
+      form_set_error('mmt_archive_formats', t('Invalid line "' . $line .  '", must be space-separated pair of archive and text format'));
+    }
+  }
+
+  $node_types_S = $form_state['values']['mmt_format_node_types'];
+  $node_types_lines = explode("\n", $node_types_S);
+  foreach ($node_types_lines as $line) {
+    $pair = explode(' ', $line);
+    if (count($pair) != 2) {
+      form_set_error('mmt_format_node_types', t('Invalid line "' . $line .  '", must be space-separated pair of text format and nodetype'));
+    }
+  }
+  
+  $extensions_S = $form_state['values']['mmt_format_extensions'];
+  $extensions_lines = explode("\n", $extensions_S);
+  foreach ($extensions_lines as $line) {
+    $pair = explode(' ', $line);
+    if (count($pair) != 2) {
+      form_set_error('mmt_format_extensions', t('Invalid line "' . $line .  '", must be space-separated pair of format and extension'));
+    }
+  }
+}
+
+function mmt_config_submit($form, &$form_state) {
+  $formats_S = $form_state['values']['mmt_archive_formats'];
+  $node_types_S = $form_state['values']['mmt_format_node_types'];
+  $extensions_S = $form_state['values']['mmt_format_extensions'];
+  $mmturl = $form_state['values']['mmt_instance_url'];
+
+  mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S);
+}
+
+function mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S) {
+  $formats_lines = explode("\n", $formats_S);
+  $formats = array();
+  foreach ($formats_lines as $line) {
+    $pair = explode(' ', $line);
+    $formats[trim($pair[0])] = trim($pair[1]);
+  }
+
+  $node_types_lines = explode("\n", $node_types_S);
+  $node_types = array();
+  foreach ($node_types_lines as $line) {
+    $pair = explode(' ', $line);
+    $node_types[trim($pair[0])] = trim($pair[1]);
+  }
+
+  $extensions_lines = explode("\n", $extensions_S);
+  $extensions = array();
+  foreach ($extensions_lines as $line) {
+    $pair = explode(' ', $line);
+    $extensions[trim($pair[0])] = trim($pair[1]);
+  }
+  
+  $mmt_config = array();
+  $mmt_config['formats'] = $formats;
+  $mmt_config['node_types'] = $node_types;
+  $mmt_config['extensions'] = $extensions;
+  $mmt_config['mmturl'] = $mmturl;
+
+  variable_set("mmt_config", $mmt_config);
+
+}
+
+
+
+function mmt_config_form($form, &$form_state) {
+  $form['mmt_instance_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('MMT URL'),
+    '#default_value' => variable_get('mmt_instance_url', 'http://localhost:8080'),
+    '#description' => t('The URL of the MMT instance to be connected with OAFF'),
+  );
+
+  $form['mmt_archive_formats'] = array(
+    '#type' => 'textarea',
+    '#title' => t('The Text Format associated with each archive'),
+    '#default_value' => variable_get('mmt_archive_formats', ''),
+    '#description' => t(' Archive name and its associated text format separated by space. One such pair per line'),
+  );
+
+  $form['mmt_format_node_types'] = array(
+    '#type' => 'textarea',
+    '#title' => t('The content type associated with each text format'),
+    '#default_value' => variable_get('mmt_format_node_types', ''),
+    '#description' => t('Text format and its associated node type separated by space. One such pair per line'),
+  );
+
+  $form['mmt_format_extensions'] = array(
+    '#type' => 'textarea',
+    '#title' => t('The extension associated with each format'),
+    '#default_value' => variable_get('mmt_format_extensions', ''),
+    '#description' => t('Text format and its associated extension separated by space. One such pair per line'),
+  );
+  
+  $form['#validate'] = array('mmt_config_validate');
+  $form['#submit'] = array('mmt_config_submit');
+
+  return system_settings_form($form);
+}
+
+
 
 function mmt_parent($form, $form_state) {
 	return $form;
@@ -94,13 +207,8 @@ function mmt_archives() {
 /** api for vfs location */
 
 function mmt_get_path_info($location) {
-  $archives = array(
-    'smglo' => 'http://docs.omdoc.org/smglo/',
-    'latin' => 'http://docs.omdoc.org/latin/',
-    'urtheories' => 'http://docs.omdoc.org/urtheories/' ,
-    'openmath' => 'http://www.openmath.org/',
-    'complog' => 'http://docs.omdoc.org/complog/'
-  ); //hardcoded for now, get be gotten from MMT using archive name
+  $mmt_config = variable_get('mmt_config');
+  $archives = $mmt_config['docbases'];
 
   $lparts = explode('/', $location); //format is <archive-name>/source/<fragment path>
   $archive = $lparts[0];
@@ -328,8 +436,6 @@ function mmt_node_insert($node) {
     $dpath = $node->field_external['und']['0']['dpath']['value'];
     mmt_save_path($nid, $dpath);
   }
-  
-
 }
 
 /**
@@ -337,39 +443,35 @@ function mmt_node_insert($node) {
  * associated with that format (based on file extension).  
  */
 function mmt_create_nodes() {
-  $formats = array(
-    'smglo' =>  'tex',
-    'latin' => 'elf',
-    'urtheories' => 'mmt',
-    'openmath' => 'mmt',
-    'complog' => 'stex_omdoc',
-    );
+  $mmt_config = variable_get('mmt_config');
 
-  $node_types = array(
-    'tex' => 'glossary', //glossary_entry for smglo
-    'elf' => 'mmtdoc', //lf format
-    'mmt' => 'mmtdoc', //mmt format
-    'stex_omdoc' => 'mmtdoc',
-  );
-
-  $extensions = array(
-    'tex' => 'tex', 
-    'elf' => 'elf', 
-    'mmt' => 'mmt', 
-    'stex_omdoc' => 'omdoc',
-  );
-
+  $formats = $mmt_config['formats'];
+  $node_types = $mmt_config['node_types'];
+  $extensions = $mmt_config['extensions'];
+  
+  $docbases = array();
 
   $res = planetary_repo_local_list("");
   foreach ($res as $file) {
     if (array_key_exists($file, $formats)) {
       $format = $formats[$file];
       $ext = $extensions[$format];
+      $mf_path = $file . "/META-INF/MANIFEST.MF";
+      $manifest = planetary_repo_local_load($mf_path);
+      $mf_lines = explode("\n",$manifest);
+      $docbase = 'http://cds.omdoc.org/' . $file; //default
+      foreach ($mf_lines as $line) {
+        $pair = explode(":", $line,2);
+        if (trim($pair[0]) == "narration-base") {
+          $docbase = trim($pair[1]);
+        }
+      }
+      $docbases[$file] = $docbase;
+      $mmt_config['docbases'] = $docbases;
+      variable_set('mmt_config', $mmt_config);
       _mmt_create_nodes($file . "/source", $format, $ext, $node_types[$format]);
-
     }
   }
-
   return "Success";
 }
 
@@ -696,25 +798,8 @@ function mmt_get_dependencies($mpath) {
   foreach ($xmlpaths as $xmlpath){
     $results[] = (string)$xmlpath['path'];
   }
-
   return array($results); 
 }
-
-/**
- * helper function to automatically create nodes in drupal by loading from an MMT instance (currently hardcoded)
- */
-function mmt_setup() {
-  $mmtUrl = variable_get('mmtUrl');
-  $qUrl = $mmtUrl . '/:planetary/getPaths';
-  //$qUrl = 'public/getPaths'; //quick hack for preloading mmt uris
-  $result = file_get_contents($qUrl);
-  drupal_set_message("Loading: ");
-  mmt_load_nodes($result);
-//  menu_build_tree('navigation');
-  drupal_set_message("Success");
-  return "";
-}
-
 
 function mmt_save_path($nid, $path) {
   if (substr($path, -1) == '/') {

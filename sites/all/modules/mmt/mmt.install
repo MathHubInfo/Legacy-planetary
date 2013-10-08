@@ -63,6 +63,16 @@ function mmt_install() {
 
   variable_set('mmtUrl', "http://localhost:8080");
   variable_set('mmt_menu_items', array());
+  variable_set("mmt_config", array());
+  
+  //settings mmt_config
+  $mmturl = variable_get("mmt_instance_url", 'http://localhost:8080');
+  $formats_S = variable_get("mmt_archive_formats", '');
+  $node_types_S = variable_get("mmt_format_node_types", '');
+  $extensions_S = variable_get("mmt_format_extensions", '');
+  mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S);
+
+
   $mlids = array();
 
   $arch_item = array(

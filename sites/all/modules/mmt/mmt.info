@@ -5,4 +5,4 @@ package     = Planetary Modules
 
 dependencies[] = jobad
 dependencies[] = planetary_repo	
-
+dependencies[] = localcomments
