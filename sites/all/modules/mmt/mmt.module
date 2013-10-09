@@ -108,22 +108,28 @@ function mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S) {
   $formats_lines = explode("\n", $formats_S);
   $formats = array();
   foreach ($formats_lines as $line) {
-    $pair = explode(' ', $line);
-    $formats[trim($pair[0])] = trim($pair[1]);
+    if (trim($line) != '') {
+      $pair = explode(' ', $line);
+      $formats[trim($pair[0])] = trim($pair[1]);
+    }
   }
 
   $node_types_lines = explode("\n", $node_types_S);
   $node_types = array();
   foreach ($node_types_lines as $line) {
-    $pair = explode(' ', $line);
-    $node_types[trim($pair[0])] = trim($pair[1]);
+    if (trim($line) != '') {
+      $pair = explode(' ', $line);
+      $node_types[trim($pair[0])] = trim($pair[1]);
+    }
   }
 
   $extensions_lines = explode("\n", $extensions_S);
   $extensions = array();
   foreach ($extensions_lines as $line) {
-    $pair = explode(' ', $line);
-    $extensions[trim($pair[0])] = trim($pair[1]);
+    if (trim($line) != '') {   
+      $pair = explode(' ', $line);
+      $extensions[trim($pair[0])] = trim($pair[1]);
+    }
   }
   
   $mmt_config = array();
@@ -131,9 +137,7 @@ function mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S) {
   $mmt_config['node_types'] = $node_types;
   $mmt_config['extensions'] = $extensions;
   $mmt_config['mmturl'] = $mmturl;
-
   variable_set("mmt_config", $mmt_config);
-
 }
 
 
@@ -267,7 +271,8 @@ function mmt_initialize() {
      * CSS
      */
     $mmtPath = drupal_get_path('module', 'mmt');
-    $mmtUrl = variable_get('mmtUrl');  
+    $mmt_config = variable_get('mmt_config');
+    $mmtUrl = $mmt_config['mmturl'];  
 
     libraries_load("jobad");
  
@@ -703,7 +708,8 @@ function mmt_node_view($node, $view_mode, $langcode) {
 
 
 function mmt_get_contentPres($path, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
-  $mmtUrl = variable_get('mmtUrl');
+  $mmt_config = variable_get('mmt_config');
+  $mmtUrl = $mmt_config['mmturl'];
   $url = $mmtUrl . '/:planetary/getContentPres';
   $data = array('path' => $path, 'style' => $style);
   $options = array(
@@ -719,7 +725,8 @@ function mmt_get_contentPres($path, $style = 'http://cds.omdoc.org/styles/omdoc/
 }
 
 function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
-  $mmtUrl = variable_get('mmtUrl');
+  $mmt_config = variable_get('mmt_config');
+  $mmtUrl = $mmt_config['mmturl'];
   $url = $mmtUrl . '/:planetary/getPresentation';
   $data = array('body' => $body, 'style' => $style);
   if (isset($dpath)) {
@@ -740,7 +747,8 @@ function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styl
 }
 
 function mmt_get_compiled($body, $dpath, $format) {
-  $mmtUrl = variable_get('mmtUrl');
+  $mmt_config = variable_get('mmt_config');
+  $mmtUrl = $mmt_config['mmturl'];
   $url = $mmtUrl . '/:planetary/getCompiled';
 
   $data = array('body' => $body, 'format' => $format);
@@ -750,9 +758,9 @@ function mmt_get_compiled($body, $dpath, $format) {
 
   $options = array(
     'http' => array(
-        'header'  => "Content-type: application/json\r\n",
-        'method'  => 'POST'
-,        'content' => json_encode($data),
+      'header'  => "Content-type: application/json\r\n",
+      'method'  => 'POST',        
+      'content' => json_encode($data),
     ),
   );
   $context  = stream_context_create($options);
@@ -762,7 +770,8 @@ function mmt_get_compiled($body, $dpath, $format) {
 }
 
 function mmt_get_content($path) {
-  $mmtUrl = variable_get('mmtUrl');
+  $mmt_config = variable_get('mmt_config');
+  $mmtUrl = $mmt_config['mmturl'];
   $postPath = '???'; //default-for documents
   if (substr_count($path, '?') == 1) { //mmt module
     $postPath = '??';
@@ -779,7 +788,8 @@ function mmt_get_content($path) {
   mmt_get_dependencies("http://docs.omdoc.org/smglo/dgraph.omdoc?dgraph");
 */
 function mmt_get_dependencies($mpath) {
-  $mmtUrl = variable_get('mmtUrl');
+  $mmt_config = variable_get('mmt_config');
+  $mmtUrl = $mmt_config['mmturl'];
   $url = $mmtUrl . '/:query';
   $data = '<related><individual uri="'.$mpath.'"/><toobject relation="Includes"/></related>';
 

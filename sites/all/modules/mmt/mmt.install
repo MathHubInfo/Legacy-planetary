@@ -60,8 +60,6 @@ function mmt_install() {
 
   //adding fields
   mmt_create_fields();
-
-  variable_set('mmtUrl', "http://localhost:8080");
   variable_set('mmt_menu_items', array());
   variable_set("mmt_config", array());
   
