@@ -394,6 +394,14 @@ function stack_overflow_theme() {
       'path' => drupal_get_path('module', 'stack_overflow'),
     ),
 
+    'views_view_field__stack_overflow_list__field_group_id' =>
+    array(
+      'arguments' => array('view' => NULL, 'field' => NULL, 'row' => NULL, 'output' => NULL),
+      'template' => 'views-view-field--stack-overflow-list--field-group-id',
+      'original hook' => 'views_view_field',
+      'path' => drupal_get_path('module', 'stack_overflow'),
+    ),
+
 
 
 
