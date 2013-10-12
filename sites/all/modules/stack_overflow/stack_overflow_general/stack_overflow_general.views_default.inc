@@ -235,11 +235,15 @@ function stack_overflow_general_views_default_views() {
       'empty_column' => 0,
     ),
   );
-  /* Header: Broken/missing handler */
+  /* Header: Global: Link */
   $handler->display->display_options['header']['link']['id'] = 'link';
   $handler->display->display_options['header']['link']['table'] = 'views';
   $handler->display->display_options['header']['link']['field'] = 'link';
   $handler->display->display_options['header']['link']['empty'] = TRUE;
+  $handler->display->display_options['header']['link']['text'] = 'Add new question';
+  $handler->display->display_options['header']['link']['path'] = 'node/add/question';
+  $handler->display->display_options['header']['link']['querystring'] = 'og_group_ref=%1';
+  $handler->display->display_options['header']['link']['class'] = 'link_stack_overflow_%1';
   /* Header: Global: Unfiltered text */
   $handler->display->display_options['header']['area_text_custom']['id'] = 'area_text_custom';
   $handler->display->display_options['header']['area_text_custom']['table'] = 'views';
@@ -261,11 +265,21 @@ function stack_overflow_general_views_default_views() {
     'tag' => 'questionrate',
     'function' => 'sum',
   );
+  /* Field: Content: Group Id */
+  $handler->display->display_options['fields']['field_group_id']['id'] = 'field_group_id';
+  $handler->display->display_options['fields']['field_group_id']['table'] = 'field_data_field_group_id';
+  $handler->display->display_options['fields']['field_group_id']['field'] = 'field_group_id';
+  $handler->display->display_options['fields']['field_group_id']['label'] = '';
+  $handler->display->display_options['fields']['field_group_id']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_group_id']['settings'] = array(
+    'thousand_separator' => ' ',
+    'prefix_suffix' => 1,
+  );
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['label'] = 'Question';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   /* Field: Content: Post date */
