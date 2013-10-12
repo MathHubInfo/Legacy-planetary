@@ -25,7 +25,7 @@
 <?php 
 
 
- // Unseen answers processing
+ // Unseen questions processing
 	
     $question_id = $row->nid;
     $question_visits = node_view_count_count_node_view(node_load($question_id), $user) ;

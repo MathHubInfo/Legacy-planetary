@@ -235,15 +235,11 @@ function stack_overflow_general_views_default_views() {
       'empty_column' => 0,
     ),
   );
-  /* Header: Global: Link */
+  /* Header: Broken/missing handler */
   $handler->display->display_options['header']['link']['id'] = 'link';
   $handler->display->display_options['header']['link']['table'] = 'views';
   $handler->display->display_options['header']['link']['field'] = 'link';
   $handler->display->display_options['header']['link']['empty'] = TRUE;
-  $handler->display->display_options['header']['link']['text'] = 'Add new question';
-  $handler->display->display_options['header']['link']['path'] = 'node/add/question';
-  $handler->display->display_options['header']['link']['querystring'] = 'og_group_ref=%1';
-  $handler->display->display_options['header']['link']['class'] = 'link_stack_overflow_%1';
   /* Header: Global: Unfiltered text */
   $handler->display->display_options['header']['area_text_custom']['id'] = 'area_text_custom';
   $handler->display->display_options['header']['area_text_custom']['table'] = 'views';
