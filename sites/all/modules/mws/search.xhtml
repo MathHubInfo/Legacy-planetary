@@ -1,0 +1,28 @@
+<script>
+  function mws_search() {
+  	var query = jQuery("#mws_query").get(0).value;
+    var format = jQuery("#mws_format").get(0).value;
+
+	jQuery.ajax({
+      url: Drupal.settings.basePath+"?q=mws/query", 
+      type:"POST",
+      data: {
+        "body" : query,
+        "format" : format,
+      },
+      success: function (data) {
+        jQuery("#mws_answerbox").html(data);
+      },
+    });
+  }
+  </script>
+  <input id="mws_query" type="text" name="mws/query"/>
+  <select id="mws_format">
+    <option value="text">Text</option>
+    <option value="latex">LaTeX</option>
+    <option value="mmt">MMT</option>
+    <option value="mathml">MathML</option>
+  </select>
+  <button onclick="mws_search()">Search</button>
+  <div id="mws_answerbox"> </div>
+  

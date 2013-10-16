@@ -16,36 +16,50 @@ function mws_menu() {
 
   $items['mws/query'] = array(
     'title' => "Archive Callback",
-	'page callback' => 'mws_query',
-	'access callback' => true,
+  	'page callback' => 'mws_query',
+  	'access callback' => true,
     'menu_name' => 'main-menu',
     'weight' => 10,
     'type' => MENU_CALLBACK,
 	);
 
-  return $items;
+  $items['admin/config/content/mws'] = array(
+    'title' => 'MWS configuration',
+    'description' => 'Configure MathWebSearch Integration. ',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mws_config_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
 
+  return $items;
 }
 
 
-function mws_search() { 
-  $htmlText = '
-  <script>
-  function mws_search() {
-  	var query = jQuery("#mws_query").get(0).value;
-	jQuery.ajax({
-      url: Drupal.settings.basePath+"?q=mws/query", 
-      type:"POST",
-      data: {
-        "body" : query,
-        "format" : "mathml",
-      },
-    });
+function mws_config_form($form, &$form_state) {
+  $form['mws_instance_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('MWS URL'),
+    '#default_value' => variable_get('mws_instance_url', 'http://localhost:8624'),
+    '#description' => t('The URL of the MathWebSearch instance to be connected with OAFF'),
+  );
+ 
+  $form['#validate'] = array('mws_config_validate');
+  //$form['#submit'] = array('mws_config_submit');  
+
+  return system_settings_form($form); 
+}
+
+function mws_config_validate($form, &$form_state) {
+  $mwsurl = $form_state['values']['mws_instance_url'];
+  if (trim($mwsurl) == '') {
+    form_set_error('mws_instance_url', t('MWS URL cannot be empty'));
   }
-  </script>
-  <input id="mws_query" type="text" name="mws/query"/>
-  <button onclick="mws_search()">Search</button>
-	';
+}
+
+function mws_search() {
+  $htmlText = file_get_contents(drupal_get_path('module', 'mws') . '/search.xhtml');
+  
   return $htmlText;
 }
 
@@ -53,26 +67,38 @@ function mws_search() {
 function mws_query() {
   $query = $_POST['body'];
   $format = $_POST['format'];
-  $mathmlQuery = mws_get_mathml_query($query, $format);
-  $response = mws_get_response($mathmlQuery);
-  return $reponse;
-}
 
-function mws_get_mathml_query($query, $format) {
-  if ($format == 'latex') {
-  	mws_get_compiled_latex($query);
-  }	else if ($format == 'mmt') {
-    mws_get_compiled_mmt($query);
+  if ($format == 'text') { //drupal text search
+    $resp = search_data('theory', 'node');//file_get_contents('?search/node/' . trim($query));
+    print(drupal_render($resp));
+  } elseif ($format == 'latex') {
+    $query_mathml = mws_get_compiled_latex($query);
+    $query_cml = mws_postprocess_latexml($query_mathml);
+    $response = mws_get_response($query_cml);
+    print($response); //mircea solution to whole-page-send drupal bug
+  } elseif ($format == 'mmt') {
+    $query_mathml = mws_get_compiled_mmt($query);
+    print('Format not supported yet'); //TODO
   } else {
-  	return $query;
+    return 'Format not supported yet'; //TODO
   }
 }
 
 function mws_get_response($query) {
-  print_r($query);
-  $mwsUrl = variable_get('mwsUrl');
+  $mwsUrl = variable_get('mws_instance_url', 'http://localhost:8264');
   $url = $mwsUrl;
-  $data = $query;
+  $data = '<?xml version="1.0" ?>
+  <mws:query
+    xmlns:mws="http://www.mathweb.org/mws/ns"
+    xmlns:m="http://www.w3.org/1998/Math/MathML"
+    limitmin="0"
+    answsize="30"
+    totalreq="yes"
+    output="xml"
+  > 
+    <mws:expr> ' . $query . 
+    '</mws:expr>
+   </mws:query>';
 
   $options = array(
     'http' => array(
@@ -84,26 +110,65 @@ function mws_get_response($query) {
 
   $context  = stream_context_create($options);
   $response = file_get_contents($url, false, $context);
-  return $response;
+  $output = mws_process_response($response);
+  return $output; 
+}
+
+function mws_postprocess_latexml($resp_S) { 
+  $resp_xml = simplexml_load_string($resp_S);
+  $cml = $resp_xml->semantics->{'annotation-xml'}->children()[0];
+  // <csymbol name=qvar ..  -->  <mws:qvar .. 
+  $doc = new DOMDocument();
+  $doc->loadXML($cml->asXML(), LIBXML_NOXMLDECL);
+  
+
+  $csymbols = $doc->getElementsByTagName('csymbol');
+  
+  for ($i = 0; $i < $csymbols->length; $i++) {
+   $elem = $csymbols->item($i);
+   $name = $elem->getAttribute('name');
+   $cd  = $elem->getAttribute('cd');
+   if ($name == 'qvar' && $cd == 'mws') { //replace this node with a mws:qvar
+      //$doc->createAttributeNS('http://www.mathweb.org/mws/ns','mws');
+      $qvar = $doc->createElement('mws:qvar', $elem->nodeValue);
+      $parent = $elem->parentNode;
+      $parent->replaceChild($qvar, $elem);
+      $i--; //updating current index, since one csymbol was replaced;
+   }
+  }
+  $output = $doc->saveHTML(); // HTML instead of XML to avoid <?xml ... > header 
+  return $output;
+}
+
+function mws_process_response($answ_string) {
+  $answ_xml = simplexml_load_string($answ_string);  
+  $answ_xml->registerXPathNamespace("mws", "http://www.mathweb.org/mws/ns");
+  $uris = $answ_xml->xpath("//mws:answ/@uri");
+  $output = '';
+
+  foreach($uris as $uri){
+    $uri_S = (string)$uri;
+    $output .= '<p> <a href="?q=' . drupal_encode_path($uri_S) . '"> ' . $uri_S . ' </a> </p>';
+  }
+
+  if (count($uris) == 0) {
+    $output = "<p>  No results found! </p>";
+  }
+  
+  return $output;
 }
 
 
 function mws_get_compiled_latex($query) {
-  $latexmlUrl = variable_get('lateXMLUrl');
-  $url = $lateXMLUrl;
+  $host = 'http://latexml.mathweb.org/convert';
+  $text = trim($query);
+  $preamble = '';
+  $metadata = ''; //?
+  $profile = 'math'; //?
 
-  $data = $query;	
-   $options = array(
-    'http' => array(
-        'header'  => "Content-type: application/xml\r\n",
-        'method'  => 'POST',
-        'content' => $data,
-    ),
-  );
-  
-  $context  = stream_context_create($options);
-  $response = file_get_contents($url, false, $context);
-  return $response;
+  $response = process_latexml($host, $text, $preamble, $metadata, $profile);
+  $result = json_decode($response)->result;
+  return $result;
 }
 
 
