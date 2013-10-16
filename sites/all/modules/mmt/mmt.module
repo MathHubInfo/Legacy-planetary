@@ -67,6 +67,19 @@ function mmt_config_validate($form, &$form_state) {
     form_set_error('mmt_instance_url', t('MMT URL cannot be empty'));
   }
 
+  $mmt_repo_type = $form_state['values']['mmt_repository_type'];
+  if ($mmt_repo_type == '') {
+    form_set_error('mmt_repository_type', t('Please choose repository type'));
+  }
+
+  $mmt_repo_options = $form_state['values']['mmt_repository_options'];
+  if ($mmt_repo_type == 2) { //source folder
+    $pair = explode(' ', $mmt_repo_options);
+    if (count($pair) != 2) {
+      form_set_error('mmt_repository_options', t('Invalid repository options "' . $mmt_repo_options .  '", must be space-separated pair of archive name and docbase'));
+    }
+  }
+
   $formats_S = $form_state['values']['mmt_archive_formats'];
   $formats_lines = explode("\n", $formats_S);
   foreach ($formats_lines as $line) {
@@ -100,11 +113,14 @@ function mmt_config_submit($form, &$form_state) {
   $node_types_S = $form_state['values']['mmt_format_node_types'];
   $extensions_S = $form_state['values']['mmt_format_extensions'];
   $mmturl = $form_state['values']['mmt_instance_url'];
+  $repo_type = $form_state['values']['mmt_repository_type'];
+  $repo_opt = $form_state['values']['mmt_repository_options'];
 
-  mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S);
+  mmt_config_set($mmturl, $repo_type, $repo_opt, $formats_S, $node_types_S, $extensions_S);
 }
 
-function mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S) {
+function mmt_config_set($mmturl, $repo_type, $repo_opt, $formats_S, $node_types_S, $extensions_S) {
+
   $formats_lines = explode("\n", $formats_S);
   $formats = array();
   foreach ($formats_lines as $line) {
@@ -137,6 +153,18 @@ function mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S) {
   $mmt_config['node_types'] = $node_types;
   $mmt_config['extensions'] = $extensions;
   $mmt_config['mmturl'] = $mmturl;
+  $mmt_config['repo_type'] = $repo_type; // 0 -> archives, 1 -> single archive, 2 -> source folder
+  
+
+  if ($repo_type == 2) { //source folder
+    $pair = explode(' ',$repo_opt);
+    $archiveName = trim($pair[0]);
+    $mmt_config['repo_options'] = $archiveName;
+    $mmt_config['docbases'][$archiveName] = trim($pair[1]);
+  }
+
+  
+
   variable_set("mmt_config", $mmt_config);
 }
 
@@ -148,6 +176,24 @@ function mmt_config_form($form, &$form_state) {
     '#title' => t('MMT URL'),
     '#default_value' => variable_get('mmt_instance_url', 'http://localhost:8080'),
     '#description' => t('The URL of the MMT instance to be connected with OAFF'),
+  );
+ 
+ $form['mmt_repository_type'] = array(
+  '#type' => 'radios',
+  '#title' => t('Repository Type'),
+  '#description' => t('Select how the repository is organized -- to tell the MMT autoload crawler what to look for'),
+  '#default_value' => variable_get('mmt_repository_type', '0'),
+  '#options' => array(
+    t('Archive Collection'),
+    t('Single Archive'),
+    t('Source Folder')),
+  );
+
+ $form['mmt_repository_options'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Repository Options'),
+    '#default_value' => variable_get('mmt_repository_options', ''),
+    '#description' => t(' Depends on Repository Type:  Archive name for Source Folder, ATM nothing for others'),
   );
 
   $form['mmt_archive_formats'] = array(
@@ -170,13 +216,12 @@ function mmt_config_form($form, &$form_state) {
     '#default_value' => variable_get('mmt_format_extensions', ''),
     '#description' => t('Text format and its associated extension separated by space. One such pair per line'),
   );
-  
+
   $form['#validate'] = array('mmt_config_validate');
   $form['#submit'] = array('mmt_config_submit');
 
   return system_settings_form($form);
 }
-
 
 
 function mmt_parent($form, $form_state) {
@@ -208,11 +253,14 @@ function mmt_archives() {
   return $htmlText;
 }
 
+
 /** api for vfs location */
 
-function mmt_get_path_info($location) {
+
+function mmt_get_path_info($file_path) {
+  $location = mmt_path($file_path);
   $mmt_config = variable_get('mmt_config');
-  $archives = $mmt_config['docbases'];
+  $docbases = $mmt_config['docbases'];
 
   $lparts = explode('/', $location); //format is <archive-name>/source/<fragment path>
   $archive = $lparts[0];
@@ -246,7 +294,7 @@ function mmt_get_path_info($location) {
   }
   $omdocRelPath = join(".", $rparts); 
 
-  $dpath = $archives[$archive] . $omdocRelPath;
+  $dpath = $docbases[$archive] . $omdocRelPath;
 
   $path_info = array(
     'location' => $location,
@@ -449,48 +497,85 @@ function mmt_node_insert($node) {
  */
 function mmt_create_nodes() {
   $mmt_config = variable_get('mmt_config');
-
-  $formats = $mmt_config['formats'];
-  $node_types = $mmt_config['node_types'];
-  $extensions = $mmt_config['extensions'];
-  
-  $docbases = array();
-
-  $res = planetary_repo_local_list("");
-  foreach ($res as $file) {
-    if (array_key_exists($file, $formats)) {
-      $format = $formats[$file];
-      $ext = $extensions[$format];
-      $mf_path = $file . "/META-INF/MANIFEST.MF";
-      $manifest = planetary_repo_local_load($mf_path);
-      $mf_lines = explode("\n",$manifest);
-      $docbase = 'http://cds.omdoc.org/' . $file; //default
-      foreach ($mf_lines as $line) {
-        $pair = explode(":", $line,2);
-        if (trim($pair[0]) == "narration-base") {
-          $docbase = trim($pair[1]);
-        }
-      }
-      $docbases[$file] = $docbase;
-      $mmt_config['docbases'] = $docbases;
-      variable_set('mmt_config', $mmt_config);
-      _mmt_create_nodes($file . "/source", $format, $ext, $node_types[$format]);
-    }
+  $repo_type = $mmt_config['repo_type'];
+  if ($repo_type == 0) { //collection of archives
+    _mmt_crawl_archives();
+  } elseif ($repo_type == 1) { //single archive
+    _mmt_crawl_archive(".");
+  } elseif ($repo_type == 2) { //source folder
+     $archive = $mmt_config['repo_options'];
+    _mmt_crawl_source_folder($archive, '');
   }
   return "Success";
 }
 
-function _mmt_create_nodes($path, $format, $extension, $node_type) {
-  $res = planetary_repo_local_list($path);
+
+function _mmt_crawl_archives() {
+  $res = planetary_repo_list("");
+  foreach ($res as $file) {
+    if ($file[0] != '.') {
+      _mmt_crawl_archive($file);
+    }
+  }
+}
+
+function _mmt_crawl_archive($path) {
+  $mmt_config = variable_get('mmt_config');
+  //getting info from manifest
+  $mf_path = $path . "/META-INF/MANIFEST.MF";
+  
+  $manifest = planetary_repo_load_file($mf_path);
+  $mf_lines = explode("\n",$manifest);
+  $docbase = 'http://docs.omdoc.org/default'; //default
+  $archive = 'default'; //default
+  foreach ($mf_lines as $line) {
+    $pair = explode(":", $line,2);
+    if (trim($pair[0]) == "narration-base") {
+      $docbase = trim($pair[1]);
+    } elseif (trim($pair[0]) == "id") {
+      $archive = trim($pair[1]);
+    }
+  }
+  $docbases[$archive] = $docbase;
+  $mmt_config['docbases'] = $docbases;
+  variable_set('mmt_config', $mmt_config);
+  //crawling source folder
+  _mmt_crawl_source_folder($archive, $archive . "/source");
+}
+
+function mmt_path($location) {
+  $mmt_config = variable_get('mmt_config');
+  $archive = $mmt_config['repo_options'];
+  $mmtPath = $location;
+  if ($mmt_config['repo_type'] == 1) {
+    $mmtPath = $archive . '/' . $location;
+  } elseif ($mmt_config['repo_type'] == 2) {
+    $mmtPath = $archive . '/source/' . $location;
+  }
+  return $mmtPath;
+}
+
+function _mmt_crawl_source_folder($archive, $path) {
+  $mmt_config = variable_get('mmt_config');
+  $format = $mmt_config['formats'][$archive];
+  $node_type = $mmt_config['node_types'][$format];
+  $extension = $mmt_config['extensions'][$format];
+  $docbase = $mmt_config['docbases'][$archive];
+  $res = planetary_repo_list($path);
   $title = $path;
+  if ($path == '') {
+    $title = $archive;
+  }
+  
   $body = '';
   foreach ($res as $file) {
-    $fpath = $path . "/" .$file;
+    $fpath = $path . "/" . $file;
+
     if($file[0] != '.') {
-      if (planetary_repo_is_dir($fpath)) {         
-        _mmt_create_nodes($fpath, $format, $extension, $node_type);
+      if (planetary_repo_is_dir($fpath)) {  
+        _mmt_crawl_source_folder($archive, $fpath);
         $path_info = mmt_get_path_info($fpath);
-        $dpath = $path_info['dpath'];          
+        $dpath = $path_info['dpath'];
         $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
       } else {
         $parts = explode('.', $file);
@@ -510,7 +595,9 @@ function _mmt_create_nodes($path, $format, $extension, $node_type) {
       }
     }
   }
+
   $path_info = mmt_get_path_info($path);
+  
   $menupath = $path_info['dpath'];  
   $nid = mmt_create_article($title, $body);
   mmt_save_path($nid, $menupath);
@@ -610,6 +697,7 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
       $lang = $entity->language;
       foreach ($items as $delta => $item) {
         $location = $item['path'];
+
         $path_info = mmt_get_path_info($location);
 
         global $filter_context;

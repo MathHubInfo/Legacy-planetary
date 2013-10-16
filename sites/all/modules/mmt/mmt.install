@@ -65,10 +65,12 @@ function mmt_install() {
   
   //settings mmt_config
   $mmturl = variable_get("mmt_instance_url", 'http://localhost:8080');
+  $repo_type = variable_get("mmt_repository_type", '0');
+  $repo_options = variable_get("mmt_repository_options", '');
   $formats_S = variable_get("mmt_archive_formats", '');
   $node_types_S = variable_get("mmt_format_node_types", '');
   $extensions_S = variable_get("mmt_format_extensions", '');
-  mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S);
+  mmt_config_set($mmturl, $repo_type, $repo_options, $formats_S, $node_types_S, $extensions_S);
 
 
   $mlids = array();
