@@ -69,7 +69,7 @@ function mws_query() {
   $format = $_POST['format'];
 
   if ($format == 'text') { //drupal text search
-    $resp = search_data('theory', 'node');//file_get_contents('?search/node/' . trim($query));
+    $resp = search_data(trim($query), 'node');//file_get_contents('?search/node/' . trim($query));
     print(drupal_render($resp));
   } elseif ($format == 'latex') {
     $query_mathml = mws_get_compiled_latex($query);
