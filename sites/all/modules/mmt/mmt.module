@@ -513,7 +513,7 @@ function mmt_create_nodes() {
 function _mmt_crawl_archives() {
   $res = planetary_repo_list("");
   foreach ($res as $file) {
-    if ($file[0] != '.') {
+    if (planetary_repo_is_dir($file) && $file[0] != '.') {
       _mmt_crawl_archive($file);
     }
   }
@@ -545,11 +545,12 @@ function _mmt_crawl_archive($path) {
 
 function mmt_path($location) {
   $mmt_config = variable_get('mmt_config');
-  $archive = $mmt_config['repo_options'];
   $mmtPath = $location;
   if ($mmt_config['repo_type'] == 1) {
+    $archive = $mmt_config['repo_options'];
     $mmtPath = $archive . '/' . $location;
   } elseif ($mmt_config['repo_type'] == 2) {
+    $archive = $mmt_config['repo_options'];
     $mmtPath = $archive . '/source/' . $location;
   }
   return $mmtPath;
@@ -562,6 +563,7 @@ function _mmt_crawl_source_folder($archive, $path) {
   $extension = $mmt_config['extensions'][$format];
   $docbase = $mmt_config['docbases'][$archive];
   $res = planetary_repo_list($path);
+
   $title = $path;
   if ($path == '') {
     $title = $archive;

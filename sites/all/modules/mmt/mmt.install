@@ -116,7 +116,6 @@ function mmt_uninstall() {
   delete_node_type('mmt_module');
   delete_node_type('mmtdoc');	
   delete_node_type('glossary', false); 
-  delete_node_type('article', false); 
 
   $mlids = variable_get('mmt_mlids');
   foreach ($mlids as $mlid) {
