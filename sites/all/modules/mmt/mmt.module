@@ -294,7 +294,7 @@ function mmt_get_path_info($file_path) {
   }
   $omdocRelPath = join(".", $rparts); 
 
-  $dpath = $docbases[$archive] . $omdocRelPath;
+  $dpath = $docbases[$archive] . '/' . $omdocRelPath;
 
   $path_info = array(
     'location' => $location,
@@ -525,7 +525,7 @@ function _mmt_crawl_archive($path) {
   if (isset($mmt_config['docbases'])) {
     $docbases = $mmt_config['docbases'];
   }
-  
+
   //getting info from manifest
   $mf_path = $path . "/META-INF/MANIFEST.MF";
   
