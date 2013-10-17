@@ -521,6 +521,11 @@ function _mmt_crawl_archives() {
 
 function _mmt_crawl_archive($path) {
   $mmt_config = variable_get('mmt_config');
+  $docbases = array();
+  if (isset($mmt_config['docbases'])) {
+    $docbases = $mmt_config['docbases'];
+  }
+  
   //getting info from manifest
   $mf_path = $path . "/META-INF/MANIFEST.MF";
   
