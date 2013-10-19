@@ -330,9 +330,12 @@ function mmt_initialize() {
      * JavaScript
      */
     drupal_add_js('var mmtUrl = "' . $mmtUrl . '";', 'inline');
-    jobad_add_module($mmtPath . '/jobad/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
+   // jobad_add_module($mmtPath . '/jobad/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
     jobad_add_module($mmtPath . '/jobad/hovering.js', "kwarc.mmt.hovering");
     jobad_add_module($mmtPath . '/jobad/interactive-viewing.js', "kwarc.mmt.intvw");
+
+    //if search enabled
+    jobad_add_module($mmtPath . '/jobad/search.js', "kwarc.mmt.search");
 
     //mmt js libs
     drupal_add_js($mmtPath . '/utils/mmt-html.js', 'file', array('cache' => false));
@@ -746,7 +749,7 @@ function mmt_node_view($node, $view_mode, $langcode) {
  	  //getting pres from db
     $mmt_presentation = mmt_get_contentPres($node->uri);
     $node->content['mathml_body'] = array(
-      '#markup' => '<div id=' . $inst_id . ' style="overflow:auto">' . $mmt_presentation . '</div>',
+      '#markup' => '<div id=' . $inst_id . ' class="bootstrap" style="overflow:auto">' . $mmt_presentation . '</div>',
       '#weight' => 10,
     );
   }
@@ -797,7 +800,7 @@ function mmt_node_view($node, $view_mode, $langcode) {
     }
 
     $content = $node->content['field_external'][0]['content']['#markup'];
-    $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '">' . $content . '</div>'; 
+    $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '" class="bootstrap" >' . $content . '</div>'; 
   }
 }
 

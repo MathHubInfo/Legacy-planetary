@@ -83,7 +83,8 @@ var mmt = {
 	
 	/* set focus, focusIsMath, currentURI, currentElement, currentComponent, currentPosition according to elem */
 	setCurrentPosition : function(elem){
-	   var math = $(elem).closest('math')
+        console.log(elem);  
+	    var math = $(elem).closest('math')
 		this.focusIsMath = (math.length !== 0);
 		if (this.focusIsMath) {
 		   this.focus = this.getSelectedParent(elem);
@@ -92,7 +93,7 @@ var mmt = {
 		   this.currentPosition = this.focus.getAttribute('jobad:mmtref');
 		} else {
 		   this.focus = elem
-	   	this.currentElement = null;
+	   	   this.currentElement = null;
 		   this.currentComponent = null;
 		   this.currentPosition = null;
 		}
@@ -101,6 +102,7 @@ var mmt = {
 		} else {
 		   mmt.currentURI = null;
 		}
+		console.log('\n');
 	},
 	
 	notstyle : uris.mathmlstyle,

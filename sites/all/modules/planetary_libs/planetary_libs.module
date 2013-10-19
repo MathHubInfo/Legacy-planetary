@@ -337,9 +337,11 @@ function planetary_libs_libraries_info() {
     ),
     'files' => array(
       'js' => array(
+        'build/release/libs/js/libs.js',
         'build/release/JOBAD.js',
       ),
-      'css' => array(
+      'css' => array(        
+        'build/release/libs/css/libs.css',
         'build/release/JOBAD.css',
       )
     ),
@@ -347,9 +349,11 @@ function planetary_libs_libraries_info() {
       'minified' => array(
         'files' => array(
           'js' => array(
+            'build/release/libs/js/libs.js',
             'build/release/JOBAD.min.js',
           ),
           'css' => array(
+            'build/release/libs/css/libs.css',
             'build/release/JOBAD.css',
           )       
         ),
