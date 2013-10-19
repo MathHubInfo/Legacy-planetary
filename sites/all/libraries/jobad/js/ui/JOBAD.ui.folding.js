@@ -124,6 +124,10 @@ JOBAD.UI.Folding.enable = function(e, c){
         })
         .on("JOBAD.UI.Folding.fold", function(event){
             event.stopPropagation();
+            if(wrapper.data("JOBAD.UI.Folding.state")){
+                //we are already folded
+                return; 
+            }
             //fold me
             wrapper.data("JOBAD.UI.Folding.state", true);
             //trigger event
@@ -133,6 +137,12 @@ JOBAD.UI.Folding.enable = function(e, c){
         })
         .on("JOBAD.UI.Folding.unfold", function(event){
             event.stopPropagation();
+
+            if(!wrapper.data("JOBAD.UI.Folding.state")){
+                //we are already unfolded
+                return; 
+            }
+
             //unfold me
             wrapper.data("JOBAD.UI.Folding.state", false);
             //trigger event
@@ -394,8 +404,6 @@ JOBAD.UI.Folding.show = function(element){
             var me = JOBAD.refs.$(this);
             return me.data("JOBAD.UI.Folding.enabled")?true:false;
         });
-
-        window.folded = folded;
 
         if(folded.length > 0){
             JOBAD.UI.Folding.unfold(folded.get().reverse()); //unfold

@@ -53,4 +53,4 @@
 
 
 ## See also
-* [`JOBADInstance.Event.onSideBarUpdate`](event/onSideBarUpdate.md)
+* [`JOBADInstance.Event.onSideBarUpdate`](event/SideBarUpdate.md)

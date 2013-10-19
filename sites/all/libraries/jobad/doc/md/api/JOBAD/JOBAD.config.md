@@ -5,3 +5,4 @@ This object contains the configuration settings for JOBAD.
 * **Boolean** `JOBAD.config.cleanModuleNamespace` - Force modules to have a clean namespace. May cause errors when set to `true` with some modules. Default: `false`
 * **Array[String]** `JOBAD.config.disabledEvents` - List of disabled events. Default: `[]`
 * **String** `JOBAD.config.storageBackend` - Storage Backend to use. Default: `cookie`
+* **String** `JOBAD.config.BootstrapScope` - CSS class for all Bootstrap styles. May be undefined. 

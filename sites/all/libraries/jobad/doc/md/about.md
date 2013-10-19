@@ -4,7 +4,7 @@ JOBAD (JavaScript API for OMDoc-based Active Documents) is a javascript framewor
 
 JOBAD should work in all modern browsers. JOBAD has been tested successfully in: 
 
-* Google Chrome 26
+* Google Chrome 28
 * Firefox 20
 * Internet Explorer 10
 
@@ -15,7 +15,71 @@ It is known not to be compatible with:
 The official JOBAD repository is located at [https://github.com/KWARC/jobad](https://github.com/KWARC/jobad). 
 
 ## Changelog
-### Version 3.1.6 (Stable)
+### Version 3.2.0 (Stable)
+* added auto focus for JOBADInstances
+* added the keypress event (finally)
+* bug Fix: EventHandler .off was not working
+* added support for CSS scoped bootstrap
+	* compatibility with jQuery UI, no CSS is broken
+		* added a new jQuery UI Testing page for this
+	* this currently breaks BS fade animations
+
+
+### Version 3.1.9 
+* Change in dependencies
+	* removed jQuery UI dependency, we now only need Bootstrap 2.x
+	* support for jQuery 1.8+
+	* added bundled jQuery Color for color animations
+* added JOBAD.Instances
+	* added the focus and the unfocus Events
+	* only one JOBAD Instance focused at the same time
+	* no auto focusing for now
+* added Toolbars
+	* per-module
+	* UI left to module
+	* can be shifted up and down
+	* have to be enable via config UI or via code
+	* only visible on the currently focused JOBADInstance
+* improved the Event System
+	* Dynamic listening to event via `.Event.on(evt, handler)` and `.Event.once(evt, handler)`
+	* added `.Event.bind` and `loadedModule.setHandler` to create custom events for modules
+	* added folding.enable and folding.disable events
+* changes to the Sidebar
+	* removed "bound to element" Sidebar Style 
+	* added a "hidden" Sidebar Style, which hides the Sidebar
+		* should be used for clients where the sidebar takes away space
+* improved JOBAD.util.getOrigin()
+	* better compatibility when using inline-scripts
+* more rotation for the radial context menu
+* updated the config module
+* updated Makefile
+
+### Version 3.1.8
+* improved contextMenu
+	* added Ids for menus
+	* added the contextMenuOpen Event to onEvent. 
+	* added the contextMenuClose Event to onEvent. 
+* added new example module `test.menu3`
+
+### Version 3.1.7
+* refactored the build system, now easy with `make`
+	* also compressing all required libraries in a js and css file
+	* building will automatically pull all dependencies (npm & pip needed)
+* added bootstrap compatibility via jQuery Bootstrap
+* updated the config dialog
+	* ported the config dialog to bootstrap
+	* moved to the module `jobad.config`
+* added `moduleInstance.getOrigin()` to get the origin of a module. 
+	* all urls on modules are now resolved relative to the module. 
+* added `JOBAD.util.loadExternalCSS`
+* added CSS external dependencies for modules
+* added disabled menu items (use `false` instead of a callback)
+* better default handling of sidebar icons. 
+* improved styles
+* updated underscore to version 1.5.1
+
+
+### Version 3.1.6
 * improved repository override urls
 * removed build submodules, made them static
 * fixed 'failed to load module: undefined' error messages
@@ -86,7 +150,7 @@ The official JOBAD repository is located at [https://github.com/KWARC/jobad](htt
 	You should have received a copy of the GNU General Public License
 	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
 
-This project includes Underscore 1.4.4, which is licensed under [MIT License](https://github.com/documentcloud/underscore/blob/master/LICENSE). 
+This project includes Underscore 1.5.1, which is licensed under [MIT License](https://github.com/documentcloud/underscore/blob/master/LICENSE). 
 
 ## See also
 

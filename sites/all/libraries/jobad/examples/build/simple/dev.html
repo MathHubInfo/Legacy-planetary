@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>JOBAD v3 (CHAOS) Example Page</title>
@@ -5,9 +6,9 @@
 		<!-- This file has been generated automatically. Any changes will be overwritten. -->
 
 		
-		<script src="./../../../js/deps/jquery/jquery-2.0.2.min.js"></script>
-		<script src="./../../../js/deps/jquery/jquery-ui-1.10.3.js"></script>
-		<link href="./../../../css/jquery-ui.css" rel="stylesheet">
+<script src='./../../../build/release/libs/js/libs.js'></script>
+
+<link rel='stylesheet' type='text/css' href='./../../../build/release/libs/css/libs.css'>
 
 		<!-- Include JOBAD -->
 <script src='./../../../build/release/JOBAD.js'></script>
@@ -15,19 +16,24 @@
 <link rel='stylesheet' type='text/css' href='./../../../build/release/JOBAD.css'>
 
 		<script type="text/javascript">
-			var JOBAD1, JOBAD2;
+			JOBAD.config.BootstrapScope = "bootstrap"; //Bootstrap CSS scope
 
-			JOBAD.repo.loadAllFrom("../../../modules", function(){ //Load all from the repo
-				jQuery(function(){	
+			var JOBAD1, JOBAD2;
+			
+			JOBAD.repo.loadAllFrom("./../../../modules", function(){ //Load all from the repo
+				jQuery(function(){
 					JOBAD1 = new JOBAD(jQuery("#1"));
-					JOBAD2 = new JOBAD(jQuery("#2"));
+					JOBAD2 = new JOBAD(jQuery("#2"), {
+						"auto_show_toolbar": true
+					});
 
 					JOBAD1.modules.load([
 						['test.click', ['green']],
 						"test.menu1",
 						"test.menu2",
 						"test.hover",
-						"jobad.debug"
+						"jobad.debug",
+						"jobad.showfocus"
 					], function(mod, state){
 						this.Setup();
 					});
@@ -36,10 +42,14 @@
 						['test.click', ['blue']],
 						"test.menu1",
 						"test.menu2",
+						// "test.menu3",
 						"test.hover",
 						"test.sidebar",
 						"jobad.debug",
-						"mathjax.mathjax"
+						"mathjax.mathjax",
+						"test.tb1", 
+						"test.tb2",
+						"jobad.showfocus"
 					], function(mod, state){
 						this.Setup();
 					});

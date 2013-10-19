@@ -47,6 +47,7 @@ var ContextMenus = JOBAD.refs.$([]);
 		config.callBackOrg	Optional. Element to use for callback. 
 		config.unbindListener	Optional. Element to listen to for unbinds. 
 		config.block	Optional. Always block the Browser context menu. 
+		config.stopPropagnate	Optional. If set to true, will not propagnate menus (check parents if no menu is available). 
 	@return the jquery element. 
 */
 JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
@@ -62,11 +63,13 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 	//Force functions for all of this
 	var typeFunction = JOBAD.util.forceFunction(config.type);
 	var onCallBack = JOBAD.util.forceFunction(config.callback, true);
-	var onOpen = JOBAD.util.forceFunction(config.enable, true);
+	var onOpen = JOBAD.util.forceFunction(config.open, true);
+	var onShow = JOBAD.util.forceFunction(config.show, true);
 	var onEmpty = JOBAD.util.forceFunction(config.empty, true);
-	var onClose = JOBAD.util.forceFunction(config.disable, true);
+	var onClose = JOBAD.util.forceFunction(config.close, true);
 	var parents = JOBAD.refs.$(config.parents); 
 	var block = JOBAD.util.forceBool(config.block, false);
+	var stop = JOBAD.util.forceBool(config.stopPropagnate, false); 
 
 	element.on('contextmenu.JOBAD.UI.ContextMenu', function(e){
 		//control overrides
@@ -87,7 +90,8 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 		var result = false;
 		while(true){
 			result = demandFunction(targetElement, orgElement);
-			if(result || element.is(this)){
+			result = JOBAD.UI.ContextMenu.generateMenuList(result); //generate the menu
+			if(result.length > 0 || element.is(this) || stop){
 				break;				
 			}
 			targetElement = targetElement.parent();
@@ -97,11 +101,10 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 		JOBAD.UI.ContextMenu.clear(config.parents);
 		
 		//we are empty => allow browser to handle stuff
-		if(!result){
+		if(result.length == 0 || !result){
 			onEmpty(orgElement); 
 			return !block; 
 		}
-
 
 		//trigger the open callback
 		onOpen(element);
@@ -113,7 +116,8 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 		}
 
 		//create the context menu element
-		var menuBuild = JOBAD.refs.$("<div>").addClass("ui-front"); //we want to be in front. 
+		var menuBuild = JOBAD.refs.$("<div>")
+		.appendTo(JOBAD.refs.$("body"));
 
 
 		//a handler for closing
@@ -134,13 +138,12 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 					JOBAD.util.ifType(config.callBackTarget, JOBAD.refs.$, targetElement), 
 					JOBAD.util.ifType(config.callBackOrg, JOBAD.refs.$, orgElement), 
 				onCallBack)
-				.menu()
+				.show()
+				.dropdown()
 			).on('contextmenu', function(e){
 				return (e.ctrlKey);
-			}).css({
-				"left": Math.min(mouseCoords[0], window.innerWidth-menuBuild.outerWidth(true)-JOBAD.UI.ContextMenu.config.margin), 
-				"top":  Math.min(mouseCoords[1], window.innerHeight-menuBuild.outerHeight(true)-JOBAD.UI.ContextMenu.config.margin)
-			});
+			}); 
+
 		} else if(menuType == 1 || JOBAD.util.equalsIgnoreCase(menuType, 'radial')){
 
 			//build the radial menu
@@ -164,7 +167,7 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 					JOBAD.refs.$(this).trigger("contextmenu.JOBAD.UI.ContextMenu"); //trigger my context menu. 
 					return false;
 				}).end()
-			)
+			);
 
 			JOBAD.UI.ContextMenu.enable(menuBuild, function(e){
 				return JOBAD.refs.$(e).closest("div").data("JOBAD.UI.ContextMenu.subMenuData");
@@ -181,7 +184,8 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 					eventDispatcher.trigger('JOBAD.UI.ContextMenu.unbind');
 				},
 				"callback": closeHandler,
-				"block": true
+				"block": true,
+				"stopPropagnate": stop
 			}); 
 		} else {
 			JOBAD.console.warn("JOBAD.UI.ContextMenu: Can't show Context Menu: Unkown Menu Type '"+menuType+"'. ")
@@ -192,27 +196,38 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 		//set its css and append it to the body
 
 		menuBuild
+		.BS() //enable Bootstrap on the menu
 		.css({
 			'width': JOBAD.UI.ContextMenu.config.width,
 			'position': 'fixed'
+		}).css({
+			"left": Math.min(mouseCoords[0], window.innerWidth-menuBuild.outerWidth(true)-JOBAD.UI.ContextMenu.config.margin), 
+			"top":  Math.min(mouseCoords[1], window.innerHeight-menuBuild.outerHeight(true)-JOBAD.UI.ContextMenu.config.margin)
 		})
 		.on('mousedown', function(e){
 			e.stopPropagation();//prevent closemenu from triggering
-		})
-		.appendTo(JOBAD.refs.$("body"))
+		}); 
+
+		onShow(menuBuild, result); 
 
 
 		//unbind listener
-		JOBAD.refs.$(document).add(config.unbindListener).add(menuBuild).on('JOBAD.UI.ContextMenu.unbind', function(e){
+		JOBAD.refs.$(document).add(config.unbindListener).add(menuBuild)
+		.on("JOBAD.UI.ContextMenu.hide", function(){
+			menuBuild.hide();
+		})
+		.on('JOBAD.UI.ContextMenu.unbind', function(e){
 				closeHandler();
-				JOBAD.refs.$(document).unbind('mousedown.UI.ContextMenu.Unbind JOBAD.UI.ContextMenu.unbind');
+				JOBAD.refs.$(document).unbind('mousedown.UI.ContextMenu.Unbind JOBAD.UI.ContextMenu.unbind JOBAD.UI.ContextMenu.hide');
 				e.stopPropagation();
 				ContextMenus = ContextMenus.not(menuBuild);
 		});
 
-		JOBAD.refs.$(document).on('mousedown.UI.ContextMenu.Unbind', function(){
+		JOBAD.refs.$(document)
+		.one('mousedown.UI.ContextMenu.Unbind', function(){
 			JOBAD.UI.ContextMenu.clear(); 
-		});
+		})
+
 
 		//add to all ContextMenus
 		ContextMenus = ContextMenus.add(menuBuild);
@@ -258,7 +273,10 @@ JOBAD.UI.ContextMenu.buildContextMenuList = function(items, element, orgElement,
 	var cb = JOBAD.util.forceFunction(callback, function(){});
 
 	//create ul
-	var $ul = JOBAD.refs.$("<ul class='JOBAD JOBAD_Contextmenu'>");
+	var $ul = JOBAD.refs.$("<ul class='JOBAD JOBAD_Contextmenu'>").addClass("dropdown-menu");
+	$ul
+	.attr("role", "menu")
+	.attr("aria-labelledby", "dropdownMenu"); 
 	
 	for(var i=0;i<items.length;i++){
 		var item = items[i];
@@ -267,7 +285,7 @@ JOBAD.UI.ContextMenu.buildContextMenuList = function(items, element, orgElement,
 		var $li = JOBAD.refs.$("<li>").appendTo($ul);
 		
 		//create link
-		var $a = JOBAD.refs.$("<a href='#'>")
+		var $a = JOBAD.refs.$("<a href='#' tabindex='-1'>")
 		.appendTo($li)
 		.text(item[0])
 		.click(function(e){
@@ -283,18 +301,27 @@ JOBAD.UI.ContextMenu.buildContextMenuList = function(items, element, orgElement,
 			)
 			
 		}
+
+		if(typeof item[3] == "string"){
+			$li.attr("id", item[3]); 
+		}
 		
 		(function(){
 			if(typeof item[1] == 'function'){
 				var callback = item[1];
 
 				$a.on('click', function(e){
-					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.unbind');
+					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.hide');
 					callback(element, orgElement);
 					cb(element, orgElement);
-				});		
+					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.unbind');
+				});	
+			} else if(item[1] === false){
+				$a.parent().addClass("disabled"); 
 			} else {
-				$li.append(JOBAD.UI.ContextMenu.buildContextMenuList(item[1], element, orgElement, cb));
+				$li.append(
+					JOBAD.UI.ContextMenu.buildContextMenuList(item[1], element, orgElement, cb)
+				).addClass("dropdown-submenu"); 
 			}
 		})()
 	}
@@ -359,15 +386,27 @@ JOBAD.UI.ContextMenu.buildPieMenuList = function(items, element, orgElement, cal
 		}).addClass("JOBAD JOBAD_Contextmenu JOBAD_ContextMenu_Radial JOBAD_ContextMenu_RadialItem")
 
 		$item.animate({
+			"deg": 360,
 			"top": Y,
 			"left": X
-		}, 400);
+		}, {
+			"duration": 400,
+			"step": function(d, prop) {
+				if(prop.prop == "deg"){
+					$container.find(".JOBAD_ContextMenu_RadialItem").css({transform: 'rotate(' + d + 'deg)'})
+				}
+			}
+		});
 
 		$item.append(
 			JOBAD.refs.$("<img src='"+JOBAD.resources.getIconResource(item[2], {"none": "warning"})+"'>")
 			.width(2*r)
 			.height(2*r)
 		);
+
+		if(typeof item[3] == "string"){
+			$item.attr("id", item[3]); 
+		}
 		
 		(function(){
 			var text = JOBAD.refs.$("<span>").text(item[0]);
@@ -376,12 +415,15 @@ JOBAD.UI.ContextMenu.buildPieMenuList = function(items, element, orgElement, cal
 
 				$item.click(function(e){
 					JOBAD.UI.hover.disable();
-					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.unbind');
+					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.hide');
 					callback(element, orgElement);
 					cb(element, orgElement);
+					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.unbind');
 				});		
+			} else if(item[1] === false){
+				$item.addClass("JOBAD_ContextMenu_Radial_Disabled");
 			} else {
-				$item.data("JOBAD.UI.ContextMenu.subMenuData", item[1])
+				$item.data("JOBAD.UI.ContextMenu.subMenuData", item[1]);
 			}
 
 			$item.hover(function(){
@@ -406,37 +448,98 @@ JOBAD.UI.ContextMenu.generateMenuList = function(menu){
 	if(typeof menu == 'undefined'){
 		return [];
 	}
-	var res = [];
-	if(JOBAD.util.isArray(menu)){
-		for(var i=0;i<menu.length;i++){
-			var key = menu[i][0];
-			var val = menu[i][1];
-			var icon = (typeof menu[i][2] == 'undefined')?DEFAULT_ICON:menu[i][2];
-			if(typeof val == 'function'){
-				res.push([key, val, icon]);		
-			} else {
-				res.push([key, JOBAD.UI.ContextMenu.generateMenuList(val), icon]);
+
+	if(menu === false){
+		return []; 
+	}
+
+	var generateMenuItem = function(v){
+		if(typeof v == "function" || v === false){
+			return v; 
+		} else {
+			return JOBAD.UI.ContextMenu.generateMenuList(v);
+		}
+	};
+
+	var generateMenuConfig = function(a, b){
+		var config = {
+			"icon": DEFAULT_ICON,
+			"id": false
+		}; 
+
+		var a = JOBAD.util.defined(a); 
+		var b = JOBAD.util.defined(b); 
+
+		if(typeof a == "string"){
+			config["icon"] = a; 
+		} else if(JOBAD.util.isObject(a)){
+			if(typeof a.icon == "string"){
+				config["icon"] = a.icon; 
+			}
+			if(typeof a["id"] == "string"){
+				config["id"] = a["id"]; 
+			}
+			return config; 
+		}
+
+		if(typeof b == "string"){
+			config["id"] = b; 
+		} else if(JOBAD.util.isObject(b)){
+			if(typeof b.icon == "string"){
+				config["icon"] = b.icon; 
+			}
+			if(typeof b["id"] == "string"){
+				config["id"] = b["id"]; 
 			}
 		}
+			
+
+		return config; 
+	}
+
+	var res = [];
+	if(JOBAD.util.isArray(menu)){
+		//We have an array as the menu
+		//=> generate an object style representation
+		var newmenu = {}; 
+
+		for(var i=0;i<menu.length;i++){
+			var key = menu[i][0];
+			var val = menu[i].slice(1); 
+
+			newmenu[key] = val;
+		}
+
+		return (JOBAD.UI.ContextMenu.generateMenuList(newmenu)); 
 	} else {
 		for(var key in menu){
 			if(menu.hasOwnProperty(key)){
 				var val = menu[key];
-				if(typeof val == 'function'){
-					res.push([key, val, DEFAULT_ICON]);	
-				} else if(JOBAD.util.isArray(val)){
-					if(typeof val[1] == 'string'){ //we have a string there => we have an icon
-						if(typeof val[0] == 'function'){
-							res.push([key, val[0], val[1]]);
-						} else {
-							res.push([key, JOBAD.UI.ContextMenu.generateMenuList(val[0]), val[1]]);
-						}
+				
+				if(JOBAD.util.isArray(val)){
+					//we have an array
+					//check got everything individually 
+					if(val.length == 0){
+						//nothing here, lets disable it
+						res.push([key, false, DEFAULT_ICON, false]);
+					} else if(val.length == 1){
+						//we have exactly length 1
+						//we should act as if we are only that. 
+						res.push([key, generateMenuItem(val[0]), DEFAULT_ICON, false]);
+					} else if(val.length == 2 || val.length == 3){
+						//we are of length 2 or 3 => generate config
+						//if we have a string, then treat it as icon, otherwise assume a config style object
+
+						var cfg = generateMenuConfig(val[1], val[2]); //generate the config
+
+						res.push([key, generateMenuItem(val[0]), cfg["icon"], cfg["id"]]);
 					} else {
-						res.push([key, JOBAD.UI.ContextMenu.generateMenuList(val), DEFAULT_ICON]);
+						//overlength
+						console.warn("JOBAD.UI.ContextMenu.generateMenuList: menu too long. ")
 					}
-					
 				} else {
-					res.push([key, JOBAD.UI.ContextMenu.generateMenuList(val), DEFAULT_ICON]);
+					//we are a single item. 
+					res.push([key, generateMenuItem(val), DEFAULT_ICON, false]);
 				}
 			}
 		}

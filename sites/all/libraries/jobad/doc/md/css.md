@@ -36,7 +36,6 @@ The following css classes are available.
 * `JOBAD_ConfigUI` - applied to the JOBAD Config UI
 * `JOBAD_ConfigUI_tablemain` - The main table of the configuration UI
 * `JOBAD_ConfigUI_infobox` - The box containing all information about a module 
-* `JOBAD_ConfigUI_subtabs` - Applied to the tabs which are in every module information
 * `JOBAD_ConfigUI_ModEntry` - An entry in the table containing a module
 * `JOBAD_ConfigUI_MetaConfigTitle` - The title of a configuration setting. 
 * `JOBAD_ConfigUI_MetaConfigDesc` - The description of a configuration setting. 

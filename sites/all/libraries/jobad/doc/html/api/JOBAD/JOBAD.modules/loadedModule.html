@@ -496,10 +496,59 @@
 
 <ul>
 <li><strong>Function</strong> <code>.info()</code> Returns the info object of this module. </li>
-<li><p><strong>Function</strong> <code>.getJOBAD()</code> Gets the <code>JOBADInstance</code> this module is bound to. </p></li>
+<li><strong>Function</strong> <code>.getJOBAD()</code> Gets the <code>JOBADInstance</code> this module is bound to. </li>
+<li><p><strong>Function</strong> <code>.getOrigin(what)</code> Gets the origin of this module, the repository it comes from. </p>
+
+<ul>
+<li><strong>String</strong> <code>what</code>. Optional. If set to <code>file</code>, will get the file this module is defined in. If set to <code>group</code> will get the group this module was loaded in. FileName and group may be wrong if the module is registered within some callback. </li>
+</ul></li>
 <li><p><strong>Function</strong> <code>.isActive()</code> Checks if this module is active. </p></li>
+<li><strong>Function</strong> <code>.setHandler(event, handlerName)</code> - Binds a member function to an event. Only triggers if active. 
+<ul>
+<li><strong>String</strong> <code>event</code> Event to listen to. </li>
+<li><strong>String</strong> <code>handlerName</code> Name of the handler Function of the module. </li>
+</ul></li>
 <li><strong>Function</strong> <code>.activate()</code> Activates this module. </li>
 <li><strong>Function</strong> <code>.deactivate()</code> Deactivates this module</li>
+</ul>
+
+<h2>Toolbar</h2>
+
+<ul>
+<li><p><strong>Function</strong> <code>.Toolbar(JOBADInstance, Toolbar)</code> Requests a toolbar for this module. </p>
+
+<ul>
+<li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
+<li><strong>jQuery</strong> <code>Toolbar</code> A jQuery element representing the possible toolbar. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Toolbar.get()</code> Gets the jQuery element representing the Toolbar or undefined. </p>
+
+<ul>
+<li><strong>returns</strong> jQuery <code>Toolbar</code> A jQuery element representing the possible toolbar.</li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Toolbar.show()</code> Shows or hides the Toolbar depending on current settings. </p></li>
+<li><strong>Function</strong> <code>.Toolbar.moveUp()</code> Moves the toolbar up. </li>
+<li><p><strong>Function</strong> <code>.Toolbar.moveDown()</code> Moves the toolbar down. </p></li>
+<li><p><strong>Function</strong> <code>.Toolbar.isVisible()</code> Checks if the Toolbar state is visible. </p>
+
+<ul>
+<li><strong>returns</strong> boolean</li>
+</ul></li>
+<li><strong>Function</strong> <code>.Toolbar.setVisible()</code> Sets the Toolbar state to visible. </li>
+<li><p><strong>Function</strong> <code>.Toolbar.setHidden()</code> Sets the Toolbar state to hidden. </p></li>
+<li><p><strong>Function</strong> <code>.Toolbar.isEnabled()</code> Checks if the toolbar is enabled. </p>
+
+<ul>
+<li><strong>returns</strong> boolean</li>
+</ul></li>
+<li><strong>Function</strong> <code>.Toolbar.enable()</code> Enables the toolbar. 
+<ul>
+<li><strong>returns</strong> <code>true</code> if it was enabled, false if not. </li>
+</ul></li>
+<li><strong>Function</strong> <code>.Toolbar.disable()</code> Disables the toolbar. 
+<ul>
+<li><strong>returns</strong> <code>true</code> if it was disabled, false if not. </li>
+</ul></li>
 </ul>
 
 <h2>UserConfiguration</h2>
@@ -547,9 +596,30 @@
 <ul>
 <li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
 </ul></li>
+<li><strong>Function</strong> <code>.onEvent(JOBADInstance, eventName, params)</code> Simulates an event. Note: This only calls onEvent handlers. 
+<ul>
+<li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
+<li><strong>String</strong> <code>eventName</code> Name of event to simulate. </li>
+<li><strong>Array</strong> <code>params</code> Parameters for event. </li>
+</ul></li>
+<li><strong>Function</strong> <code>.focus(JOBADInstance, prevFocus)</code> Called on Instance focus. 
+<ul>
+<li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
+<li><strong>JOBAD</strong> <code>prevFocus</code> Previously focused instance of JOBAD or undefined. </li>
+</ul></li>
+<li><strong>Function</strong> <code>.unfoucs(JOBADInstance, prevFocus)</code> Called on Instance unfocus. 
+<ul>
+<li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
+</ul></li>
 <li><strong>Function</strong> <code>.leftClick(target, JOBADInstance)</code> Simulate a left click event to pass to the Module. 
 <ul>
 <li><strong>jQuery</strong> <code>target</code> The element to simulate clicking on. </li>
+<li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
+<li><strong>returns</strong> <code>true</code> if it performed some action, <code>false</code> otherwise. </li>
+</ul></li>
+<li><strong>Function</strong> <code>.dblClick(target, JOBADInstance)</code> Simulate a double click event to pass to the Module. 
+<ul>
+<li><strong>jQuery</strong> <code>target</code> The element to simulate double clicking on. </li>
 <li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
 <li><strong>returns</strong> <code>true</code> if it performed some action, <code>false</code> otherwise. </li>
 </ul></li>
@@ -564,10 +634,15 @@
 <li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
 <li><strong>returns</strong> a text to use as hover text, a jQuery-ish object<sup class="footnote-ref" id="fnref-1"><a href="loadedModule.html#fn-1">1</a></sup> or a boolean. </li>
 </ul></li>
-<li><strong>Function</strong> <code>.onSideBarUpdate(JOBADInstance)</code> Simulate a sidebar update. 
+<li><strong>Function</strong> <code>.SideBarUpdate(JOBADInstance)</code> Simulate a sidebar update. 
 <ul>
 <li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
 <li><strong>returns</strong> a text to use as hover text, a jQuery-ish object<sup class="footnote-ref" id="fnref-1"><a href="loadedModule.html#fn-1">2</a></sup> or a boolean. </li>
+</ul></li>
+<li><strong>Function</strong> <code>.configUpdate(setting, JOBADInstance)</code> Simulate a change of a setting. 
+<ul>
+<li><strong>Instance[ <a href="../JOBADInstance/index.html">JOBAD</a> ]</strong> <code>JOBADInstance</code> A reference to <code>.getJOBAD()</code>. </li>
+<li><strong>String</strong> <code>setting</code> The setting that has changed. </li>
 </ul></li>
 </ul>
 

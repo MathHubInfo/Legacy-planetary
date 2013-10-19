@@ -31,3 +31,6 @@ my_notification.removeNotification(my_notification);
 
 The variable `my_notification` has the value of a jQuery element which represents the notification, hence anything can be done with it. 
 For a more detailed description of the available options, see the [API Documentation](../api/JOBAD/JOBADInstance/sidebar.md). 
+
+# See also
+* [Toolbar](Toolbar.md) - What is the Toolbar? 

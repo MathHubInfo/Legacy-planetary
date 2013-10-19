@@ -11,10 +11,41 @@
 
 * **Function** `.info()` Returns the info object of this module. 
 * **Function** `.getJOBAD()` Gets the `JOBADInstance` this module is bound to. 
+* **Function** `.getOrigin(what)` Gets the origin of this module, the repository it comes from. 
+	* **String** `what`. Optional. If set to `file`, will get the file this module is defined in. If set to `group` will get the group this module was loaded in. FileName and group may be wrong if the module is registered within some callback. 
 
 * **Function** `.isActive()` Checks if this module is active. 
+* **Function** `.setHandler(event, handlerName)` - Binds a member function to an event. Only triggers if active. 
+    * **String** `event` Event to listen to. 
+    * **String** `handlerName` Name of the handler Function of the module. 
 * **Function** `.activate()` Activates this module. 
 * **Function** `.deactivate()` Deactivates this module
+
+## Toolbar
+
+* **Function** `.Toolbar(JOBADInstance, Toolbar)` Requests a toolbar for this module. 
+	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
+	* **jQuery** `Toolbar` A jQuery element representing the possible toolbar. 
+
+* **Function** `.Toolbar.get()` Gets the jQuery element representing the Toolbar or undefined. 
+	* **returns** jQuery `Toolbar` A jQuery element representing the possible toolbar.
+
+* **Function** `.Toolbar.show()` Shows or hides the Toolbar depending on current settings. 
+* **Function** `.Toolbar.moveUp()` Moves the toolbar up. 
+* **Function** `.Toolbar.moveDown()` Moves the toolbar down. 
+
+* **Function** `.Toolbar.isVisible()` Checks if the Toolbar state is visible. 
+	* **returns** boolean
+* **Function** `.Toolbar.setVisible()` Sets the Toolbar state to visible. 
+* **Function** `.Toolbar.setHidden()` Sets the Toolbar state to hidden. 
+
+* **Function** `.Toolbar.isEnabled()` Checks if the toolbar is enabled. 
+	* **returns** boolean
+* **Function** `.Toolbar.enable()` Enables the toolbar. 
+	* **returns** `true` if it was enabled, false if not. 
+* **Function** `.Toolbar.disable()` Disables the toolbar. 
+	* **returns** `true` if it was disabled, false if not. 
+
 
 ## UserConfiguration
 
@@ -49,8 +80,21 @@ These functions represent event handlers. If an event is globally disabled (via 
 	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
 * **Function** `.onDeactivate(JOBADInstance)` Called on module deactivation. 
 	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
+* **Function** `.onEvent(JOBADInstance, eventName, params)` Simulates an event. Note: This only calls onEvent handlers. 
+	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
+	* **String** `eventName` Name of event to simulate. 
+	* **Array** `params` Parameters for event. 
+* **Function** `.focus(JOBADInstance, prevFocus)` Called on Instance focus. 
+	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
+	* **JOBAD** `prevFocus` Previously focused instance of JOBAD or undefined. 
+* **Function** `.unfoucs(JOBADInstance, prevFocus)` Called on Instance unfocus. 
+	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
 * **Function** `.leftClick(target, JOBADInstance)` Simulate a left click event to pass to the Module. 
 	* **jQuery** `target` The element to simulate clicking on. 
+	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
+	* **returns** `true` if it performed some action, `false` otherwise. 
+* **Function** `.dblClick(target, JOBADInstance)` Simulate a double click event to pass to the Module. 
+	* **jQuery** `target` The element to simulate double clicking on. 
 	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
 	* **returns** `true` if it performed some action, `false` otherwise. 
 * **Function** `.contextMenuEntries(target, JOBADInstance)` Simulate a context menu request to the module. 
@@ -60,11 +104,12 @@ These functions represent event handlers. If an event is globally disabled (via 
 	* **jQuery** `target` The element to simulate hovering on. 
 	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
 	* **returns** a text to use as hover text, a jQuery-ish object[^1] or a boolean. 
-* **Function** `.onSideBarUpdate(JOBADInstance)` Simulate a sidebar update. 
+* **Function** `.SideBarUpdate(JOBADInstance)` Simulate a sidebar update. 
 	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
 	* **returns** a text to use as hover text, a jQuery-ish object[^1] or a boolean. 
-	
-
+* **Function** `.configUpdate(setting, JOBADInstance)` Simulate a change of a setting. 
+	* **Instance[ [JOBAD](../JOBADInstance/index.md) ]** `JOBADInstance` A reference to `.getJOBAD()`. 
+	* **String** `setting` The setting that has changed. 
 
 ## .localStore
 

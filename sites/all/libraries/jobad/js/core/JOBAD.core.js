@@ -34,6 +34,8 @@ var JOBAD = function(element){
 	}
 
 	var me = this; 
+
+	this.ID = JOBAD.util.UID(); //assign an id to this JOBAD
 	
 	//Add init arguments
 	this.args = [];
@@ -73,14 +75,14 @@ var JOBAD = function(element){
 			mod.call(this, this, this.args); 
 		}
 	}
-
-	this.ID = JOBAD.util.UID(); 
 };
+
+
 
 JOBAD.ifaces = []; //JOBAD interfaces
 
 /* JOBAD Version */
-JOBAD.version = "3.1.6"; 
+JOBAD.version = "3.2.0"; 
 
 /*
 	JOBAD.toString
@@ -94,7 +96,8 @@ JOBAD.toString.toString = JOBAD.toString; //self-reference!
 /* JOBAD Global config */
 JOBAD.config = 
 {
-	    'debug': true //Debugging enabled? (Logs etc)
+	    'debug': true, //Debugging enabled? (Logs etc)
+	    'BootstrapScope': undefined //Scope for Bootstrap CSS
 };
 
 /*

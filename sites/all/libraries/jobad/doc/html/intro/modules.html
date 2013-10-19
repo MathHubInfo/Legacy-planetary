@@ -493,7 +493,10 @@
         <span class="s1">&#39;url&#39;</span><span class="o">:</span> <span class="s1">&#39;http://example.com&#39;</span><span class="p">,</span> <span class="c1">//website url (if available)</span>
         <span class="s1">&#39;version&#39;</span><span class="o">:</span>  <span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="c1">//string containing the version number. May be omitted. </span>
         <span class="s1">&#39;dependencies&#39;</span><span class="o">:</span> <span class="p">[],</span> <span class="c1">//Array of module dependencies. If ommited, assumed to have no dependencies. </span>
-        <span class="s1">&#39;externals&#39;</span><span class="o">:</span> <span class="p">[],</span> <span class="c1">//external scripts this module depends on</span>
+        <span class="s1">&#39;externals&#39;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;js&quot;</span><span class="o">:</span> <span class="p">[],</span> <span class="c1">//external scripts this module depends on</span>
+            <span class="s2">&quot;css&quot;</span><span class="o">:</span> <span class="p">[]</span> <span class="c1">//external css this module depends on</span>
+        <span class="p">},</span> 
         <span class="s1">&#39;async&#39;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">//should globalinit be async</span>
         <span class="s1">&#39;hasCleanNamespace&#39;</span><span class="o">:</span> <span class="kc">true</span> <span class="c1">// Does this module contain only standard functions?</span>
     <span class="p">},</span>
@@ -504,7 +507,17 @@
         <span class="s2">&quot;a_num&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;number&quot;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Number&quot;</span><span class="p">,</span> <span class="s2">&quot;An awesome number between -10 and 10 &quot;</span><span class="p">]],</span>
         <span class="s2">&quot;an_int&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Integer&quot;</span><span class="p">,</span> <span class="s2">&quot;An awesome integer between -10 and 10. &quot;</span><span class="p">]],</span>
         <span class="s2">&quot;a_list&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;list&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Select an option&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">]]</span>
-    <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nx">Toolbar</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">JOBADInstance</span><span class="p">,</span> <span class="nx">Toolbar</span><span class="p">){</span>
+        <span class="cm">/* </span>
+<span class="cm">            Called whenever a new toolbar is supposed to be shown. </span>
+<span class="cm">            @this An instance of JOBAD.modules.loadedModule</span>
+<span class="cm">            @param JOBADInstance The instance of JOBAD the module is currently on. </span>
+<span class="cm">            @param Toolbar A jQuery element representing the toolbar. </span>
+<span class="cm">            @returns true if there is a Toolbar otherwise false. </span>
+<span class="cm">        */</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> 
+    <span class="p">},</span>
     <span class="cm">/* Init handlers */</span>
     <span class="nx">globalinit</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
         <span class="cm">/* </span>
@@ -538,6 +551,21 @@
 <span class="cm">            @param JOBADInstance The instance of JOBAD the module is deactivated on. </span>
 <span class="cm">        */</span>
     <span class="p">},</span>
+    <span class="nx">focus</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">JOBADInstance</span><span class="p">,</span> <span class="nx">previous</span><span class="p">){</span>
+        <span class="cm">/*</span>
+<span class="cm">            Called every time this JOBADInstance is focused. </span>
+<span class="cm">            @this An instance of JOBAD.modules.loadedModule</span>
+<span class="cm">            @param JOBADInstance The instance of JOBAD that is focused. </span>
+<span class="cm">            @param previous The instance of JOBAD that was focused previously or undefined.  </span>
+<span class="cm">        */</span>
+    <span class="p">},</span>
+    <span class="nx">unfocus</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">JOBADInstance</span><span class="p">){</span>
+        <span class="cm">/*</span>
+<span class="cm">            Called every time this JOBADInstance is unfocused. </span>
+<span class="cm">            @this An instance of JOBAD.modules.loadedModule</span>
+<span class="cm">            @param JOBADInstance The instance of JOBAD that is unfocused. </span>
+<span class="cm">        */</span>
+    <span class="p">},</span>
     <span class="cm">/* Event Handlers */</span>
     <span class="nx">leftClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">JOBADInstance</span><span class="p">){</span>
         <span class="cm">/*</span>
@@ -553,6 +581,15 @@
 <span class="cm">            called when a double click is performed.  </span>
 <span class="cm">            @this An instance of JOBAD.modules.loadedModule</span>
 <span class="cm">            @param target The element that has been double clicked on. </span>
+<span class="cm">            @param JOBADInstance The instance of JOBAD the module is initiated on.  </span>
+<span class="cm">            @returns Returns true iff it performed some action. </span>
+<span class="cm">        */</span>
+    <span class="p">},</span>
+    <span class="nx">keyPress</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">JOBADInstance</span><span class="p">){</span>
+        <span class="cm">/*</span>
+<span class="cm">            called when a key press occurs and this JOBADInstance is focused. Until some handler returns true, every action is performed. </span>
+<span class="cm">            @this An instance of JOBAD.modules.loadedModule</span>
+<span class="cm">            @param key The key combination that was pressed. See JOBAD.util.keyPress</span>
 <span class="cm">            @param JOBADInstance The instance of JOBAD the module is initiated on.  </span>
 <span class="cm">            @returns Returns true iff it performed some action. </span>
 <span class="cm">        */</span>
@@ -604,7 +641,7 @@
     <span class="p">}</span>
 <span class="p">};</span>
 
-<span class="nx">JOBAD</span><span class="p">.</span><span class="nx">modules</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span> <span class="c1">//don&#39;t forget to register it. </span>
+<span class="nx">JOBAD</span><span class="p">.</span><span class="nx">modules</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span> <span class="c1">//register the module. </span>
 </code></pre></div>
 
 <p>When you write a module and you wish to use jQuery, do not use the "$" reference to jQuery. This might not be available if jQuery is in noConflict mode. Always use the JOBAD.refs.$ reference to jQuery. 

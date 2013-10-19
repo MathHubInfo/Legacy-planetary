@@ -485,7 +485,7 @@
 
 <div class="codehilite"><pre><code><span class="cm">/*</span>
 <span class="cm">    example1.js - An example module for JOBAD. </span>
-<span class="cm">    A Testing module, colors &lt;p&gt;s in the color given as first parameter. </span>
+<span class="cm">    A Testing module, colors &lt;p&gt;s in the color given as first parameter. Also has a surprise. </span>
 
 <span class="cm">    Copyright (C) 2013 KWARC Group &lt;kwarc.info&gt;</span>
 
@@ -523,6 +523,12 @@
         <span class="p">},</span>
         <span class="nx">colorize</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">target</span><span class="p">){</span>
             <span class="nx">target</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">localStore</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">));</span> <span class="c1">//get the color setting and apply it. </span>
+        <span class="p">},</span>
+        <span class="nx">keyPress</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span> <span class="nx">JI</span><span class="p">){</span> <span class="c1">//make it coloured on f7</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">k</span> <span class="o">==</span> <span class="s2">&quot;f7&quot;</span><span class="p">){</span>
+                <span class="nx">JI</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">localStore</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">));</span> 
+                <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+            <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">});</span>
 <span class="p">})(</span><span class="nx">JOBAD</span><span class="p">.</span><span class="nx">refs</span><span class="p">.</span><span class="nx">$</span><span class="p">);</span>
@@ -638,6 +644,65 @@
     <span class="p">});</span>
 <span class="p">})(</span><span class="nx">JOBAD</span><span class="p">.</span><span class="nx">refs</span><span class="p">.</span><span class="nx">$</span><span class="p">);</span>
 </code></pre></div>
+
+<h2>test.menu3</h2>
+
+<pre><code>/*
+    test.menu3.js - An example module for JOBAD. 
+    Test the menu and adds several items. 
+
+    Copyright (C) 2013 KWARC Group &lt;kwarc.info&gt;
+
+    This file is part of JOBAD.
+
+    JOBAD is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    JOBAD is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with JOBAD.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+*/
+(function($){
+    JOBAD.modules.register({
+        info:{
+            'identifier':   'test.menu3',
+            'title':    'Menu Testing module: Dynamic callbacks',
+            'author':   'Tom Wiesing',
+            'description':  'Tests dynamic menu callbacks. '
+        },
+        contextMenuEntries: function(target, JOBADInstance){
+            return {
+                "Dynamic Menu Test": [
+                    function(){
+                        var message = $("#dynamic_menu_test").data("dynamic_message");
+                        alert(message); 
+                    }, {
+                        "id": "dynamic_menu_test", //This is the id
+                        "icon": "none" //set an icon if desired
+                    }
+                ]
+            }
+        },
+        onEvent: function(evt){
+            if(evt == "contextMenuOpen"){
+                //Context Menu is opened
+                $("#dynamic_menu_test").data("dynamic_message", "this message has been generated in another function. ");
+                console.log("Menu open"); 
+            }
+            if(evt == "contextMenuClose"){
+                //Context Menu was closed
+                console.log("Menu close"); 
+            }
+        }
+    });
+})(JOBAD.refs.$);
+</code></pre>
 
 <h2>test.hover</h2>
 

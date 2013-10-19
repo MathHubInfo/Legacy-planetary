@@ -15,6 +15,7 @@
 	* **Object** `config` Configuration. 
 		* **Function|String** `config.type(element, elementOrg)` Optional. Type of menu to use. Either a fixed string or a function returning the type of menu to use. Types are: `standard` (0) and `radial` (1). 
 		* **Function** `config.open()` Optional. Will be called before the context menu is opened. 
+		* **Function** `config.show(menuBuild, result)` Optional. Will be called once the menu Build is shown. 
 		* **Function** `config.close()`Optional. Will be called after the context menu has been closed. 
 		* **Function** `config.callback()` Optional. Will be called after a callback is called. 
 		* **jQuery** `config.parents` Optional. Menus not to keep open when this menu is opened. 
@@ -23,6 +24,7 @@
 		* **jQuery** `config.unbindListener` Element to additionally listen to for unbinds. 
 		* **jQuery** `config.callBackTarget` Optional. Element to use for callback. Defaults to found element. 
 		* **jQuery** `config.callBackOrg`	Optional. Element to use for callback. 
+		* **Boolean** `config.stopPropagnate` Optional. If set to true, will not propagnate menus (check parents if no menu is available). 
 	* **returns** The `element` the menu was registered on.
 * **Function** `JOBAD.UI.ContextMenu.clear(keepers)` - Clears all context menus
 	* **jQuery** `keepers` Menus to keep open

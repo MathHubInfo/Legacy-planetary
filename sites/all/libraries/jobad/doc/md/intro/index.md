@@ -54,6 +54,19 @@ loadedModule.deactivate(); //deactivate the module
 loadedModule.activate(); //activate the module
 ```
 
+JOBADInstances can also be focused and unfocused. This allows their Toolbars to be shown. To focus or unfocus a JOBADInstance: 
+
+```js
+myJOBADInstance.Instance.focus() //Focus an Instance
+myJOBADInstance.Instance.unfocus() //UnFocus an Instance
+```
+
+At most one Instance can be focused at any time. To get the currently focused Instance use: 
+
+```js
+var focused = JOBAD.Instances.focused(); //may be undefined if no Instance is focused. 
+```
+
 For more information on what you can do with loadedModules, please refer to the [API Documentation](../api/JOBAD/JOBAD.modules/loadedModule.md). 
 
 For more information on what you can do with JOBADInstances, please refer to the respective section in the [API Documentation](../api/JOBAD/JOBADInstance/index.md). 
@@ -66,6 +79,7 @@ For more information on what you can do with JOBADInstances, please refer to the
     * [Tooltips](hover.md) - How to use tooltips in JOBAD
     * [Context Menu](contextmenu.md) - How to use the context menu
     * [Sidebar](sidebar.md) - How does the sidebar work?
+    * [Toolbar](Toolbar.md) - What is the Toolbar? 
     * [Folding](folding.md) - Folding the DOM
     * [Configuration Options](config.md) - How can I configure JOBAD modules?
     * [Module examples](example_modules.md) - Example Modules

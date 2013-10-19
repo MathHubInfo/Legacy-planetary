@@ -503,18 +503,29 @@
 <li><strong>Number</strong> <code>from</code> </li>
 <li><strong>Number</strong> <code>to</code></li>
 </ul></li>
-<li><strong>Function</strong> <code>JOBAD.util.createRadio(texts, start)</code> - Creates a jQuery UI radio button
+<li><strong>Function</strong> <code>JOBAD.util.createDropDown(values, texts, start)</code> - Creates a Dropdown Box. <br />
+<ul>
+<li><strong>Array</strong> <code>values</code> Values to use. </li>
+<li><strong>Array</strong> <code>texts</code> Texts to use. </li>
+<li><strong>number</strong> <code>start</code> Number of the initial value. </li>
+<li><strong>returns</strong> jQuery object</li>
+</ul></li>
+<li><strong>Function</strong> <code>JOBAD.util.createRadio(texts, start)</code> - Creates a Bootstrap radio button (Button group)
 <ul>
 <li><strong>Array</strong> <code>texts</code> Texts to use as names</li>
 <li><strong>number</strong> <code>start</code> Identifier of the initial value</li>
 <li><strong>returns</strong> jQuery object</li>
 </ul></li>
-<li><strong>Function</strong> <code>JOBAD.util.createTabs(names, tabs, options, height)</code> - Creates a jQuery UI tabs
+<li><strong>Function</strong> <code>JOBAD.util.createTabs(names, tabs, options, height)</code> - Creates tab data compatible with Bootstrap. 
 <ul>
 <li><strong>Array</strong> <code>names</code> Texts to use as names for tab titles</li>
 <li><strong>Array</strong> <code>tabs</code> Elements to use as tabs</li>
-<li><strong>Array</strong> <code>options</code> Options to pass to jQuery UI Tabs</li>
-<li><strong>number</strong> <code>height</code> Optional. Height of the tabs</li>
+<li><strong>Object</strong> <code>config</code> Configuration. Optional. 
+<ul>
+<li><strong>String</strong> <code>config.type</code> Type of tabs to use. CSS Class. </li>
+<li><strong>Function</strong> <code>config.select(tabName, tab)</code> Select Hook. To be called on selection of a tab. </li>
+<li><strong>Function</strong> <code>config.unselect(tabName, tab)</code> Deselect Hook. To be called on the deselection of a tab. </li>
+</ul></li>
 <li><strong>returns</strong> jQuery object</li>
 </ul></li>
 <li><strong>Function</strong> <code>JOBAD.util.closest(element, check)</code> - Similar to jQuery's closest. Travels up the DOM tree and finds the first element which matches check. This includes element itself
@@ -580,7 +591,7 @@
 <li><strong>jQuery</strong> <code>contained</code> Contained elements to look for. </li>
 <li><strong>Boolean</strong> <code>includeSelf</code> Optional. Include the container element iteself in the search. Default: False. </li>
 </ul></li>
-<li><strong>Function</strong> <code>JOBAD.util.loadExternalJS(names, callback, scope)</code> - Loads one or more external JavaScript files. 
+<li><strong>Function</strong> <code>JOBAD.util.loadExternalJS(names, callback, scope, preLoadHack)</code> - Loads one or more external JavaScript files. 
 <ul>
 <li><strong>Array|String</strong> <code>names</code> Name (URL) of file to load or array of file names. </li>
 <li><strong>Function</strong> <code>callback(urls, success)</code> Callback once files have loaded
@@ -589,8 +600,22 @@
 <li><strong>Array</strong> <code>urls</code> Originally given urls. </li>
 <li><strong>Boolean</strong> <code>success</code> Have the files been loaded or has there been a timeout?</li>
 </ul></li>
+<li><strong>Function</strong> <code>preLoadHack(url)</code> Optional. Called directly before a (single) file is loaded. </li>
 </ul></li>
-<li><strong>Function</strong> <code>JOBAD.util.escapeHTML(str)</code> - Escapes a string for use within html. 
+<li><strong>Function</strong> <code>JOBAD.util.loadExternalCSS(names, callback, scope, preLoadHack)</code> - Loads one or more external CSS files. 
+<ul>
+<li><strong>Array|String</strong> <code>names</code> Name (URL) of file to load or array of file names. </li>
+<li><strong>Function</strong> <code>callback(urls, success)</code> Callback once files have loaded
+<ul>
+<li><strong>this</strong> <code>scope</code></li>
+<li><strong>Array</strong> <code>urls</code> Originally given urls. </li>
+<li><strong>Boolean</strong> <code>success</code> Have the files been loaded or has there been a timeout?</li>
+</ul></li>
+<li><strong>Function</strong> <code>preLoadHack(url)</code> Optional. Called directly before a (single) file is loaded. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.util.getCurrentOrigin()</code> - Gets the current file being executed. Works only directly in a script file. </p></li>
+<li><p><strong>Function</strong> <code>JOBAD.util.escapeHTML(str)</code> - Escapes a string for use within html. </p>
+
 <ul>
 <li><strong>String</strong> <code>str</code> String to escape</li>
 </ul></li>
@@ -621,12 +646,40 @@
 <li><strong>jQuery</strong> <code>query</code> A jQuery element to use as query. </li>
 <li><strong>String</strong> <code>id</code> Id of handler to remove. </li>
 </ul></li>
-<li><strong>Function</strong> <code>JOBAD.util.trigger(query, event, params)</code> - Triggers an event on a query. 
+<li><p><strong>Function</strong> <code>JOBAD.util.trigger(query, event, params)</code> - Triggers an event on a query. </p>
+
 <ul>
 <li><strong>jQuery</strong> <code>query</code> A jQuery element to use as query. </li>
 <li><strong>String</strong> <code>event</code> Event to trigger. </li>
 <li><strong>Array</strong> <code>params</code> Optional. Array of parameters to pass to event handlers.</li>
 <li><strong>returns</strong> <code>Array of results</code></li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.util.EventHandler()</code> - Creates a new Event Handler which has the functions ".on", ".once", ".off", ".trigger" as above (without the first parameter)</p></li>
+<li><p><strong>Function</strong> <code>JOBAD.util.limit(x, a, b)</code> - Limit x to be between a and b. </p>
+
+<ul>
+<li><strong>Number</strong> <code>x</code></li>
+<li><strong>Number</strong> <code>a</code></li>
+<li><strong>Number</strong> <code>b</code></li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.util.permuteArray(arr, a, b)</code> - Return a premuted copy of the array arr. </p>
+
+<ul>
+<li><strong>Array</strong> <code>arr</code> Array to permute</li>
+<li><strong>Number</strong> <code>a</code> Index of the first element to exchange. </li>
+<li><strong>Number</strong> <code>b</code> Index of the second element to exchange. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.util.toKeyString(evt)</code> - Turns the keydown or keypress event evt into a string for a key. </p>
+
+<ul>
+<li><strong>Event</strong> <code>evt</code> The keydown or keypress event to translate. </li>
+<li><strong>returns</strong> <code>string</code> of the form '[ctrl+][alt+][shift+]$key_name'. Note that only a special key shows up as 'ctrl+'. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.util.onKey(callback)</code> - Registers a listener for a keypress event. </p>
+
+<ul>
+<li><strong>Function</strong> <code>callback(key, orgEvent)</code> The callback</li>
+<li><strong>returns</strong> a string. Use <code>$(document).off(returned_value)</code> to deregister the listener. </li>
 </ul></li>
 </ul>
 

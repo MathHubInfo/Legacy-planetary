@@ -1,50 +1,59 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>JOBAD v3 (CHAOS) Example Page</title>
 
 		<!-- This file has been generated automatically. Any changes will be overwritten. -->
 		
-		<script src="./../../../js/deps/jquery/jquery-2.0.2.min.js"></script>
-		<script src="./../../../js/deps/jquery/jquery-ui-1.10.3.js"></script>
-		<link href="./../../../css/jquery-ui.css" rel="stylesheet">
+<script src='./../../../js/deps/jquery/jquery-2.0.2.min.js'></script>
+<script src='./../../../js/deps/bootstrap.js'></script>
+<link rel='stylesheet' type='text/css' href='./../../../css/libs/bootstrap/css/bootstrap.less.css'>
 
 		<!-- Include JOBAD -->
 <script src='./../../../js/core/JOBAD.core.js'></script>
-<script src='./../../../js/util/underscore.js'></script>
+<script src='./../../../js/bundled/jquery-color/jquery.color.plus-names-2.1.2.js'></script>
+<script src='./../../../js/bundled/underscore/underscore.js'></script>
 <script src='./../../../js/util/JOBAD.util.js'></script>
 <script src='./../../../js/JOBAD.resources.js'></script>
 <script src='./../../../js/JOBAD.repo.js'></script>
 <script src='./../../../js/core/JOBAD.core.modules.js'></script>
-<script src='./../../../js/core/JOBAD.core.events.js'></script>
+<script src='./../../../js/core/JOBAD.core.setup.js'></script>
 <script src='./../../../js/ui/JOBAD.ui.js'></script>
 <script src='./../../../js/ui/JOBAD.ui.hover.js'></script>
 <script src='./../../../js/ui/JOBAD.ui.contextmenu.js'></script>
 <script src='./../../../js/ui/JOBAD.ui.sidebar.js'></script>
-<script src='./../../../js/ui/JOBAD.ui.toolbar.js'></script>
 <script src='./../../../js/ui/JOBAD.ui.overlay.js'></script>
 <script src='./../../../js/ui/JOBAD.ui.folding.js'></script>
+<script src='./../../../js/ui/JOBAD.ui.toolbar.js'></script>
 <script src='./../../../js/events/JOBAD.sidebar.js'></script>
 <script src='./../../../js/events/JOBAD.folding.js'></script>
+<script src='./../../../js/events/JOBAD.toolbar.js'></script>
 <script src='./../../../js/events/JOBAD.events.js'></script>
 <script src='./../../../js/JOBAD.config.js'></script>
+<script src='./../../../js/core/JOBAD.core.instances.js'></script>
 <script src='./../../../js/JOBAD.wrap.js'></script>
 <link rel='stylesheet' type='text/css' href='./../../../css/JOBAD.css'>
 <link rel='stylesheet' type='text/css' href='./../../../css/JOBAD.theme.css'>
 
 		<script type="text/javascript">
-			var JOBAD1, JOBAD2;
+			JOBAD.config.BootstrapScope = "bootstrap"; //Bootstrap CSS scope
 
-			JOBAD.repo.loadAllFrom("../../../modules", function(){ //Load all from the repo
-				jQuery(function(){	
+			var JOBAD1, JOBAD2;
+			
+			JOBAD.repo.loadAllFrom("./../../../modules", function(){ //Load all from the repo
+				jQuery(function(){
 					JOBAD1 = new JOBAD(jQuery("#1"));
-					JOBAD2 = new JOBAD(jQuery("#2"));
+					JOBAD2 = new JOBAD(jQuery("#2"), {
+						"auto_show_toolbar": true
+					});
 
 					JOBAD1.modules.load([
 						['test.click', ['green']],
 						"test.menu1",
 						"test.menu2",
 						"test.hover",
-						"jobad.debug"
+						"jobad.debug",
+						"jobad.showfocus"
 					], function(mod, state){
 						this.Setup();
 					});
@@ -53,10 +62,14 @@
 						['test.click', ['blue']],
 						"test.menu1",
 						"test.menu2",
+						// "test.menu3",
 						"test.hover",
 						"test.sidebar",
 						"jobad.debug",
-						"mathjax.mathjax"
+						"mathjax.mathjax",
+						"test.tb1", 
+						"test.tb2",
+						"jobad.showfocus"
 					], function(mod, state){
 						this.Setup();
 					});

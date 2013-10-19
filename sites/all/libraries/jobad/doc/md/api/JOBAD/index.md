@@ -4,11 +4,11 @@ This object is the main JOBAD Namespace.
 * **Function** `JOBAD(element, config)` Creates a new instance of `JOBAD` bound to `element` 
 	* **jQuery** `element` a jQuery Object to bind this JOBAD INstance to. May not be empty. Collections containing more than one element may cause problems 
 	* **Object** `config` JOBAD Configuration. 
-		* **String** `config.sidebar_type` Type of sidebar to use: `right` (default), `left` or `bound`
 		* **Array** `config.restricted_user_config` An array of configuration items which can not be changed by the user
+		* **Boolean** `config.auto_show_toolbar` Should toolbars be shows automatically? 
 	* **returns** a new [`JOBAD`](JOBADInstance/index.md) instance
 
-* **String** `JOBAD.version` - The current JOBAD Version ('3.1.6')
+* **String** `JOBAD.version` - The current JOBAD Version ('3.2.0')
 * **Function** `JOBAD.error(msg)` - Produces an error message
     * **String** `msg` The message to produce
 * **Function** `JOBAD.isEventDisabled(name)` - Checks if an event is globally disabled
@@ -17,6 +17,7 @@ This object is the main JOBAD Namespace.
 * **Function** `JOBAD.noConflict()` - Restores the variable $ created by jQuery to its previous state. 
     * **returns** a reference to jQuery
 * **Array** [`JOBAD.ifaces`](JOBAD.ifaces/index.md) - JOBAD ifaces
+* **Object** [`JOBAD.Instances`](JOBAD.Instances.md) - Namespace for JOBAD Instances.  
 * **Object** [`JOBAD.config`](JOBAD.config.md) - Configuration namespace
 * **Object** [`JOBAD.console`](JOBAD.console.md) - Wraps the native console object if available
 * **Object** [`JOBAD.events`](JOBAD.events/index.md) - Event namespace

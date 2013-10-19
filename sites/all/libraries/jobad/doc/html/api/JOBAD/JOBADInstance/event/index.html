@@ -482,13 +482,99 @@
 <h1>JOBADInstance.Event</h1>
 
 <ul>
+<li><p><strong>Function</strong> <code>.Event.on(event, handler)</code> - Adds an event listener. </p>
+
+<ul>
+<li><strong>String</strong> <code>event</code> Event to listen to. </li>
+<li><em>*Function</em> <code>handler(param1, param2, ...)</code> Event listener</li>
+<li><strong>returns</strong> Id of the newly added handler. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Event.once(event, handler)</code> - Adds a one-time  event listener. </p>
+
+<ul>
+<li><strong>String</strong> <code>event</code> Event to listen to. </li>
+<li><em>*Function</em> <code>handler(param1, param2, ...)</code> Event listener</li>
+<li><strong>returns</strong> Id of the newly added handler. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Event.off(id)</code> - Removes an event listener. </p>
+
+<ul>
+<li><strong>String</strong> <code>id</code> Id of handler to remove. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Event.trigger(event, params)</code> - Calls all event handlers belonging to an event. </p>
+
+<ul>
+<li><strong>String</strong> <code>event</code> Event to trigger. </li>
+<li><strong>Array</strong> <code>params</code> Optional. Array of parameters to pass to event handlers.</li>
+<li><strong>returns</strong> <code>Array of results</code></li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Event.handle(event, param)</code> - Triggers a handlable event. </p>
+
+<ul>
+<li><strong>String</strong> <code>event</code> Event to trigger. </li>
+<li><strong>Array</strong> <code>param</code> Optional. Parameter for event. </li>
+<li><strong>returns</strong> <code>Array of results</code></li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Event.bind(event, module, handlerName)</code> - Binds a member function of a module to an event. </p>
+
+<ul>
+<li><strong>String</strong> <code>event</code> Event to listen to. </li>
+<li><strong>Instance[ <a href="../../JOBAD.modules/loadedModule.html">JOBAD.modules.loadedModule</a> ]</strong> <code>module</code> Instance of module to use. </li>
+<li><strong>String</strong> <code>handlerName</code> Name of the handler Function of the module. </li>
+</ul></li>
+</ul>
+
+<p>The following event names are available: </p>
+
+<ul>
+<li><code>module.activate($module)</code> The module $module was activated. </li>
+<li><p><code>module.deactivate($module)</code> The module $module was deactivated. </p></li>
+<li><p><code>instance.enable</code> This JOBADInstance was enabled. </p></li>
+<li><code>instance.beforeEnable</code> Before this JOBADInstance is enabled.  (It is still disabled)</li>
+<li><code>instance.disable</code> This JOBADInstance was disabled. </li>
+<li><code>instance.beforeDisable</code> Before this JOBADInstance is disabled.  (It is still enabled)</li>
+<li><code>instance.focus</code> This JOBADInstance is focused. </li>
+<li><p><code>instance.unfocus</code> This JOBADInstance is unfocused. </p></li>
+<li><p><code>module.load($module, $options)</code> The module $module was loaded successfully. </p></li>
+<li><p><code>module.fail($module, $reason)</code> The module $module has failed to load. </p></li>
+<li><p><code>contextmenu.open</code> After the context menu has been opened</p></li>
+<li><p><code>contextmenu.close</code> After the context menu has been closed</p></li>
+<li><p><code>folding.enable</code> Before folding is enabled</p></li>
+<li><p><code>folding.disable</code> After folding is disabled</p></li>
+<li><p><code>instance.focus</code> This JOBADInstance was focused. </p></li>
+<li><p><code>instance.unfocus</code> This JOBADInstance was unfocused. </p></li>
+<li><p><code>event.before.$name($name, params)</code>: Triggered before an event occurs. </p></li>
+<li><code>event.after.$name($name, params)</code>: Triggered after an event occurs. </li>
+<li><code>$name(params)</code>: Triggered once an event result is fetched. </li>
+</ul>
+
+<p><code>$name</code> can take the following values: </p>
+
+<ul>
+<li><code>leftClick</code> - Double click on an element</li>
+<li><code>dblClick</code> - Double click on an element</li>
+<li><code>contextMenuEntries</code> - Context Menu of an element is requested</li>
+<li><code>configUpdate</code> - A specific configuration setting is updated</li>
+<li><code>hoverText</code> - Hover Text requested on an element</li>
+<li><code>SideBarUpdate</code>- The sidebar is updated. </li>
+<li><p><code>keyPress</code> - A key is pressed. </p></li>
+<li><p><code>event.handlable($evt, $param)</code>: triggered on any handable event. (An event that can be handled by the onEvent Handler). </p></li>
+</ul>
+
+<h1>The following specific Event Namespacesare available:</h1>
+
+<ul>
 <li><strong>Object</strong> <a href="dblClick.html"><code>.Event.dblClick</code></a> Namespace for dblClick Events. </li>
-<li><strong>Object</strong> <a href="leftClick.html"><code>.Event.leftClick</code></a> Namespace for leftClick Events. </li>
+<li><strong>Object</strong> <a href="leftClick.html"><code>.Event.leftClick</code></a> Namespace for leftClick Events.</li>
+<li><strong>Object</strong> <a href="leftClick.html"><code>.Event.keyPress</code></a> Namespace for leftClick Events.  </li>
 <li><strong>Object</strong> <a href="contextMenuEntries.html"><code>.Event.contextMenuEntries</code></a> Namespace for contextMenuEntries Events. </li>
 <li><strong>Object</strong> <a href="hoverText.html"><code>.Event.hoverText</code></a> Namespace for hoverText Events. </li>
 <li><strong>Object</strong> <a href="configUpdate.html"><code>.Event.configUpdate</code></a> Namespace for onConfigUpdate Events. </li>
-<li><strong>Object</strong> <a href="onSideBarUpdate.html"><code>.Event.onSideBarUpdate</code></a> Namespace for onSideBarUpdate Events. </li>
+<li><strong>Object</strong> <a href="SideBarUpdate.html"><code>.Event.SideBarUpdate</code></a> Namespace for SideBarUpdate Events. </li>
 <li><strong>Object</strong> <a href="onEvent.html"><code>.Event.onEvent</code></a> Namespace for onEvent Events. </li>
+<li><strong>Object</strong> <a href="focus.html"><code>.Event.focus</code></a> Namespace for focus Events. </li>
+<li><strong>Object</strong> <a href="unfocus.html"><code>.Event.unfocus</code></a> Namespace for unfocus Events. </li>
+<li><strong>Object</strong> <a href="Toolbar.html"><code>.Event.Toolbar</code></a> Namespace for Toolbar Events. </li>
 </ul>
 
 <h2>See also</h2>

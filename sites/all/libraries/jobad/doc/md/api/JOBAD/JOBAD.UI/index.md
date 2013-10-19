@@ -20,3 +20,6 @@ This object contains the JOBAD User interface
         * `reset` - Go back to the original state
         * `rotate` - Rotate through the above. 
     * **Function** `callback(state)` Optional. If `sortFunction == 'rotate'`,  this function will be called with the current (new) state. (0 = 'reset', 1=`ascending`, 2=`descending`)
+* **Function** `JOBAD.UI.BS(element)` Enables Bootstrap styling on an element. Also availbale as "jQuery.fn.BS". 
+    * **jQuery** `element` Element to enable Bootstrap styling on. 
+* **Function** `JOBAD.UI.BSStyle()` Enables Bootstrap styling on newly added elements. 

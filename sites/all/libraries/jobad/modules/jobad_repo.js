@@ -35,7 +35,12 @@ JOBAD.repo.config({
 			"test.hover", 
 			"test.menu1", 
 			"test.menu2", 
-			"test.sidebar"
+			"test.menu3",
+			"test.sidebar",
+			"test.config",
+			"test.tb1", 
+			"test.tb2", 
+			"jobad.showfocus"
 	],
 	"at": {
 			/*
@@ -46,15 +51,19 @@ JOBAD.repo.config({
 			"jobad.debug": "core/jobad/jobad.debug.js",
 			"jobad.config": "core/jobad/jobad.config.js",
 			"jobad.folding": "core/jobad/jobad.folding.js",
+			"jobad.showfocus": "core/jobad/jobad.showfocus.js",
 			"mathjax.mathjax": "core/mathjax.mathjax.js",
 			"test.click": "core/test/test.click.js",
 			"test.hover": "core/test/test.hover.js",
 			"test.menu1": "core/test/test.menu1.js",
 			"test.menu2": "core/test/test.menu2.js",
-			"test.sidebar": "core/test/test.sidebar.js"
-			
+			"test.menu3": "core/test/test.menu3.js",
+			"test.sidebar": "core/test/test.sidebar.js",
+			"test.config": "core/test/test.config.js",
+			"test.tb1": "core/test/TB1.js",
+			"test.tb2": "core/test/TB2.js"
 	},
-	"versions": ["3.1.5", "3.1.6"], //compatible JOBAD versions
+	"versions": ["3.2.0"], //compatible JOBAD versions
 	"name": "Core JOBAD Modules Repository", //name
 	"description": "JOBAD Modules repository from the Core" //description
 });

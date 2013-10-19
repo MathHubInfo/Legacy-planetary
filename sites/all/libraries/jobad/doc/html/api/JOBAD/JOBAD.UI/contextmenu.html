@@ -501,6 +501,7 @@
 <ul>
 <li><strong>Function|String</strong> <code>config.type(element, elementOrg)</code> Optional. Type of menu to use. Either a fixed string or a function returning the type of menu to use. Types are: <code>standard</code> (0) and <code>radial</code> (1). </li>
 <li><strong>Function</strong> <code>config.open()</code> Optional. Will be called before the context menu is opened. </li>
+<li><strong>Function</strong> <code>config.show(menuBuild, result)</code> Optional. Will be called once the menu Build is shown. </li>
 <li><strong>Function</strong> <code>config.close()</code>Optional. Will be called after the context menu has been closed. </li>
 <li><strong>Function</strong> <code>config.callback()</code> Optional. Will be called after a callback is called. </li>
 <li><strong>jQuery</strong> <code>config.parents</code> Optional. Menus not to keep open when this menu is opened. </li>
@@ -509,6 +510,7 @@
 <li><strong>jQuery</strong> <code>config.unbindListener</code> Element to additionally listen to for unbinds. </li>
 <li><strong>jQuery</strong> <code>config.callBackTarget</code> Optional. Element to use for callback. Defaults to found element. </li>
 <li><strong>jQuery</strong> <code>config.callBackOrg</code>   Optional. Element to use for callback. </li>
+<li><strong>Boolean</strong> <code>config.stopPropagnate</code> Optional. If set to true, will not propagnate menus (check parents if no menu is available). </li>
 </ul></li>
 <li><strong>returns</strong> The <code>element</code> the menu was registered on.</li>
 </ul></li>

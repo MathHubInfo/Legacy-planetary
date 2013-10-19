@@ -2,7 +2,7 @@
 
 Welcome to the JOBAD v3 Documentation. 
 
-This is JOBAD Version 3.1.6 (stable branch). 
+This is JOBAD Version 3.2.0 (development branch). 
 
 * [About JOBAD](about.md) - General Information about JOBAD
 * [Setup](intro/setup.md) - Quickly setup JOBAD on your web page
@@ -10,6 +10,7 @@ This is JOBAD Version 3.1.6 (stable branch).
 * [Demos](demos.md) - Demos
 * [API Documentation](api/index.md) - Documentation of the JavaScript API
 * [CSS Documentation](css.md) - Description of JOBAD CSS
+* [Dependencies](deps.md) - Detailed description of Dependencies needed
 
 * [(Known) Issues](issues.md) - Known Issues
 

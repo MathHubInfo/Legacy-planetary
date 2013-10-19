@@ -10,3 +10,7 @@ Here you can find examples of JOBAD.
 	* [Release version](./../../examples/build/math/release.html)
 	* [Development version](./../../examples/build/math/dev.html)
 	* [Unbuilt version](./../../examples/build/math/unbuilt.html)
+* withjqueryui - Testing compatibility with jQuery UI. 
+	* [Release version](./../../examples/build/withjqueryui/release.html)
+	* [Development version](./../../examples/build/withjqueryui/dev.html)
+	* [Unbuilt version](./../../examples/build/withjqueryui/unbuilt.html)

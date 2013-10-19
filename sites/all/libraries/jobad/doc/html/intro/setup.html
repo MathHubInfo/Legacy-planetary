@@ -493,25 +493,31 @@ To get the code use </p>
 JOBAD itself depends on: </p>
 
 <ul>
-<li><a href="http://jquery.com">jQuery</a> - tested with version 2.0.2</li>
-<li><a href="http://jqueryui.com/">jQuery UI</a> - tested with version 1.10.3</li>
+<li><a href="http://jquery.com">jQuery</a> - works with version &gt;= 1.8</li>
+<li><a href="http://getbootstrap.com/2.3.2/">Bootstrap</a> - tested with version v2.3.2, <strong>not</strong> compatible with version 3.x</li>
 </ul>
 
-<p>Both dependencies are bundled with JOBAD. </p>
+<p>For Bootstrap you can also use a scoped version (all the CSS is restricted to a certain class) , in which case you should configure this is with: 
+```
+    JOBAD.config.BootstrapScope = "bootstrap"; //set this to the bootstrap class name
+````</p>
+
+<p>All dependencies are bundled with JOBAD, but can also be included from different sources. </p>
 
 <p>The javascript side of the JOBAD code exists in three different versions: </p>
 
 <ul>
 <li>an unbuilt version, which consists of several files. </li>
 <li>a development version version which consists of one file with comments and readable version: (<code>JOBAD.js</code>)</li>
-<li>a release version which consists of one file with compressed code. It is created by running the development version through the <a href="https://developers.google.com/closure/compiler/">Google Closure Compiler</a>. </li>
+<li>a release version which consists of one file with compressed code. </li>
 </ul>
 
-<p>The CSS code version of the code exists in two different versions: </p>
+<p>The CSS code version of the code exists in three different versions: </p>
 
 <ul>
 <li>an unbuilt version, which consists of several files. </li>
-<li>a built Version which consists of one file. </li>
+<li>a built Version which consists of one file.</li>
+<li>a minimised Version which consists of the minimsed built version file.  </li>
 </ul>
 
 <p>You only need to use one version of the JS code and one version of the CSS code in your page. </p>
@@ -521,31 +527,40 @@ JOBAD itself depends on: </p>
 <div class="codehilite"><pre><code><span class="nt">&lt;head&gt;</span>
     <span class="c">&lt;!-- other header tags here --&gt;</span>
     <span class="c">&lt;!-- Include dependencies --&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/deps/jquery/jquery-2.0.0.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/deps/jquery/jquery-ui-1.10.3.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/jquery-ui.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/deps/jquery/jquery-2.0.2.min.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/deps/bootstrap.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;css/libs/bootstrap/css/bootstrap.less.css&quot;</span><span class="nt">&gt;</span>
+</code></pre></div>
+
+<p>The Libraries are also compiled into one JS and CSS file, which both can be included via the following code snippet. This is the recommended method for including the depencies: </p>
+
+<div class="codehilite"><pre><code>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;build/release/libs/js/libs.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;build/release/libs/css/libs.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
 </code></pre></div>
 
 <p>If you want to include the unbuilt js files use this code: </p>
 
 <div class="codehilite"><pre><code>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/core/JOBAD.core.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/util/underscore.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/bundled/jquery-color/jquery.color.plus-names-2.1.2.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/bundled/underscore/underscore.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/util/JOBAD.util.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/JOBAD.resources.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/JOBAD.repo.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/core/JOBAD.core.modules.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/core/JOBAD.core.events.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/core/JOBAD.core.setup.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/ui/JOBAD.ui.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/ui/JOBAD.ui.hover.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/ui/JOBAD.ui.contextmenu.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/ui/JOBAD.ui.sidebar.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
-    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/ui/JOBAD.ui.toolbar.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/ui/JOBAD.ui.overlay.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/ui/JOBAD.ui.folding.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/ui/JOBAD.ui.toolbar.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/events/JOBAD.sidebar.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/events/JOBAD.folding.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/events/JOBAD.toolbar.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/events/JOBAD.events.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/JOBAD.config.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/core/JOBAD.core.instances.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
     <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&#39;js/JOBAD.wrap.js&#39;</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre></div>
 
@@ -568,6 +583,11 @@ JOBAD itself depends on: </p>
 <p>To use the built CSS version, use this code: </p>
 
 <div class="codehilite"><pre><code>     <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;build/release/JOBAD.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+</code></pre></div>
+
+<p>To use the minimised CSS version, use this code: </p>
+
+<div class="codehilite"><pre><code>     <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;build/release/JOBAD.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
 </code></pre></div>
 
 <p>Afterwards, you can include any modules you might want to use. Then you can use JOBAD on your page: </p>

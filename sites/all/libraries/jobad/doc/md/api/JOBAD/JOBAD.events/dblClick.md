@@ -1,6 +1,6 @@
 # JOBAD.events.dblClick
 
-The leftClick event is triggered every time an element is double clicked. 
+The dblClick event is triggered every time an element is double clicked. 
 
 * **Function** `JOBAD.events.dblClick.default()` The default Event Handler for dblClick Events. Just returns false. 
 

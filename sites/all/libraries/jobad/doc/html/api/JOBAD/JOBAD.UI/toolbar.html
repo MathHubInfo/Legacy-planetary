@@ -482,37 +482,23 @@
 <h1>JOBAD.UI.Toolbar</h1>
 
 <ul>
-<li><p><strong>Function</strong> <code>JOBAD.UI.Toolbar.clear(element)</code> - Clears the toolbar and destroys it. </p>
+<li><strong>Object</strong> <code>JOBAD.UI.Toolbar.config</code> - JOBAD Toolbar UI Configuration namespace</li>
+<li><p><strong>Number</strong> <code>JOBAD.UI.Toolbar.config.height</code> - Default height for new sidebars. (Default: 20)</p></li>
+<li><p><strong>Function</strong> <code>JOBAD.UI.Toolbar.add()</code> - Adds a toolbar to the page and returns a reference to it </p>
 
 <ul>
-<li><strong>jQuery</strong> <code>element</code> Element to clear toolbar of. </li>
+<li><strong>returns</strong> jQuery reference to the new sidebar</li>
 </ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.UI.Toolbar.update(element)</code> - Updated the toolbar. </p>
+<li><p><strong>Function</strong> <code>JOBAD.UI.Toolbar.update()</code> - Updates the toolbar display for all current toolbars. Should be called after a toolbar is removed. </p></li>
+<li><p><strong>Function</strong> <code>JOBAD.UI.Toolbar.moveUp(TB)</code> - Moves a Toolbar up. </p>
 
 <ul>
-<li><strong>jQuery</strong> <code>element</code> Element to updated toolbar from. </li>
+<li><strong>jQuery</strong> <code>TB</code> the jQuery element representing the Toolbar. </li>
 </ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.UI.Toolbar.addItem(element, config)</code> - Adds a new item to the toolbar. </p>
+<li><p><strong>Function</strong> <code>JOBAD.UI.Toolbar.moveDown(TB)</code> - Moves a Toolbar down. </p>
 
 <ul>
-<li><code>element</code> Element to bind notification to. </li>
-<li><strong>Object</strong> <code>config</code> A map which may contain any of the following members: 
-<ul>
-<li><strong>String</strong> <code>config.class</code> Notification class. If provided should be one of "info", "warning" or "error". </li>
-<li><strong>String</strong> <code>config.icon</code> An icon to use for the notification. Default depends on <code>config.class</code>. </li>
-<li><strong>String</strong> <code>config.menu</code> A context menu for the notification. </li>
-<li><strong>Object</strong> <code>config.menuThis</code> value of <code>this</code> for menu callbacks. </li>
-<li><strong>String</strong> <code>config.text</code> A text to use for the notification. </li>
-<li><strong>Boolean</strong> <code>config.trace</code> Highlight the original element when hovering the notification. <strong>Ignored.</strong> </li>
-<li><strong>Boolean</strong> <code>config.hide</code> If set to true, the notification will be hidden when the element is hidden. Otherwise, the notification will travel up the dom tree. <strong>Ignored</strong></li>
-<li><strong>Function</strong> <code>config.click</code> On click callback. </li>
-</ul></li>
-<li><strong>returns</strong> a new empty jQuery sidebar notification element. </li>
-</ul></li>
-<li><p><strong>Function</strong> <code>JOBAD.UI.Toolbar.removeItem(item)</code> - Removes an item from the toolbar. </p>
-
-<ul>
-<li><strong>jQuery</strong> <code>item</code> Item to remove. </li>
+<li><strong>jQuery</strong> <code>TB</code> the jQuery element representing the Toolbar. </li>
 </ul></li>
 </ul>
 

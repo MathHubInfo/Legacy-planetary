@@ -481,31 +481,65 @@
 <p><a href="../index.html">Start</a> &gt; <a href="index.html">Introduction to JOBAD</a> &gt; <strong>Building JOBAD</strong></p>
 <h1>Building JOBAD</h1>
 
-<p>Although JOBAD is a javascript library, it is possible to build it. This concatenates all the required files into one and makes it a lot shorter to include JOBAD into the website. 
-Also a minimized version is created by running it through the <a href="https://developers.google.com/closure/compiler/">Google Closure Compiler</a>. 
-Similarly, the JOBAD Templates and Documentation are gernated automatically from source files. </p>
+<p>Although JOBAD is a javascript library, it is possible to build it. This concatenates all the required files into one and makes it a lot shorter to include JOBAD into the website. </p>
+
+<p>Also a minimized version is created. Similarly, the JOBAD Templates and Documentation are generated automatically from source files. </p>
 
 <p>Building is currently only supported on linux, <strong>building is not neccessary for the end user</strong>. Building depends on the following software: </p>
 
 <ul>
 <li><a href="http://www.python.org/">Python</a>, tested with version 2.7.4. Also needs the following libraries / scripts: 
 <ul>
-<li><a href="https://github.com/trentm/python-markdown2">markdown2</a> - a python implmentation of markdown</li>
-<li><a href="http://pygments.org/">pygments</a> - a python syntax highlighter</li>
-<li><a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup 4</a> - a python html library</li>
-<li><a href="https://github.com/tkw1536/PythonMarkdownCompiler">PythonMarkdownCompiler</a>, included in the git repository as a git submodule</li>
-<li><a href="https://github.com/tkw1536/ClosureCompilerPy">ClosureCompilerPy</a>, included in the git repository as a git submodule</li>
+<li><a href="https://pypi.python.org/pypi/pip">PIP</a>, If you want to install the packages automatically. </li>
+</ul></li>
+<li><a href="http://nodejs.org/">Node</a>, tested with version v0.10.13
+<ul>
+<li><a href="https://npmjs.org/">NPM</a>, tested with version 1.3.2</li>
 </ul></li>
 <li><a href="https://www.gnu.org/software/bash/">GNU Bash</a></li>
+<li><a href="https://www.gnu.org/software/make/">GNU Make</a></li>
 </ul>
 
-<p>All build scripts are located in the <code>build</code> subdirectory. </p>
+<p>The following depencies will be installed automatically or are available: </p>
 
 <ul>
-<li>To build the demos, use <code>build-templates.sh</code></li>
-<li>To build the documentation, use <code>build-doc.sh</code></li>
-<li>To build the release version, use <code>build-release.sh</code></li>
-<li>To build all of the above, use <code>build-all.sh</code></li>
+<li><a href="https://github.com/trentm/python-markdown2">markdown2</a></li>
+<li><a href="http://pygments.org/">pygments</a> - a python syntax highlighter</li>
+<li><a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup 4</a></li>
+<li><a href="https://github.com/tkw1536/PythonMarkdownCompiler">PythonMarkdownCompiler</a>, included in the git repository</li>
+<li><a href="https://npmjs.org/package/gear">Gear</a></li>
+<li><a href="https://npmjs.org/package/gear-lib">Gear-Lib</a></li>
+</ul>
+
+<p>To build, you can use the makefile provided (run <code>make target</code> to build something. )</p>
+
+<p>The following targets are available: </p>
+
+<ul>
+<li><code>all</code>: Builds all of JOBAD</li>
+<li><code>clean</code>: Removes all previous built stuff. If possible, also cleans dependencies. </li>
+<li><code>deps</code>: Gets all dependencies. 
+<ul>
+<li><code>npmdeps</code> - Gets the node dependencies (if not already available)</li>
+<li><code>pipdeps</code> - Gets the python dependencies (if not already available)</li>
+</ul></li>
+<li><code>release</code> - Builds JS + CSS. 
+<ul>
+<li><code>js</code> - Builds JS. 
+<ul>
+<li><code>js-dev</code>- Builds the JS Development version</li>
+<li><code>js-min</code>- Builds the JS Production version</li>
+<li><code>js-libs</code> - Compress JavaScript Libraries into one file</li>
+</ul></li>
+<li><code>css</code> - Builds CSS. 
+<ul>
+<li><code>css-dev</code>- Builds the CSS Development version</li>
+<li><code>css-min</code>- Builds the CSS Production version</li>
+<li><code>css-libs</code> - Compress CSS Libraries into one file</li>
+</ul></li>
+</ul></li>
+<li><code>doc</code> - Documentation</li>
+<li><code>templates</code> - Builds the templates.  </li>
 </ul>
 
 	</body>

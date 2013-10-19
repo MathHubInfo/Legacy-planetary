@@ -481,7 +481,9 @@
 <p><a href="../../../index.html">Start</a> &gt; <a href="../../index.html">API Documentation</a> &gt; <a href="../index.html">JOBAD</a> &gt; <a href="index.html">JOBAD.events</a> &gt; <strong>JOBAD.events.onEvent</strong></p>
 <h1>JOBAD.events.onEvent</h1>
 
-<p>The onEvent event is triggered every time another event handler is called. Does not trigger for the <code>onEvent</code> event and the <code>onSideBarUpdate</code> event</p>
+<p>The onEvent event is triggered every time another event handler is called. Does not trigger for the <code>onEvent</code> event and the <code>onSideBarUpdate</code> event. Also has the following special events: 
+    * <code>contextMenuOpen</code>: Called after the context menu is opened. 
+    * <code>contextMenuClose</code>: Called after the context menu is closed (for whatever reason) </p>
 
 <ul>
 <li><p><strong>Function</strong> <code>JOBAD.events.onEvent.default()</code> - The default Event Handler for onEvent Events. Does nothing. </p></li>

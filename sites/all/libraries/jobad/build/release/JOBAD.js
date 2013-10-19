@@ -1,7 +1,7 @@
 /*
 	JOBAD v3
 	Development version
-	built: Thu, 04 Jul 2013 15:41:44 +0200
+	built: Fri, 27 Sep 2013 11:20:08 +0200
 
 	
 	Copyright (C) 2013 KWARC Group <kwarc.info>
@@ -60,6 +60,8 @@ var JOBAD = function(element){
 	}
 
 	var me = this; 
+
+	this.ID = JOBAD.util.UID(); //assign an id to this JOBAD
 	
 	//Add init arguments
 	this.args = [];
@@ -99,14 +101,14 @@ var JOBAD = function(element){
 			mod.call(this, this, this.args); 
 		}
 	}
-
-	this.ID = JOBAD.util.UID(); 
 };
+
+
 
 JOBAD.ifaces = []; //JOBAD interfaces
 
 /* JOBAD Version */
-JOBAD.version = "3.1.6"; 
+JOBAD.version = "3.2.0"; 
 
 /*
 	JOBAD.toString
@@ -120,7 +122,8 @@ JOBAD.toString.toString = JOBAD.toString; //self-reference!
 /* JOBAD Global config */
 JOBAD.config = 
 {
-	    'debug': true //Debugging enabled? (Logs etc)
+	    'debug': true, //Debugging enabled? (Logs etc)
+	    'BootstrapScope': undefined //Scope for Bootstrap CSS
 };
 
 /*
@@ -175,11 +178,822 @@ JOBAD.noConflict = function(){
 	return JOBAD.refs.$;
 }; //No conflict mode
 /* end   <core/JOBAD.core.js> */
-/* start <util/underscore.js> */
-//     Underscore.js 1.4.4
+/* start <bundled/jquery-color/jquery.color.plus-names-2.1.2.js> */
+/*!
+ * jQuery Color Animations v2.1.2
+ * https://github.com/jquery/jquery-color
+ *
+ * Copyright 2013 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * Date: Wed Jan 16 08:47:09 2013 -0600
+ */
+(function( jQuery, undefined ) {
+
+	var stepHooks = "backgroundColor borderBottomColor borderLeftColor borderRightColor borderTopColor color columnRuleColor outlineColor textDecorationColor textEmphasisColor",
+
+	// plusequals test for += 100 -= 100
+	rplusequals = /^([\-+])=\s*(\d+\.?\d*)/,
+	// a set of RE's that can match strings and generate color tuples.
+	stringParsers = [{
+			re: /rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,
+			parse: function( execResult ) {
+				return [
+					execResult[ 1 ],
+					execResult[ 2 ],
+					execResult[ 3 ],
+					execResult[ 4 ]
+				];
+			}
+		}, {
+			re: /rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,
+			parse: function( execResult ) {
+				return [
+					execResult[ 1 ] * 2.55,
+					execResult[ 2 ] * 2.55,
+					execResult[ 3 ] * 2.55,
+					execResult[ 4 ]
+				];
+			}
+		}, {
+			// this regex ignores A-F because it's compared against an already lowercased string
+			re: /#([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})/,
+			parse: function( execResult ) {
+				return [
+					parseInt( execResult[ 1 ], 16 ),
+					parseInt( execResult[ 2 ], 16 ),
+					parseInt( execResult[ 3 ], 16 )
+				];
+			}
+		}, {
+			// this regex ignores A-F because it's compared against an already lowercased string
+			re: /#([a-f0-9])([a-f0-9])([a-f0-9])/,
+			parse: function( execResult ) {
+				return [
+					parseInt( execResult[ 1 ] + execResult[ 1 ], 16 ),
+					parseInt( execResult[ 2 ] + execResult[ 2 ], 16 ),
+					parseInt( execResult[ 3 ] + execResult[ 3 ], 16 )
+				];
+			}
+		}, {
+			re: /hsla?\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d?(?:\.\d+)?)\s*)?\)/,
+			space: "hsla",
+			parse: function( execResult ) {
+				return [
+					execResult[ 1 ],
+					execResult[ 2 ] / 100,
+					execResult[ 3 ] / 100,
+					execResult[ 4 ]
+				];
+			}
+		}],
+
+	// jQuery.Color( )
+	color = jQuery.Color = function( color, green, blue, alpha ) {
+		return new jQuery.Color.fn.parse( color, green, blue, alpha );
+	},
+	spaces = {
+		rgba: {
+			props: {
+				red: {
+					idx: 0,
+					type: "byte"
+				},
+				green: {
+					idx: 1,
+					type: "byte"
+				},
+				blue: {
+					idx: 2,
+					type: "byte"
+				}
+			}
+		},
+
+		hsla: {
+			props: {
+				hue: {
+					idx: 0,
+					type: "degrees"
+				},
+				saturation: {
+					idx: 1,
+					type: "percent"
+				},
+				lightness: {
+					idx: 2,
+					type: "percent"
+				}
+			}
+		}
+	},
+	propTypes = {
+		"byte": {
+			floor: true,
+			max: 255
+		},
+		"percent": {
+			max: 1
+		},
+		"degrees": {
+			mod: 360,
+			floor: true
+		}
+	},
+	support = color.support = {},
+
+	// element for support tests
+	supportElem = jQuery( "<p>" )[ 0 ],
+
+	// colors = jQuery.Color.names
+	colors,
+
+	// local aliases of functions called often
+	each = jQuery.each;
+
+// determine rgba support immediately
+supportElem.style.cssText = "background-color:rgba(1,1,1,.5)";
+support.rgba = supportElem.style.backgroundColor.indexOf( "rgba" ) > -1;
+
+// define cache name and alpha properties
+// for rgba and hsla spaces
+each( spaces, function( spaceName, space ) {
+	space.cache = "_" + spaceName;
+	space.props.alpha = {
+		idx: 3,
+		type: "percent",
+		def: 1
+	};
+});
+
+function clamp( value, prop, allowEmpty ) {
+	var type = propTypes[ prop.type ] || {};
+
+	if ( value == null ) {
+		return (allowEmpty || !prop.def) ? null : prop.def;
+	}
+
+	// ~~ is an short way of doing floor for positive numbers
+	value = type.floor ? ~~value : parseFloat( value );
+
+	// IE will pass in empty strings as value for alpha,
+	// which will hit this case
+	if ( isNaN( value ) ) {
+		return prop.def;
+	}
+
+	if ( type.mod ) {
+		// we add mod before modding to make sure that negatives values
+		// get converted properly: -10 -> 350
+		return (value + type.mod) % type.mod;
+	}
+
+	// for now all property types without mod have min and max
+	return 0 > value ? 0 : type.max < value ? type.max : value;
+}
+
+function stringParse( string ) {
+	var inst = color(),
+		rgba = inst._rgba = [];
+
+	string = string.toLowerCase();
+
+	each( stringParsers, function( i, parser ) {
+		var parsed,
+			match = parser.re.exec( string ),
+			values = match && parser.parse( match ),
+			spaceName = parser.space || "rgba";
+
+		if ( values ) {
+			parsed = inst[ spaceName ]( values );
+
+			// if this was an rgba parse the assignment might happen twice
+			// oh well....
+			inst[ spaces[ spaceName ].cache ] = parsed[ spaces[ spaceName ].cache ];
+			rgba = inst._rgba = parsed._rgba;
+
+			// exit each( stringParsers ) here because we matched
+			return false;
+		}
+	});
+
+	// Found a stringParser that handled it
+	if ( rgba.length ) {
+
+		// if this came from a parsed string, force "transparent" when alpha is 0
+		// chrome, (and maybe others) return "transparent" as rgba(0,0,0,0)
+		if ( rgba.join() === "0,0,0,0" ) {
+			jQuery.extend( rgba, colors.transparent );
+		}
+		return inst;
+	}
+
+	// named colors
+	return colors[ string ];
+}
+
+color.fn = jQuery.extend( color.prototype, {
+	parse: function( red, green, blue, alpha ) {
+		if ( red === undefined ) {
+			this._rgba = [ null, null, null, null ];
+			return this;
+		}
+		if ( red.jquery || red.nodeType ) {
+			red = jQuery( red ).css( green );
+			green = undefined;
+		}
+
+		var inst = this,
+			type = jQuery.type( red ),
+			rgba = this._rgba = [];
+
+		// more than 1 argument specified - assume ( red, green, blue, alpha )
+		if ( green !== undefined ) {
+			red = [ red, green, blue, alpha ];
+			type = "array";
+		}
+
+		if ( type === "string" ) {
+			return this.parse( stringParse( red ) || colors._default );
+		}
+
+		if ( type === "array" ) {
+			each( spaces.rgba.props, function( key, prop ) {
+				rgba[ prop.idx ] = clamp( red[ prop.idx ], prop );
+			});
+			return this;
+		}
+
+		if ( type === "object" ) {
+			if ( red instanceof color ) {
+				each( spaces, function( spaceName, space ) {
+					if ( red[ space.cache ] ) {
+						inst[ space.cache ] = red[ space.cache ].slice();
+					}
+				});
+			} else {
+				each( spaces, function( spaceName, space ) {
+					var cache = space.cache;
+					each( space.props, function( key, prop ) {
+
+						// if the cache doesn't exist, and we know how to convert
+						if ( !inst[ cache ] && space.to ) {
+
+							// if the value was null, we don't need to copy it
+							// if the key was alpha, we don't need to copy it either
+							if ( key === "alpha" || red[ key ] == null ) {
+								return;
+							}
+							inst[ cache ] = space.to( inst._rgba );
+						}
+
+						// this is the only case where we allow nulls for ALL properties.
+						// call clamp with alwaysAllowEmpty
+						inst[ cache ][ prop.idx ] = clamp( red[ key ], prop, true );
+					});
+
+					// everything defined but alpha?
+					if ( inst[ cache ] && jQuery.inArray( null, inst[ cache ].slice( 0, 3 ) ) < 0 ) {
+						// use the default of 1
+						inst[ cache ][ 3 ] = 1;
+						if ( space.from ) {
+							inst._rgba = space.from( inst[ cache ] );
+						}
+					}
+				});
+			}
+			return this;
+		}
+	},
+	is: function( compare ) {
+		var is = color( compare ),
+			same = true,
+			inst = this;
+
+		each( spaces, function( _, space ) {
+			var localCache,
+				isCache = is[ space.cache ];
+			if (isCache) {
+				localCache = inst[ space.cache ] || space.to && space.to( inst._rgba ) || [];
+				each( space.props, function( _, prop ) {
+					if ( isCache[ prop.idx ] != null ) {
+						same = ( isCache[ prop.idx ] === localCache[ prop.idx ] );
+						return same;
+					}
+				});
+			}
+			return same;
+		});
+		return same;
+	},
+	_space: function() {
+		var used = [],
+			inst = this;
+		each( spaces, function( spaceName, space ) {
+			if ( inst[ space.cache ] ) {
+				used.push( spaceName );
+			}
+		});
+		return used.pop();
+	},
+	transition: function( other, distance ) {
+		var end = color( other ),
+			spaceName = end._space(),
+			space = spaces[ spaceName ],
+			startColor = this.alpha() === 0 ? color( "transparent" ) : this,
+			start = startColor[ space.cache ] || space.to( startColor._rgba ),
+			result = start.slice();
+
+		end = end[ space.cache ];
+		each( space.props, function( key, prop ) {
+			var index = prop.idx,
+				startValue = start[ index ],
+				endValue = end[ index ],
+				type = propTypes[ prop.type ] || {};
+
+			// if null, don't override start value
+			if ( endValue === null ) {
+				return;
+			}
+			// if null - use end
+			if ( startValue === null ) {
+				result[ index ] = endValue;
+			} else {
+				if ( type.mod ) {
+					if ( endValue - startValue > type.mod / 2 ) {
+						startValue += type.mod;
+					} else if ( startValue - endValue > type.mod / 2 ) {
+						startValue -= type.mod;
+					}
+				}
+				result[ index ] = clamp( ( endValue - startValue ) * distance + startValue, prop );
+			}
+		});
+		return this[ spaceName ]( result );
+	},
+	blend: function( opaque ) {
+		// if we are already opaque - return ourself
+		if ( this._rgba[ 3 ] === 1 ) {
+			return this;
+		}
+
+		var rgb = this._rgba.slice(),
+			a = rgb.pop(),
+			blend = color( opaque )._rgba;
+
+		return color( jQuery.map( rgb, function( v, i ) {
+			return ( 1 - a ) * blend[ i ] + a * v;
+		}));
+	},
+	toRgbaString: function() {
+		var prefix = "rgba(",
+			rgba = jQuery.map( this._rgba, function( v, i ) {
+				return v == null ? ( i > 2 ? 1 : 0 ) : v;
+			});
+
+		if ( rgba[ 3 ] === 1 ) {
+			rgba.pop();
+			prefix = "rgb(";
+		}
+
+		return prefix + rgba.join() + ")";
+	},
+	toHslaString: function() {
+		var prefix = "hsla(",
+			hsla = jQuery.map( this.hsla(), function( v, i ) {
+				if ( v == null ) {
+					v = i > 2 ? 1 : 0;
+				}
+
+				// catch 1 and 2
+				if ( i && i < 3 ) {
+					v = Math.round( v * 100 ) + "%";
+				}
+				return v;
+			});
+
+		if ( hsla[ 3 ] === 1 ) {
+			hsla.pop();
+			prefix = "hsl(";
+		}
+		return prefix + hsla.join() + ")";
+	},
+	toHexString: function( includeAlpha ) {
+		var rgba = this._rgba.slice(),
+			alpha = rgba.pop();
+
+		if ( includeAlpha ) {
+			rgba.push( ~~( alpha * 255 ) );
+		}
+
+		return "#" + jQuery.map( rgba, function( v ) {
+
+			// default to 0 when nulls exist
+			v = ( v || 0 ).toString( 16 );
+			return v.length === 1 ? "0" + v : v;
+		}).join("");
+	},
+	toString: function() {
+		return this._rgba[ 3 ] === 0 ? "transparent" : this.toRgbaString();
+	}
+});
+color.fn.parse.prototype = color.fn;
+
+// hsla conversions adapted from:
+// https://code.google.com/p/maashaack/source/browse/packages/graphics/trunk/src/graphics/colors/HUE2RGB.as?r=5021
+
+function hue2rgb( p, q, h ) {
+	h = ( h + 1 ) % 1;
+	if ( h * 6 < 1 ) {
+		return p + (q - p) * h * 6;
+	}
+	if ( h * 2 < 1) {
+		return q;
+	}
+	if ( h * 3 < 2 ) {
+		return p + (q - p) * ((2/3) - h) * 6;
+	}
+	return p;
+}
+
+spaces.hsla.to = function ( rgba ) {
+	if ( rgba[ 0 ] == null || rgba[ 1 ] == null || rgba[ 2 ] == null ) {
+		return [ null, null, null, rgba[ 3 ] ];
+	}
+	var r = rgba[ 0 ] / 255,
+		g = rgba[ 1 ] / 255,
+		b = rgba[ 2 ] / 255,
+		a = rgba[ 3 ],
+		max = Math.max( r, g, b ),
+		min = Math.min( r, g, b ),
+		diff = max - min,
+		add = max + min,
+		l = add * 0.5,
+		h, s;
+
+	if ( min === max ) {
+		h = 0;
+	} else if ( r === max ) {
+		h = ( 60 * ( g - b ) / diff ) + 360;
+	} else if ( g === max ) {
+		h = ( 60 * ( b - r ) / diff ) + 120;
+	} else {
+		h = ( 60 * ( r - g ) / diff ) + 240;
+	}
+
+	// chroma (diff) == 0 means greyscale which, by definition, saturation = 0%
+	// otherwise, saturation is based on the ratio of chroma (diff) to lightness (add)
+	if ( diff === 0 ) {
+		s = 0;
+	} else if ( l <= 0.5 ) {
+		s = diff / add;
+	} else {
+		s = diff / ( 2 - add );
+	}
+	return [ Math.round(h) % 360, s, l, a == null ? 1 : a ];
+};
+
+spaces.hsla.from = function ( hsla ) {
+	if ( hsla[ 0 ] == null || hsla[ 1 ] == null || hsla[ 2 ] == null ) {
+		return [ null, null, null, hsla[ 3 ] ];
+	}
+	var h = hsla[ 0 ] / 360,
+		s = hsla[ 1 ],
+		l = hsla[ 2 ],
+		a = hsla[ 3 ],
+		q = l <= 0.5 ? l * ( 1 + s ) : l + s - l * s,
+		p = 2 * l - q;
+
+	return [
+		Math.round( hue2rgb( p, q, h + ( 1 / 3 ) ) * 255 ),
+		Math.round( hue2rgb( p, q, h ) * 255 ),
+		Math.round( hue2rgb( p, q, h - ( 1 / 3 ) ) * 255 ),
+		a
+	];
+};
+
+
+each( spaces, function( spaceName, space ) {
+	var props = space.props,
+		cache = space.cache,
+		to = space.to,
+		from = space.from;
+
+	// makes rgba() and hsla()
+	color.fn[ spaceName ] = function( value ) {
+
+		// generate a cache for this space if it doesn't exist
+		if ( to && !this[ cache ] ) {
+			this[ cache ] = to( this._rgba );
+		}
+		if ( value === undefined ) {
+			return this[ cache ].slice();
+		}
+
+		var ret,
+			type = jQuery.type( value ),
+			arr = ( type === "array" || type === "object" ) ? value : arguments,
+			local = this[ cache ].slice();
+
+		each( props, function( key, prop ) {
+			var val = arr[ type === "object" ? key : prop.idx ];
+			if ( val == null ) {
+				val = local[ prop.idx ];
+			}
+			local[ prop.idx ] = clamp( val, prop );
+		});
+
+		if ( from ) {
+			ret = color( from( local ) );
+			ret[ cache ] = local;
+			return ret;
+		} else {
+			return color( local );
+		}
+	};
+
+	// makes red() green() blue() alpha() hue() saturation() lightness()
+	each( props, function( key, prop ) {
+		// alpha is included in more than one space
+		if ( color.fn[ key ] ) {
+			return;
+		}
+		color.fn[ key ] = function( value ) {
+			var vtype = jQuery.type( value ),
+				fn = ( key === "alpha" ? ( this._hsla ? "hsla" : "rgba" ) : spaceName ),
+				local = this[ fn ](),
+				cur = local[ prop.idx ],
+				match;
+
+			if ( vtype === "undefined" ) {
+				return cur;
+			}
+
+			if ( vtype === "function" ) {
+				value = value.call( this, cur );
+				vtype = jQuery.type( value );
+			}
+			if ( value == null && prop.empty ) {
+				return this;
+			}
+			if ( vtype === "string" ) {
+				match = rplusequals.exec( value );
+				if ( match ) {
+					value = cur + parseFloat( match[ 2 ] ) * ( match[ 1 ] === "+" ? 1 : -1 );
+				}
+			}
+			local[ prop.idx ] = value;
+			return this[ fn ]( local );
+		};
+	});
+});
+
+// add cssHook and .fx.step function for each named hook.
+// accept a space separated string of properties
+color.hook = function( hook ) {
+	var hooks = hook.split( " " );
+	each( hooks, function( i, hook ) {
+		jQuery.cssHooks[ hook ] = {
+			set: function( elem, value ) {
+				var parsed, curElem,
+					backgroundColor = "";
+
+				if ( value !== "transparent" && ( jQuery.type( value ) !== "string" || ( parsed = stringParse( value ) ) ) ) {
+					value = color( parsed || value );
+					if ( !support.rgba && value._rgba[ 3 ] !== 1 ) {
+						curElem = hook === "backgroundColor" ? elem.parentNode : elem;
+						while (
+							(backgroundColor === "" || backgroundColor === "transparent") &&
+							curElem && curElem.style
+						) {
+							try {
+								backgroundColor = jQuery.css( curElem, "backgroundColor" );
+								curElem = curElem.parentNode;
+							} catch ( e ) {
+							}
+						}
+
+						value = value.blend( backgroundColor && backgroundColor !== "transparent" ?
+							backgroundColor :
+							"_default" );
+					}
+
+					value = value.toRgbaString();
+				}
+				try {
+					elem.style[ hook ] = value;
+				} catch( e ) {
+					// wrapped to prevent IE from throwing errors on "invalid" values like 'auto' or 'inherit'
+				}
+			}
+		};
+		jQuery.fx.step[ hook ] = function( fx ) {
+			if ( !fx.colorInit ) {
+				fx.start = color( fx.elem, hook );
+				fx.end = color( fx.end );
+				fx.colorInit = true;
+			}
+			jQuery.cssHooks[ hook ].set( fx.elem, fx.start.transition( fx.end, fx.pos ) );
+		};
+	});
+
+};
+
+color.hook( stepHooks );
+
+jQuery.cssHooks.borderColor = {
+	expand: function( value ) {
+		var expanded = {};
+
+		each( [ "Top", "Right", "Bottom", "Left" ], function( i, part ) {
+			expanded[ "border" + part + "Color" ] = value;
+		});
+		return expanded;
+	}
+};
+
+// Basic color names only.
+// Usage of any of the other color names requires adding yourself or including
+// jquery.color.svg-names.js.
+colors = jQuery.Color.names = {
+	// 4.1. Basic color keywords
+	aqua: "#00ffff",
+	black: "#000000",
+	blue: "#0000ff",
+	fuchsia: "#ff00ff",
+	gray: "#808080",
+	green: "#008000",
+	lime: "#00ff00",
+	maroon: "#800000",
+	navy: "#000080",
+	olive: "#808000",
+	purple: "#800080",
+	red: "#ff0000",
+	silver: "#c0c0c0",
+	teal: "#008080",
+	white: "#ffffff",
+	yellow: "#ffff00",
+
+	// 4.2.3. "transparent" color keyword
+	transparent: [ null, null, null, 0 ],
+
+	_default: "#ffffff"
+};
+
+})( jQuery );
+
+/*!
+ * jQuery Color Animations v2.1.2 - SVG Color Names
+ * https://github.com/jquery/jquery-color
+ *
+ * Remaining HTML/CSS color names per W3C's CSS Color Module Level 3.
+ * http://www.w3.org/TR/css3-color/#svg-color
+ *
+ * Copyright 2013 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * Date: Wed Jan 16 08:47:09 2013 -0600
+ */
+jQuery.extend( jQuery.Color.names, {
+	// 4.3. Extended color keywords (minus the basic ones in core color plugin)
+	aliceblue: "#f0f8ff",
+	antiquewhite: "#faebd7",
+	aquamarine: "#7fffd4",
+	azure: "#f0ffff",
+	beige: "#f5f5dc",
+	bisque: "#ffe4c4",
+	blanchedalmond: "#ffebcd",
+	blueviolet: "#8a2be2",
+	brown: "#a52a2a",
+	burlywood: "#deb887",
+	cadetblue: "#5f9ea0",
+	chartreuse: "#7fff00",
+	chocolate: "#d2691e",
+	coral: "#ff7f50",
+	cornflowerblue: "#6495ed",
+	cornsilk: "#fff8dc",
+	crimson: "#dc143c",
+	cyan: "#00ffff",
+	darkblue: "#00008b",
+	darkcyan: "#008b8b",
+	darkgoldenrod: "#b8860b",
+	darkgray: "#a9a9a9",
+	darkgreen: "#006400",
+	darkgrey: "#a9a9a9",
+	darkkhaki: "#bdb76b",
+	darkmagenta: "#8b008b",
+	darkolivegreen: "#556b2f",
+	darkorange: "#ff8c00",
+	darkorchid: "#9932cc",
+	darkred: "#8b0000",
+	darksalmon: "#e9967a",
+	darkseagreen: "#8fbc8f",
+	darkslateblue: "#483d8b",
+	darkslategray: "#2f4f4f",
+	darkslategrey: "#2f4f4f",
+	darkturquoise: "#00ced1",
+	darkviolet: "#9400d3",
+	deeppink: "#ff1493",
+	deepskyblue: "#00bfff",
+	dimgray: "#696969",
+	dimgrey: "#696969",
+	dodgerblue: "#1e90ff",
+	firebrick: "#b22222",
+	floralwhite: "#fffaf0",
+	forestgreen: "#228b22",
+	gainsboro: "#dcdcdc",
+	ghostwhite: "#f8f8ff",
+	gold: "#ffd700",
+	goldenrod: "#daa520",
+	greenyellow: "#adff2f",
+	grey: "#808080",
+	honeydew: "#f0fff0",
+	hotpink: "#ff69b4",
+	indianred: "#cd5c5c",
+	indigo: "#4b0082",
+	ivory: "#fffff0",
+	khaki: "#f0e68c",
+	lavender: "#e6e6fa",
+	lavenderblush: "#fff0f5",
+	lawngreen: "#7cfc00",
+	lemonchiffon: "#fffacd",
+	lightblue: "#add8e6",
+	lightcoral: "#f08080",
+	lightcyan: "#e0ffff",
+	lightgoldenrodyellow: "#fafad2",
+	lightgray: "#d3d3d3",
+	lightgreen: "#90ee90",
+	lightgrey: "#d3d3d3",
+	lightpink: "#ffb6c1",
+	lightsalmon: "#ffa07a",
+	lightseagreen: "#20b2aa",
+	lightskyblue: "#87cefa",
+	lightslategray: "#778899",
+	lightslategrey: "#778899",
+	lightsteelblue: "#b0c4de",
+	lightyellow: "#ffffe0",
+	limegreen: "#32cd32",
+	linen: "#faf0e6",
+	mediumaquamarine: "#66cdaa",
+	mediumblue: "#0000cd",
+	mediumorchid: "#ba55d3",
+	mediumpurple: "#9370db",
+	mediumseagreen: "#3cb371",
+	mediumslateblue: "#7b68ee",
+	mediumspringgreen: "#00fa9a",
+	mediumturquoise: "#48d1cc",
+	mediumvioletred: "#c71585",
+	midnightblue: "#191970",
+	mintcream: "#f5fffa",
+	mistyrose: "#ffe4e1",
+	moccasin: "#ffe4b5",
+	navajowhite: "#ffdead",
+	oldlace: "#fdf5e6",
+	olivedrab: "#6b8e23",
+	orange: "#ffa500",
+	orangered: "#ff4500",
+	orchid: "#da70d6",
+	palegoldenrod: "#eee8aa",
+	palegreen: "#98fb98",
+	paleturquoise: "#afeeee",
+	palevioletred: "#db7093",
+	papayawhip: "#ffefd5",
+	peachpuff: "#ffdab9",
+	peru: "#cd853f",
+	pink: "#ffc0cb",
+	plum: "#dda0dd",
+	powderblue: "#b0e0e6",
+	rosybrown: "#bc8f8f",
+	royalblue: "#4169e1",
+	saddlebrown: "#8b4513",
+	salmon: "#fa8072",
+	sandybrown: "#f4a460",
+	seagreen: "#2e8b57",
+	seashell: "#fff5ee",
+	sienna: "#a0522d",
+	skyblue: "#87ceeb",
+	slateblue: "#6a5acd",
+	slategray: "#708090",
+	slategrey: "#708090",
+	snow: "#fffafa",
+	springgreen: "#00ff7f",
+	steelblue: "#4682b4",
+	tan: "#d2b48c",
+	thistle: "#d8bfd8",
+	tomato: "#ff6347",
+	turquoise: "#40e0d0",
+	violet: "#ee82ee",
+	wheat: "#f5deb3",
+	whitesmoke: "#f5f5f5",
+	yellowgreen: "#9acd32"
+});
+/* end   <bundled/jquery-color/jquery.color.plus-names-2.1.2.js> */
+/* start <bundled/underscore/underscore.js> */
+//     Underscore.js 1.5.1
 //     http://underscorejs.org
-//     (c) 2009-2011 Jeremy Ashkenas, DocumentCloud Inc.
-//     (c) 2011-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+//     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 //     Underscore may be freely distributed under the MIT license.
 
 (function() {
@@ -244,7 +1058,7 @@ JOBAD.noConflict = function(){
   }
 
   // Current version.
-  _.VERSION = '1.4.4';
+  _.VERSION = '1.5.1';
 
   // Collection Functions
   // --------------------
@@ -602,6 +1416,9 @@ JOBAD.noConflict = function(){
 
   // Internal implementation of a recursive `flatten` function.
   var flatten = function(input, shallow, output) {
+    if (shallow && _.every(input, _.isArray)) {
+      return concat.apply(output, input);
+    }
     each(input, function(value) {
       if (_.isArray(value) || _.isArguments(value)) {
         shallow ? push.apply(output, value) : flatten(value, shallow, output);
@@ -670,20 +1487,10 @@ JOBAD.noConflict = function(){
   // Zip together multiple lists into a single array -- elements that share
   // an index go together.
   _.zip = function() {
-    return _.unzip(slice.call(arguments));
-  };
-
-  // The inverse operation to `_.zip`. If given an array of pairs it
-  // returns an array of the paired elements split into two left and
-  // right element arrays, if given an array of triples it returns a
-  // three element array and so on. For example, `_.unzip` given
-  // `[['a',1],['b',2],['c',3]]` returns the array
-  // [['a','b','c'],[1,2,3]].
-  _.unzip = function(list) {
-    var length = _.max(_.pluck(list, "length").concat(0));
+    var length = _.max(_.pluck(arguments, "length").concat(0));
     var results = new Array(length);
     for (var i = 0; i < length; i++) {
-      results[i] = _.pluck(list, '' + i);
+      results[i] = _.pluck(arguments, '' + i);
     }
     return results;
   };
@@ -827,19 +1634,23 @@ JOBAD.noConflict = function(){
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
-  // during a given window of time.
-  _.throttle = function(func, wait, immediate) {
+  // during a given window of time. Normally, the throttled function will run
+  // as much as it can, without ever going more than once per `wait` duration;
+  // but if you'd like to disable the execution on the leading edge, pass
+  // `{leading: false}`. To disable execution on the trailing edge, ditto.
+  _.throttle = function(func, wait, options) {
     var context, args, result;
     var timeout = null;
     var previous = 0;
+    options || (options = {});
     var later = function() {
-      previous = new Date;
+      previous = options.leading === false ? 0 : new Date;
       timeout = null;
       result = func.apply(context, args);
     };
     return function() {
       var now = new Date;
-      if (!previous && immediate === false) previous = now;
+      if (!previous && options.leading === false) previous = now;
       var remaining = wait - (now - previous);
       context = this;
       args = arguments;
@@ -848,7 +1659,7 @@ JOBAD.noConflict = function(){
         timeout = null;
         previous = now;
         result = func.apply(context, args);
-      } else if (!timeout) {
+      } else if (!timeout && options.trailing !== false) {
         timeout = setTimeout(later, remaining);
       }
       return result;
@@ -915,7 +1726,6 @@ JOBAD.noConflict = function(){
 
   // Returns a function that will only be executed after being called N times.
   _.after = function(times, func) {
-    if (times <= 0) return func();
     return function() {
       if (--times < 1) {
         return func.apply(this, arguments);
@@ -1069,6 +1879,13 @@ JOBAD.noConflict = function(){
       // unique nested structures.
       if (aStack[length] == a) return bStack[length] == b;
     }
+    // Objects with different constructors are not equivalent, but `Object`s
+    // from different frames are.
+    var aCtor = a.constructor, bCtor = b.constructor;
+    if (aCtor !== bCtor && !(_.isFunction(aCtor) && (aCtor instanceof aCtor) &&
+                             _.isFunction(bCtor) && (bCtor instanceof bCtor))) {
+      return false;
+    }
     // Add the first object to the stack of traversed objects.
     aStack.push(a);
     bStack.push(b);
@@ -1085,13 +1902,6 @@ JOBAD.noConflict = function(){
         }
       }
     } else {
-      // Objects with different constructors are not equivalent, but `Object`s
-      // from different frames are.
-      var aCtor = a.constructor, bCtor = b.constructor;
-      if (aCtor !== bCtor && !(_.isFunction(aCtor) && (aCtor instanceof aCtor) &&
-                               _.isFunction(bCtor) && (bCtor instanceof bCtor))) {
-        return false;
-      }
       // Deep compare objects.
       for (var key in a) {
         if (_.has(a, key)) {
@@ -1426,7 +2236,7 @@ JOBAD.noConflict = function(){
 
   });
 
-}).call(this);/* end   <util/underscore.js> */
+}).call(this);/* end   <bundled/underscore/underscore.js> */
 /* start <util/JOBAD.util.js> */
 /*
 	JOBAD utility functions
@@ -1484,61 +2294,132 @@ JOBAD.util.UID = function(prefix){
 };
 
 /*
-	Creates a radio button for use with jQuery UI. 
+	Creates a dropdown (<select>) control. 
+	@param values	Values to use. 
+	@param texts	Texts to use. 
+	@param start	Initially selected id. 
+*/
+JOBAD.util.createDropDown = function(values, texts, start){
+	var select = JOBAD.refs.$("<select>"); 
+
+	for(var i=0;i<texts.length;i++){
+		select.append(
+			JOBAD.refs.$("<option>")
+			.attr("value", values[i])
+			.text(texts[i])
+		);
+	}
+
+	select.find("option").eq((typeof start == "number")?start:0).prop('selected', true); 
+
+	return select; 
+}
+
+/*
+	Creates a radio button for use with Bootsrap
 	@param texts	Texts to use. 
 	@param start	Initial selection
 */
 JOBAD.util.createRadio = function(texts, start){
-	var id = JOBAD.util.UID();
-	
+	var id = JOBAD.util.UID(); //Id for the radio buttons
+	var selfChange = false; 
+
 	if(typeof start !== 'number'){
 		start = 0;
 	}
-	
-	var Labeller = JOBAD.refs.$('<span>');
-	
+
+	var Div = JOBAD.refs.$('<div>').addClass("btn-group");
+	var Div2 = JOBAD.refs.$('<div>').hide(); 
 					
 	for(var i=0;i<texts.length;i++){
-		var nid = JOBAD.util.UID();
-		Labeller.append(
-			JOBAD.refs.$("<input type='radio' name='"+id+"' id='"+nid+"'>"),
-			JOBAD.refs.$("<label>").attr("for", nid).text(texts[i])
-		)
+		Div.append(
+			JOBAD.refs.$("<button>").addClass("btn").text(texts[i])
+		);
+		Div2.append(
+			JOBAD.refs.$("<input type='radio' name='"+id+"' value='"+JOBAD.util.UID()+"'>")
+		);
 	}
+
+
+	var Buttons = Div.find("button"); 
+	var Inputs = Div2.find("input"); 
+
+	Buttons.on("click", function(){
+		var radio = Inputs.eq(Buttons.index(this)); 
+		radio[0].checked = true; 
+		Inputs.change(); 
+	})
+
+	Inputs
+	.change(function(e){
+		Buttons.removeClass("active"); 
+
+		Inputs.each(function(i){
+			var me = JOBAD.refs.$(this); 
+			if(me.is(":checked")){
+				Buttons.eq(i).addClass("active"); 
+			}
+		})
+		e.stopPropagation(); 
+	});
 	
-	Labeller.find("input").eq(start)[0].checked = true;
+	Inputs.eq(start)[0].checked = true;
+	Inputs.change(); 
+
 	
-	return Labeller.buttonset();
+	return JOBAD.refs.$("<div>").append(Div, Div2); 
 };
 
 /*
-	Creates tab data compatible with jQuery UI. 
+	Creates tab data compatible with Bootstrap. 
 	@param names	Texts to use. 
-	@param divs	Divs to use as content
-	@üaram height Maximum tab height
-	@param options Options for tabs. 
+	@param divs	Divs to use as content. 
+	@param config Configuration. Optional. 
+		@param config.tabParams	Params for Tab creation. 
+		@param config.type Type of tabs to use. CSS class. 
+		@param config.select Select Hook. function(tabName, tabDiv) To be called on selection of a div. 
+		@param config.unselect Deselect Hook. function(tabName, tabDiv) Top be called on the deselection of a div. 
 */
-JOBAD.util.createTabs = function(names, divs, options, height){
-	var div = JOBAD.refs.$("<div>");
-	var ul = JOBAD.refs.$("<ul>").appendTo(div);
+JOBAD.util.createTabs = function(names, divs, config){
+	var config = JOBAD.util.defined(config); 
+
+	var options = JOBAD.util.defined(config.tabParams); 
+	var tabtype = (typeof config.type == "string")?config.type:"";
+	var enableHook = (typeof config.select == "function")?config.select:function(){}; 
+	var disableHook = (typeof config.unselect == "function")?config.unselect:function(){}; 
+
+	var ids = []; 
+
+	var div = JOBAD.refs.$("<div>").addClass("tabbable "+tabtype);
+	var ul = JOBAD.refs.$("<ul>").appendTo(div).addClass("nav nav-tabs");
+	var cdiv = JOBAD.refs.$("<div>").addClass("tab-content").appendTo(div);
 	for(var i=0;i<names.length;i++){
 		var id = JOBAD.util.UID();
+		ids.push("#"+id); 
 		ul.append(
-			JOBAD.refs.$("<li>").append(JOBAD.refs.$("<a>").attr("href", "#"+id).text(names[i]))
+			JOBAD.refs.$("<li>").append(JOBAD.refs.$("<a>").attr("data-toggle", "tab").attr("href", "#"+id).text(names[i]))
 		);
 		
-		var ndiv = JOBAD.refs.$("<div>").append(divs[i]).attr("id", id);
-		
-		if(typeof height == 'number'){
-			ndiv.css({
-				"height": height, 
-				"overflow": "auto"
-			});
-		}
-		
-		div.append(ndiv);
+		JOBAD.refs.$("<div>").append(divs[i]).attr("id", id).addClass("tab-pane").appendTo(cdiv);
 	}
-	return div.tabs(options);
+	cdiv.children().eq(0).addClass("active"); 
+
+	JOBAD.refs.$('a[data-toggle="tab"]', ul).on("shown", function(e){
+		if(typeof e.relatedTarget != "undefined"){
+			var relatedTarget = JOBAD.refs.$(e.relatedTarget); 
+			var tabId = ids.indexOf(relatedTarget.attr("href")); 
+
+			disableHook(relatedTarget.text(), JOBAD.refs.$(divs[tabId])); 
+		}
+
+		var Target = JOBAD.refs.$(e.target); 
+		var tabId = ids.indexOf(Target.attr("href")); 
+		enableHook(Target.text(), JOBAD.refs.$(divs[tabId]));
+	}); 
+
+	JOBAD.refs.$('a[data-toggle="tab"]', ul).eq(0).tab("show"); 
+
+	return div; 
 };
 
 /*
@@ -1832,10 +2713,12 @@ JOBAD.util.containsAll = function(container, contained, includeSelf){
 	@param url	Url(s) of script(s) to load. 
 	@param	callback	Callback of script to load. 
 	@param	scope	Scope of callback. 
+	@param preLoadHack. Function to call before laoding a specific file. 
 */
-JOBAD.util.loadExternalJS = function(url, callback, scope){
+JOBAD.util.loadExternalJS = function(url, callback, scope, preLoadHack){
 	var TIMEOUT_CONST = 15000; //timeout for bad links
 	var has_called = false; 
+	var preLoadHack = JOBAD.util.forceFunction(preLoadHack, function(){}); 
 
 	var do_call = function(suc){
 		if(has_called){
@@ -1862,7 +2745,7 @@ JOBAD.util.loadExternalJS = function(url, callback, scope){
 				JOBAD.util.loadExternalJS(url[i], function(urls, suc){
 					i++;
 					next(urls, suc);
-				});
+				}, scope, preLoadHack);
 			}
 		}
 
@@ -1895,12 +2778,130 @@ JOBAD.util.loadExternalJS = function(url, callback, scope){
 	    }
 
 	    script.src = JOBAD.util.resolve(url);
+	    preLoadHack(url); 
 	    document.getElementsByTagName("head")[0].appendChild(script);
 
 	    window.setTimeout(function(){
 	    	do_call(false);
 	    }, TIMEOUT_CONST);
 	    return 1;
+	}
+    
+}
+
+/*
+	Loads an external css file. 
+	@param url	Url(s) of css to load. 
+	@param	callback	Callback of css to load. 
+	@param	scope	Scope of callback. 
+	@param preLoadHack. Function to call before laoding a specific file. 
+*/
+JOBAD.util.loadExternalCSS = function(url, callback, scope, preLoadHack){
+	var TIMEOUT_CONST = 15000; //timeout for bad links
+	var has_called = false; 
+	var interval_id, timeout_id; 
+	var preLoadHack = JOBAD.util.forceFunction(preLoadHack, function(){}); 
+
+	var do_call = function(suc){
+		if(has_called){
+			return;
+		}
+		has_called = true;
+		try{
+
+		} catch(e){
+			clearInterval(interval_id); 
+			clearTimeout(timeout_id);
+		}
+
+		var func = JOBAD.util.forceFunction(callback, function(){});
+		var scope = (typeof scope == "undefined")?window:scope;
+
+		func.call(scope, url, suc);
+		
+	}
+
+	
+	if(JOBAD.util.isArray(url)){
+		var i=0;
+		var next = function(urls, suc){
+			if(i>=url.length || !suc){
+				window.setTimeout(function(){
+					do_call(suc);
+				}, 0);
+			} else {
+				JOBAD.util.loadExternalCSS(url[i], function(urls, suc){
+					i++;
+					next(urls, suc);
+				}, scope, preLoadHack);
+			}
+		}
+
+		window.setTimeout(function(){
+			next("", true);
+		}, 0);
+
+		return url.length;
+	} else {
+		//adapted from: http://stackoverflow.com/questions/5537622/dynamically-loading-css-file-using-javascript-with-callback-without-jquery
+		var head = document.getElementsByTagName('head')[0]; 
+		var link = document.createElement('link');
+		link.setAttribute( 'href', url );
+		link.setAttribute( 'rel', 'stylesheet' );
+		link.setAttribute( 'type', 'text/css' ); 
+		var sheet, cssRules;
+
+		interval_id = setInterval(function(){
+			try{
+				if("sheet" in link){
+					if(link.sheet && link.sheet.cssRules.length){
+						clearInterval(interval_id); 
+						clearTimeout(timeout_id); 
+						do_call(true); 
+					}
+				} else {
+					if(link.styleSheet && link.styleSheet.rules.length > 0){
+						clearInterval(interval_id); 
+						clearTimeout(timeout_id); 
+						do_call(true); 
+					}
+				}
+
+				if(link[sheet] && link[sheet][cssRules].length > 0){
+					clearInterval(interval_id); 
+					clearTimeout(timeout_id); 
+
+					do_call(true); 
+				}
+			}catch(e){}
+		}, 1000);
+
+		timeout_id = setTimeout(function(){
+			clearInterval(interval_id); 
+			do_call(false);
+		}, TIMEOUT_CONST);
+
+
+		link.onload = function () {
+			do_call(true); 
+		}
+		if (link.addEventListener) {
+			link.addEventListener('load', function() {
+			do_call(true); 
+			}, false);
+		}
+
+	  link.onreadystatechange = function() {
+	    var state = link.readyState;
+	    if (state === 'loaded' || state === 'complete') {
+	      link.onreadystatechange = null;
+	      do_call(true); 
+	    }
+	  };
+
+	  	preLoadHack(url);
+		head.appendChild(link); 
+		return 1;
 	}
     
 }
@@ -1943,6 +2944,8 @@ JOBAD.util.resolve = function(url, base, isDir){
 	if( (base === true || isDir === true ) && url[url.length - 1] != "/"){url = url + "/"; }
     return url; 
 }
+
+
 /*
 	Adds an event listener to a query. 
 	@param	query A jQuery element to use as as query. 
@@ -1987,9 +2990,65 @@ JOBAD.util.once = function(query, event, handler){
 	@param	query A jQuery element to use as as query. 
 	@param	id	Id of handler to remove. 
 */
-JOBAD.util.off = function(event, id){
+JOBAD.util.off = function(query, id){
 	var query = JOBAD.refs.$(query);
 	query.off(id); 
+}
+
+/*
+	Turns a keyup event into a string. 
+*/
+JOBAD.util.toKeyString = function(e){
+	var res = ((e.ctrlKey || e.keyCode == 17 )? 'ctrl+' : '') +
+        ((e.altKey || e.keyCode == 18 ) ? 'alt+' : '') +
+        ((e.shiftKey || e.keyCode == 16 ) ? 'shift+' : ''); 
+
+      var specialKeys = {
+			8: "backspace", 9: "tab", 10: "return", 13: "return", 19: "pause",
+			20: "capslock", 27: "esc", 32: "space", 33: "pageup", 34: "pagedown", 35: "end", 36: "home",
+			37: "left", 38: "up", 39: "right", 40: "down", 45: "insert", 46: "del", 
+			96: "0", 97: "1", 98: "2", 99: "3", 100: "4", 101: "5", 102: "6", 103: "7",
+			104: "8", 105: "9", 106: "*", 107: "+", 109: "-", 110: ".", 111 : "/", 
+			112: "f1", 113: "f2", 114: "f3", 115: "f4", 116: "f5", 117: "f6", 118: "f7", 119: "f8", 
+			120: "f9", 121: "f10", 122: "f11", 123: "f12", 144: "numlock", 145: "scroll", 186: ";", 191: "/",
+			220: "\\", 222: "'", 224: "meta"
+		}
+
+    if(!e.charCode && specialKeys[e.keyCode]){
+    	res += specialKeys[e.keyCode]; 
+    } else {
+    	if(res == "" && event.type == "keypress"){
+    		return false; 
+    	} else {
+    		res +=String.fromCharCode(e.charCode || e.keyCode).toLowerCase();
+    	}
+    }
+
+    if(res[res.length-1] == "+"){
+    	return res.substring(0, res.length - 1); 
+    } else {
+    	return res; 
+    }
+};
+
+JOBAD.util.onKey = function(cb){
+	var uuid = JOBAD.util.UID(); 
+	JOBAD.refs.$(document).on("keydown."+uuid+" keypress."+uuid, function(evt){
+		var key = JOBAD.util.toKeyString(evt); 
+		if(!key){
+			return; 
+		}
+		var res = cb.call(undefined, key, evt);
+
+		if(res === false){
+			//stop propagnation etc
+			evt.preventDefault();
+			evt.stopPropagation(); 
+			return false; 
+		}
+	}); 
+
+	return "keydown."+uuid+" keypress."+uuid; 
 }
 
 /*
@@ -2007,8 +3066,6 @@ JOBAD.util.trigger = function(query, event, params){
 	var params = JOBAD.util.forceArray(params).slice(0);
 	params.unshift(event); 
 
-	
-
 	var id = JOBAD.util.UID(); 
 
 	query.on(event+"."+id, function(ev){
@@ -2022,6 +3079,84 @@ JOBAD.util.trigger = function(query, event, params){
 	return result; 
 
 }
+
+/*
+	Creates a new Event Handler
+*/
+JOBAD.util.EventHandler = function(){
+	var handler = {}; 
+	var EventHandler = JOBAD.refs.$("<div>"); 
+
+	handler.on = function(event, handler){
+		return JOBAD.util.on(EventHandler, event, handler);
+	};
+
+	handler.once = function(event, handler){
+		return JOBAD.util.once(EventHandler, event, handler);
+	};
+
+	handler.off = function(handler){
+		return JOBAD.util.off(EventHandler, handler);
+	};
+
+	handler.trigger = function(event, params){
+		return JOBAD.util.trigger(EventHandler, event, params);
+	}
+
+	return handler;
+}
+
+/*
+	Gets the current script origin. 
+*/
+JOBAD.util.getCurrentOrigin = function(){
+
+	var scripts = JOBAD.refs.$('script'); 
+	var src = scripts[scripts.length-1].src;
+
+	//if we have an empty src or jQuery is ready, return the location.href
+	return (src == "" || jQuery.isReady || !src)?location.href:src; 
+}
+
+/*
+	Permute to members of an array. 
+	@param arr	Array to permute. 
+	@param a	Index of first element. 
+	@param b	Index of second element. 
+*/
+JOBAD.util.permuteArray = function(arr, a, b){
+
+	var arr = JOBAD.refs.$.makeArray(arr); 
+	
+	if(!JOBAD.util.isArray(arr)){
+		return arr; 
+	}
+
+	var a = JOBAD.util.limit(a, 0, arr.length); 
+	var b = JOBAD.util.limit(b, 0, arr.length); 
+
+	var arr = arr.slice(0); 
+
+	var old = arr[a];
+	arr[a] = arr[b]; 
+	arr[b] = old; 
+
+	return arr; 
+}
+
+/*
+	Limit the number x to be between a and b. 
+
+*/
+JOBAD.util.limit = function(x, a, b){
+	if(a >= b){
+		return (x<b)?b:((x>a)?a:x); 
+	} else {
+		// b > a
+		return JOBAD.util.limit(x, b, a); 
+	}
+}
+
 
 
 //Merge underscore and JOBAD.util namespace
@@ -2123,9 +3258,10 @@ JOBAD.resources.available = function(type, name){
 JOBAD.resources.provide("text", {
 	"gpl_v3_text": "                    GNU GENERAL PUBLIC LICENSE\n                       Version 3, 29 June 2007\n\n Copyright (C) 2007 Free Software Foundation, Inc. \x3Chttp:\x2F\x2Ffsf.org\x2F\x3E\n Everyone is permitted to copy and distribute verbatim copies\n of this license document, but changing it is not allowed.\n\n                            Preamble\n\n  The GNU General Public License is a free, copyleft license for\nsoftware and other kinds of works.\n\n  The licenses for most software and other practical works are designed\nto take away your freedom to share and change the works.  By contrast,\nthe GNU General Public License is intended to guarantee your freedom to\nshare and change all versions of a program--to make sure it remains free\nsoftware for all its users.  We, the Free Software Foundation, use the\nGNU General Public License for most of our software; it applies also to\nany other work released this way by its authors.  You can apply it to\nyour programs, too.\n\n  When we speak of free software, we are referring to freedom, not\nprice.  Our General Public Licenses are designed to make sure that you\nhave the freedom to distribute copies of free software (and charge for\nthem if you wish), that you receive source code or can get it if you\nwant it, that you can change the software or use pieces of it in new\nfree programs, and that you know you can do these things.\n\n  To protect your rights, we need to prevent others from denying you\nthese rights or asking you to surrender the rights.  Therefore, you have\ncertain responsibilities if you distribute copies of the software, or if\nyou modify it: responsibilities to respect the freedom of others.\n\n  For example, if you distribute copies of such a program, whether\ngratis or for a fee, you must pass on to the recipients the same\nfreedoms that you received.  You must make sure that they, too, receive\nor can get the source code.  And you must show them these terms so they\nknow their rights.\n\n  Developers that use the GNU GPL protect your rights with two steps:\n(1) assert copyright on the software, and (2) offer you this License\ngiving you legal permission to copy, distribute and\x2For modify it.\n\n  For the developers\' and authors\' protection, the GPL clearly explains\nthat there is no warranty for this free software.  For both users\' and\nauthors\' sake, the GPL requires that modified versions be marked as\nchanged, so that their problems will not be attributed erroneously to\nauthors of previous versions.\n\n  Some devices are designed to deny users access to install or run\nmodified versions of the software inside them, although the manufacturer\ncan do so.  This is fundamentally incompatible with the aim of\nprotecting users\' freedom to change the software.  The systematic\npattern of such abuse occurs in the area of products for individuals to\nuse, which is precisely where it is most unacceptable.  Therefore, we\nhave designed this version of the GPL to prohibit the practice for those\nproducts.  If such problems arise substantially in other domains, we\nstand ready to extend this provision to those domains in future versions\nof the GPL, as needed to protect the freedom of users.\n\n  Finally, every program is threatened constantly by software patents.\nStates should not allow patents to restrict development and use of\nsoftware on general-purpose computers, but in those that do, we wish to\navoid the special danger that patents applied to a free program could\nmake it effectively proprietary.  To prevent this, the GPL assures that\npatents cannot be used to render the program non-free.\n\n  The precise terms and conditions for copying, distribution and\nmodification follow.\n\n                       TERMS AND CONDITIONS\n\n  0. Definitions.\n\n  \"This License\" refers to version 3 of the GNU General Public License.\n\n  \"Copyright\" also means copyright-like laws that apply to other kinds of\nworks, such as semiconductor masks.\n\n  \"The Program\" refers to any copyrightable work licensed under this\nLicense.  Each licensee is addressed as \"you\".  \"Licensees\" and\n\"recipients\" may be individuals or organizations.\n\n  To \"modify\" a work means to copy from or adapt all or part of the work\nin a fashion requiring copyright permission, other than the making of an\nexact copy.  The resulting work is called a \"modified version\" of the\nearlier work or a work \"based on\" the earlier work.\n\n  A \"covered work\" means either the unmodified Program or a work based\non the Program.\n\n  To \"propagate\" a work means to do anything with it that, without\npermission, would make you directly or secondarily liable for\ninfringement under applicable copyright law, except executing it on a\ncomputer or modifying a private copy.  Propagation includes copying,\ndistribution (with or without modification), making available to the\npublic, and in some countries other activities as well.\n\n  To \"convey\" a work means any kind of propagation that enables other\nparties to make or receive copies.  Mere interaction with a user through\na computer network, with no transfer of a copy, is not conveying.\n\n  An interactive user interface displays \"Appropriate Legal Notices\"\nto the extent that it includes a convenient and prominently visible\nfeature that (1) displays an appropriate copyright notice, and (2)\ntells the user that there is no warranty for the work (except to the\nextent that warranties are provided), that licensees may convey the\nwork under this License, and how to view a copy of this License.  If\nthe interface presents a list of user commands or options, such as a\nmenu, a prominent item in the list meets this criterion.\n\n  1. Source Code.\n\n  The \"source code\" for a work means the preferred form of the work\nfor making modifications to it.  \"Object code\" means any non-source\nform of a work.\n\n  A \"Standard Interface\" means an interface that either is an official\nstandard defined by a recognized standards body, or, in the case of\ninterfaces specified for a particular programming language, one that\nis widely used among developers working in that language.\n\n  The \"System Libraries\" of an executable work include anything, other\nthan the work as a whole, that (a) is included in the normal form of\npackaging a Major Component, but which is not part of that Major\nComponent, and (b) serves only to enable use of the work with that\nMajor Component, or to implement a Standard Interface for which an\nimplementation is available to the public in source code form.  A\n\"Major Component\", in this context, means a major essential component\n(kernel, window system, and so on) of the specific operating system\n(if any) on which the executable work runs, or a compiler used to\nproduce the work, or an object code interpreter used to run it.\n\n  The \"Corresponding Source\" for a work in object code form means all\nthe source code needed to generate, install, and (for an executable\nwork) run the object code and to modify the work, including scripts to\ncontrol those activities.  However, it does not include the work\'s\nSystem Libraries, or general-purpose tools or generally available free\nprograms which are used unmodified in performing those activities but\nwhich are not part of the work.  For example, Corresponding Source\nincludes interface definition files associated with source files for\nthe work, and the source code for shared libraries and dynamically\nlinked subprograms that the work is specifically designed to require,\nsuch as by intimate data communication or control flow between those\nsubprograms and other parts of the work.\n\n  The Corresponding Source need not include anything that users\ncan regenerate automatically from other parts of the Corresponding\nSource.\n\n  The Corresponding Source for a work in source code form is that\nsame work.\n\n  2. Basic Permissions.\n\n  All rights granted under this License are granted for the term of\ncopyright on the Program, and are irrevocable provided the stated\nconditions are met.  This License explicitly affirms your unlimited\npermission to run the unmodified Program.  The output from running a\ncovered work is covered by this License only if the output, given its\ncontent, constitutes a covered work.  This License acknowledges your\nrights of fair use or other equivalent, as provided by copyright law.\n\n  You may make, run and propagate covered works that you do not\nconvey, without conditions so long as your license otherwise remains\nin force.  You may convey covered works to others for the sole purpose\nof having them make modifications exclusively for you, or provide you\nwith facilities for running those works, provided that you comply with\nthe terms of this License in conveying all material for which you do\nnot control copyright.  Those thus making or running the covered works\nfor you must do so exclusively on your behalf, under your direction\nand control, on terms that prohibit them from making any copies of\nyour copyrighted material outside their relationship with you.\n\n  Conveying under any other circumstances is permitted solely under\nthe conditions stated below.  Sublicensing is not allowed; section 10\nmakes it unnecessary.\n\n  3. Protecting Users\' Legal Rights From Anti-Circumvention Law.\n\n  No covered work shall be deemed part of an effective technological\nmeasure under any applicable law fulfilling obligations under article\n11 of the WIPO copyright treaty adopted on 20 December 1996, or\nsimilar laws prohibiting or restricting circumvention of such\nmeasures.\n\n  When you convey a covered work, you waive any legal power to forbid\ncircumvention of technological measures to the extent such circumvention\nis effected by exercising rights under this License with respect to\nthe covered work, and you disclaim any intention to limit operation or\nmodification of the work as a means of enforcing, against the work\'s\nusers, your or third parties\' legal rights to forbid circumvention of\ntechnological measures.\n\n  4. Conveying Verbatim Copies.\n\n  You may convey verbatim copies of the Program\'s source code as you\nreceive it, in any medium, provided that you conspicuously and\nappropriately publish on each copy an appropriate copyright notice;\nkeep intact all notices stating that this License and any\nnon-permissive terms added in accord with section 7 apply to the code;\nkeep intact all notices of the absence of any warranty; and give all\nrecipients a copy of this License along with the Program.\n\n  You may charge any price or no price for each copy that you convey,\nand you may offer support or warranty protection for a fee.\n\n  5. Conveying Modified Source Versions.\n\n  You may convey a work based on the Program, or the modifications to\nproduce it from the Program, in the form of source code under the\nterms of section 4, provided that you also meet all of these conditions:\n\n    a) The work must carry prominent notices stating that you modified\n    it, and giving a relevant date.\n\n    b) The work must carry prominent notices stating that it is\n    released under this License and any conditions added under section\n    7.  This requirement modifies the requirement in section 4 to\n    \"keep intact all notices\".\n\n    c) You must license the entire work, as a whole, under this\n    License to anyone who comes into possession of a copy.  This\n    License will therefore apply, along with any applicable section 7\n    additional terms, to the whole of the work, and all its parts,\n    regardless of how they are packaged.  This License gives no\n    permission to license the work in any other way, but it does not\n    invalidate such permission if you have separately received it.\n\n    d) If the work has interactive user interfaces, each must display\n    Appropriate Legal Notices; however, if the Program has interactive\n    interfaces that do not display Appropriate Legal Notices, your\n    work need not make them do so.\n\n  A compilation of a covered work with other separate and independent\nworks, which are not by their nature extensions of the covered work,\nand which are not combined with it such as to form a larger program,\nin or on a volume of a storage or distribution medium, is called an\n\"aggregate\" if the compilation and its resulting copyright are not\nused to limit the access or legal rights of the compilation\'s users\nbeyond what the individual works permit.  Inclusion of a covered work\nin an aggregate does not cause this License to apply to the other\nparts of the aggregate.\n\n  6. Conveying Non-Source Forms.\n\n  You may convey a covered work in object code form under the terms\nof sections 4 and 5, provided that you also convey the\nmachine-readable Corresponding Source under the terms of this License,\nin one of these ways:\n\n    a) Convey the object code in, or embodied in, a physical product\n    (including a physical distribution medium), accompanied by the\n    Corresponding Source fixed on a durable physical medium\n    customarily used for software interchange.\n\n    b) Convey the object code in, or embodied in, a physical product\n    (including a physical distribution medium), accompanied by a\n    written offer, valid for at least three years and valid for as\n    long as you offer spare parts or customer support for that product\n    model, to give anyone who possesses the object code either (1) a\n    copy of the Corresponding Source for all the software in the\n    product that is covered by this License, on a durable physical\n    medium customarily used for software interchange, for a price no\n    more than your reasonable cost of physically performing this\n    conveying of source, or (2) access to copy the\n    Corresponding Source from a network server at no charge.\n\n    c) Convey individual copies of the object code with a copy of the\n    written offer to provide the Corresponding Source.  This\n    alternative is allowed only occasionally and noncommercially, and\n    only if you received the object code with such an offer, in accord\n    with subsection 6b.\n\n    d) Convey the object code by offering access from a designated\n    place (gratis or for a charge), and offer equivalent access to the\n    Corresponding Source in the same way through the same place at no\n    further charge.  You need not require recipients to copy the\n    Corresponding Source along with the object code.  If the place to\n    copy the object code is a network server, the Corresponding Source\n    may be on a different server (operated by you or a third party)\n    that supports equivalent copying facilities, provided you maintain\n    clear directions next to the object code saying where to find the\n    Corresponding Source.  Regardless of what server hosts the\n    Corresponding Source, you remain obligated to ensure that it is\n    available for as long as needed to satisfy these requirements.\n\n    e) Convey the object code using peer-to-peer transmission, provided\n    you inform other peers where the object code and Corresponding\n    Source of the work are being offered to the general public at no\n    charge under subsection 6d.\n\n  A separable portion of the object code, whose source code is excluded\nfrom the Corresponding Source as a System Library, need not be\nincluded in conveying the object code work.\n\n  A \"User Product\" is either (1) a \"consumer product\", which means any\ntangible personal property which is normally used for personal, family,\nor household purposes, or (2) anything designed or sold for incorporation\ninto a dwelling.  In determining whether a product is a consumer product,\ndoubtful cases shall be resolved in favor of coverage.  For a particular\nproduct received by a particular user, \"normally used\" refers to a\ntypical or common use of that class of product, regardless of the status\nof the particular user or of the way in which the particular user\nactually uses, or expects or is expected to use, the product.  A product\nis a consumer product regardless of whether the product has substantial\ncommercial, industrial or non-consumer uses, unless such uses represent\nthe only significant mode of use of the product.\n\n  \"Installation Information\" for a User Product means any methods,\nprocedures, authorization keys, or other information required to install\nand execute modified versions of a covered work in that User Product from\na modified version of its Corresponding Source.  The information must\nsuffice to ensure that the continued functioning of the modified object\ncode is in no case prevented or interfered with solely because\nmodification has been made.\n\n  If you convey an object code work under this section in, or with, or\nspecifically for use in, a User Product, and the conveying occurs as\npart of a transaction in which the right of possession and use of the\nUser Product is transferred to the recipient in perpetuity or for a\nfixed term (regardless of how the transaction is characterized), the\nCorresponding Source conveyed under this section must be accompanied\nby the Installation Information.  But this requirement does not apply\nif neither you nor any third party retains the ability to install\nmodified object code on the User Product (for example, the work has\nbeen installed in ROM).\n\n  The requirement to provide Installation Information does not include a\nrequirement to continue to provide support service, warranty, or updates\nfor a work that has been modified or installed by the recipient, or for\nthe User Product in which it has been modified or installed.  Access to a\nnetwork may be denied when the modification itself materially and\nadversely affects the operation of the network or violates the rules and\nprotocols for communication across the network.\n\n  Corresponding Source conveyed, and Installation Information provided,\nin accord with this section must be in a format that is publicly\ndocumented (and with an implementation available to the public in\nsource code form), and must require no special password or key for\nunpacking, reading or copying.\n\n  7. Additional Terms.\n\n  \"Additional permissions\" are terms that supplement the terms of this\nLicense by making exceptions from one or more of its conditions.\nAdditional permissions that are applicable to the entire Program shall\nbe treated as though they were included in this License, to the extent\nthat they are valid under applicable law.  If additional permissions\napply only to part of the Program, that part may be used separately\nunder those permissions, but the entire Program remains governed by\nthis License without regard to the additional permissions.\n\n  When you convey a copy of a covered work, you may at your option\nremove any additional permissions from that copy, or from any part of\nit.  (Additional permissions may be written to require their own\nremoval in certain cases when you modify the work.)  You may place\nadditional permissions on material, added by you to a covered work,\nfor which you have or can give appropriate copyright permission.\n\n  Notwithstanding any other provision of this License, for material you\nadd to a covered work, you may (if authorized by the copyright holders of\nthat material) supplement the terms of this License with terms:\n\n    a) Disclaiming warranty or limiting liability differently from the\n    terms of sections 15 and 16 of this License; or\n\n    b) Requiring preservation of specified reasonable legal notices or\n    author attributions in that material or in the Appropriate Legal\n    Notices displayed by works containing it; or\n\n    c) Prohibiting misrepresentation of the origin of that material, or\n    requiring that modified versions of such material be marked in\n    reasonable ways as different from the original version; or\n\n    d) Limiting the use for publicity purposes of names of licensors or\n    authors of the material; or\n\n    e) Declining to grant rights under trademark law for use of some\n    trade names, trademarks, or service marks; or\n\n    f) Requiring indemnification of licensors and authors of that\n    material by anyone who conveys the material (or modified versions of\n    it) with contractual assumptions of liability to the recipient, for\n    any liability that these contractual assumptions directly impose on\n    those licensors and authors.\n\n  All other non-permissive additional terms are considered \"further\nrestrictions\" within the meaning of section 10.  If the Program as you\nreceived it, or any part of it, contains a notice stating that it is\ngoverned by this License along with a term that is a further\nrestriction, you may remove that term.  If a license document contains\na further restriction but permits relicensing or conveying under this\nLicense, you may add to a covered work material governed by the terms\nof that license document, provided that the further restriction does\nnot survive such relicensing or conveying.\n\n  If you add terms to a covered work in accord with this section, you\nmust place, in the relevant source files, a statement of the\nadditional terms that apply to those files, or a notice indicating\nwhere to find the applicable terms.\n\n  Additional terms, permissive or non-permissive, may be stated in the\nform of a separately written license, or stated as exceptions;\nthe above requirements apply either way.\n\n  8. Termination.\n\n  You may not propagate or modify a covered work except as expressly\nprovided under this License.  Any attempt otherwise to propagate or\nmodify it is void, and will automatically terminate your rights under\nthis License (including any patent licenses granted under the third\nparagraph of section 11).\n\n  However, if you cease all violation of this License, then your\nlicense from a particular copyright holder is reinstated (a)\nprovisionally, unless and until the copyright holder explicitly and\nfinally terminates your license, and (b) permanently, if the copyright\nholder fails to notify you of the violation by some reasonable means\nprior to 60 days after the cessation.\n\n  Moreover, your license from a particular copyright holder is\nreinstated permanently if the copyright holder notifies you of the\nviolation by some reasonable means, this is the first time you have\nreceived notice of violation of this License (for any work) from that\ncopyright holder, and you cure the violation prior to 30 days after\nyour receipt of the notice.\n\n  Termination of your rights under this section does not terminate the\nlicenses of parties who have received copies or rights from you under\nthis License.  If your rights have been terminated and not permanently\nreinstated, you do not qualify to receive new licenses for the same\nmaterial under section 10.\n\n  9. Acceptance Not Required for Having Copies.\n\n  You are not required to accept this License in order to receive or\nrun a copy of the Program.  Ancillary propagation of a covered work\noccurring solely as a consequence of using peer-to-peer transmission\nto receive a copy likewise does not require acceptance.  However,\nnothing other than this License grants you permission to propagate or\nmodify any covered work.  These actions infringe copyright if you do\nnot accept this License.  Therefore, by modifying or propagating a\ncovered work, you indicate your acceptance of this License to do so.\n\n  10. Automatic Licensing of Downstream Recipients.\n\n  Each time you convey a covered work, the recipient automatically\nreceives a license from the original licensors, to run, modify and\npropagate that work, subject to this License.  You are not responsible\nfor enforcing compliance by third parties with this License.\n\n  An \"entity transaction\" is a transaction transferring control of an\norganization, or substantially all assets of one, or subdividing an\norganization, or merging organizations.  If propagation of a covered\nwork results from an entity transaction, each party to that\ntransaction who receives a copy of the work also receives whatever\nlicenses to the work the party\'s predecessor in interest had or could\ngive under the previous paragraph, plus a right to possession of the\nCorresponding Source of the work from the predecessor in interest, if\nthe predecessor has it or can get it with reasonable efforts.\n\n  You may not impose any further restrictions on the exercise of the\nrights granted or affirmed under this License.  For example, you may\nnot impose a license fee, royalty, or other charge for exercise of\nrights granted under this License, and you may not initiate litigation\n(including a cross-claim or counterclaim in a lawsuit) alleging that\nany patent claim is infringed by making, using, selling, offering for\nsale, or importing the Program or any portion of it.\n\n  11. Patents.\n\n  A \"contributor\" is a copyright holder who authorizes use under this\nLicense of the Program or a work on which the Program is based.  The\nwork thus licensed is called the contributor\'s \"contributor version\".\n\n  A contributor\'s \"essential patent claims\" are all patent claims\nowned or controlled by the contributor, whether already acquired or\nhereafter acquired, that would be infringed by some manner, permitted\nby this License, of making, using, or selling its contributor version,\nbut do not include claims that would be infringed only as a\nconsequence of further modification of the contributor version.  For\npurposes of this definition, \"control\" includes the right to grant\npatent sublicenses in a manner consistent with the requirements of\nthis License.\n\n  Each contributor grants you a non-exclusive, worldwide, royalty-free\npatent license under the contributor\'s essential patent claims, to\nmake, use, sell, offer for sale, import and otherwise run, modify and\npropagate the contents of its contributor version.\n\n  In the following three paragraphs, a \"patent license\" is any express\nagreement or commitment, however denominated, not to enforce a patent\n(such as an express permission to practice a patent or covenant not to\nsue for patent infringement).  To \"grant\" such a patent license to a\nparty means to make such an agreement or commitment not to enforce a\npatent against the party.\n\n  If you convey a covered work, knowingly relying on a patent license,\nand the Corresponding Source of the work is not available for anyone\nto copy, free of charge and under the terms of this License, through a\npublicly available network server or other readily accessible means,\nthen you must either (1) cause the Corresponding Source to be so\navailable, or (2) arrange to deprive yourself of the benefit of the\npatent license for this particular work, or (3) arrange, in a manner\nconsistent with the requirements of this License, to extend the patent\nlicense to downstream recipients.  \"Knowingly relying\" means you have\nactual knowledge that, but for the patent license, your conveying the\ncovered work in a country, or your recipient\'s use of the covered work\nin a country, would infringe one or more identifiable patents in that\ncountry that you have reason to believe are valid.\n\n  If, pursuant to or in connection with a single transaction or\narrangement, you convey, or propagate by procuring conveyance of, a\ncovered work, and grant a patent license to some of the parties\nreceiving the covered work authorizing them to use, propagate, modify\nor convey a specific copy of the covered work, then the patent license\nyou grant is automatically extended to all recipients of the covered\nwork and works based on it.\n\n  A patent license is \"discriminatory\" if it does not include within\nthe scope of its coverage, prohibits the exercise of, or is\nconditioned on the non-exercise of one or more of the rights that are\nspecifically granted under this License.  You may not convey a covered\nwork if you are a party to an arrangement with a third party that is\nin the business of distributing software, under which you make payment\nto the third party based on the extent of your activity of conveying\nthe work, and under which the third party grants, to any of the\nparties who would receive the covered work from you, a discriminatory\npatent license (a) in connection with copies of the covered work\nconveyed by you (or copies made from those copies), or (b) primarily\nfor and in connection with specific products or compilations that\ncontain the covered work, unless you entered into that arrangement,\nor that patent license was granted, prior to 28 March 2007.\n\n  Nothing in this License shall be construed as excluding or limiting\nany implied license or other defenses to infringement that may\notherwise be available to you under applicable patent law.\n\n  12. No Surrender of Others\' Freedom.\n\n  If conditions are imposed on you (whether by court order, agreement or\notherwise) that contradict the conditions of this License, they do not\nexcuse you from the conditions of this License.  If you cannot convey a\ncovered work so as to satisfy simultaneously your obligations under this\nLicense and any other pertinent obligations, then as a consequence you may\nnot convey it at all.  For example, if you agree to terms that obligate you\nto collect a royalty for further conveying from those to whom you convey\nthe Program, the only way you could satisfy both those terms and this\nLicense would be to refrain entirely from conveying the Program.\n\n  13. Use with the GNU Affero General Public License.\n\n  Notwithstanding any other provision of this License, you have\npermission to link or combine any covered work with a work licensed\nunder version 3 of the GNU Affero General Public License into a single\ncombined work, and to convey the resulting work.  The terms of this\nLicense will continue to apply to the part which is the covered work,\nbut the special requirements of the GNU Affero General Public License,\nsection 13, concerning interaction through a network will apply to the\ncombination as such.\n\n  14. Revised Versions of this License.\n\n  The Free Software Foundation may publish revised and\x2For new versions of\nthe GNU General Public License from time to time.  Such new versions will\nbe similar in spirit to the present version, but may differ in detail to\naddress new problems or concerns.\n\n  Each version is given a distinguishing version number.  If the\nProgram specifies that a certain numbered version of the GNU General\nPublic License \"or any later version\" applies to it, you have the\noption of following the terms and conditions either of that numbered\nversion or of any later version published by the Free Software\nFoundation.  If the Program does not specify a version number of the\nGNU General Public License, you may choose any version ever published\nby the Free Software Foundation.\n\n  If the Program specifies that a proxy can decide which future\nversions of the GNU General Public License can be used, that proxy\'s\npublic statement of acceptance of a version permanently authorizes you\nto choose that version for the Program.\n\n  Later license versions may give you additional or different\npermissions.  However, no additional obligations are imposed on any\nauthor or copyright holder as a result of your choosing to follow a\nlater version.\n\n  15. Disclaimer of Warranty.\n\n  THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY\nAPPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT\nHOLDERS AND\x2FOR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY\nOF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,\nTHE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\nPURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM\nIS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF\nALL NECESSARY SERVICING, REPAIR OR CORRECTION.\n\n  16. Limitation of Liability.\n\n  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING\nWILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND\x2FOR CONVEYS\nTHE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY\nGENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE\nUSE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF\nDATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD\nPARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),\nEVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF\nSUCH DAMAGES.\n\n  17. Interpretation of Sections 15 and 16.\n\n  If the disclaimer of warranty and limitation of liability provided\nabove cannot be given local legal effect according to their terms,\nreviewing courts shall apply local law that most closely approximates\nan absolute waiver of all civil liability in connection with the\nProgram, unless a warranty or assumption of liability accompanies a\ncopy of the Program in return for a fee.\n\n                     END OF TERMS AND CONDITIONS\n\n            How to Apply These Terms to Your New Programs\n\n  If you develop a new program, and you want it to be of the greatest\npossible use to the public, the best way to achieve this is to make it\nfree software which everyone can redistribute and change under these terms.\n\n  To do so, attach the following notices to the program.  It is safest\nto attach them to the start of each source file to most effectively\nstate the exclusion of warranty; and each file should have at least\nthe \"copyright\" line and a pointer to where the full notice is found.\n\n    \x3Cone line to give the program\'s name and a brief idea of what it does.\x3E\n    Copyright (C) \x3Cyear\x3E  \x3Cname of author\x3E\n\n    This program is free software: you can redistribute it and\x2For modify\n    it under the terms of the GNU General Public License as published by\n    the Free Software Foundation, either version 3 of the License, or\n    (at your option) any later version.\n\n    This program is distributed in the hope that it will be useful,\n    but WITHOUT ANY WARRANTY; without even the implied warranty of\n    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n    GNU General Public License for more details.\n\n    You should have received a copy of the GNU General Public License\n    along with this program.  If not, see \x3Chttp:\x2F\x2Fwww.gnu.org\x2Flicenses\x2F\x3E.\n\nAlso add information on how to contact you by electronic and paper mail.\n\n  If the program does terminal interaction, make it output a short\nnotice like this when it starts in an interactive mode:\n\n    \x3Cprogram\x3E  Copyright (C) \x3Cyear\x3E  \x3Cname of author\x3E\n    This program comes with ABSOLUTELY NO WARRANTY; for details type `show w\'.\n    This is free software, and you are welcome to redistribute it\n    under certain conditions; type `show c\' for details.\n\nThe hypothetical commands `show w\' and `show c\' should show the appropriate\nparts of the General Public License.  Of course, your program\'s commands\nmight be different; for a GUI interface, you would use an \"about box\".\n\n  You should also get your employer (if you work as a programmer) or school,\nif any, to sign a \"copyright disclaimer\" for the program, if necessary.\nFor more information on this, and how to apply and follow the GNU GPL, see\n\x3Chttp:\x2F\x2Fwww.gnu.org\x2Flicenses\x2F\x3E.\n\n  The GNU General Public License does not permit incorporating your program\ninto proprietary programs.  If your program is a subroutine library, you\nmay consider it more useful to permit linking proprietary applications with\nthe library.  If this is what you want to do, use the GNU Lesser General\nPublic License instead of this License.  But first, please read\n\x3Chttp:\x2F\x2Fwww.gnu.org\x2Fphilosophy\x2Fwhy-not-lgpl.html\x3E.",
 	"jquery_license": "Copyright 2013 jQuery Foundation and other contributors\nhttp:\x2F\x2Fjquery.com\x2F\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and\x2For sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
-	"jqueryui_license": "Copyright 2013 jQuery Foundation and other contributors,\nhttp:\x2F\x2Fjqueryui.com\x2F\n\nThis software consists of voluntary contributions made by many\nindividuals (AUTHORS.txt, http:\x2F\x2Fjqueryui.com\x2Fabout) For exact\ncontribution history, see the revision history and logs, available\nat http:\x2F\x2Fjquery-ui.googlecode.com\x2Fsvn\x2F\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and\x2For sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
 	"underscore_license": "Copyright (c) 2009-2013 Jeremy Ashkenas, DocumentCloud\n\nPermission is hereby granted, free of charge, to any person\nobtaining a copy of this software and associated documentation\nfiles (the \"Software\"), to deal in the Software without\nrestriction, including without limitation the rights to use,\ncopy, modify, merge, publish, distribute, sublicense, and\x2For sell\ncopies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following\nconditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES\nOF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT\nHOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nWHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR\nOTHER DEALINGS IN THE SOFTWARE.",
-	"jobad_license": "JOBAD - JavaScript API for OMDoc-based Active Documents\n\nCopyright (C) 2013 KWARC Group \x3Ckwarc.info\x3E\n\nJOBAD is free software: you can redistribute it and\x2For modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nJOBAD is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with JOBAD.  If not, see \x3Chttp:\x2F\x2Fwww.gnu.org\x2Flicenses\x2F\x3E."
+	"jobad_license": "JOBAD - JavaScript API for OMDoc-based Active Documents\n\nCopyright (C) 2013 KWARC Group \x3Ckwarc.info\x3E\n\nJOBAD is free software: you can redistribute it and\x2For modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nJOBAD is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with JOBAD.  If not, see \x3Chttp:\x2F\x2Fwww.gnu.org\x2Flicenses\x2F\x3E.",
+	"bootstrap_license": "                                 Apache License\r\n                           Version 2.0, January 2004\r\n                        http:\/\/www.apache.org\/licenses\/\r\n\r\n   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\r\n\r\n   1. Definitions.\r\n\r\n      \"License\" shall mean the terms and conditions for use, reproduction,\r\n      and distribution as defined by Sections 1 through 9 of this document.\r\n\r\n      \"Licensor\" shall mean the copyright owner or entity authorized by\r\n      the copyright owner that is granting the License.\r\n\r\n      \"Legal Entity\" shall mean the union of the acting entity and all\r\n      other entities that control, are controlled by, or are under common\r\n      control with that entity. For the purposes of this definition,\r\n      \"control\" means (i) the power, direct or indirect, to cause the\r\n      direction or management of such entity, whether by contract or\r\n      otherwise, or (ii) ownership of fifty percent (50%) or more of the\r\n      outstanding shares, or (iii) beneficial ownership of such entity.\r\n\r\n      \"You\" (or \"Your\") shall mean an individual or Legal Entity\r\n      exercising permissions granted by this License.\r\n\r\n      \"Source\" form shall mean the preferred form for making modifications,\r\n      including but not limited to software source code, documentation\r\n      source, and configuration files.\r\n\r\n      \"Object\" form shall mean any form resulting from mechanical\r\n      transformation or translation of a Source form, including but\r\n      not limited to compiled object code, generated documentation,\r\n      and conversions to other media types.\r\n\r\n      \"Work\" shall mean the work of authorship, whether in Source or\r\n      Object form, made available under the License, as indicated by a\r\n      copyright notice that is included in or attached to the work\r\n      (an example is provided in the Appendix below).\r\n\r\n      \"Derivative Works\" shall mean any work, whether in Source or Object\r\n      form, that is based on (or derived from) the Work and for which the\r\n      editorial revisions, annotations, elaborations, or other modifications\r\n      represent, as a whole, an original work of authorship. For the purposes\r\n      of this License, Derivative Works shall not include works that remain\r\n      separable from, or merely link (or bind by name) to the interfaces of,\r\n      the Work and Derivative Works thereof.\r\n\r\n      \"Contribution\" shall mean any work of authorship, including\r\n      the original version of the Work and any modifications or additions\r\n      to that Work or Derivative Works thereof, that is intentionally\r\n      submitted to Licensor for inclusion in the Work by the copyright owner\r\n      or by an individual or Legal Entity authorized to submit on behalf of\r\n      the copyright owner. For the purposes of this definition, \"submitted\"\r\n      means any form of electronic, verbal, or written communication sent\r\n      to the Licensor or its representatives, including but not limited to\r\n      communication on electronic mailing lists, source code control systems,\r\n      and issue tracking systems that are managed by, or on behalf of, the\r\n      Licensor for the purpose of discussing and improving the Work, but\r\n      excluding communication that is conspicuously marked or otherwise\r\n      designated in writing by the copyright owner as \"Not a Contribution.\"\r\n\r\n      \"Contributor\" shall mean Licensor and any individual or Legal Entity\r\n      on behalf of whom a Contribution has been received by Licensor and\r\n      subsequently incorporated within the Work.\r\n\r\n   2. Grant of Copyright License. Subject to the terms and conditions of\r\n      this License, each Contributor hereby grants to You a perpetual,\r\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\r\n      copyright license to reproduce, prepare Derivative Works of,\r\n      publicly display, publicly perform, sublicense, and distribute the\r\n      Work and such Derivative Works in Source or Object form.\r\n\r\n   3. Grant of Patent License. Subject to the terms and conditions of\r\n      this License, each Contributor hereby grants to You a perpetual,\r\n      worldwide, non-exclusive, no-charge, royalty-free, irrevocable\r\n      (except as stated in this section) patent license to make, have made,\r\n      use, offer to sell, sell, import, and otherwise transfer the Work,\r\n      where such license applies only to those patent claims licensable\r\n      by such Contributor that are necessarily infringed by their\r\n      Contribution(s) alone or by combination of their Contribution(s)\r\n      with the Work to which such Contribution(s) was submitted. If You\r\n      institute patent litigation against any entity (including a\r\n      cross-claim or counterclaim in a lawsuit) alleging that the Work\r\n      or a Contribution incorporated within the Work constitutes direct\r\n      or contributory patent infringement, then any patent licenses\r\n      granted to You under this License for that Work shall terminate\r\n      as of the date such litigation is filed.\r\n\r\n   4. Redistribution. You may reproduce and distribute copies of the\r\n      Work or Derivative Works thereof in any medium, with or without\r\n      modifications, and in Source or Object form, provided that You\r\n      meet the following conditions:\r\n\r\n      (a) You must give any other recipients of the Work or\r\n          Derivative Works a copy of this License; and\r\n\r\n      (b) You must cause any modified files to carry prominent notices\r\n          stating that You changed the files; and\r\n\r\n      (c) You must retain, in the Source form of any Derivative Works\r\n          that You distribute, all copyright, patent, trademark, and\r\n          attribution notices from the Source form of the Work,\r\n          excluding those notices that do not pertain to any part of\r\n          the Derivative Works; and\r\n\r\n      (d) If the Work includes a \"NOTICE\" text file as part of its\r\n          distribution, then any Derivative Works that You distribute must\r\n          include a readable copy of the attribution notices contained\r\n          within such NOTICE file, excluding those notices that do not\r\n          pertain to any part of the Derivative Works, in at least one\r\n          of the following places: within a NOTICE text file distributed\r\n          as part of the Derivative Works; within the Source form or\r\n          documentation, if provided along with the Derivative Works; or,\r\n          within a display generated by the Derivative Works, if and\r\n          wherever such third-party notices normally appear. The contents\r\n          of the NOTICE file are for informational purposes only and\r\n          do not modify the License. You may add Your own attribution\r\n          notices within Derivative Works that You distribute, alongside\r\n          or as an addendum to the NOTICE text from the Work, provided\r\n          that such additional attribution notices cannot be construed\r\n          as modifying the License.\r\n\r\n      You may add Your own copyright statement to Your modifications and\r\n      may provide additional or different license terms and conditions\r\n      for use, reproduction, or distribution of Your modifications, or\r\n      for any such Derivative Works as a whole, provided Your use,\r\n      reproduction, and distribution of the Work otherwise complies with\r\n      the conditions stated in this License.\r\n\r\n   5. Submission of Contributions. Unless You explicitly state otherwise,\r\n      any Contribution intentionally submitted for inclusion in the Work\r\n      by You to the Licensor shall be under the terms and conditions of\r\n      this License, without any additional terms or conditions.\r\n      Notwithstanding the above, nothing herein shall supersede or modify\r\n      the terms of any separate license agreement you may have executed\r\n      with Licensor regarding such Contributions.\r\n\r\n   6. Trademarks. This License does not grant permission to use the trade\r\n      names, trademarks, service marks, or product names of the Licensor,\r\n      except as required for reasonable and customary use in describing the\r\n      origin of the Work and reproducing the content of the NOTICE file.\r\n\r\n   7. Disclaimer of Warranty. Unless required by applicable law or\r\n      agreed to in writing, Licensor provides the Work (and each\r\n      Contributor provides its Contributions) on an \"AS IS\" BASIS,\r\n      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or\r\n      implied, including, without limitation, any warranties or conditions\r\n      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A\r\n      PARTICULAR PURPOSE. You are solely responsible for determining the\r\n      appropriateness of using or redistributing the Work and assume any\r\n      risks associated with Your exercise of permissions under this License.\r\n\r\n   8. Limitation of Liability. In no event and under no legal theory,\r\n      whether in tort (including negligence), contract, or otherwise,\r\n      unless required by applicable law (such as deliberate and grossly\r\n      negligent acts) or agreed to in writing, shall any Contributor be\r\n      liable to You for damages, including any direct, indirect, special,\r\n      incidental, or consequential damages of any character arising as a\r\n      result of this License or out of the use or inability to use the\r\n      Work (including but not limited to damages for loss of goodwill,\r\n      work stoppage, computer failure or malfunction, or any and all\r\n      other commercial damages or losses), even if such Contributor\r\n      has been advised of the possibility of such damages.\r\n\r\n   9. Accepting Warranty or Additional Liability. While redistributing\r\n      the Work or Derivative Works thereof, You may choose to offer,\r\n      and charge a fee for, acceptance of support, warranty, indemnity,\r\n      or other liability obligations and\/or rights consistent with this\r\n      License. However, in accepting such obligations, You may act only\r\n      on Your own behalf and on Your sole responsibility, not on behalf\r\n      of any other Contributor, and only if You agree to indemnify,\r\n      defend, and hold each Contributor harmless for any liability\r\n      incurred by, or claims asserted against, such Contributor by reason\r\n      of your accepting any such warranty or additional liability.\r\n\r\n   END OF TERMS AND CONDITIONS", 
+	"jquery_color_license": "Copyright 2013 jQuery Foundation and other contributors,\nhttp:\x2F\x2Fjquery.com\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and\x2For sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. "
 });
 
 JOBAD.resources.provide("icon", {
@@ -2135,7 +3271,8 @@ JOBAD.resources.provide("icon", {
 	"error": "data:image/png;base64,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", 
 	"open": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB90EHRUQFQh1G/IAAA0ESURBVGjezVlbcxtHdv5O9/RgMIMBCfBOWhJ1oUVbLmWTdZWdON61LVm+RJG1tQ/7kD+wqUrlF+UhlXdblrSS5XgrKWfzkGw5ycZrrWPKu6ZE8SICoEBgMIOZ6e6TBwAUKVEyJcqu7aopDIDB4Hzn1t/5hvAU1qs/foUKXoGUo0gIIYhIsGWyzAQCCACRsEKQ7S/+6MrH9mn8N+3nx2feeZMIkMwswawAUiRISUe6UkhJJAQIxJattcZYazWArH/kADQA89GVj/l7BfD2u28KrY3UWrsFr1Ash+VSuVyulkqlcc/zxpVSY0KIkAguM8BsU61NK03TehzHtSiK6lEnaqbdtM3MsXRkCkBfufSR/U4BnHn7FAkSKsvzQhAEpZmZmelKpTLv+8WTruu+oFx10FVqxHGUL6VQJAQBgDXWaqMznesoy7JammaLSZL8Loqi641G4/cbdzfWwNySUibGGH3l8jX7VAG8cfo1Uo4SDC4UCoXw4MGDB8fGxl7yi8XXi773g6BUmgrD0CuVAvKKHpSjIIQACGBmWGthtEGW5+gmCTqdjm21oihqR7fiOP5Nq9X61erq6uebm81lgJoAkjzX5trVb0+tbwVw+swbRIDDgD81NTUxOzv7chiWzgdB8PLo2MjE6OioCMshlFJMRD1jjYHWBtYaGGPB1oKZAQKICAQiay06UQf1RiO727i71G63f7Veq32yvLz8v1mW3RGCWlqb/Oovrj0ShHzUl2+eeZ2IhJKOMzQ/Pz8/Ozv7N5VK5W+npqdeOjp3pDzzzAyFYchKKTAzjDEwxsBa2zfekDF9QMZQnuVI0wxpN4XWBp5XQLVadcpDYVVKMe+67pzv+5RlaZQk3VRKmR979qi58dXXjw/gzTOvk5DSdZU7/MILL/zp5NTUz0dHR3525Ojs1KHZgyIshUzUCyAz91KFLTEz2X4LZctg7p+zBTMTW0vWWtJaI0kSpGmKQqGA6khVFTxvEsCc5xULWutmHMcdIUQ29+wxs/DVjb0DeOPN14kEKVe5wydOPP/D8Ynxv5+YnHjn2Nyx0vj4OEspgX5gmRlgkIWlAZDeZxZsGeB7AJkZFowtMGxJa01xnEBrg+HhISqXwyFr7FGllJemaS2O446QIj02d9TcWHgwEs79H7x26kckCI4jnfKJE8//YHx84u+mpidPHz12xA2CgMEYGEU7KokB6pdULzC0a8Xt/FHvYLYUxzHStMuVSoUOH5mtCiHeY2Zmy9zY2DBSylp//3h0BJ49PieZOZifn5+fmpr6+eTUxDvH5o4WtozHfcYPVq/f94++1y3fO3/gwLZo9TqV1obiOGbP8zBcrXh5ls+QEFkURatZlrWOP3c8W/i/hR0tVuzI+7feIGYuTExMjk9OTp6vVqtvHz4y65WC0qONv8+rDOCVl36MH73yBl579dQemjmBQGAGtNZUW6+DreUDB58ZHRsb/avp6elXhRDTgqh49ty74qEAiIRyC254+PDhl8vloZ8eOHRgeGhoiJl5D8bvn9RQP8W0zmn9zjpc18XU9NTB8fGxd0dHR19g5hEppbMrgNNvnRJ5nhcOHTx0YGiofH5icmx2bGz0Xobs2XjaH8Hqd7Y0Taleb3ClMixGx0ZPTk5OvOq67gwzB+fOnxUPADBGyyAIgvHx8ZfCMPzzqekpqRzFgy7yPXDDgafA/VC02y2Kkxjj42Ol4eHhvxgZGXnOWlshImcHgNNvnSKjjZqemZny/eLrY+Nj42EYbjf8u0udRzjDGou7jbso+kVUq9Uj1Wr1xUKhMGmt9c6dP0tbAIggCl6hWK1U5oNS8Ccjo1UpheStPr939+142S9FJiLESYI4TlAdqQRhGJ4Mw/AQM5eISN4DAHLKYbnk+/7JMAynS6XS/vKCdoX1+I4AYK1Fq7kJ3/epFJYOlUqlI4JoeLCHiTNvnyYAzlB5qOJ5hRNhGBZd5fJWj34qYwajV0xPdqc4jsEAwlKpEgTBEcdRFSJy3/vJ2d4ECMAplUqjruseCgKfhBD7yn3abXfgJ79TnmtkaQo/KBaKnveMclUFzC4gSAgpiIiUV/TGlVIjXtH7DuqR9lfMbJGmGVy3INyCO+Yqd5iBAgkiARBJKaXruiOOcnyl1NMHwPsEwUCeZ3AcCaVUqFwVAnAJIIeYSUgphRBlIYSS8uEjwskTf/ZE/3/qtTN7vvYf/+kfds1HayyEEBBSelJKv1/EQjBA1JNCXABiO8f/Y1q23wEIcIQQatBBRa/ZgwaEh0DYVsR/NIt28t4tNu4QEVtrLVubMrNhZgghIQSTtWbHTT6//t8P95C1MNtm4JdefGXru3/59J+3xk3Tn5mt6V07GEG3xlFjHtIHxEAg0FqbHAwLAEKSYGuN0VpvGmMyrTVAgJSSn3ok6NEcaNedj/uedpyBupForWOANBhWMCwzs+mmaSPPdSvN0l6EiPqR+D7SiXeAIyEghACJXjoLEnBdF3muOcuzzTzP20TIALBjrWUAeRzH9TzLanEnPsxsQSS2QAxS5Lvprz13CyEhSIIdZ2uaG6QVM1AsetjYuGuSpFvLs6wFIGVwD4AQMo+iaKPbTb+Jos4PtdZCKXeLUAkhMdB89t+deFteE6SU6M0otDVaGmtgcc9hrutCKRdR1EniOF7RxtwFkH74/iUrrl39hAHoKIqacRxfb7Va7SRJdkwlAxBSShCJxzJyN4cTACkllHLhugUo5WxLVX6gJIq+jzzP0G61Gp1OZ9EYs0GEfPtAo7vdNGq3W1+2W+2bzWYT1loQ7WQwRGLLYw8HwrvUZ3+kJoKQEkopKKV699ny1INFzMyQjkRQ8tFsbppWq7UYRdEigGZf3e4BYGYL2KReb/whiqL/Wl+vpVnapd3bWa+wBkCE6NXKwI7BcL5jbu1fr5SCq9x7DtjhH9r1NAh8EIBGvdHc3Gx9kSTJLSFE2zLbLQAfXfmYpXTSZvPuevNu89/rtfpird6AZUv3R+FBIA6kdOD0jx6wnXREKQXlqH4Kbt+S6JGRU45CWC6jsbFhG42NG41G43NmXiFCcvGDy3y/KmEAaq+urX2xudn6t+Wl5SSKoj2NI0QEItHnKgLScR7YhGjPWwRt3bM8FELnOe6s3mnU6/VfdzqdBSFEw1rWDwz1V39xzUopk1artXLnzp1P6rX657eXbnOWZw+Nwm6aED1GTT+qBwQlH0W/iNXVtXT9zvpvarXaZ2BeAtC5eOEy7yotGm1y4YjmysrKF2EYXnA9d8L3i7MHDhyAlA5/m7Sy/cvP/uc/e9SALayxj2V9sehhaGgIa2trdmV55auV1dV/TZLkd0KI9f5jqt2lxRs3vsazx+esMUan3W7H8zxHa3PU9QpBEPiDVkcPYwK9MdTulBMxkBj757vJjGDY/nnB81AeKqPRaPDiNzdv3r59+0qtVvsUwAII7YsfXLaP1EYXvrrB888d12mapmmaNV1XqSzNDivlFP3AJ/GQeWEHAGzXRncauvO93boGAHzfRyksoV6r8+LizeWlpaWra6trv7TWXidC/cP3L+k9yetH546wI508juO4203XHccRSdKdYdiS7/tQjuL7I8HcF6XuB/CoCNje9VJKBGEJjnKwsrxiby7evLm0dPvq8vLyNWPMb4WgOxfev5Tt+fnA1wu/x7G5o1ZKmSVJHCdJsi6F7HaT7li32x1ylCMKbmEH0Rt43/Y3rcFjpQGAQYoM6EiPtgsUix6KxSLiToxbi7fSpaXbX96+vXxlbXXtl8aY3xJhzTJnX3258HhPaG4sfI25Z48ZKUUaJ0k7iqI1tlzL88xrt9uVNE0LjpJwnB5jpe0Cir0/bWwvOtv4T8ErwC24yNIUKyur9tbNW/WVldX/WFpaulyv1T81bK6ToDvMnA16/hOJme/+9dvkOI7DlstCiKlqtfr85OTEXw4NDb9SHgqPjYyMhNVqhcIwhOu6EFIATL1o2H5E7L3oWGuRZxmiKMLGxl290djYbDY3FxqNxq9rtdpnvW5DSwA1L7x/MX9qauy582clERXBXFVKzVRHRo5Xq9UXS0Fw0g/82aAUVAM/8Iq+JwuFAhzH2dp1jbHI8xxpt8txkphO1ImjKGpEUfTN5mbreqPR+DyO4wUASwBqAJIL7180T11OPnf+XRJCOswIrDXDSrmTYRgeDEulI34QHPYK3jOuq8aVcspCSk8I4YDBxhqttU7yPN/sdtNakiQrnaizGEXRzSRJbjF4RQixAaBjrNWXLlze89b3RGLNufNnhRAkrWXPsi0JEkOO41SUUhWl1LByVCilLAopXGZmY4zW2iQ6z6Nc502tddMYswFCU5BoCxJdy1Z/+MGlxx429iWbnzvf0yYBdgByARQAuMzsgqDoHlWxAGkAGRGlAKcAZQA0M9snMfyp6/7v/eQsgXq0rveCHds2MyzAW8/3Lu7D6O3r/wHtCaTusFqRgQAAAABJRU5ErkJggg==",
 	"close": "data:image/png;base64,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"
-});/* end   <JOBAD.resources.js> */
+});
+/* end   <JOBAD.resources.js> */
 /* start <JOBAD.repo.js> */
 /*
 	JOBAD.repo.js - Contains the JOBAD repo implementation
@@ -2181,21 +3318,24 @@ JOBAD.repo.buildPage = function(element, repo, callback){
 
 	var body = JOBAD.refs.$("<div class='JOBAD JOBAD_Repo JOBAD_Repo_Body'>").appendTo(JOBAD.refs.$(element).empty());
 
-	var msgBox = JOBAD.refs.$("<div>");
+	var msgBox = JOBAD.refs.$("<div class='bar'>");
 
-	msgBox.wrap("<div class='JOBAD JOBAD_Repo JOBAD_Repo_MsgBox'>").parent().appendTo(body); 
+	msgBox.wrap("<div class='progress'>").parent().wrap("<div class='JOBAD JOBAD_Repo JOBAD_Repo_MsgBox'>").parent().appendTo(body); 
 
 	var label = JOBAD.refs.$("<div class='progress-label'>").text("Loading Repository, please wait ...").appendTo(msgBox);
 	
-	msgBox.progressbar({
-		value: 0
-	})
+	msgBox.css({
+		"width": 0
+	});
 
 	var baseUrl = JOBAD.util.resolve(repo);
 	baseUrl = baseUrl.substring(0, baseUrl.length - 1); // no slash at the end
 
 	JOBAD.repo.init(baseUrl, function(suc, cache){
-		msgBox.progressbar("option", "value", 25); 
+		msgBox.css({
+			"width": "25%",
+		}); 
+
 		if(!suc){
 			label.text("Repository loading failed: "+cache);
 			return; 
@@ -2223,7 +3363,8 @@ JOBAD.repo.buildPage = function(element, repo, callback){
 					JOBAD.refs.$("<th>").text("Homepage"),
 					JOBAD.refs.$("<th>").text("Description"),
 					JOBAD.refs.$("<th>").text("Module Dependencies"),
-					JOBAD.refs.$("<th>").text("External Dependencies")
+					JOBAD.refs.$("<th>").text("External JavaScript Dependencies"),
+					JOBAD.refs.$("<th>").text("External CSS Dependencies")
 				).children("th").click(function(){
 					JOBAD.UI.sortTableBy(this, "rotate", function(i){
 						this.parent().find("span").remove(); 
@@ -2250,13 +3391,15 @@ JOBAD.repo.buildPage = function(element, repo, callback){
 
 		var next = function(){
 
-			msgBox.progressbar("option", "value", 25+75*((i+1)/(modules.length))); 
+			msgBox.css({
+				"width": ""+((25+75*((i+1)/(modules.length)))*100)+"%"
+			});
 
 			var name = modules[i]; 
 
 			if(i >= modules.length){
 				label.text("Finished. ");
-				msgBox.fadeOut(1000);
+				msgBox.parent().fadeOut(1000);
 				callback(body); 
 				return;
 			}
@@ -2342,13 +3485,34 @@ JOBAD.repo.buildPage = function(element, repo, callback){
 						}
 					}
 
-					var edeps = info.externals;
+					var edeps = info.externals.js;
 
 					if(edeps.length == 0){
 						JOBAD.refs.$("<td></td>").text("(None)").appendTo(row);
 					} else {
 						var cell = JOBAD.refs.$("<td></td>").appendTo(row); 
-						for(var j=0;j<edps.length;j++){
+						for(var j=0;j<edeps.length;j++){
+							cell.append(
+								"\"", 
+								JOBAD.refs.$("<span>")
+									.addClass("JOBAD JOBAD_Repo JOBAD_Repo_External_Dependency")
+									.text(edeps[j]),
+								"\""
+							);
+
+							if(j != edeps.length - 1 ){
+								cell.append(" , "); 
+							}
+						}
+					}
+
+					var edeps = info.externals.css;
+
+					if(edeps.length == 0){
+						JOBAD.refs.$("<td></td>").text("(None)").appendTo(row);
+					} else {
+						var cell = JOBAD.refs.$("<td></td>").appendTo(row); 
+						for(var j=0;j<edeps.length;j++){
 							cell.append(
 								"\"", 
 								JOBAD.refs.$("<span>")
@@ -2529,13 +3693,21 @@ JOBAD.repo.loadFrom = function(repo, modules, callback){
 			return JOBAD_Repo_Urls[repo][mod]; 
 		});
 
+		JOBAD.repo.__currentFile = undefined; 
+		JOBAD.repo.__currentLoad = m2; 
+		JOBAD.repo.__currentRepo = repo; 
 
 		JOBAD.util.loadExternalJS(m2, function(suc){
+			delete JOBAD.repo.__currentFile; 
+			delete JOBAD.repo.__currentLoad; 
+			delete JOBAD.repo.__currentRepo;  
 			if(suc){
 				callback(true)
 			} else {
 				callback(false, "Failed to load one or more Modules: Timeout")
 			}
+		}, undefined, function(u){
+			JOBAD.repo.__currentFile = u; 
 		});
 	});
 }
@@ -2670,6 +3842,40 @@ JOBAD.ifaces.push(function(me, args){
 	//modules namespace
 	this.modules = {};
 
+	//Event namespace
+	this.Event = JOBAD.util.EventHandler(); 
+
+	/*
+		Triggers a handable event. 
+		@param	evt	Name of event to trigger. 
+		@param	param	Parameter for event. 
+	*/
+	this.Event.handle = function(evt, param){
+		me.Event.trigger("event.handlable", [evt, param]); 
+	}
+
+	/*
+		Binds a custom Event handler in a module. 
+		@param	evt	Name of event to biond to. 
+		@param	module JOABd.modules.loadedModule Instance to enable binding on.
+		@param handleName Name of handle function to use. Should be a parameter of the module.  
+	*/
+	this.Event.bind = function(evt, module, handleName){
+		if(module instanceof JOBAD.modules.loadedModule){
+			me.Event.on(evt, function(){
+				if(module.isActive()){
+					var args = [me];
+					for(var i=0;i<arguments.length;i++){
+						args.push(arguments[i]); 
+					}
+					module[handleName].apply(module, args);
+				}
+			})
+		} else {
+			JOBAD.console.error("Can't bind Event Handler for '"+evt+"': module is not a loadedModuleInstance. ")
+		}
+	}
+
 	var InstanceModules = {}; //Modules loaded
 	var disabledModules = []; //Modules disabled
 
@@ -2727,17 +3933,18 @@ JOBAD.ifaces.push(function(me, args){
 
 	/*
 		Loads a module
+		@param	module	Module to load. 
 		@param	options	Options to pass to the module
-		@param	callback	Callback to execute
 	*/
 	var doLoad = function(module, options){
-		var auto_activate = loadQuenueAutoActivate.indexOf(module) != -1; //TODO: Add option somewhere
+		var auto_activate = loadQuenueAutoActivate.indexOf(module) != -1;
 		try{
 			InstanceModules[module] = new JOBAD.modules.loadedModule(module, options, me, function(suc, msg){
 				if(!suc){
 					markLoadAsFailed(module, msg);
 				} else {
 					disabledModules.push(module); //we are disabled by default
+					me.Event.trigger("module.load", [module, options]); 
 
 					if(auto_activate){
 						me.modules.activate(module);
@@ -2754,6 +3961,7 @@ JOBAD.ifaces.push(function(me, args){
 
 	var markLoadAsFailed = function(module, message){
 		loadFail.push(module);
+		me.Event.trigger("module.fail", [module, message]); 
 		try{
 			delete InstanceModules[module];
 		} catch(e){}
@@ -2804,7 +4012,6 @@ JOBAD.ifaces.push(function(me, args){
 		config = JOBAD.util.defined(config);
 		config = (typeof config == "function")?{"ready": config}:config; 
 		config = (typeof config == "booelan")?{"activate": config}:config; 
-
 
 		var ready = JOBAD.util.forceFunction(config.ready, function(){});
 		var load = JOBAD.util.forceFunction(config.load, function(){});
@@ -2935,8 +4142,10 @@ JOBAD.ifaces.push(function(me, args){
 			return;
 		}
 		disabledModules.push(module);
-		this.element.trigger('JOBAD.Event', ['deactivate', module]);
+
 		InstanceModules[module].onDeactivate(me);
+		me.Event.trigger("module.deactivate", [InstanceModules[module]]); 
+		me.Event.handle("deactivate", module); 
 	}
 
 	/*
@@ -2963,13 +4172,14 @@ JOBAD.ifaces.push(function(me, args){
 			
 
 			InstanceModules[module].onActivate(me);
-			me.element.trigger('JOBAD.Event', ['activate', module]);
+			me.Event.trigger("module.activate", [InstanceModules[module]]); 
+			me.Event.handle("activate", module); 
 		}
 
 		if(me.Setup.isEnabled()){
 			todo();
 		} else {
-			me.Setup.deferUntilEnabled(todo);
+			me.Event.once("instance.enable", todo); 
 		}
 
 		return true; 
@@ -3070,18 +4280,19 @@ JOBAD.ifaces.push(function(me, args){
 		});
 		
 		//reactivate all once setup is called again
-		me.Setup.deferUntilEnabled(function(){
+		me.Event.once("instance.enable", function(){
 			for(var i=0;i<cache.length;i++){
 				var name = cache[i];
 				if(!me.modules.isActive(name)){
 					me.modules.activate(name);
 				}
 			}
-			me.Setup.deferUntilDisabled(onDisable); //reregister me
+			me.Event.once("instance.disable", onDisable); //reregister me
 		});
 	};
 	
-	this.Event = onDisable; 
+
+	this.Event.once("instance.disable", onDisable); 
 	
 	this.modules = JOBAD.util.bindEverything(this.modules, this);
 });
@@ -3094,6 +4305,7 @@ JOBAD.modules.cleanProperties = ["init", "activate", "deactivate", "globalinit",
 
 var moduleList = {};
 var moduleStorage = {};
+var moduleOrigins = {}; 
 
 /* 
 	Registers a new JOBAD module with JOBAD. 
@@ -3102,6 +4314,7 @@ var moduleStorage = {};
 */
 JOBAD.modules.register = function(ModuleObject){
 	var moduleObject = JOBAD.modules.createProperModuleObject(ModuleObject);
+
 	if(!moduleObject){
 		return false;	
 	}
@@ -3109,10 +4322,36 @@ JOBAD.modules.register = function(ModuleObject){
 	if(JOBAD.modules.available(identifier)){
 		return false;	
 	} else {
+		//set the origins
+		if(JOBAD.repo.__currentFile){
+			moduleOrigins[identifier] = [JOBAD.repo.__currentFile, JOBAD.repo.__currentLoad, JOBAD.repo.__currentRepo]; //The current origin
+		} else {
+			moduleOrigins[identifier] = [JOBAD.util.getCurrentOrigin()];
+		}
+
+		//resolving all the relative urls
+		if(moduleObject.info.url){
+			moduleObject.info.url = JOBAD.modules.resolveModuleResourceURL(identifier, moduleObject.info.url); 
+		}
+
+		moduleObject.info.externals.js = JOBAD.util.map(moduleObject.info.externals.js, function(e){
+			return JOBAD.modules.resolveModuleResourceURL(identifier, e); 
+		});
+
+		moduleObject.info.externals.css = JOBAD.util.map(moduleObject.info.externals.css, function(e){
+			return JOBAD.modules.resolveModuleResourceURL(identifier, e); 
+		});
+
 		moduleList[identifier] = moduleObject;
+
+
 		moduleStorage[identifier] = {};
+		
+		
 		return true;
 	}
+
+
 };
 
 /* 
@@ -3159,12 +4398,26 @@ JOBAD.modules.createProperModuleObject = function(ModuleObject){
 
 		if(info.hasOwnProperty('externals')){
 			if(JOBAD.util.isArray(info["externals"])){
-				properObject.info.externals = info["externals"];
+				properObject.info.externals = {"js": info["externals"], "css": []};
+			} else if(JOBAD.util.isObject(info["externals"])){
+				properObject.info.externals = {}
+				if(info["externals"].hasOwnProperty("css")){
+					if(!JOBAD.util.isArray(info["externals"].css)){
+						return false; 
+					}
+					properObject.info.externals.css = info["externals"].css; 
+				}
+				if(info["externals"].hasOwnProperty("js")){
+					if(!JOBAD.util.isArray(info["externals"].js)){
+						return false; 
+					}
+					properObject.info.externals.js = info["externals"].js; 
+				}
 			} else {
 				return false;
 			}
 		} else {
-			properObject.info.externals = [];
+			properObject.info.externals = {"js":[], "css": []};
 		}
 
 		if(info.hasOwnProperty('async')){
@@ -3292,6 +4545,33 @@ JOBAD.modules.available = function(name, checkDeps){
 		return selfAvailable;
 	}
 };
+
+/*
+	Gets the origin of a module. 
+	@param	name Name of module to get origin from. 
+	@param  what what kind of orgin to get. (Optional, "file" or "group", otehrwise "repo"))
+*/
+JOBAD.modules.getOrigin = function(name, what){
+	var origin = moduleOrigins[name]; 
+	if(JOBAD.util.equalsIgnoreCase(what, "file")){
+		return origin[0]; 
+	} else if(JOBAD.util.equalsIgnoreCase(what, "group")){
+		return origin[1] || [origin[0]]; 
+	} else {
+		return origin[2]; 
+	}
+}
+
+/*
+	Resolves a resource URL for the specefied module. 
+	@param	mod	Name of module to resolve url for. 
+	@param	url Url to resolve. 
+*/
+JOBAD.modules.resolveModuleResourceURL = function(mod, url){
+	var origin = JOBAD.modules.getOrigin(mod, "file");
+	origin = origin.substring(0, origin.lastIndexOf('/'));
+	return JOBAD.util.resolve(url, origin); 
+}
 
 /* 
 	Returns an array of dependencies of name including name in such an order, thet they can all be loaded without unresolved dependencies. 
@@ -3471,6 +4751,13 @@ JOBAD.modules.loadedModule = function(name, args, JOBADInstance, next){
 		return JOBADInstance;	
 	};
 
+	/*
+		Gets the origin of this module. 
+	*/
+	this.getOrigin = function(what){
+		return JOBAD.modules.getOrigin(name, what); 
+	}
+
 
 	this.isActive = function(){
 		return JOBADInstance.modules.isActive(this.info().identifier);
@@ -3533,9 +4820,14 @@ JOBAD.modules.loadedModule = function(name, args, JOBADInstance, next){
 		return JOBADInstance.modules.deactivate(this.info().identifier);
 	}
 
+	// .setHandler, scoped alias for .Event.bind
+	this.setHandler = function(evt, handleName){
+		this.getJOBAD().Event.bind(evt, me, handleName); 
+	}
+
 	var do_next = function(){
 		ServiceObject.init.apply(me, params); 
-		next(true);
+		next.call(me, true);
 	};
 
 	if(!moduleStorage[name]["init"]){
@@ -3549,21 +4841,30 @@ JOBAD.modules.loadedModule = function(name, args, JOBADInstance, next){
 			}
 		}
 
-		JOBAD.util.loadExternalJS(ServiceObject.info.externals, function(urls, suc){
+		JOBAD.util.loadExternalCSS(ServiceObject.info.externals.css, function(urls, suc){
 			if(!suc){
-				next(false, "Can't load external dependencies: Timeout. "); 
+				next(false, "Can't load external CSS dependencies: Timeout. "); 
 			} else {
-				ServiceObject.globalinit.call(limited, do_next);
+				JOBAD.util.loadExternalJS(ServiceObject.info.externals.js, function(urls, suc){
+					if(!suc){
+						next(false, "Can't load external JavaScript dependencies: Timeout. "); 
+					} else {
+						ServiceObject.globalinit.call(limited, do_next);
+					}
+					
+				});
 			}
 			
 		});
+
+		
 	} else {
 		do_next();
 	}
 	
 	
 };/* end   <core/JOBAD.core.modules.js> */
-/* start <core/JOBAD.core.events.js> */
+/* start <core/JOBAD.core.setup.js> */
 /*
 	JOBAD Core Event Logic
 		
@@ -3585,6 +4886,24 @@ JOBAD.modules.loadedModule = function(name, args, JOBADInstance, next){
 	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+//These are special events
+//Do not setup these
+var SpecialEvents = ["on", "off", "once", "trigger", "bind", "handle"]; 
+
+//preEvent and postEvent Handlers 
+//will be called for module-style events
+
+var preEvent = function(me, event, params){
+	me.Event.trigger("event.before."+event, [event, params]);
+};
+
+var postEvent = function(me, event, params){
+	me.Event.trigger("event.after."+event, [event, params]);
+	me.Event.handle(event, params); 
+};
+
+
 //Provides custom events for modules
 JOBAD.ifaces.push(function(me, args){
 
@@ -3592,9 +4911,6 @@ JOBAD.ifaces.push(function(me, args){
 	/* Setup on an Element */
 
 	var enabled = false;
-	
-	var activation_cache = [];
-	var deactivation_cache = [];
 
 	/*
 		Enables or disables this JOBAD instance. 
@@ -3614,19 +4930,52 @@ JOBAD.ifaces.push(function(me, args){
 	this.Setup.isEnabled = function(){
 		return enabled;
 	};
+
+
+	/*
+		Calls the function cb if this JOBADINstance is enabled, 
+		otherwise calls it once this JOBADInstance is enabled. 
+	*/
+	this.Setup.enabled = function(cb){
+		var cb = JOBAD.util.forceFunction(cb).bind(me); 
+
+		if(enabled){
+			cb(); 
+		} else {
+			me.Event.once("instance.enable", cb);
+		}
+	}
+
+	/*
+		Calls the function cb if this JOBADINstance is disabled, 
+		otherwise calls it once this JOBADInstance is disbaled. 
+	*/
+	this.Setup.disabled = function(cb){
+		var cb = JOBAD.util.forceFunction(cb).bind(me); 
+
+		if(!enabled){
+			cb(); 
+		} else {
+			me.Event.once("instance.disable", cb);
+		}
+	}
+
 	
 	/*
 		Defer an event until JOBAD is enabled. 
+		depracated
 	*/
 	this.Setup.deferUntilEnabled = function(func){
-		activation_cache.push(func);
+		JOBAD.console.warn("deprecated: .Setup.deferUntilEnabled, use .Event.once('instance.enable', callback) instead. "); 
+		me.Event.once("instance.enable", func); 
 	};
 	
 	/*
 		Defer an even until JOBAD is disabled
 	*/
 	this.Setup.deferUntilDisabled = function(func){
-		deactivation_cache.push(func);
+		JOBAD.console.warn("deprecated: .Setup.deferUntilDisabled, use .Event.once('instance.disable', callback) instead. "); 
+		me.Event.once("instance.disable", func);
 	};
 	
 	/*
@@ -3634,26 +4983,30 @@ JOBAD.ifaces.push(function(me, args){
 		@returns boolean indicating success. 
 	*/
 	this.Setup.enable = function(){
-		
 		if(enabled){
 			return false;
 		}
 
 		var root = me.element;
 
+		me.Event.trigger("instance.beforeEnable", []);
+
 		for(var key in me.Event){
-			JOBAD.events[key].Setup.enable.call(me, root);
-		}
-		
-		while(activation_cache.length > 0){
-			try{
-				activation_cache.pop()();
-			} catch(e){
-				JOBAD.console.log("Warning: Defered Activation event failed to execute: "+e.message);
+			if(JOBAD.util.contains(SpecialEvents, key)){
+				continue;
 			}
+
+			try{
+				JOBAD.events[key].Setup.enable.call(me, root);
+			} catch(e){
+				JOBAD.console.error("Failed to enable Event '"+key+"': "+e.message);
+				JOBAD.console.error(e); 
+			}
+			
 		}
-		
+
 		enabled = true; //we are enabled;
+		var res = me.Event.trigger("instance.enable", []); 	
 
 		return true;
 	};
@@ -3668,37 +5021,45 @@ JOBAD.ifaces.push(function(me, args){
 		}		
 		var root = me.element;
 
+		me.Event.trigger("instance.beforeDisable", []);
+
 		for(var key in JOBAD.events){
+			if(JOBAD.util.contains(SpecialEvents, key)){
+				continue;
+			}
 			if(JOBAD.events.hasOwnProperty(key) && !JOBAD.isEventDisabled(key)){
-				JOBAD.events[key].Setup.disable.call(me, root);
+				try{
+					JOBAD.events[key].Setup.disable.call(me, root);
+				} catch(e){
+					JOBAD.console.error("Failed to disable Event '"+key+"': "+e.message);
+					JOBAD.console.error(e); 
+				}
 			}	
 		}
-		
-		while(deactivation_cache.length > 0){
-			try{
-				deactivation_cache.pop()();
-			} catch(e){
-				JOBAD.console.log("Warning: Defered Deactivation event failed to execute: "+e);
-			}
-		}
-		
+
+
 		enabled = false;
+		me.Event.trigger("instance.disable", []); 
 
 		return true;
 	};
-	
-	//this.Event is a cache for setup events
-	this.Setup.deferUntilDisabled(this.Event);
-	
-	/* Event namespace */
-	this.Event = {}; //redefine it
-	
+
 	//Setup the events
 	for(var key in JOBAD.events){
 		if(JOBAD.events.hasOwnProperty(key) && !JOBAD.isEventDisabled(key)){
 
 			me.Event[key] = JOBAD.util.bindEverything(JOBAD.events[key].namespace, me);
 			
+			(function(){
+				var k = key; 
+				var orgResult = me.Event[k].getResult; 
+				me.Event[k].getResult = function(){
+					var augmentedResult = me.Event.trigger(k, arguments); //Trigger the event
+					var realResult = orgResult.apply(this, arguments); 
+					return realResult; 
+				}
+			})()
+
 			if(typeof JOBAD.events[key].Setup.init == "function"){
 				JOBAD.events[key].Setup.init.call(me, me);
 			} else if(typeof JOBAD.events[key].Setup.init == "object"){
@@ -3752,7 +5113,7 @@ JOBAD.events = {};
 
 //config
 JOBAD.config.disabledEvents = []; //Disabled events
-JOBAD.config.cleanModuleNamespace = false;//if set to true this.loadedModule instances will not allow additional functions/* end   <core/JOBAD.core.events.js> */
+JOBAD.config.cleanModuleNamespace = false;//if set to true this.loadedModule instances will not allow additional functions/* end   <core/JOBAD.core.setup.js> */
 /* start <ui/JOBAD.ui.js> */
 /*
 	JOBAD 3 UI Functions
@@ -3866,7 +5227,7 @@ JOBAD.UI.sortTableBy = function(el, sortFunction, callback){
 				var row = JOBAD.refs.$(this); 
 				row.detach().appendTo(table); 
 			});
-			return el;  
+			return el;
 		}
 	}
 
@@ -3880,6 +5241,43 @@ JOBAD.UI.sortTableBy = function(el, sortFunction, callback){
 	})
 
 	return el; 
+}
+
+/*
+	Making Bootstrap scoped. 
+*/
+
+/*
+	Enables Bootstrap on some element
+*/
+JOBAD.refs.$.fn.BS = function(){
+	JOBAD.refs.$(this).addClass(JOBAD.config.BootstrapScope); 
+	return this; 
+}
+
+JOBAD.UI.BS = function(element){
+	return JOBAD.refs.$(element).BS(); 
+}
+
+var Bootstrap_hacks = JOBAD.refs.$([]); 
+
+JOBAD.UI.BSStyle = function(element){
+	//Remove all the old hacks
+	Bootstrap_hacks = Bootstrap_hacks.filter(function(){
+		var me = JOBAD.refs.$(this); 
+
+		if(me.children().length == 0){
+			me.remove(); 
+			return false; 
+		}
+
+		return true; 
+	});
+
+
+	var el = JOBAD.refs.$(".modal-backdrop").wrap(JOBAD.refs.$("<div>").BS().addClass("hacked")); 
+
+	Bootstrap_hacks = Bootstrap_hacks.add(el.parent()); 
 }/* end   <ui/JOBAD.ui.js> */
 /* start <ui/JOBAD.ui.hover.js> */
 /*
@@ -4010,6 +5408,7 @@ var ContextMenus = JOBAD.refs.$([]);
 		config.callBackOrg	Optional. Element to use for callback. 
 		config.unbindListener	Optional. Element to listen to for unbinds. 
 		config.block	Optional. Always block the Browser context menu. 
+		config.stopPropagnate	Optional. If set to true, will not propagnate menus (check parents if no menu is available). 
 	@return the jquery element. 
 */
 JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
@@ -4025,11 +5424,13 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 	//Force functions for all of this
 	var typeFunction = JOBAD.util.forceFunction(config.type);
 	var onCallBack = JOBAD.util.forceFunction(config.callback, true);
-	var onOpen = JOBAD.util.forceFunction(config.enable, true);
+	var onOpen = JOBAD.util.forceFunction(config.open, true);
+	var onShow = JOBAD.util.forceFunction(config.show, true);
 	var onEmpty = JOBAD.util.forceFunction(config.empty, true);
-	var onClose = JOBAD.util.forceFunction(config.disable, true);
+	var onClose = JOBAD.util.forceFunction(config.close, true);
 	var parents = JOBAD.refs.$(config.parents); 
 	var block = JOBAD.util.forceBool(config.block, false);
+	var stop = JOBAD.util.forceBool(config.stopPropagnate, false); 
 
 	element.on('contextmenu.JOBAD.UI.ContextMenu', function(e){
 		//control overrides
@@ -4050,7 +5451,8 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 		var result = false;
 		while(true){
 			result = demandFunction(targetElement, orgElement);
-			if(result || element.is(this)){
+			result = JOBAD.UI.ContextMenu.generateMenuList(result); //generate the menu
+			if(result.length > 0 || element.is(this) || stop){
 				break;				
 			}
 			targetElement = targetElement.parent();
@@ -4060,11 +5462,10 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 		JOBAD.UI.ContextMenu.clear(config.parents);
 		
 		//we are empty => allow browser to handle stuff
-		if(!result){
+		if(result.length == 0 || !result){
 			onEmpty(orgElement); 
 			return !block; 
 		}
-
 
 		//trigger the open callback
 		onOpen(element);
@@ -4076,7 +5477,8 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 		}
 
 		//create the context menu element
-		var menuBuild = JOBAD.refs.$("<div>").addClass("ui-front"); //we want to be in front. 
+		var menuBuild = JOBAD.refs.$("<div>")
+		.appendTo(JOBAD.refs.$("body"));
 
 
 		//a handler for closing
@@ -4097,13 +5499,12 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 					JOBAD.util.ifType(config.callBackTarget, JOBAD.refs.$, targetElement), 
 					JOBAD.util.ifType(config.callBackOrg, JOBAD.refs.$, orgElement), 
 				onCallBack)
-				.menu()
+				.show()
+				.dropdown()
 			).on('contextmenu', function(e){
 				return (e.ctrlKey);
-			}).css({
-				"left": Math.min(mouseCoords[0], window.innerWidth-menuBuild.outerWidth(true)-JOBAD.UI.ContextMenu.config.margin), 
-				"top":  Math.min(mouseCoords[1], window.innerHeight-menuBuild.outerHeight(true)-JOBAD.UI.ContextMenu.config.margin)
-			});
+			}); 
+
 		} else if(menuType == 1 || JOBAD.util.equalsIgnoreCase(menuType, 'radial')){
 
 			//build the radial menu
@@ -4127,7 +5528,7 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 					JOBAD.refs.$(this).trigger("contextmenu.JOBAD.UI.ContextMenu"); //trigger my context menu. 
 					return false;
 				}).end()
-			)
+			);
 
 			JOBAD.UI.ContextMenu.enable(menuBuild, function(e){
 				return JOBAD.refs.$(e).closest("div").data("JOBAD.UI.ContextMenu.subMenuData");
@@ -4144,7 +5545,8 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 					eventDispatcher.trigger('JOBAD.UI.ContextMenu.unbind');
 				},
 				"callback": closeHandler,
-				"block": true
+				"block": true,
+				"stopPropagnate": stop
 			}); 
 		} else {
 			JOBAD.console.warn("JOBAD.UI.ContextMenu: Can't show Context Menu: Unkown Menu Type '"+menuType+"'. ")
@@ -4155,27 +5557,38 @@ JOBAD.UI.ContextMenu.enable = function(element, demandFunction, config){
 		//set its css and append it to the body
 
 		menuBuild
+		.BS() //enable Bootstrap on the menu
 		.css({
 			'width': JOBAD.UI.ContextMenu.config.width,
 			'position': 'fixed'
+		}).css({
+			"left": Math.min(mouseCoords[0], window.innerWidth-menuBuild.outerWidth(true)-JOBAD.UI.ContextMenu.config.margin), 
+			"top":  Math.min(mouseCoords[1], window.innerHeight-menuBuild.outerHeight(true)-JOBAD.UI.ContextMenu.config.margin)
 		})
 		.on('mousedown', function(e){
 			e.stopPropagation();//prevent closemenu from triggering
-		})
-		.appendTo(JOBAD.refs.$("body"))
+		}); 
+
+		onShow(menuBuild, result); 
 
 
 		//unbind listener
-		JOBAD.refs.$(document).add(config.unbindListener).add(menuBuild).on('JOBAD.UI.ContextMenu.unbind', function(e){
+		JOBAD.refs.$(document).add(config.unbindListener).add(menuBuild)
+		.on("JOBAD.UI.ContextMenu.hide", function(){
+			menuBuild.hide();
+		})
+		.on('JOBAD.UI.ContextMenu.unbind', function(e){
 				closeHandler();
-				JOBAD.refs.$(document).unbind('mousedown.UI.ContextMenu.Unbind JOBAD.UI.ContextMenu.unbind');
+				JOBAD.refs.$(document).unbind('mousedown.UI.ContextMenu.Unbind JOBAD.UI.ContextMenu.unbind JOBAD.UI.ContextMenu.hide');
 				e.stopPropagation();
 				ContextMenus = ContextMenus.not(menuBuild);
 		});
 
-		JOBAD.refs.$(document).on('mousedown.UI.ContextMenu.Unbind', function(){
+		JOBAD.refs.$(document)
+		.one('mousedown.UI.ContextMenu.Unbind', function(){
 			JOBAD.UI.ContextMenu.clear(); 
-		});
+		})
+
 
 		//add to all ContextMenus
 		ContextMenus = ContextMenus.add(menuBuild);
@@ -4221,7 +5634,10 @@ JOBAD.UI.ContextMenu.buildContextMenuList = function(items, element, orgElement,
 	var cb = JOBAD.util.forceFunction(callback, function(){});
 
 	//create ul
-	var $ul = JOBAD.refs.$("<ul class='JOBAD JOBAD_Contextmenu'>");
+	var $ul = JOBAD.refs.$("<ul class='JOBAD JOBAD_Contextmenu'>").addClass("dropdown-menu");
+	$ul
+	.attr("role", "menu")
+	.attr("aria-labelledby", "dropdownMenu"); 
 	
 	for(var i=0;i<items.length;i++){
 		var item = items[i];
@@ -4230,7 +5646,7 @@ JOBAD.UI.ContextMenu.buildContextMenuList = function(items, element, orgElement,
 		var $li = JOBAD.refs.$("<li>").appendTo($ul);
 		
 		//create link
-		var $a = JOBAD.refs.$("<a href='#'>")
+		var $a = JOBAD.refs.$("<a href='#' tabindex='-1'>")
 		.appendTo($li)
 		.text(item[0])
 		.click(function(e){
@@ -4246,18 +5662,27 @@ JOBAD.UI.ContextMenu.buildContextMenuList = function(items, element, orgElement,
 			)
 			
 		}
+
+		if(typeof item[3] == "string"){
+			$li.attr("id", item[3]); 
+		}
 		
 		(function(){
 			if(typeof item[1] == 'function'){
 				var callback = item[1];
 
 				$a.on('click', function(e){
-					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.unbind');
+					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.hide');
 					callback(element, orgElement);
 					cb(element, orgElement);
-				});		
+					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.unbind');
+				});	
+			} else if(item[1] === false){
+				$a.parent().addClass("disabled"); 
 			} else {
-				$li.append(JOBAD.UI.ContextMenu.buildContextMenuList(item[1], element, orgElement, cb));
+				$li.append(
+					JOBAD.UI.ContextMenu.buildContextMenuList(item[1], element, orgElement, cb)
+				).addClass("dropdown-submenu"); 
 			}
 		})()
 	}
@@ -4322,15 +5747,27 @@ JOBAD.UI.ContextMenu.buildPieMenuList = function(items, element, orgElement, cal
 		}).addClass("JOBAD JOBAD_Contextmenu JOBAD_ContextMenu_Radial JOBAD_ContextMenu_RadialItem")
 
 		$item.animate({
+			"deg": 360,
 			"top": Y,
 			"left": X
-		}, 400);
+		}, {
+			"duration": 400,
+			"step": function(d, prop) {
+				if(prop.prop == "deg"){
+					$container.find(".JOBAD_ContextMenu_RadialItem").css({transform: 'rotate(' + d + 'deg)'})
+				}
+			}
+		});
 
 		$item.append(
 			JOBAD.refs.$("<img src='"+JOBAD.resources.getIconResource(item[2], {"none": "warning"})+"'>")
 			.width(2*r)
 			.height(2*r)
 		);
+
+		if(typeof item[3] == "string"){
+			$item.attr("id", item[3]); 
+		}
 		
 		(function(){
 			var text = JOBAD.refs.$("<span>").text(item[0]);
@@ -4339,12 +5776,15 @@ JOBAD.UI.ContextMenu.buildPieMenuList = function(items, element, orgElement, cal
 
 				$item.click(function(e){
 					JOBAD.UI.hover.disable();
-					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.unbind');
+					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.hide');
 					callback(element, orgElement);
 					cb(element, orgElement);
+					JOBAD.refs.$(document).trigger('JOBAD.UI.ContextMenu.unbind');
 				});		
+			} else if(item[1] === false){
+				$item.addClass("JOBAD_ContextMenu_Radial_Disabled");
 			} else {
-				$item.data("JOBAD.UI.ContextMenu.subMenuData", item[1])
+				$item.data("JOBAD.UI.ContextMenu.subMenuData", item[1]);
 			}
 
 			$item.hover(function(){
@@ -4369,37 +5809,98 @@ JOBAD.UI.ContextMenu.generateMenuList = function(menu){
 	if(typeof menu == 'undefined'){
 		return [];
 	}
-	var res = [];
-	if(JOBAD.util.isArray(menu)){
-		for(var i=0;i<menu.length;i++){
-			var key = menu[i][0];
-			var val = menu[i][1];
-			var icon = (typeof menu[i][2] == 'undefined')?DEFAULT_ICON:menu[i][2];
-			if(typeof val == 'function'){
-				res.push([key, val, icon]);		
-			} else {
-				res.push([key, JOBAD.UI.ContextMenu.generateMenuList(val), icon]);
+
+	if(menu === false){
+		return []; 
+	}
+
+	var generateMenuItem = function(v){
+		if(typeof v == "function" || v === false){
+			return v; 
+		} else {
+			return JOBAD.UI.ContextMenu.generateMenuList(v);
+		}
+	};
+
+	var generateMenuConfig = function(a, b){
+		var config = {
+			"icon": DEFAULT_ICON,
+			"id": false
+		}; 
+
+		var a = JOBAD.util.defined(a); 
+		var b = JOBAD.util.defined(b); 
+
+		if(typeof a == "string"){
+			config["icon"] = a; 
+		} else if(JOBAD.util.isObject(a)){
+			if(typeof a.icon == "string"){
+				config["icon"] = a.icon; 
+			}
+			if(typeof a["id"] == "string"){
+				config["id"] = a["id"]; 
+			}
+			return config; 
+		}
+
+		if(typeof b == "string"){
+			config["id"] = b; 
+		} else if(JOBAD.util.isObject(b)){
+			if(typeof b.icon == "string"){
+				config["icon"] = b.icon; 
+			}
+			if(typeof b["id"] == "string"){
+				config["id"] = b["id"]; 
 			}
 		}
+			
+
+		return config; 
+	}
+
+	var res = [];
+	if(JOBAD.util.isArray(menu)){
+		//We have an array as the menu
+		//=> generate an object style representation
+		var newmenu = {}; 
+
+		for(var i=0;i<menu.length;i++){
+			var key = menu[i][0];
+			var val = menu[i].slice(1); 
+
+			newmenu[key] = val;
+		}
+
+		return (JOBAD.UI.ContextMenu.generateMenuList(newmenu)); 
 	} else {
 		for(var key in menu){
 			if(menu.hasOwnProperty(key)){
 				var val = menu[key];
-				if(typeof val == 'function'){
-					res.push([key, val, DEFAULT_ICON]);	
-				} else if(JOBAD.util.isArray(val)){
-					if(typeof val[1] == 'string'){ //we have a string there => we have an icon
-						if(typeof val[0] == 'function'){
-							res.push([key, val[0], val[1]]);
-						} else {
-							res.push([key, JOBAD.UI.ContextMenu.generateMenuList(val[0]), val[1]]);
-						}
+				
+				if(JOBAD.util.isArray(val)){
+					//we have an array
+					//check got everything individually 
+					if(val.length == 0){
+						//nothing here, lets disable it
+						res.push([key, false, DEFAULT_ICON, false]);
+					} else if(val.length == 1){
+						//we have exactly length 1
+						//we should act as if we are only that. 
+						res.push([key, generateMenuItem(val[0]), DEFAULT_ICON, false]);
+					} else if(val.length == 2 || val.length == 3){
+						//we are of length 2 or 3 => generate config
+						//if we have a string, then treat it as icon, otherwise assume a config style object
+
+						var cfg = generateMenuConfig(val[1], val[2]); //generate the config
+
+						res.push([key, generateMenuItem(val[0]), cfg["icon"], cfg["id"]]);
 					} else {
-						res.push([key, JOBAD.UI.ContextMenu.generateMenuList(val), DEFAULT_ICON]);
+						//overlength
+						console.warn("JOBAD.UI.ContextMenu.generateMenuList: menu too long. ")
 					}
-					
 				} else {
-					res.push([key, JOBAD.UI.ContextMenu.generateMenuList(val), DEFAULT_ICON]);
+					//we are a single item. 
+					res.push([key, generateMenuItem(val), DEFAULT_ICON, false]);
 				}
 			}
 		}
@@ -4716,15 +6217,18 @@ JOBAD.UI.Sidebar.addNotification = function(sidebar, element, config, align){
 	var class_colors = {
 		"info": "#00FFFF",
 		"error": "#FF0000",
-		"warning": "#FFFF00"
+		"warning": "#FFFF00",
+		"none": "#FFFF00"
 	};
-	
+
+	config["class"] = (typeof config["class"] == "string")?config["class"]:"none";
+		
 	if(typeof config["class"] == 'string'){
 		var notClass = config["class"];
 		
 		if(JOBAD.resources.available("icon", notClass)){
 			icon = JOBAD.resources.getIconResource(notClass);
-		}	
+		}
 		
 		if(class_colors.hasOwnProperty(notClass)){
 			class_color = class_colors[notClass];
@@ -4755,6 +6259,9 @@ JOBAD.UI.Sidebar.addNotification = function(sidebar, element, config, align){
 	if(typeof config.icon == 'string'){
 		icon =  JOBAD.resources.getIconResource(config.icon);
 	}
+	if(typeof icon !== 'string'){
+		icon =  JOBAD.resources.getIconResource("none");
+	}
 	if(typeof icon == 'string'){
 		newGuy.html("<img src='"+icon+"' width='16px' height='16px'>")
 		.hover(function(){
@@ -4762,8 +6269,6 @@ JOBAD.UI.Sidebar.addNotification = function(sidebar, element, config, align){
 		}, function(){
 			JOBAD.UI.hover.disable();
 		});
-	} else {
-		newGuy.addClass("JOBAD_Notification_"+notClass);
 	}
 	
 	return newGuy;
@@ -4785,246 +6290,6 @@ JOBAD.UI.Sidebar.forceNotificationUpdate = function(){
 JOBAD.UI.Sidebar.removeNotification = function(notification){
 	notification.remove();
 };/* end   <ui/JOBAD.ui.sidebar.js> */
-/* start <ui/JOBAD.ui.toolbar.js> */
-/*
-	JOBAD 3 UI Functions - Toolbar
-	JOBAD.ui.toolbar.js
-		
-	Copyright (C) 2013 KWARC Group <kwarc.info>
-	
-	This file is part of JOBAD.
-	
-	JOBAD is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-	
-	JOBAD is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-	
-	You should have received a copy of the GNU General Public License
-	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-JOBAD.UI.Toolbar = {};
-
-/*
-	Clears the toolbar and removes it. 
-	@param element The element the toolbar belongs to. 
-*/
-JOBAD.UI.Toolbar.clear = function(element){
-
-	var element = JOBAD.refs.$(element);
-
-	if(element.length > 1){
-        var me = arguments.callee;
-        return element.each(function(i, e){
-            me(element);
-        });
-    }
-
-	if(element.data("JOBAD.UI.Toolbar.active")){
-		element.data("JOBAD.UI.Toolbar.ToolBarElement").remove();
-	
-		JOBAD.refs.$(window).off("resize", element.data("JOBAD.UI.Toolbar.resizeFunction"));
-		
-		element
-		.removeData("JOBAD.UI.Toolbar.ToolBarElement")
-		.removeData("JOBAD.UI.Toolbar.active")
-		.removeData("JOBAD.UI.Toolbar.resizeFunction")
-		.removeData("JOBAD.UI.Toolbar.hide")
-	}
-}
-
-/*
-	Updates the toolbar. 
-	@param element The element the toolbar belongs to. 
-*/
-JOBAD.UI.Toolbar.update = function(element){
-
-	var element = JOBAD.refs.$(element);
-
-	if(element.length > 1){
-        var me = arguments.callee;
-        return element.each(function(i, e){
-            me(element);
-        });
-    }
-
-	if(element.data("JOBAD.UI.Toolbar.active")){
-		var toolbar = element.data("JOBAD.UI.Toolbar.ToolBarElement");
-		toolbar.children().button("refresh");
-		
-		var position = /*JOBAD.util.closest(element, function(e){
-				//check if an element is visible
-				return !JOBAD.util.isHidden(e);
-		}).*/element.offset();
-		
-		toolbar.css({
-			"position": "absolute",
-			"top": position.top,
-			"left": position.left
-		});
-		
-		if(JOBAD.util.isHidden(element) /* && element.data("JOBAD.UI.Toolbar.hide")*/){
-		  toolbar.hide();
-		} else {
-		  toolbar.show();
-		}
-		
-		if(toolbar.children().length == 0){
-			JOBAD.UI.Toolbar.clear(element);
-		}
-	}
-	
-}
-
-/*
-	adds an items to the toolbar. 
-	@param element The element the toolbar belongs to. 
-	@param config Configuration of new item. Eitehr an object or a string tobe used as text.  
-		config.class:	Notificaton class. Default: none.
-		config.icon:	Icon
-		config.text:	Text
-		config.menu:	Context Menu
-		config.menuThis: This for menu callbacks
-		config.click:	Callback on click. Default: Open Context Menu
-		config.hide:	Currently unimplemented. Should we hide this element (true) when it is not visible or travel up the dom tree (false, default)?
-
-	@returns The new item as a jquery element. 
-*/
-JOBAD.UI.Toolbar.addItem = function(element, config){
-	var element = JOBAD.refs.$(element);
-
-	if(element.length > 1){
-        var me = arguments.callee;
-        return element.each(function(i, e){
-            me(element, config);
-        });
-    }
-
-	//create toolbar if required
-	if(!element.data("JOBAD.UI.Toolbar.active")){
-		element.data("JOBAD.UI.Toolbar.ToolBarElement", 
-			JOBAD.refs.$("<div class='ui-widget-header ui-corner-all'>")
-				.css({
-					"padding": 4,
-		    		"display": "inline-block"
-				}).appendTo("body")
-			.hover(function(){
-				JOBAD.refs.$(this).stop().fadeTo(300, 1);
-			}, function(){
-				JOBAD.refs.$(this).stop().fadeTo(300, 0.5);
-			}).fadeTo(0, 0.5)
-			.bind("contextmenu", function(e){return e.ctrlKey;})
-		);
-		
-		var cb = function(){
-			JOBAD.UI.Toolbar.update(element); 
-		};
-	
-	
-		element.data("JOBAD.UI.Toolbar.resizeFunction", cb)
-	
-		JOBAD.refs.$(window).on("resize", cb);
-	
-	}
-	
-	
-	//toolbar config
-	
-	if(typeof config == "string"){
-		var config = {
-			"text": config
-		}
-	} else if(typeof config == "undefined"){
-		var config = {}
-	}
-
-	var icon = "none";  
-	
-	//get icon and class
-	if(typeof config["class"] == 'string'){	
-		var notClass = config["class"];	
-		if(JOBAD.resources.available("icon", notClass)){
-			icon = notClass;
-		}
-	}
-
-	if(typeof config.icon == "string"){
-		icon = config.icon; 
-	}
-	
-	//new Item
-
-	
-	var newItem = JOBAD.refs.$("<span>");
-	
-	//text text 
-	if(typeof config.text == 'string'){
-		newItem.text(config.text);
-	}
-	
-	if(typeof callback == 'function'){
-		newItem.click(callback);
-	} else {
-		newItem.click(function(){newItem.trigger("contextmenu");});
-	}
-	
-	
-	//menu
-	if(typeof config.menu != 'undefined'){
-		var entries = JOBAD.UI.ContextMenu.fullWrap(config.menu, function(org, args){
-			return org.apply(newItem, [element, config.menuThis]);
-		});
-		JOBAD.UI.ContextMenu.enable(newItem, function(){return entries;});
-	}
-
-	newItem.appendTo(element.data("JOBAD.UI.Toolbar.ToolBarElement")).button();
-
-	//icon
-	if(icon != "none"){
-		icon = JOBAD.resources.getIconResource(icon); //get icon url
-		JOBAD.refs.$("<span class='JOBAD JOBAD_InlineIcon'>")
-		.css({
-			"position": "absolute",
-			"top": "50%",
-			"margin-top": "-8px",
-			"left": ".5em",
-			"background-image": "url('"+icon+"')"
-		}).prependTo(newItem); 
-
-		newItem.find(".ui-button-text").css({
-			"padding": ".4em 1em .4em 2.1em"
-		}) 
-	}
-	
-	newItem.data("JOBAD.UI.Toolbar.element", element);
-	
-	//store the data
-	element
-	.data("JOBAD.UI.Toolbar.active", true)
-	
-	
-	JOBAD.UI.Toolbar.update(element);
-	
-	
-	return newItem; 
-}
-
-/*
-	Removes an item from the toolbar. 
-	@param item Item to remove. 
-*/
-JOBAD.UI.Toolbar.removeItem = function(item){
-	var element = JOBAD.refs.$(item).data("JOBAD.UI.Toolbar.element");
-	
-	item.remove();
-	
-	JOBAD.UI.Toolbar.update(element);
-}/* end   <ui/JOBAD.ui.toolbar.js> */
 /* start <ui/JOBAD.ui.overlay.js> */
 /*
 	JOBAD 3 UI Functions
@@ -5235,6 +6500,10 @@ JOBAD.UI.Folding.enable = function(e, c){
         })
         .on("JOBAD.UI.Folding.fold", function(event){
             event.stopPropagation();
+            if(wrapper.data("JOBAD.UI.Folding.state")){
+                //we are already folded
+                return; 
+            }
             //fold me
             wrapper.data("JOBAD.UI.Folding.state", true);
             //trigger event
@@ -5244,6 +6513,12 @@ JOBAD.UI.Folding.enable = function(e, c){
         })
         .on("JOBAD.UI.Folding.unfold", function(event){
             event.stopPropagation();
+
+            if(!wrapper.data("JOBAD.UI.Folding.state")){
+                //we are already unfolded
+                return; 
+            }
+
             //unfold me
             wrapper.data("JOBAD.UI.Folding.state", false);
             //trigger event
@@ -5506,13 +6781,99 @@ JOBAD.UI.Folding.show = function(element){
             return me.data("JOBAD.UI.Folding.enabled")?true:false;
         });
 
-        window.folded = folded;
-
         if(folded.length > 0){
             JOBAD.UI.Folding.unfold(folded.get().reverse()); //unfold
          }
     });
 }/* end   <ui/JOBAD.ui.folding.js> */
+/* start <ui/JOBAD.ui.toolbar.js> */
+/*
+	JOBAD 3 UI Functions - Toolbar
+	JOBAD.ui.toolbar.js
+		
+	Copyright (C) 2013 KWARC Group <kwarc.info>
+	
+	This file is part of JOBAD.
+	
+	JOBAD is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	JOBAD is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+JOBAD.UI.Toolbar = {};
+
+var Toolbars = JOBAD.refs.$(); 
+
+JOBAD.UI.Toolbar.config = {
+	"height": 20 //The default toolbar height
+};
+
+/*
+	Adds a toolbar to the page and returns a reference to it. 
+*/
+JOBAD.UI.Toolbar.add = function(){
+	var TB = JOBAD.refs.$("<div>").css({
+		"width": "100%",
+		"height": JOBAD.UI.Toolbar.config.height,
+	}).appendTo("body");
+
+	Toolbars = Toolbars.add(TB); 
+	JOBAD.UI.Toolbar.update(); 
+	JOBAD.util.markHidden(TB); 
+	TB.on("contextmenu", function(e){
+		return e.ctrlKey; 
+	}); 
+	return TB; 
+}
+
+/*
+	Updates all toolbars at the bottom of the page. 
+*/
+JOBAD.UI.Toolbar.update = JOBAD.util.throttle(function(){
+	var pos = 0; 
+	Toolbars = Toolbars.filter(function(){
+		var me = JOBAD.refs.$(this); 
+
+		if(me.parent().length != 0){
+
+			me.css({
+				"position": "fixed",
+				"right": 0, 
+				"bottom": pos
+			})
+
+			pos += me.height(); 
+			return true; 
+		} else {
+			return false; 
+		}
+	})
+}, 300); 
+
+JOBAD.UI.Toolbar.moveUp = function(TB){
+	var x = Toolbars.index(TB); 
+	if(x >= 0){
+		Toolbars = JOBAD.refs.$(JOBAD.util.permuteArray(Toolbars, x, x+1));
+	}
+	JOBAD.UI.Toolbar.update(); 
+}
+
+JOBAD.UI.Toolbar.moveDown = function(TB){
+	var x = Toolbars.index(TB); 
+	if(x >= 0){
+		Toolbars = JOBAD.refs.$(JOBAD.util.permuteArray(Toolbars, x, x-1));
+	}
+	JOBAD.UI.Toolbar.update(); 
+}/* end   <ui/JOBAD.ui.toolbar.js> */
 /* start <events/JOBAD.sidebar.js> */
 /*
 	JOBAD 3 Sidebar
@@ -5554,7 +6915,7 @@ JOBAD.Sidebar.registerSidebarStyle = function(styleName, styleDesc, registerFunc
 	
 	JOBAD.Sidebar.styles[styleName] = {
 		"register": registerFunc, //JOBAD.UI.Sidebar.addNotification
-		"deregister": deregisterFunc, //JOBAD.UI.Toolbar.removeItem(item);
+		"deregister": deregisterFunc, //JOBAD.UI.Boundbar.removeItem(item);
 		"update": updateFunc //JOBAD.UI.Sidebar.redraw
 	};
 };
@@ -5585,14 +6946,10 @@ JOBAD.Sidebar.registerSidebarStyle("left", "Left",
 	}
 );
 
-JOBAD.Sidebar.registerSidebarStyle("bound", "Bound to element", 
-	JOBAD.util.argSlice(JOBAD.UI.Toolbar.addItem, 1),
-	JOBAD.UI.Toolbar.removeItem, 
-	function(){
-		for(var key in this.Sidebar.PastRequestCache){
-			JOBAD.UI.Toolbar.update(this.Sidebar.PastRequestCache[key][0]);
-		}
-	}
+JOBAD.Sidebar.registerSidebarStyle("none", "Hidden", 
+	function(){return JOBAD.refs.$("<div>"); },
+	function(){},
+	function(){}
 );
 
 
@@ -5826,7 +7183,9 @@ JOBAD.events.SideBarUpdate =
 			}
 		},
 		'trigger': function(){
+			preEvent(this, "SideBarUpdate", []);
 			this.Event.SideBarUpdate.getResult();
+			postEvent(this, "SideBarUpdate", []);
 		}
 	}
 };/* end   <events/JOBAD.sidebar.js> */
@@ -5877,6 +7236,8 @@ JOBAD.ifaces.push(function(){
 			return;
 		}
 
+		this.Event.trigger("folding.enable", [element]); 
+
 		if(element.is(this.element)){
 			if(element.data("JOBAD.UI.Folding.virtualFolding")){
 				element = element.data("JOBAD.UI.Folding.virtualFolding");
@@ -5913,6 +7274,8 @@ JOBAD.ifaces.push(function(){
 		}
 		var element = JOBAD.refs.$(element);
 
+		this.Event.trigger("folding.disable", [element]); 
+
 		if(element.data("JOBAD.UI.Folding.virtualFolding")){
 			var vElement = element.data("JOBAD.UI.Folding.virtualFolding");
 			JOBAD.UI.Folding.disable(vElement);
@@ -5941,6 +7304,196 @@ JOBAD.ifaces.push(function(){
 
 	this.Folding = JOBAD.util.bindEverything(this.Folding, this);
 });/* end   <events/JOBAD.folding.js> */
+/* start <events/JOBAD.toolbar.js> */
+/*
+	JOBAD 3 Toolbar
+	JOBAD.toolbar.js
+		
+	Copyright (C) 2013 KWARC Group <kwarc.info>
+	
+	This file is part of JOBAD.
+	
+	JOBAD is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	JOBAD is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+JOBAD.events.Toolbar = 
+{
+	'default': function(JobadInstance, Toolbar){
+		return false; 
+	},
+	'Setup': {
+		'enable': function(){
+			this.modules.iterateAnd(function(module){
+				module.Toolbar.enable(); 
+				return true;
+			});
+		},
+		'disable': function(){
+			//Remove all toolbars
+			this.modules.iterateAnd(function(module){
+				module.Toolbar.disable(); 
+				return true;
+			});
+		}
+	},
+	'namespace': {
+		
+		'getResult': function(){
+			var me = this; 
+			this.modules.iterateAnd(function(module){
+				module.Toolbar.show(); 
+				return true;
+			});
+		},
+		'trigger': function(){
+			preEvent(this, "Toolbar", []);
+			this.Event.Toolbar.getResult();
+			postEvent(this, "Toolbar", []);
+		}
+	}
+};
+
+JOBAD.modules.ifaces.push([
+	function(properObject, ModuleObject){
+		return properObject; 
+	}, function(){
+		var me = this; 
+		var id = me.info().identifier; 
+
+		var TBElement = undefined; 
+		var JOBADInstance = me.getJOBAD(); 
+
+		var enabled = false; 
+
+
+		this.Toolbar.get = function(){
+			//gets the toolbar if available, otherwise undefined
+			return TBElement;
+		};
+
+		this.Toolbar.isEnabled = function(){
+			return enabled; 
+		}
+
+		this.Toolbar.enable = function(){
+			//enable the toolbar
+
+			if(me.Toolbar.isEnabled()){
+				//Remove any old toolbars
+				me.Toolbar.disable();
+			}
+
+			//create a new Toolbar
+			var TB = JOBAD.UI.Toolbar.add(); 
+
+
+			//check if we need it
+			var res = me.Toolbar.call(me, me.getJOBAD(), TB);
+
+			if(res !== true){
+				//we do not want it => remove it. 
+				TB.remove(); 
+				JOBAD.UI.Toolbar.update(); 
+
+				return false;  
+			} else {
+				//we need it. 
+				TBElement = TB; 
+				JOBADInstance.Event.trigger("Toolbar.add", id);
+
+				enabled = true; //it is now enabled
+
+				return true; 
+			}
+
+			
+		}
+
+		this.Toolbar.disable = function(){
+			//disable the toolbar
+
+			if(!me.Toolbar.isEnabled()){
+				//we are already disabled
+				return false; 
+			}
+
+			//remove the toolbar element
+
+			TBElement.remove(); 
+			JOBAD.UI.Toolbar.update();
+			TBElement = undefined;  
+
+			JOBADInstance.Event.trigger("Toolbar.remove", id);
+
+			enabled = false; //it is now disabled
+			return true; 
+		}
+
+		//Hide / Show the Toolbar
+
+		var visible = JOBADInstance.Config.get("auto_show_toolbar"); //get the default
+
+		this.Toolbar.setVisible = function(){
+			visible = true; 
+			me.Toolbar.show(); 
+		}
+
+		this.Toolbar.setHidden = function(){
+			visible = false; 
+			me.Toolbar.show(); 
+		}
+
+		this.Toolbar.isVisible = function(){
+			return visible; 
+		}
+
+		this.Toolbar.show = function(){
+			if(me.Toolbar.isVisible() && me.isActive() && JOBADInstance.Instance.isFocused()){
+				me.Toolbar.enable(); 
+				return true; 
+			} else {
+				me.Toolbar.disable(); 
+				return false; 
+			}
+		}
+
+		this.Toolbar.moveUp = function(){
+			return JOBAD.UI.Toolbar.moveUp(TBElement); 
+		}
+
+		this.Toolbar.moveDown = function(){
+			return JOBAD.UI.Toolbar.moveDown(TBElement); 
+		}
+
+
+		//Register Event Handlers for activation + focus
+
+		JOBADInstance.Event.on("module.activate", function(m){
+			if(m.info().identifier == id){
+				me.Toolbar.show(); 
+			}
+		});
+
+		JOBADInstance.Event.on("instance.focus", function(m){
+			me.Toolbar.show(); 
+		});
+
+		JOBADInstance.Event.on("instance.unfocus", function(m){
+			me.Toolbar.disable(); 
+		});
+	}]); /* end   <events/JOBAD.toolbar.js> */
 /* start <events/JOBAD.events.js> */
 /*
 	JOBAD 3 Events
@@ -5978,13 +7531,14 @@ JOBAD.events.leftClick =
 				switch (event.which) {
 					case 1:
 						/* left mouse button => left click */
+						preEvent(me, "leftClick", [element]); 
 						me.Event.leftClick.trigger(element);
+						postEvent(me, "leftClick", [element]); 
 						event.stopPropagation(); //Not for the parent. 
 						break;
 					default:
 						/* nothing */
 				}
-				root.trigger('JOBAD.Event', ['leftClick', element]);
 			});
 		},
 		'disable': function(root){
@@ -6010,6 +7564,47 @@ JOBAD.events.leftClick =
 	}
 };
 
+/* keypress */
+JOBAD.events.keyPress = 
+{
+	'default': function(key, JOBADInstance){
+		return false;
+	},
+	'Setup': {
+		'enable': function(root){
+			var me = this;
+			me.Event.keyPress.__handlerName = JOBAD.util.onKey(function(k){
+				if(me.Instance.isFocused()){
+					preEvent(me, "keyPress", [k]); 
+					var res = me.Event.keyPress.trigger(k); 
+					postEvent(me, "keyPress", [k]); 
+					return res; 
+				} else {
+					return true; 
+				}
+			}); 
+		},
+		'disable': function(root){
+			JOBAD.refs.$(document).off(this.Event.keyPress.__handlerName); 
+		}
+	},
+	'namespace': 
+	{
+		
+		'getResult': function(key){
+			var res = this.modules.iterateAnd(function(module){
+				return !module.keyPress.call(module, key, module.getJOBAD());
+			});
+ 
+			return res; 
+		},
+		'trigger': function(key){
+			var evt = this.Event.keyPress.getResult(key);
+			return evt;
+		}
+	}
+};
+
 /* double Click */
 JOBAD.events.dblClick = 
 {
@@ -6021,8 +7616,9 @@ JOBAD.events.dblClick =
 			var me = this;
 			root.delegate("*", 'dblclick.JOBAD.dblClick', function(event){
 				var element = JOBAD.refs.$(event.target); //The base element.  
+				preEvent(me, "dblClick", [element]); 
 				var res = me.Event.dblClick.trigger(element);
-				root.trigger('JOBAD.Event', ['dblClick', element]);
+				postEvent(me, "dblClick", [element]); 
 				event.stopPropagation(); //Not for the parent. 
 			});
 		},
@@ -6056,12 +7652,15 @@ JOBAD.events.onEvent =
 	'Setup': {
 		'enable': function(root){
 			var me = this;
-			root.on('JOBAD.Event', function(jqe, event, args){
+
+			me.Event.onEvent.id = 
+			me.Event.on("event.handlable", function(event, args){
 				me.Event.onEvent.trigger(event, args);
 			});
 		},
 		'disable': function(root){
-			root.off('JOBAD.Event');
+			var me = this;
+			me.Event.off(me.Event.onEvent.id);
 		}
 	},
 	'namespace': 
@@ -6092,13 +7691,23 @@ JOBAD.events.contextMenuEntries =
 		'enable': function(root){
 			var me = this;
 			JOBAD.UI.ContextMenu.enable(root, function(target){
+				preEvent(me, "contextMenuEntries", [target]);
 				var res = me.Event.contextMenuEntries.getResult(target);
-				root.trigger('JOBAD.Event', ['contextMenuEntries', target]);
+				postEvent(me, "contextMenuEntries", [target]);
 				return res;
 			}, {
 				"type": function(target){
 					return me.Config.get("cmenu_type");
-				}
+				}, 
+				"show": function(){
+					me.Event.trigger("contextmenu.open", []); 
+					me.Event.handle("contextMenuOpen");
+				},
+				"close": function(){
+					me.Event.trigger("contextmenu.close", []); 
+					me.Event.handle("contextMenuClose");
+				},
+				"stopPropagnate": true
 			});
 		},
 		'disable': function(root){
@@ -6110,8 +7719,18 @@ JOBAD.events.contextMenuEntries =
 		'getResult': function(target){
 			var res = [];
 			var mods = this.modules.iterate(function(module){
-				var entries = module.contextMenuEntries.call(module, target, module.getJOBAD());
-				return JOBAD.UI.ContextMenu.generateMenuList(entries);
+				var mtarget = target;
+				var res = []; 
+				while(true){
+					if(mtarget.length == 0 
+						|| res.length > 0){
+						
+						return res; 
+					}
+					res = module.contextMenuEntries.call(module, mtarget, module.getJOBAD());
+					res = JOBAD.UI.ContextMenu.generateMenuList(res); 
+					mtarget = mtarget.parent(); 
+				}
 			});
 			for(var i=0;i<mods.length;i++){
 				var mod = mods[i];
@@ -6136,7 +7755,9 @@ JOBAD.events.configUpdate =
 		'enable': function(root){
 			var me = this;
 			JOBAD.refs.$("body").on('JOBAD.ConfigUpdateEvent', function(jqe, setting, moduleId){
+				preEvent(me, "configUpdate", [setting, moduleId]);
 				me.Event.configUpdate.trigger(setting, moduleId);
+				postEvent(me, "configUpdate", [setting, moduleId]);
 			});
 		},
 		'disable': function(root){
@@ -6155,7 +7776,6 @@ JOBAD.events.configUpdate =
 			});
 		},
 		'trigger': function(setting, moduleId){
-			this.element.trigger("JOBAD.Event", ["configUpdate", setting, moduleId]);
 			return this.Event.configUpdate.getResult(setting, moduleId);
 		}
 	}
@@ -6238,9 +7858,11 @@ JOBAD.events.hoverText =
 				return false;		
 			}
 
+			preEvent(this, "hoverText", [source]);
 			var EventResult = this.Event.hoverText.getResult(source); //try to do the event
 		
 			if(typeof EventResult == 'boolean'){
+				postEvent(this, "hoverText", [source]);
 				return EventResult;		
 			}
 
@@ -6290,18 +7912,15 @@ JOBAD.events.hoverText =
 
 			JOBAD.UI.hover.disable();
 
+			postEvent(this, "hoverText", [source]);
+
 			if(!source.is(this.element)){
 				this.Event.hoverText.trigger(source.parent());//we are in the parent now
 				return false;
 			}
 		}
 	}
-}
-
-for(var key in JOBAD.events){
-	JOBAD.modules.cleanProperties.push(key);
-}
-/* end   <events/JOBAD.events.js> */
+}/* end   <events/JOBAD.events.js> */
 /* start <JOBAD.config.js> */
 /*
 	JOBAD Configuration
@@ -6324,6 +7943,7 @@ for(var key in JOBAD.events){
 	You should have received a copy of the GNU General Public License
 	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 
 //StorageBackend
 
@@ -6944,7 +8564,8 @@ JOBAD.ifaces.push(function(JOBADRootElement, params){
 	var spec = JOBAD.modules.createProperUserSettingsObject({
 		"cmenu_type": ["list", ['standard', 'radial'], 'standard', ["Context Menu Type", "Standard", "Radial"]],
 		"sidebar_type": ["list", JOBAD.Sidebar.types, JOBAD.Sidebar.types[0], JOBAD.Sidebar.desc],
-		"restricted_user_config": ["none", []]
+		"restricted_user_config": ["none", []],
+		"auto_show_toolbar": ["bool", false, "Auto show all toolbars"]
 	}, "");
 	var cache = JOBAD.util.extend({}, (typeof config == 'undefined')?{}:config);
 
@@ -6976,393 +8597,269 @@ JOBAD.ifaces.push(function(JOBADRootElement, params){
 	};
 	
 	this.Config = JOBAD.util.bindEverything(this.Config, this);
-})
-
+});/* end   <JOBAD.config.js> */
+/* start <core/JOBAD.core.instances.js> */
 /*
-	Config Manager UI
+	JOBAD 3 Core Instances
+	
+	Copyright (C) 2013 KWARC Group <kwarc.info>
+	
+	This file is part of JOBAD.
+	
+	JOBAD is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	JOBAD is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-JOBAD.ifaces.push(function(){
+JOBAD.Instances = {}; 
+
+JOBAD.Instances.all = {}; 
+
+var focused = undefined; 
+var waiting = undefined; 
+
+JOBAD.ifaces.push(function(me){
+	//store a reference so it is kept
+
+	JOBAD.Instances.all[me.ID] = this;
+
+	var i_am_focused = false; 
+	var i_am_waiting = false; 
+
+	var prev_focus = undefined; //previous focus
+
+	//Instance Namespace
+	me.Instance = {}; 
 
 	/*
-		build a jQuery config 
+		Focuses this JOBADInstance
+		@returns false if the Instance can not be focused for some reason, true otherwise. 
 	*/
-	var buildjQueryConfig = function(UserConfig, $config, get_val){
-		for(var key in UserConfig){
-			(function(){
-			
-			var setting = UserConfig[key];
-			var val = get_val(key); // Get current value
-						
-			var item = JOBAD.refs.$("<div class='JOBAD_CONFIG_SETTTING'>")
-			.data({
-					"JOBAD.config.setting.key": key,
-					"JOBAD.config.setting.val": val
-			}).appendTo($config);
-			
-			var type = setting[0];
-			var validator = setting[1];
-			var meta = setting[3];
-			switch(type){
-				case "string":
-						item.append(
-							JOBAD.refs.$("<span>").text(meta[0]+": ").addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_MetaConfigTitle"),
-							JOBAD.refs.$("<input type='text'>").addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_validateOK").val(val).keyup(function(){
-								var val = JOBAD.refs.$(this).val();
-								if(validator(val)){
-									item.data("JOBAD.config.setting.val", val);
-									JOBAD.refs.$(this).removeClass("JOBAD_ConfigUI_validateFail").addClass("JOBAD_ConfigUI_validateOK");
-								} else {
-									JOBAD.refs.$(this).addClass("JOBAD_ConfigUI_validateFail").removeClass("JOBAD_ConfigUI_validateOK");
-								}
-								
-							}),
-							"<br>", 
-							JOBAD.refs.$("<span>").text(meta[1]).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_MetaConfigDesc")
-						);
-					break;
-				case "bool":
-	
-					var radio = JOBAD.util.createRadio(["True", "False"], val?0:1);	
-	
-					item.append(
-						JOBAD.refs.$("<span>").text(meta[0]+": ").addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_MetaConfigTitle"),
-						radio,
-						"<br>", 
-						JOBAD.refs.$("<span>").text(meta[1]).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_MetaConfigDesc")
-					);
-					
-					radio.find("input").change(function(){
-						item.data("JOBAD.config.setting.val", radio.find("input").eq(0).is(":checked"));
-					});
-					
-					break;
-				case "integer":
-				
-					var update = function(val){
-						if(validator(val) && val % 1 == 0){
-							item.data("JOBAD.config.setting.val", val);
-							spinner.removeClass("JOBAD_ConfigUI_validateFail").addClass("JOBAD_ConfigUI_validateOK");
-							return true;
-						} else {
-							spinner.addClass("JOBAD_ConfigUI_validateFail").removeClass("JOBAD_ConfigUI_validateOK");
-							return false;
-						}
-					}
-				
-					var id = JOBAD.util.UID();
-					
-					var spinner = JOBAD.refs.$("<input>")
-					.attr("id", id)
-					.val(val)
-					.addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_validateOK")
-					.keyup(function(){
-						var val = JOBAD.refs.$(this).val();
-						if(val != ""){
-							update(parseFloat(val));
-						}
-						
-					})
-					.spinner({
-						spin: function(ev, ui){
-							update(ui.value);
-						}
-					});
-					
-					item.append(
-						JOBAD.refs.$("<label for='"+id+"'>").text(meta[0]+": ").addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_MetaConfigTitle"),
-						spinner,
-						"<br>", 
-						JOBAD.refs.$("<span>").text(meta[1]).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_MetaConfigDesc")				
-					);
+	me.Instance.focus = function(){
+		if(i_am_focused){
+			return false; 
+		}
 
-					break;
-				case "number":
-					var update = function(val){
-						if(validator(val)){
-							item.data("JOBAD.config.setting.val", val);
-							spinner.removeClass("JOBAD_ConfigUI_validateFail").addClass("JOBAD_ConfigUI_validateOK");
-							return true;
-						} else {
-							spinner.addClass("JOBAD_ConfigUI_validateFail").removeClass("JOBAD_ConfigUI_validateOK");
-							return false;
-						}
-					}
-				
-					var id = JOBAD.util.UID();
-					
-					var spinner = JOBAD.refs.$("<input>")
-					.attr("id", id)
-					.val(val)
-					.addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_validateOK")
-					.keyup(function(){
-						var val = JOBAD.refs.$(this).val();
-						if(val != ""){
-							update(parseFloat(val));
-						}
-					});
-					
-					item.append(
-						JOBAD.refs.$("<label for='"+id+"'>").text(meta[0]+": ").addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_MetaConfigTitle"),
-						spinner,
-						"<br>", 
-						JOBAD.refs.$("<span>").text(meta[1]).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_MetaConfigDesc")				
-					);
+		if(i_am_waiting){
+			return false; 
+		}
 
-					break;
-				case "list":
-					var values = setting[4]; 
-					var meta_data = meta.slice(1)
-					
-					var $select = JOBAD.refs.$("<select>");
-					
-					for(var i=0;i<values.length;i++){
-						$select.append(
-							JOBAD.refs.$("<option>").attr("value", JSON.stringify(values[i])).text(meta_data[i])
-						)
-					}
-					
-					$select
-					.val(JSON.stringify(val))
-					.change(function(){
-						item.data("JOBAD.config.setting.val", JSON.parse(JOBAD.refs.$(this).val()));
-					});
-					
-					item.append(
-						JOBAD.refs.$("<span>").text(meta[0]+": ").addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_MetaConfigTitle"),
-						$select,
-						"<br>"
-					);
-					
-					break;
-				case "none":
-					break;
-				default:
-					JOBAD.console.warn("Unable to create config dialog: Unknown configuration type '"+type+"' for user setting '"+key+"'");
-					item.remove();
-					break;
+		if(typeof focused != "undefined"){
+			//someone else is focused => throw him out. 
+			prev_focus = focused; 
+			focused.Instance.unfocus(); 
+
+		}
+
+		if(typeof waiting != "undefined"){
+			//someone else is waiting => throw him out. 
+			waiting.Instance.unfocus(); 
+		}
+
+		i_am_waiting = true; 
+		waiting = me; 
+
+		me.Event.trigger("instance.focus_query"); 
+
+		me.Setup.enabled(function(){ //(IF ENABLED)
+			if(i_am_waiting){
+				i_am_waiting = false; 
+				waiting = undefined; 
+				i_am_focused = true; 
+				focused = me; 
+
+				me.Event.trigger("instance.focus", [prev_focus]); 
+
+				me.Event.focus.trigger(prev_focus);
+
+				prev_focus = undefined; 
 			}
-			
-			})();
-			
+		});
+
+		return true; 
+	};
+
+	/*
+		Unfocuses this JOBADInstance
+		@returns false if the Instance can not be unfocused for some reason, true otherwise. 
+	*/
+	me.Instance.unfocus = function(){
+		if(i_am_focused){
+			//we are fully focused, we can just unfocus
+
+			focused = undefined; 
+			i_am_focused = false; 
+
+			me.Event.trigger("instance.unfocus"); 
+
+			me.Event.unfocus.trigger(); 
+
+			return true; 
+		} else {
+			if(i_am_waiting){
+				i_am_waiting = false; //I am no longer waiting
+				waiting = undefined; 
+
+				me.Event.trigger("instance.focus_query_lost"); 
+
+				return true; 
+			} else {
+				JOBAD.console.warn("Can't unfocus JOBADInstance: Instance neither focused nor queried. ");
+				return false; 
+			}
 		}
 	};
 
+	/*
+		Checks if this JOBADInstance is focused. 
+	*/
+	me.Instance.isFocused = function(){
+		return i_am_focused; 
+	};
 
-	this.showConfigUI = function(){
-	
-		var me = this;
-	
-		var $Div = JOBAD.refs.$("<div>")
-		.on("mousemove", JOBAD.UI.hover.disable);
-		
-		$Div.attr("title", "JOBAD Configuration Utility");
-
-		var mods = this.modules.getIdentifiers();
-
-		//create the table
-		
-		var $table = JOBAD.refs.$("<table>")
-		.addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_tablemain")
-		.append(
-			JOBAD.refs.$("<colgroup>").append(
-				JOBAD.refs.$("<col>").css("width", "10%"), 
-				JOBAD.refs.$("<col>").css("width", "90%")
-			)
-		);
-		
-		var len = mods.length;		
-
-		var $displayer = JOBAD.refs.$("<td>").addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_infobox").attr("rowspan", len+1);
-
-		var showMain = function(){
-			var $config = JOBAD.refs.$("<div>");
-			buildjQueryConfig(me.Config.getTypes(), $config, function(key){return me.Config.get(key);})
-		
-		
-			//remove restricted items
-			var restricted_items = me.Config.get("restricted_user_config");
-			$config.find("div.JOBAD_CONFIG_SETTTING").each(function(i, e){
-					var e = JOBAD.refs.$(e);
-					if(JOBAD.util.indexOf(restricted_items, e.data("JOBAD.config.setting.key")) != -1){
-						e.remove();
-					}
-			});
-		
-			$displayer
-			.trigger("JOBAD.modInfoClose")	
-			.html("")
-			.append(
-				JOBAD.util.createTabs(
-					["About JOBAD", "Config", "GPL License", "jQuery", "jQuery UI", "Underscore"], 
-					[
-						JOBAD.refs.$("<div>").append(
-							JOBAD.refs.$("<span>").text("JOBAD Core Version "+JOBAD.version),
-							JOBAD.refs.$("<pre>").text(JOBAD.resources.getTextResource("jobad_license"))
-						),
-						$config,
-						JOBAD.refs.$("<pre>").text(JOBAD.resources.getTextResource("gpl_v3_text")),
-						JOBAD.refs.$("<div>").append(
-							JOBAD.refs.$("<span>").text("jQuery Version "+JOBAD.refs.$.fn.jquery),
-							JOBAD.refs.$("<pre>").text(JOBAD.resources.getTextResource("jquery_license"))
-						),
-						JOBAD.refs.$("<div>").append(
-							JOBAD.refs.$("<span>").text("jQuery UI Version "+JOBAD.refs.$.ui.version),
-							JOBAD.refs.$("<pre>").text(JOBAD.resources.getTextResource("jqueryui_license"))
-						),
-						JOBAD.refs.$("<div>").append(
-							JOBAD.refs.$("<span>").text("Underscore Version "+JOBAD.util.VERSION),
-							JOBAD.refs.$("<pre>").text(JOBAD.resources.getTextResource("underscore_license"))
-						)
-					], {}, 400
-				).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_subtabs")
-			)
-			.one('JOBAD.modInfoClose', function(){
-				$config.find("div.JOBAD_CONFIG_SETTTING").each(function(i, e){
-					var e = JOBAD.refs.$(e);
-					me.Config.set(e.data("JOBAD.config.setting.key"), e.data("JOBAD.config.setting.val"));
-				});
-				
-				me.Sidebar.redraw(); //update the sidebar
-			});
-			return;
-		};
-
-		var showInfoAbout = function(mod){
-			//grab mod info
-			var info = mod.info();
-		
-			//Generate Info Tab
-			var $info = JOBAD.refs.$("<div>");
-			
-			//Title and Identifier
-			$info.append(
-				JOBAD.refs.$("<span>").text(info.title).css("font-weight", "bold"),
-				" [",
-				JOBAD.refs.$("<span>").text(info.identifier),
-				"] <br />"
-			);
-			
-			//Version
-			if(typeof info.version == 'string' && info.version != ""){
-				$info.append(
-					"Version ",
-					JOBAD.refs.$("<span>").css("text-decoration", "italic").text(info.version)
-				);
-			}
-			
-			//On / Off Switch			
-			var OnOff = JOBAD.util.createRadio(["Off", "On"], mod.isActive()?1:0);
-			
-			OnOff.find("input").change(function(){
-				if(OnOff.find("input").eq(1).is(":checked")){
-					if(!mod.isActive()){
-						mod.activate();
-					}
-				} else {
-					if(mod.isActive()){
-						mod.deactivate();
-					}
-				}
-			});
-			
-			$info.append(
-				"by ",
-				JOBAD.refs.$("<span>").css("text-decoration", "italic").text(info.author),
-				"<br />",
-				OnOff,
-				"<br />")
-			if(typeof info.url == "string"){
-				$info.append(
-					JOBAD.refs.$("<a>").text(info.url).attr("href", info.url).attr("target", "_blank").button(),
-					"<br />"
-				);
-			}
-			$info.append(
-				JOBAD.refs.$("<span>").text(info.description),
-				"<br />",
-				JOBAD.refs.$("<span>").text(JOBAD.UserConfig.getMessage(info.identifier))
-			);
-			
-			//Config
-			var $config = JOBAD.refs.$("<div>");
-			
-			//Build Config Stuff	
-			var UserConfig = mod.UserConfig.getTypes();
-			
-			buildjQueryConfig(UserConfig, $config, function(key){
-				return mod.UserConfig.get(key);
-			});
-			
-			$displayer
-			.trigger("JOBAD.modInfoClose")
-			.html("")		
-			
-			
-			.append(
-				($config.children().length > 0)?
-					JOBAD.util.createTabs(["About", "Config"], [$info, $config], {}, 400).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_subtabs")
-				:
-					JOBAD.util.createTabs(["About"], [$info], {}, 400).addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_subtabs")
-			)
-			.one('JOBAD.modInfoClose', function(){
-				//Store all the settings
-				$config.find("div.JOBAD_CONFIG_SETTTING").each(function(i, e){
-					var e = JOBAD.refs.$(e);
-					mod.UserConfig.set(e.data("JOBAD.config.setting.key"), e.data("JOBAD.config.setting.val"));
-				});
-			});
-			
-			return;
-		};
-
-
-		JOBAD.refs.$("<tr>").append(
-			JOBAD.refs.$("<td>").text("JOBAD Core").click(showMain),
-			$displayer
-		).appendTo($table);
-
-		for(var i=0;i<len;i++){
-			var mod = this.modules.getLoadedModule(mods[i]);
-			JOBAD.refs.$("<tr>").append(
-				JOBAD.refs.$("<td>").text(mod.info().title)
-				.data("JOBAD.module", mod)
-				.click(function(){
-					showInfoAbout(JOBAD.refs.$(this).data("JOBAD.module"));
-				})
-			)
-			.addClass("JOBAD JOBAD_ConfigUI JOBAD_ConfigUI_ModEntry")
-			.appendTo($table);					
+	/*
+		Call a function if this JOBADInstance is focused, otherwise call it
+		once that is true. 
+	*/
+	me.Instance.focused = function(cb){
+		if(me.Instance.isFocused()){
+			cb.call(me); 
+		} else {
+			me.Event.once("instance.focus", function(){
+				cb.call(me); 
+			})
 		}
-		
-		$Div.append($table);
-		
+	};
 
+	var isAutoFocusEnabled = false; 
+	var autoFocusHandlers = []; 
+	var handlerNames = ["contextmenu.open", "contextMenuEntries", "dblClick", "leftClick", "hoverText"];
 
-		$Div.dialog({
-			width: 700,
-			height: 600,
-			modal: true,
-			close: function(){
-				$displayer
-				.trigger("JOBAD.modInfoClose")
-			},
-			autoOpen: false
-		});	
+	me.Instance.enableAutoFocus = function(){
+		if(isAutoFocusEnabled){
+			return false; 
+		}
 
-		showMain();
+		me.Event.trigger("instance.autofocus.enable"); 
 
-		$Div
-		.dialog("open")
-		.parent().css({
-			"position": "fixed",
-			"top": Math.max(0, ((window.innerHeight - $Div.outerHeight()) / 2)),
-			"left": Math.max(0, ((window.innerWidth - $Div.outerWidth()) / 2))
-		}).end();
+		for(var i=0;i<handlerNames.length;i++){
+			(function(){
+				var handlerName = handlerNames[i];
+				autoFocusHandlers.push(
+					me.Event.on(handlerName, function(){
+						me.Event.trigger("instance.autofocus.trigger", [handlerName]);
+						me.Instance.focus(); 
+					})
+				);
+			})(); 
+			
+		}
+
+		isAutoFocusEnabled = true; 
+		return true; 
+	};
+
+	me.Instance.disableAutoFocus = function(){
+		if(!isAutoFocusEnabled){
+			return false; 
+		}
+
+		me.Event.trigger("instance.autofocus.disable"); 
+
+		while(autoFocusHandlers.length > 0){
+			var handler = autoFocusHandlers.pop(); 
+			me.Event.off(handler); 
+		}
+
+		isAutoFocusEnabled = false; 
+		return true; 
+	};
+
+	me.Instance.isAutoFocusEnabled = function(){
+		return isAutoFocusEnabled; 
 	}
-});
+	
+	me.Event.on("instance.beforeDisable", function(){
+		if(i_am_focused){ //we are focused and are not waiting
+			me.Instance.unfocus(); //unfocus me
 
-/* end   <JOBAD.config.js> */
+			me.Event.once("instance.disable", function(){
+				prev_focus = me; //I was the last one as well
+				me.Instance.focus(); //requery me for enabling once I am disabled
+			})
+		}
+	})
+}); 
+
+/*
+	Gets the currently focused JOBADInstance. 
+*/
+JOBAD.Instances.focused = function(){
+	return focused; 
+}
+
+/* focus Event */
+JOBAD.events.focus = 
+{
+	'default': function(JOBADInstance, prevFocus){},
+	'Setup': {
+		'enable': function(root){
+			return; //nothing to do
+		},
+		'disable': function(root){
+			return; //nothing to do
+		}
+	},
+	'namespace': 
+	{
+		
+		'getResult': function(prevFocus){
+			return this.modules.iterateAnd(function(module){
+				module.focus.call(module, module.getJOBAD(), prevFocus);
+				return true;
+			});
+		},
+		'trigger': function(prevFocus){
+			return this.Event.focus.getResult(prevFocus); 
+		}
+	}
+};
+
+/* focus Event */
+JOBAD.events.unfocus = 
+{
+	'default': function(JOBADInstance){},
+	'Setup': {
+		'enable': function(root){
+			return; //nothing to do
+		},
+		'disable': function(root){
+			return; //nothing to do
+		}
+	},
+	'namespace': 
+	{
+		
+		'getResult': function(){
+			return this.modules.iterateAnd(function(module){
+				module.unfocus.call(module, module.getJOBAD());
+				return true;
+			});
+		},
+		'trigger': function(){
+			return this.Event.unfocus.getResult(); 
+		}
+	}
+};/* end   <core/JOBAD.core.instances.js> */
 /* start <JOBAD.wrap.js> */
 /*
 	JOBAD.wrap.js
@@ -7388,6 +8885,12 @@ JOBAD.ifaces.push(function(){
 */
 for(var key in JOBAD.modules.extensions){
 	JOBAD.modules.cleanProperties.push(key);
+}
+
+for(var key in JOBAD.events){
+	if(!JOBAD.util.contains(SpecialEvents, key)){
+		JOBAD.modules.cleanProperties.push(key);
+	}
 }/* end   <JOBAD.wrap.js> */
 return JOBAD;
 })();

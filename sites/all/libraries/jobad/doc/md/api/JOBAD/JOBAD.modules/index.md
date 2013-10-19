@@ -38,6 +38,14 @@
 	* **Object** `value` Value to vaildate. 
 	* **returns** boolean. 
 
+* **Function** `JOBAD.modules.getOrigin(name, what)` Gets the origin of a module,  the repository it comes from. 
+	* **String** `name` Name of module. 
+	* **String** `what`. Optional. If set to `file`, will get the file this module is defined in. If set to `group` will get the group this module was loaded in. FileName and group may be wrong if the module is registered within some callback. 
+
+* **Function** `JOBAD.modules.resolveModuleResourceURL(name, url)` Resolves a resource URL for a specific module. 
+	* **String** `name` Name of module to resolve resource for. 
+	* **String** `url` URL of resource to resolve for. 
+
 
 * **Object** `JOBAD.modules.globalStore` Namespace to store variables shared among instances of modules. 
 * **Function** `JOBAD.modules.globalStore.get(id, key)` - Gets a global variable for the specefied module. 

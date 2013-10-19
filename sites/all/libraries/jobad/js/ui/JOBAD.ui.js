@@ -110,7 +110,7 @@ JOBAD.UI.sortTableBy = function(el, sortFunction, callback){
 				var row = JOBAD.refs.$(this); 
 				row.detach().appendTo(table); 
 			});
-			return el;  
+			return el;
 		}
 	}
 
@@ -124,4 +124,41 @@ JOBAD.UI.sortTableBy = function(el, sortFunction, callback){
 	})
 
 	return el; 
+}
+
+/*
+	Making Bootstrap scoped. 
+*/
+
+/*
+	Enables Bootstrap on some element
+*/
+JOBAD.refs.$.fn.BS = function(){
+	JOBAD.refs.$(this).addClass(JOBAD.config.BootstrapScope); 
+	return this; 
+}
+
+JOBAD.UI.BS = function(element){
+	return JOBAD.refs.$(element).BS(); 
+}
+
+var Bootstrap_hacks = JOBAD.refs.$([]); 
+
+JOBAD.UI.BSStyle = function(element){
+	//Remove all the old hacks
+	Bootstrap_hacks = Bootstrap_hacks.filter(function(){
+		var me = JOBAD.refs.$(this); 
+
+		if(me.children().length == 0){
+			me.remove(); 
+			return false; 
+		}
+
+		return true; 
+	});
+
+
+	var el = JOBAD.refs.$(".modal-backdrop").wrap(JOBAD.refs.$("<div>").BS().addClass("hacked")); 
+
+	Bootstrap_hacks = Bootstrap_hacks.add(el.parent()); 
 }

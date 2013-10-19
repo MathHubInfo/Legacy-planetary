@@ -532,6 +532,17 @@ Modules are activated by default. To manually (re)activate a module, you can: </
 <span class="nx">loadedModule</span><span class="p">.</span><span class="nx">activate</span><span class="p">();</span> <span class="c1">//activate the module</span>
 </code></pre></div>
 
+<p>JOBADInstances can also be focused and unfocused. This allows their Toolbars to be shown. To focus or unfocus a JOBADInstance: </p>
+
+<div class="codehilite"><pre><code><span class="nx">myJOBADInstance</span><span class="p">.</span><span class="nx">Instance</span><span class="p">.</span><span class="nx">focus</span><span class="p">()</span> <span class="c1">//Focus an Instance</span>
+<span class="nx">myJOBADInstance</span><span class="p">.</span><span class="nx">Instance</span><span class="p">.</span><span class="nx">unfocus</span><span class="p">()</span> <span class="c1">//UnFocus an Instance</span>
+</code></pre></div>
+
+<p>At most one Instance can be focused at any time. To get the currently focused Instance use: </p>
+
+<div class="codehilite"><pre><code><span class="kd">var</span> <span class="nx">focused</span> <span class="o">=</span> <span class="nx">JOBAD</span><span class="p">.</span><span class="nx">Instances</span><span class="p">.</span><span class="nx">focused</span><span class="p">();</span> <span class="c1">//may be undefined if no Instance is focused. </span>
+</code></pre></div>
+
 <p>For more information on what you can do with loadedModules, please refer to the <a href="../api/JOBAD/JOBAD.modules/loadedModule.html">API Documentation</a>. </p>
 
 <p>For more information on what you can do with JOBADInstances, please refer to the respective section in the <a href="../api/JOBAD/JOBADInstance/index.html">API Documentation</a>. </p>
@@ -546,6 +557,7 @@ Modules are activated by default. To manually (re)activate a module, you can: </
 <li><a href="hover.html">Tooltips</a> - How to use tooltips in JOBAD</li>
 <li><a href="contextmenu.html">Context Menu</a> - How to use the context menu</li>
 <li><a href="sidebar.html">Sidebar</a> - How does the sidebar work?</li>
+<li><a href="Toolbar.html">Toolbar</a> - What is the Toolbar? </li>
 <li><a href="folding.html">Folding</a> - Folding the DOM</li>
 <li><a href="config.html">Configuration Options</a> - How can I configure JOBAD modules?</li>
 <li><a href="example_modules.html">Module examples</a> - Example Modules</li>

@@ -44,6 +44,8 @@ JOBAD.ifaces.push(function(){
 			return;
 		}
 
+		this.Event.trigger("folding.enable", [element]); 
+
 		if(element.is(this.element)){
 			if(element.data("JOBAD.UI.Folding.virtualFolding")){
 				element = element.data("JOBAD.UI.Folding.virtualFolding");
@@ -79,6 +81,8 @@ JOBAD.ifaces.push(function(){
 			var element = this.element; 
 		}
 		var element = JOBAD.refs.$(element);
+
+		this.Event.trigger("folding.disable", [element]); 
 
 		if(element.data("JOBAD.UI.Folding.virtualFolding")){
 			var vElement = element.data("JOBAD.UI.Folding.virtualFolding");

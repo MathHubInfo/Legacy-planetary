@@ -34,13 +34,14 @@ JOBAD.events.leftClick =
 				switch (event.which) {
 					case 1:
 						/* left mouse button => left click */
+						preEvent(me, "leftClick", [element]); 
 						me.Event.leftClick.trigger(element);
+						postEvent(me, "leftClick", [element]); 
 						event.stopPropagation(); //Not for the parent. 
 						break;
 					default:
 						/* nothing */
 				}
-				root.trigger('JOBAD.Event', ['leftClick', element]);
 			});
 		},
 		'disable': function(root){
@@ -66,6 +67,47 @@ JOBAD.events.leftClick =
 	}
 };
 
+/* keypress */
+JOBAD.events.keyPress = 
+{
+	'default': function(key, JOBADInstance){
+		return false;
+	},
+	'Setup': {
+		'enable': function(root){
+			var me = this;
+			me.Event.keyPress.__handlerName = JOBAD.util.onKey(function(k){
+				if(me.Instance.isFocused()){
+					preEvent(me, "keyPress", [k]); 
+					var res = me.Event.keyPress.trigger(k); 
+					postEvent(me, "keyPress", [k]); 
+					return res; 
+				} else {
+					return true; 
+				}
+			}); 
+		},
+		'disable': function(root){
+			JOBAD.refs.$(document).off(this.Event.keyPress.__handlerName); 
+		}
+	},
+	'namespace': 
+	{
+		
+		'getResult': function(key){
+			var res = this.modules.iterateAnd(function(module){
+				return !module.keyPress.call(module, key, module.getJOBAD());
+			});
+ 
+			return res; 
+		},
+		'trigger': function(key){
+			var evt = this.Event.keyPress.getResult(key);
+			return evt;
+		}
+	}
+};
+
 /* double Click */
 JOBAD.events.dblClick = 
 {
@@ -77,8 +119,9 @@ JOBAD.events.dblClick =
 			var me = this;
 			root.delegate("*", 'dblclick.JOBAD.dblClick', function(event){
 				var element = JOBAD.refs.$(event.target); //The base element.  
+				preEvent(me, "dblClick", [element]); 
 				var res = me.Event.dblClick.trigger(element);
-				root.trigger('JOBAD.Event', ['dblClick', element]);
+				postEvent(me, "dblClick", [element]); 
 				event.stopPropagation(); //Not for the parent. 
 			});
 		},
@@ -112,12 +155,15 @@ JOBAD.events.onEvent =
 	'Setup': {
 		'enable': function(root){
 			var me = this;
-			root.on('JOBAD.Event', function(jqe, event, args){
+
+			me.Event.onEvent.id = 
+			me.Event.on("event.handlable", function(event, args){
 				me.Event.onEvent.trigger(event, args);
 			});
 		},
 		'disable': function(root){
-			root.off('JOBAD.Event');
+			var me = this;
+			me.Event.off(me.Event.onEvent.id);
 		}
 	},
 	'namespace': 
@@ -148,13 +194,23 @@ JOBAD.events.contextMenuEntries =
 		'enable': function(root){
 			var me = this;
 			JOBAD.UI.ContextMenu.enable(root, function(target){
+				preEvent(me, "contextMenuEntries", [target]);
 				var res = me.Event.contextMenuEntries.getResult(target);
-				root.trigger('JOBAD.Event', ['contextMenuEntries', target]);
+				postEvent(me, "contextMenuEntries", [target]);
 				return res;
 			}, {
 				"type": function(target){
 					return me.Config.get("cmenu_type");
-				}
+				}, 
+				"show": function(){
+					me.Event.trigger("contextmenu.open", []); 
+					me.Event.handle("contextMenuOpen");
+				},
+				"close": function(){
+					me.Event.trigger("contextmenu.close", []); 
+					me.Event.handle("contextMenuClose");
+				},
+				"stopPropagnate": true
 			});
 		},
 		'disable': function(root){
@@ -166,8 +222,18 @@ JOBAD.events.contextMenuEntries =
 		'getResult': function(target){
 			var res = [];
 			var mods = this.modules.iterate(function(module){
-				var entries = module.contextMenuEntries.call(module, target, module.getJOBAD());
-				return JOBAD.UI.ContextMenu.generateMenuList(entries);
+				var mtarget = target;
+				var res = []; 
+				while(true){
+					if(mtarget.length == 0 
+						|| res.length > 0){
+						
+						return res; 
+					}
+					res = module.contextMenuEntries.call(module, mtarget, module.getJOBAD());
+					res = JOBAD.UI.ContextMenu.generateMenuList(res); 
+					mtarget = mtarget.parent(); 
+				}
 			});
 			for(var i=0;i<mods.length;i++){
 				var mod = mods[i];
@@ -192,7 +258,9 @@ JOBAD.events.configUpdate =
 		'enable': function(root){
 			var me = this;
 			JOBAD.refs.$("body").on('JOBAD.ConfigUpdateEvent', function(jqe, setting, moduleId){
+				preEvent(me, "configUpdate", [setting, moduleId]);
 				me.Event.configUpdate.trigger(setting, moduleId);
+				postEvent(me, "configUpdate", [setting, moduleId]);
 			});
 		},
 		'disable': function(root){
@@ -211,7 +279,6 @@ JOBAD.events.configUpdate =
 			});
 		},
 		'trigger': function(setting, moduleId){
-			this.element.trigger("JOBAD.Event", ["configUpdate", setting, moduleId]);
 			return this.Event.configUpdate.getResult(setting, moduleId);
 		}
 	}
@@ -294,9 +361,11 @@ JOBAD.events.hoverText =
 				return false;		
 			}
 
+			preEvent(this, "hoverText", [source]);
 			var EventResult = this.Event.hoverText.getResult(source); //try to do the event
 		
 			if(typeof EventResult == 'boolean'){
+				postEvent(this, "hoverText", [source]);
 				return EventResult;		
 			}
 
@@ -346,14 +415,12 @@ JOBAD.events.hoverText =
 
 			JOBAD.UI.hover.disable();
 
+			postEvent(this, "hoverText", [source]);
+
 			if(!source.is(this.element)){
 				this.Event.hoverText.trigger(source.parent());//we are in the parent now
 				return false;
 			}
 		}
 	}
-}
-
-for(var key in JOBAD.events){
-	JOBAD.modules.cleanProperties.push(key);
 }

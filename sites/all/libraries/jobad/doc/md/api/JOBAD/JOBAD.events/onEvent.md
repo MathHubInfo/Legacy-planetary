@@ -1,6 +1,8 @@
 # JOBAD.events.onEvent
 
-The onEvent event is triggered every time another event handler is called. Does not trigger for the `onEvent` event and the `onSideBarUpdate` event
+The onEvent event is triggered every time another event handler is called. Does not trigger for the `onEvent` event and the `onSideBarUpdate` event. Also has the following special events: 
+	* `contextMenuOpen`: Called after the context menu is opened. 
+	* `contextMenuClose`: Called after the context menu is closed (for whatever reason) 
 
 * **Function** `JOBAD.events.onEvent.default()` - The default Event Handler for onEvent Events. Does nothing. 
 

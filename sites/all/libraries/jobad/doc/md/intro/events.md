@@ -4,6 +4,7 @@ The following events are currently available:
 
 * `leftClick`: When an element is left clicked on. 
 * `dblClick`: When an element is double clicked. 
+* `keyPress`: Called whenever a key is pressed and the Instance of JOBAD is focused. 
 * `contextMenu`: When an element is right clicked on, a context menu may appear. Is not triggered when the control key is pressed to allow access to the native context menu. 
 * `hoverText`: A text which will appear in a tooltip hovering over the hovered element. Warning: If there are `title` attributes on the element, they might interfere with this event. 
 * `SideBarUpdate`: Called when the sidebar is upated. 

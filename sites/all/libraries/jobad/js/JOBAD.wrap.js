@@ -23,3 +23,9 @@
 for(var key in JOBAD.modules.extensions){
 	JOBAD.modules.cleanProperties.push(key);
 }
+
+for(var key in JOBAD.events){
+	if(!JOBAD.util.contains(SpecialEvents, key)){
+		JOBAD.modules.cleanProperties.push(key);
+	}
+}

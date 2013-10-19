@@ -10,7 +10,6 @@ mkdir -p $destdir
 
 # JS Builting config
 build="$destdir"JOBAD.js
-buildmin="$destdir"JOBAD.min.js
 sourcedirjs="$basedir"js
 
 # CSS Building config
@@ -63,35 +62,3 @@ cat $BASE_PATH/config/min_header.js | sed -e "s/\${BUILD_TIME}/$(date -R)/" > $b
 python $BASE_PATH/deps/closurecompilerpy/closureCompiler.py -s $buildmin.tmp >> $buildmin
 
 cat $BASE_PATH/config/min_footer.js | sed -e "s/\${BUILD_TIME}/$(date -R)/" >> $buildmin
-
-RETVAL=$?
-[ $RETVAL -eq 0 ] && echo "OK"
-[ $RETVAL -ne 0 ] && echo "FAIL" && rm $buildmin
-
-
-echo "Done. Building CSS file ..."
-cat $BASE_PATH/config/css_header.css | sed -e "s/\${BUILD_TIME}/$(date -R)/" > $buildc
-while read filename
-do
-	echo "/* start <$filename> */" >> $buildc
-	cat $sourcedirc/$filename >> $buildc
-	echo "/* end   <$filename> */" >> $buildc
-done < "$BASE_PATH/config/css.txt"
-
-printf "Done. "
-
-printf "Cleaning up ... "
-
-rm $buildmin.tmp
-
-echo "OK"
-
-echo ""
-echo "Build finished. "
-
-echo "Development version built successfully. "
-[ $RETVAL -eq 0 ] && echo "Minimized version built successfully. "
-[ $RETVAL -ne 0 ] && echo "Minimized version built failed. "
-
-exit 0
-

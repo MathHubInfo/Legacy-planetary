@@ -13,7 +13,10 @@ var template = {
 		'url': 'http://example.com', //website url (if available)
 		'version':	'1.0', //string containing the version number. May be omitted. 
 		'dependencies':	[], //Array of module dependencies. If ommited, assumed to have no dependencies. 
-		'externals': [], //external scripts this module depends on
+		'externals': {
+			"js": [], //external scripts this module depends on
+			"css": [] //external css this module depends on
+		}, 
 		'async': false, //should globalinit be async
 		'hasCleanNamespace': true // Does this module contain only standard functions?
 	},
@@ -24,7 +27,17 @@ var template = {
 		"a_num": ["number", [-10, 10], 0, ["Number", "An awesome number between -10 and 10 "]],
 		"an_int": ["integer", [-10, 10], 0, ["Integer", "An awesome integer between -10 and 10. "]],
 		"a_list": ["list", [1, 2, 3, 4], 1, ["Select an option", "A", "B", "C", "D"]]
-	}
+	},
+	Toolbar: function(JOBADInstance, Toolbar){
+		/* 
+			Called whenever a new toolbar is supposed to be shown. 
+			@this An instance of JOBAD.modules.loadedModule
+			@param JOBADInstance The instance of JOBAD the module is currently on. 
+			@param Toolbar A jQuery element representing the toolbar. 
+			@returns true if there is a Toolbar otherwise false. 
+		*/
+		return false; 
+	},
 	/* Init handlers */
     globalinit: function(next){
 		/* 
@@ -58,6 +71,21 @@ var template = {
 			@param JOBADInstance The instance of JOBAD the module is deactivated on. 
 		*/
 	},
+	focus: function(JOBADInstance, previous){
+		/*
+			Called every time this JOBADInstance is focused. 
+			@this An instance of JOBAD.modules.loadedModule
+			@param JOBADInstance The instance of JOBAD that is focused. 
+			@param previous The instance of JOBAD that was focused previously or undefined.  
+		*/
+	},
+	unfocus: function(JOBADInstance){
+		/*
+			Called every time this JOBADInstance is unfocused. 
+			@this An instance of JOBAD.modules.loadedModule
+			@param JOBADInstance The instance of JOBAD that is unfocused. 
+		*/
+	},
 	/* Event Handlers */
 	leftClick: function(target, JOBADInstance){
 		/*
@@ -73,6 +101,15 @@ var template = {
 			called when a double click is performed.  
 			@this An instance of JOBAD.modules.loadedModule
 			@param target The element that has been double clicked on. 
+			@param JOBADInstance The instance of JOBAD the module is initiated on.  
+			@returns Returns true iff it performed some action. 
+		*/
+	},
+	keyPress: function(key, JOBADInstance){
+		/*
+			called when a key press occurs and this JOBADInstance is focused. Until some handler returns true, every action is performed. 
+			@this An instance of JOBAD.modules.loadedModule
+			@param key The key combination that was pressed. See JOBAD.util.keyPress
 			@param JOBADInstance The instance of JOBAD the module is initiated on.  
 			@returns Returns true iff it performed some action. 
 		*/
@@ -124,7 +161,7 @@ var template = {
 	}
 };
 
-JOBAD.modules.register(template); //don't forget to register it. 
+JOBAD.modules.register(template); //register the module. 
 ```
 
 When you write a module and you wish to use jQuery, do not use the "$" reference to jQuery. This might not be available if jQuery is in noConflict mode. Always use the JOBAD.refs.$ reference to jQuery. 

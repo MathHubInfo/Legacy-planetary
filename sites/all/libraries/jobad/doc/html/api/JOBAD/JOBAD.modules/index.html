@@ -536,6 +536,18 @@
 <li><strong>Object</strong> <code>value</code> Value to vaildate. </li>
 <li><strong>returns</strong> boolean. </li>
 </ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.modules.getOrigin(name, what)</code> Gets the origin of a module,  the repository it comes from. </p>
+
+<ul>
+<li><strong>String</strong> <code>name</code> Name of module. </li>
+<li><strong>String</strong> <code>what</code>. Optional. If set to <code>file</code>, will get the file this module is defined in. If set to <code>group</code> will get the group this module was loaded in. FileName and group may be wrong if the module is registered within some callback. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>JOBAD.modules.resolveModuleResourceURL(name, url)</code> Resolves a resource URL for a specific module. </p>
+
+<ul>
+<li><strong>String</strong> <code>name</code> Name of module to resolve resource for. </li>
+<li><strong>String</strong> <code>url</code> URL of resource to resolve for. </li>
+</ul></li>
 <li><p><strong>Object</strong> <code>JOBAD.modules.globalStore</code> Namespace to store variables shared among instances of modules. </p></li>
 <li><strong>Function</strong> <code>JOBAD.modules.globalStore.get(id, key)</code> - Gets a global variable for the specefied module. 
 <ul>

@@ -46,11 +46,11 @@
 		},		
 		"Compile" : {
 			"compile" : {
-				"href" : "icons/cmd/sc_insertmath.png",
+				"href" : "icons/cmd/sc_outlineup.png",
 				"help" : "Compile"		
 			},
 			"graph" : {
-				"href" : "icons/cmd/sc_insertmath.png",
+				"href" : "icons/cmd/sc_connectorarrows.png",
 				"help" : "Graph"		
 			}
 		}

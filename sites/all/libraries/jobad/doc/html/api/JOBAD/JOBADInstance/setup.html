@@ -491,15 +491,30 @@
 <ul>
 <li><strong>returns</strong> boolean indicating success. </li>
 </ul></li>
-<li><strong>Function</strong> <code>.Setup.disable()</code> Disables this JOBAD instance. 
+<li><p><strong>Function</strong> <code>.Setup.disable()</code> Disables this JOBAD instance. </p>
+
 <ul>
 <li><strong>returns</strong> boolean indicating success. </li>
 </ul></li>
-<li><strong>Function</strong> <code>.Setup.deferUntilEnabled(func)</code> Defers a function until until this instance is enabled. 
+<li><p><strong>Function</strong> <code>.Setup.deferUntilEnabled(func)</code> Defers a function until until this instance is enabled. </p>
+
+<ul>
+<li>deprecated, use <code>.Event.once('instance.enable', func)</code> instead. </li>
+<li><strong>Function</strong> <code>func()</code> Function to defer. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Setup.deferUntilDisabled(func)</code> Defers a function until until this instance is disabled. </p>
+
+<ul>
+<li>deprecated, use <code>.Event.once('instance.disable', func)</code> instead. </li>
+<li><strong>Function</strong> <code>func()</code> Function to defer. </li>
+</ul></li>
+<li><p><strong>Function</strong> <code>.Setup.enabled(func)</code> Calls a function if this JOBADInstance is enabled, otherwise calls it once the JOBDInstance is enabled. </p>
+
 <ul>
 <li><strong>Function</strong> <code>func()</code> Function to defer. </li>
 </ul></li>
-<li><strong>Function</strong> <code>.Setup.deferUntilDisabled(func)</code> Defers a function until until this instance is disabled. 
+<li><p><strong>Function</strong> <code>.Setup.disabled(func)</code> Calls a function if this JOBADInstance is disabled, otherwise calls it once the JOBDInstance is disabled. </p>
+
 <ul>
 <li><strong>Function</strong> <code>func()</code> Function to defer. </li>
 </ul></li>

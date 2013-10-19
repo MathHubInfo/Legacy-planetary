@@ -15,15 +15,22 @@ In addition to these functions, JOBAD.util also contains all underscore (version
 	* **Function** `func()` Function to wrap
 	* **Number** `from` 
 	* **Number** `to`
-* **Function** `JOBAD.util.createRadio(texts, start)` - Creates a jQuery UI radio button
+* **Function** `JOBAD.util.createDropDown(values, texts, start)` - Creates a Dropdown Box.  
+	* **Array** `values` Values to use. 
+	* **Array** `texts` Texts to use. 
+	* **number** `start` Number of the initial value. 
+	* **returns** jQuery object
+* **Function** `JOBAD.util.createRadio(texts, start)` - Creates a Bootstrap radio button (Button group)
 	* **Array** `texts` Texts to use as names
 	* **number** `start` Identifier of the initial value
 	* **returns** jQuery object
-* **Function** `JOBAD.util.createTabs(names, tabs, options, height)` - Creates a jQuery UI tabs
+* **Function** `JOBAD.util.createTabs(names, tabs, options, height)` - Creates tab data compatible with Bootstrap. 
 	* **Array** `names` Texts to use as names for tab titles
 	* **Array** `tabs` Elements to use as tabs
-	* **Array** `options` Options to pass to jQuery UI Tabs
-	* **number** `height` Optional. Height of the tabs
+	* **Object** `config` Configuration. Optional. 
+		* **String** `config.type` Type of tabs to use. CSS Class. 
+		* **Function** `config.select(tabName, tab)` Select Hook. To be called on selection of a tab. 
+		* **Function** `config.unselect(tabName, tab)` Deselect Hook. To be called on the deselection of a tab. 
 	* **returns** jQuery object
 * **Function** `JOBAD.util.closest(element, check)` - Similar to jQuery's closest. Travels up the DOM tree and finds the first element which matches check. This includes element itself
 	* **jQuery** `element` Element to start with
@@ -62,12 +69,22 @@ In addition to these functions, JOBAD.util also contains all underscore (version
 	* **jQuery** `container` Container to look in. 
 	* **jQuery** `contained` Contained elements to look for. 
 	* **Boolean** `includeSelf` Optional. Include the container element iteself in the search. Default: False. 
-* **Function** `JOBAD.util.loadExternalJS(names, callback, scope)` - Loads one or more external JavaScript files. 
+* **Function** `JOBAD.util.loadExternalJS(names, callback, scope, preLoadHack)` - Loads one or more external JavaScript files. 
 	*  **Array|String** `names` Name (URL) of file to load or array of file names. 
 	* **Function** `callback(urls, success)` Callback once files have loaded
 		* **this** `scope`
 		* **Array** `urls` Originally given urls. 
 		* **Boolean** `success` Have the files been loaded or has there been a timeout?
+	* **Function** `preLoadHack(url)` Optional. Called directly before a (single) file is loaded. 
+* **Function** `JOBAD.util.loadExternalCSS(names, callback, scope, preLoadHack)` - Loads one or more external CSS files. 
+	*  **Array|String** `names` Name (URL) of file to load or array of file names. 
+	* **Function** `callback(urls, success)` Callback once files have loaded
+		* **this** `scope`
+		* **Array** `urls` Originally given urls. 
+		* **Boolean** `success` Have the files been loaded or has there been a timeout?
+	* **Function** `preLoadHack(url)` Optional. Called directly before a (single) file is loaded. 
+* **Function** `JOBAD.util.getCurrentOrigin()` - Gets the current file being executed. Works only directly in a script file. 
+
 * **Function** `JOBAD.util.escapeHTML(str)` - Escapes a string for use within html. 
 	* **String** `str` String to escape
 * **Function** `JOBAD.util.resolve(url, base, isDir)` - Resolves a url. 
@@ -93,3 +110,24 @@ In addition to these functions, JOBAD.util also contains all underscore (version
 	* **String** `event` Event to trigger. 
 	* **Array** `params` Optional. Array of parameters to pass to event handlers.
 	* **returns** `Array of results`
+
+* **Function** `JOBAD.util.EventHandler()` - Creates a new Event Handler which has the functions ".on", ".once", ".off", ".trigger" as above (without the first parameter)
+
+
+* **Function** `JOBAD.util.limit(x, a, b)` - Limit x to be between a and b. 
+	* **Number** `x`
+	* **Number** `a`
+	* **Number** `b`
+
+* **Function** `JOBAD.util.permuteArray(arr, a, b)` - Return a premuted copy of the array arr. 
+	* **Array** `arr` Array to permute
+	* **Number** `a` Index of the first element to exchange. 
+	* **Number** `b` Index of the second element to exchange. 
+
+* **Function** `JOBAD.util.toKeyString(evt)` - Turns the keydown or keypress event evt into a string for a key. 
+	* **Event** `evt` The keydown or keypress event to translate. 
+	* **returns** `string` of the form '[ctrl+][alt+][shift+]$key_name'. Note that only a special key shows up as 'ctrl+'. 
+
+* **Function** `JOBAD.util.onKey(callback)` - Registers a listener for a keypress event. 
+	* **Function** `callback(key, orgEvent)` The callback
+	* **returns** a string. Use `$(document).off(returned_value)` to deregister the listener. 

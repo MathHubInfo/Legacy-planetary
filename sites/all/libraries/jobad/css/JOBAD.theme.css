@@ -39,11 +39,11 @@
 
 .JOBAD.JOBAD_Hover {
 	/* Style for JOBAD Hover Texts */
-	background-color: #696969;
+	background-color: #ffffca;
 	-webkit-border-radius: 5;
 	-moz-border-radius: 5;
 	border-radius: 5;
-	border: 1px solid #000000;
+	border: 1px solid #000023;
 }
 
 /* 
@@ -64,6 +64,14 @@
 	-moz-border-radius: 20px;
 	border-radius: 20px;
 	border: 1px solid black; 
+}
+
+.JOBAD.JOBAD_Contextmenu.JOBAD_ContextMenu_Radial.JOBAD_ContextMenu_RadialItem.JOBAD_ContextMenu_Radial_Disabled {
+	-webkit-filter: grayscale(100%); /* we are disabled */
+}
+
+.JOBAD.JOBAD_Contextmenu.JOBAD_ContextMenu_Radial.JOBAD_ContextMenu_RadialItem.JOBAD_ContextMenu_Radial_Disabled:hover {
+	border: 0px; 
 }
 
 /* 
@@ -95,6 +103,11 @@
 	/* Error */	
 	background-color: red;
 	border: 1px solid red;
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Notification_none{
+	background-color: #696969;
+	border: 1px solid #000000;
 }
 
 

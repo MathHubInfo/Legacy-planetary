@@ -486,7 +486,7 @@
 <p>JOBAD should work in all modern browsers. JOBAD has been tested successfully in: </p>
 
 <ul>
-<li>Google Chrome 26</li>
+<li>Google Chrome 28</li>
 <li>Firefox 20</li>
 <li>Internet Explorer 10</li>
 </ul>
@@ -501,7 +501,107 @@
 
 <h2>Changelog</h2>
 
-<h3>Version 3.1.6 (Stable)</h3>
+<h3>Version 3.2.0 (Stable)</h3>
+
+<ul>
+<li>added auto focus for JOBADInstances</li>
+<li>added the keypress event (finally)</li>
+<li>bug Fix: EventHandler .off was not working</li>
+<li>added support for CSS scoped bootstrap
+<ul>
+<li>compatibility with jQuery UI, no CSS is broken
+<ul>
+<li>added a new jQuery UI Testing page for this</li>
+</ul></li>
+<li>this currently breaks BS fade animations</li>
+</ul></li>
+</ul>
+
+<h3>Version 3.1.9</h3>
+
+<ul>
+<li>Change in dependencies
+<ul>
+<li>removed jQuery UI dependency, we now only need Bootstrap 2.x</li>
+<li>support for jQuery 1.8+</li>
+<li>added bundled jQuery Color for color animations</li>
+</ul></li>
+<li>added JOBAD.Instances
+<ul>
+<li>added the focus and the unfocus Events</li>
+<li>only one JOBAD Instance focused at the same time</li>
+<li>no auto focusing for now</li>
+</ul></li>
+<li>added Toolbars
+<ul>
+<li>per-module</li>
+<li>UI left to module</li>
+<li>can be shifted up and down</li>
+<li>have to be enable via config UI or via code</li>
+<li>only visible on the currently focused JOBADInstance</li>
+</ul></li>
+<li>improved the Event System
+<ul>
+<li>Dynamic listening to event via <code>.Event.on(evt, handler)</code> and <code>.Event.once(evt, handler)</code></li>
+<li>added <code>.Event.bind</code> and <code>loadedModule.setHandler</code> to create custom events for modules</li>
+<li>added folding.enable and folding.disable events</li>
+</ul></li>
+<li>changes to the Sidebar
+<ul>
+<li>removed "bound to element" Sidebar Style </li>
+<li>added a "hidden" Sidebar Style, which hides the Sidebar
+<ul>
+<li>should be used for clients where the sidebar takes away space</li>
+</ul></li>
+</ul></li>
+<li>improved JOBAD.util.getOrigin()
+<ul>
+<li>better compatibility when using inline-scripts</li>
+</ul></li>
+<li>more rotation for the radial context menu</li>
+<li>updated the config module</li>
+<li>updated Makefile</li>
+</ul>
+
+<h3>Version 3.1.8</h3>
+
+<ul>
+<li>improved contextMenu
+<ul>
+<li>added Ids for menus</li>
+<li>added the contextMenuOpen Event to onEvent. </li>
+<li>added the contextMenuClose Event to onEvent. </li>
+</ul></li>
+<li>added new example module <code>test.menu3</code></li>
+</ul>
+
+<h3>Version 3.1.7</h3>
+
+<ul>
+<li>refactored the build system, now easy with <code>make</code>
+<ul>
+<li>also compressing all required libraries in a js and css file</li>
+<li>building will automatically pull all dependencies (npm &amp; pip needed)</li>
+</ul></li>
+<li>added bootstrap compatibility via jQuery Bootstrap</li>
+<li>updated the config dialog
+<ul>
+<li>ported the config dialog to bootstrap</li>
+<li>moved to the module <code>jobad.config</code></li>
+</ul></li>
+<li>added <code>moduleInstance.getOrigin()</code> to get the origin of a module. 
+<ul>
+<li>all urls on modules are now resolved relative to the module. </li>
+</ul></li>
+<li>added <code>JOBAD.util.loadExternalCSS</code></li>
+<li>added CSS external dependencies for modules</li>
+<li>added disabled menu items (use <code>false</code> instead of a callback)</li>
+<li>better default handling of sidebar icons. </li>
+<li>improved styles</li>
+<li>updated underscore to version 1.5.1</li>
+</ul>
+
+<h3>Version 3.1.6</h3>
 
 <ul>
 <li>improved repository override urls</li>
@@ -604,7 +704,7 @@ You should have received a copy of the GNU General Public License
 along with JOBAD.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 </code></pre>
 
-<p>This project includes Underscore 1.4.4, which is licensed under <a href="https://github.com/documentcloud/underscore/blob/master/LICENSE">MIT License</a>. </p>
+<p>This project includes Underscore 1.5.1, which is licensed under <a href="https://github.com/documentcloud/underscore/blob/master/LICENSE">MIT License</a>. </p>
 
 <h2>See also</h2>
 

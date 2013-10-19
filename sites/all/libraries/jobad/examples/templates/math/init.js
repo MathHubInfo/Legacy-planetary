@@ -1,3 +1,4 @@
+JOBAD.config.BootstrapScope = "bootstrap"; //Bootstrap CSS scope
 
 var myJOBAD; 
 

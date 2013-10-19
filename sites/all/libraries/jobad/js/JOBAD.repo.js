@@ -42,21 +42,24 @@ JOBAD.repo.buildPage = function(element, repo, callback){
 
 	var body = JOBAD.refs.$("<div class='JOBAD JOBAD_Repo JOBAD_Repo_Body'>").appendTo(JOBAD.refs.$(element).empty());
 
-	var msgBox = JOBAD.refs.$("<div>");
+	var msgBox = JOBAD.refs.$("<div class='bar'>");
 
-	msgBox.wrap("<div class='JOBAD JOBAD_Repo JOBAD_Repo_MsgBox'>").parent().appendTo(body); 
+	msgBox.wrap("<div class='progress'>").parent().wrap("<div class='JOBAD JOBAD_Repo JOBAD_Repo_MsgBox'>").parent().appendTo(body); 
 
 	var label = JOBAD.refs.$("<div class='progress-label'>").text("Loading Repository, please wait ...").appendTo(msgBox);
 	
-	msgBox.progressbar({
-		value: 0
-	})
+	msgBox.css({
+		"width": 0
+	});
 
 	var baseUrl = JOBAD.util.resolve(repo);
 	baseUrl = baseUrl.substring(0, baseUrl.length - 1); // no slash at the end
 
 	JOBAD.repo.init(baseUrl, function(suc, cache){
-		msgBox.progressbar("option", "value", 25); 
+		msgBox.css({
+			"width": "25%",
+		}); 
+
 		if(!suc){
 			label.text("Repository loading failed: "+cache);
 			return; 
@@ -84,7 +87,8 @@ JOBAD.repo.buildPage = function(element, repo, callback){
 					JOBAD.refs.$("<th>").text("Homepage"),
 					JOBAD.refs.$("<th>").text("Description"),
 					JOBAD.refs.$("<th>").text("Module Dependencies"),
-					JOBAD.refs.$("<th>").text("External Dependencies")
+					JOBAD.refs.$("<th>").text("External JavaScript Dependencies"),
+					JOBAD.refs.$("<th>").text("External CSS Dependencies")
 				).children("th").click(function(){
 					JOBAD.UI.sortTableBy(this, "rotate", function(i){
 						this.parent().find("span").remove(); 
@@ -111,13 +115,15 @@ JOBAD.repo.buildPage = function(element, repo, callback){
 
 		var next = function(){
 
-			msgBox.progressbar("option", "value", 25+75*((i+1)/(modules.length))); 
+			msgBox.css({
+				"width": ""+((25+75*((i+1)/(modules.length)))*100)+"%"
+			});
 
 			var name = modules[i]; 
 
 			if(i >= modules.length){
 				label.text("Finished. ");
-				msgBox.fadeOut(1000);
+				msgBox.parent().fadeOut(1000);
 				callback(body); 
 				return;
 			}
@@ -203,13 +209,34 @@ JOBAD.repo.buildPage = function(element, repo, callback){
 						}
 					}
 
-					var edeps = info.externals;
+					var edeps = info.externals.js;
 
 					if(edeps.length == 0){
 						JOBAD.refs.$("<td></td>").text("(None)").appendTo(row);
 					} else {
 						var cell = JOBAD.refs.$("<td></td>").appendTo(row); 
-						for(var j=0;j<edps.length;j++){
+						for(var j=0;j<edeps.length;j++){
+							cell.append(
+								"\"", 
+								JOBAD.refs.$("<span>")
+									.addClass("JOBAD JOBAD_Repo JOBAD_Repo_External_Dependency")
+									.text(edeps[j]),
+								"\""
+							);
+
+							if(j != edeps.length - 1 ){
+								cell.append(" , "); 
+							}
+						}
+					}
+
+					var edeps = info.externals.css;
+
+					if(edeps.length == 0){
+						JOBAD.refs.$("<td></td>").text("(None)").appendTo(row);
+					} else {
+						var cell = JOBAD.refs.$("<td></td>").appendTo(row); 
+						for(var j=0;j<edeps.length;j++){
 							cell.append(
 								"\"", 
 								JOBAD.refs.$("<span>")
@@ -390,13 +417,21 @@ JOBAD.repo.loadFrom = function(repo, modules, callback){
 			return JOBAD_Repo_Urls[repo][mod]; 
 		});
 
+		JOBAD.repo.__currentFile = undefined; 
+		JOBAD.repo.__currentLoad = m2; 
+		JOBAD.repo.__currentRepo = repo; 
 
 		JOBAD.util.loadExternalJS(m2, function(suc){
+			delete JOBAD.repo.__currentFile; 
+			delete JOBAD.repo.__currentLoad; 
+			delete JOBAD.repo.__currentRepo;  
 			if(suc){
 				callback(true)
 			} else {
 				callback(false, "Failed to load one or more Modules: Timeout")
 			}
+		}, undefined, function(u){
+			JOBAD.repo.__currentFile = u; 
 		});
 	});
 }

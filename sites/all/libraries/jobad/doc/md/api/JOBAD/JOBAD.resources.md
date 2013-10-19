@@ -16,7 +16,8 @@
 * **Object** `JOBAD.resources.text` - Contains text resources
 * **String** `JOBAD.resources.text.gpl_v3_text` - The GPL v3 License Text
 * **String** `JOBAD.resources.text.jquery_license` - jQuery License Text
-* **String** `JOBAD.resources.text.jqueryui_license` - jQuery UI License Text
+* **String** `JOBAD.resources.text.bootstrap_license` - Bootstrap License Text
+* **String** `JOBAD.resources.text.jquery_color_license` - jQuery Color License Text
 * **String** `JOBAD.resources.text.jobad_license` - JOBAD License Text
 * **String** `JOBAD.resources.text.underscore_license` - Underscore License Text
 * **Object** `JOBAD.resources.icons` - Contains urls for icons. Mostly used for notifications
