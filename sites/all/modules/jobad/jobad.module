@@ -99,20 +99,17 @@ function jobad_init_libs() {
  */
 function jobad_init_modules() {
   $modules = variable_get('JOBADModulesArray');
-
   foreach($modules as $id => $options) {
     jobad_register_module($options[0]);
   }
 }
-
-
 
 /**
  * helper function for registering a module (i.e. loading the relevant js file)
  * @param $file location of the js file implementing the module as string URI
  */
 function jobad_register_module($file) {
-  drupal_add_js($file, 'file', array('cache' => false));
+  drupal_add_js($file, array('type' => 'file', 'weight' => 22));
 }
 
 /**
@@ -153,6 +150,6 @@ function jobad_init_instance($nr, $where) {
     });
   ';
 
-  drupal_add_js($str, 'inline');
+  drupal_add_js($str, array('type' => 'inline', "weight" => 25));
   return $name;
 }
