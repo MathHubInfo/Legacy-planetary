@@ -83,7 +83,6 @@ var mmt = {
 	
 	/* set focus, focusIsMath, currentURI, currentElement, currentComponent, currentPosition according to elem */
 	setCurrentPosition : function(elem){
-        console.log(elem);  
 	    var math = $(elem).closest('math')
 		this.focusIsMath = (math.length !== 0);
 		if (this.focusIsMath) {
@@ -102,7 +101,6 @@ var mmt = {
 		} else {
 		   mmt.currentURI = null;
 		}
-		console.log('\n');
 	},
 	
 	notstyle : uris.mathmlstyle,
@@ -174,7 +172,6 @@ var mmt = {
 	
 	/** opens current MMT URI in a new window */
 	openCurrent : function () {
-        console.log(this);
 		var url = this.adaptMMTURI(this.currentURI, '', true);
 		window.open(url, '_blank', '', false);
 	},
@@ -198,7 +195,6 @@ var mmt = {
 	*/
 	setLatinDialog : function (content, title){
 		var dia = $("<div><span></span></div>");//$("#latin-dialog");
-		console.log(dia);
 		dia.dialog({'title': title});
 		dia[0].replaceChild(content, dia[0].firstChild);
 		//dia.dialog('open');

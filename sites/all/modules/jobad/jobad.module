@@ -53,9 +53,9 @@ function jobad_initialize($where = NULL) {
   if (! variable_get('JOBADLoaded')) {
     jobad_init_libs();
     variable_set('JOBADLoaded', true);
+    $config_str = 'JOBAD.config.BootstrapScope = "bootstrap"';
+    drupal_add_js($config_str, 'inline');
   }
-  $config_str = 'JOBAD.config.BootstrapScope = "bootstrap"';
-  drupal_add_js($config_str, 'inline');
 
   jobad_init_modules();
   $nr = variable_get('JOBADInstances') + 1;

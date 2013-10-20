@@ -330,12 +330,12 @@ function mmt_initialize() {
      * JavaScript
      */
     drupal_add_js('var mmtUrl = "' . $mmtUrl . '";', 'inline');
-   // jobad_add_module($mmtPath . '/jobad/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
+    jobad_add_module($mmtPath . '/jobad/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
     jobad_add_module($mmtPath . '/jobad/hovering.js', "kwarc.mmt.hovering");
     jobad_add_module($mmtPath . '/jobad/interactive-viewing.js', "kwarc.mmt.intvw");
 
     //if search enabled
-    jobad_add_module($mmtPath . '/jobad/search.js', "kwarc.mmt.search");
+   // jobad_add_module($mmtPath . '/jobad/search.js', "kwarc.mmt.search");
 
     //mmt js libs
     drupal_add_js($mmtPath . '/utils/mmt-html.js', 'file', array('cache' => false));
