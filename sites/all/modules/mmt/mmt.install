@@ -33,18 +33,7 @@ function mmt_create_fields() {
 
 function mmt_install() {
   /** declaring node types */
-  //MMT Module
-  $mmt_module = (object) array(
-    'type' => 'mmt_module',
-    'name' => 'MMT Module',
-    'base' => 'node_content',
-    'description' => 'A node containing an flexiformal MMT Module',
-    'body_label' => 'Module Body',
-    'has_title' => true,
-  ); 
-
-  node_type_save($mmt_module);
-
+ 
   //MMT Document
   $mmt_doc = (object) array(
     'type' => 'mmtdoc',
@@ -65,12 +54,10 @@ function mmt_install() {
   
   //settings mmt_config
   $mmturl = variable_get("mmt_instance_url", 'http://localhost:8080');
-  $repo_type = variable_get("mmt_repository_type", '0');
-  $repo_options = variable_get("mmt_repository_options", '');
   $formats_S = variable_get("mmt_archive_formats", '');
   $node_types_S = variable_get("mmt_format_node_types", '');
   $extensions_S = variable_get("mmt_format_extensions", '');
-  mmt_config_set($mmturl, $repo_type, $repo_options, $formats_S, $node_types_S, $extensions_S);
+  mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S);
 
 
   $mlids = array();
@@ -113,10 +100,10 @@ function delete_node_type($node_type_name, $remove_type = true) {
 
 function mmt_uninstall() {
   //deleting node types
-  delete_node_type('mmt_module');
   delete_node_type('mmtdoc');	
+  delete_node_type('article', false);
   delete_node_type('glossary', false); 
-
+  
   $mlids = variable_get('mmt_mlids');
   foreach ($mlids as $mlid) {
 	menu_link_delete($mlid);
