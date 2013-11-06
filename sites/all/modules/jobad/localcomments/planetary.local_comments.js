@@ -66,16 +66,6 @@ var local_comments = {
 
     var result = {}; 
 
-    result["View Comments"] = JOBAD.util.map(this.getCommentsFor(id), function(comment){
-      return [comment.summary, function(){
-        location.href = comment.dest_url; 
-      }, comment_types[comment.type]]; 
-    }); 
-
-    if(result["View Comments"].length == 0){
-      result["View Comments"].push(["No comments available", function(){return; }]);
-    }
-
    if(Drupal.settings.localcomments.shows_add_menu_entry){
       var add_comment = function(type){
         var url = Drupal.settings.localcomments.nid; 
@@ -92,7 +82,6 @@ var local_comments = {
           ' </fieldset>' +
           '</form>' +
           '</div>');
-
         lc_dialog.dialog({
           autoOpen: false,
           height: 300,
@@ -129,7 +118,6 @@ var local_comments = {
         
         lc_dialog.dialog("open");
 
-
         /*
         $dialog
         .attr("title", "New comment for '"+id+"'")
@@ -157,8 +145,18 @@ var local_comments = {
       result["Add Comment"] = JOBAD.util.map(comment_types, function(icon, type){
         return [type, function(){add_comment(type); }, icon]
       }); 
+
+      var inner = {};
+      var keys = Object.keys(comment_types);
+      for (var i=0;i<keys.length;i++) {
+        inner[keys[i]] = (function() { add_comment(inner[keys[i]]); });
+      }
+
+      result = {};
+      result["Add Comment"] = inner;
     }
 
+    console.log(result);
     return result; 
   }
 };

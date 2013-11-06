@@ -20,7 +20,7 @@ function localcomments_node_view($node, $view_mode, $langcode){
     ), 'setting');
     $lc_path = drupal_get_path("module", "localcomments");
     jobad_add_module($lc_path . "/planetary.local_comments.js", "planetary.local_comments");
-    jobad_initialize("#node-" . ($node->nid));
+    //jobad_initialize("#node-" . ($node->nid));
     drupal_add_css(".ui-menu { width: 150px; }", "inline");
   }
 }
