@@ -1,0 +1,86 @@
+<?php
+
+function latexml_compile($location) {
+  $segs = explode('/', $location);
+  $name = $segs[count($segs) - 1];
+  $name_parts = explode('.', $name);
+  $ext = $name_parts[count($name_parts) - 1];    
+
+  $base_name_parts = array_slice($name_parts, 0, -1);
+
+
+  $base_name = join('.', $base_name_parts);
+  $segs[count($segs) - 1] = $base_name;
+  $base_relpath = join('/', $segs);
+  
+  $latexml_scripts_path = drupal_get_path('module', 'latexml') . '/scripts/'; 
+  $run_ltx = $latexml_scripts_path . 'run-latexml';
+  $run_sms = $latexml_scripts_path . 'run-sms';
+  $preamble = $latexml_scripts_path . 'pre.tex';
+
+  $prepo_provider = variable_get('planetary_repo_provider');
+  $repo_path = '/tmp/'; //default
+  if ($prepo_provider == 'local') {
+    $repo_path = variable_get('planetary_repo_local_path');
+  } elseif ($prepo_provider == 'git') {
+    $repo_path = variable_get('planetary_repo_git_path');
+  } else {
+    drupal_set_message('Unknown repository provider: "' . $prepo_provider . '" (expected local or git). Cannot find base path, defaulting to /tmp/','warning');
+  }
+  $arg_location = $repo_path . $base_relpath;
+
+  print_r($run_ltx . ' ' . $arg_location . ' ' . $preamble);
+
+  shell_exec($run_ltx . ' ' . $arg_location . ' ' . $preamble);
+  shell_exec($run_sms . ' ' . $arg_location);
+  $log_location = $base_relpath . '.ltxlog';
+  $content = planetary_repo_load_file($location);
+  $log = planetary_repo_load_file($log_location);
+  $result = array("content" => $content, "log" => $log);
+
+  return $result;
+}
+
+function latexml_filter_info() {
+  $filters = array();
+  $filters['local-compilation'] = array(
+    'title' => t('Local LateXML Compilation filter'),
+    'description' => t('The TeX(t) will be compiled by LateXML to produce XML'),
+    'process callback' => 'latexml_filter_local_process',
+    'default settings' => array(
+      'latexml_profile' => 'math',
+      'latexml_preamble' => '',
+    ),
+    'settings callback' => 'latexml_filter_local_settings',
+  );
+  return $filters;
+}
+
+function latexml_filter_local_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  global $filter_context;
+  global $filter_debug;
+
+  $dpath = $filter_context['mmt']['dpath'];
+  $fpath = mmt_get_location($dpath);
+  $response = latexml_compile($fpath);
+
+  return $response["content"];
+}
+
+
+function latexml_filter_local_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings['latexml_profile'] = array(
+    '#type' => 'textfield',
+    '#title' => t('LateXML Profile'),
+    '#default_value' => isset($filter->settings['latexml_profile']) ? $filter->settings['latexml_profile'] : $defaults['latexml_profile'],
+    '#description' => t('The name of the LateXML profile to be used'),
+  );
+
+  $settings['latexml_preamble'] = array(
+    '#type' => 'textarea',
+    '#title' => t('LateXML Preamble'),
+    '#default_value' => isset($filter->settings['latexml_preamble']) ? $filter->settings['latexml_preamble'] : $defaults['latexml_preamble'],
+    '#description' => t('The LateXML preamble to be used'),
+  );
+  return $settings;
+}

@@ -1,0 +1,1 @@
+export STEXSTYDIR=/var/data/stc/ext/stex/sty; latexmlc --expire=120 --profile stex-module --preload=$2 $1.tex --destination=$1.omdoc --log=$1.ltxlog
