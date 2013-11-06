@@ -35,7 +35,9 @@ function mws_menu() {
   return $items;
 }
 
-
+/**
+ * Form displayed when configuring MWS Module, linked from mws_menu
+ */
 function mws_config_form($form, &$form_state) {
   $form['mws_instance_url'] = array(
     '#type' => 'textfield',
@@ -50,6 +52,9 @@ function mws_config_form($form, &$form_state) {
   return system_settings_form($form); 
 }
 
+/**
+ * Validation of MWS configuration form, linked from mws_menu
+ */
 function mws_config_validate($form, &$form_state) {
   $mwsurl = $form_state['values']['mws_instance_url'];
   if (trim($mwsurl) == '') {
@@ -57,13 +62,17 @@ function mws_config_validate($form, &$form_state) {
   }
 }
 
+/**
+ * Search interface, taken from file, linked from hook_menu
+ */
 function mws_search() {
-  $htmlText = file_get_contents(drupal_get_path('module', 'mws') . '/search.xhtml');
-  
+  $htmlText = file_get_contents(drupal_get_path('module', 'mws') . '/search.xhtml');  
   return $htmlText;
 }
 
-
+/**
+ * Query Backend, receives query and format and distributes it to search backends
+ */
 function mws_query() {
   $query = $_POST['body'];
   $format = $_POST['format'];
@@ -84,6 +93,9 @@ function mws_query() {
   }
 }
 
+/**
+ * Get Response from the MWS search backend
+ */
 function mws_get_response($query) {
   $mwsUrl = variable_get('mws_instance_url', 'http://localhost:8264');
   $url = $mwsUrl;
@@ -114,13 +126,15 @@ function mws_get_response($query) {
   return $output; 
 }
 
+/**
+ * Postprocess the query after it was processed by LateXML
+ */
 function mws_postprocess_latexml($resp_S) { 
   $resp_xml = simplexml_load_string($resp_S);
   $cml = $resp_xml->semantics->{'annotation-xml'}->children()[0];
   // <csymbol name=qvar ..  -->  <mws:qvar .. 
   $doc = new DOMDocument();
   $doc->loadXML($cml->asXML(), LIBXML_NOXMLDECL);
-  
 
   $csymbols = $doc->getElementsByTagName('csymbol');
   
@@ -140,6 +154,9 @@ function mws_postprocess_latexml($resp_S) {
   return $output;
 }
 
+/**
+ * Process MWS Response before rendering
+ */
 function mws_process_response($answ_string) {
   $answ_xml = simplexml_load_string($answ_string);  
   $answ_xml->registerXPathNamespace("mws", "http://www.mathweb.org/mws/ns");
@@ -158,7 +175,9 @@ function mws_process_response($answ_string) {
   return $output;
 }
 
-
+/**
+ * Handles the 'latex' query format. Translates to XML via latexml online converter
+ */
 function mws_get_compiled_latex($query) {
   $host = 'http://latexml.mathweb.org/convert';
   $text = trim($query);
@@ -171,7 +190,9 @@ function mws_get_compiled_latex($query) {
   return $result;
 }
 
-
+/**
+ * Handles the 'mmt' query format. Translates to XML via latexml online converter
+ */
 function mws_get_compiled_mmt($query) {
   $mmtUrl = variable_get('mmtUrl');
   $url = $mmtUrl . '/:planetary/mwsquery';
