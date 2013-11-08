@@ -29,8 +29,6 @@ function latexml_compile($location) {
   }
   $arg_location = $repo_path . $base_relpath;
 
-  print_r($run_ltx . ' ' . $arg_location . ' ' . $preamble);
-
   shell_exec($run_ltx . ' ' . $arg_location . ' ' . $preamble);
   shell_exec($run_sms . ' ' . $arg_location);
   $log_location = $base_relpath . '.ltxlog';
