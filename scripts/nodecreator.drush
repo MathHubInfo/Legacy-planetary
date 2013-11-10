@@ -1,15 +1,17 @@
 #!/usr/local/bin/drush
 
-/* 1. Takes ONE parameter, which is the "basename" of the set of files
-   to base the node on.  The script will look for three files:
-   basename.body, basename.pre, and basename.meta
+/* 1. Takes TWO parameters:
 
-   The directory to look in is hardcoded in this file, for now.
+      - The directory to look in
+
+      - the "basename" of the set of files to base the node on.
+        The script will look for three files:
+        basename.body, basename.pre, and basename.meta
    
    [See http://drush.ws/docs/shellscripts.html for more details on the
    anatomy of drush scripts.]
 
- Sample metadata file:
+ Sample metadata file (basename.meta):
 
  nodetype:article|exercise (assume article is the default, if nothing specified)
  title:Test LaTeX Article From File
@@ -19,19 +21,19 @@
 
 */
 
+$filepath = drush_shift();
 $basename = drush_shift();
-
-$base_file_path = "/home/shared-folder/HoTT-book/diced/";
-//$base_file_path = "/home/planetary/beta/scripts/";
-$body = $base_file_path . $basename . ".body";
+//$filepath = "/home/shared-folder/HoTT-book/diced/";
+//$filepath = "/home/planetary/beta/scripts/";
+$body = $filepath . '/' . $basename . ".body";
 $bodyHandle = fopen($body, 'r') or die("Error: can't open file " . $body);
 $body_contents = fread($bodyHandle, filesize($body));
 
-$preamble = $base_file_path . $basename . ".pre";
+$preamble = $filepath . '/' . $basename . ".pre";
 $preambleHandle = fopen($preamble, 'r') or die("Error: can't open file " . $preamble);
 $preamble_contents = fread($preambleHandle, filesize($preamble));
 
-$metadata = $base_file_path . $basename . ".meta";
+$metadata = $filepath . '/' . $basename . ".meta";
 $metadataHandle = fopen($metadata, 'r') or die("Error: can't open file " . $metadata);
 
 global $user;
@@ -53,6 +55,8 @@ print_r("msc: $msc.".PHP_EOL);
 $section = rtrim(array_pop(explode(":",fgets($metadataHandle))),"\n");
 print_r("section: $section.".PHP_EOL);
 
+$articleId=NULL;
+$problemId=NULL;
 
 if ($nodetype=='article') {
   $e = entity_create( 'node', array( 'type' => $nodetype ) );
@@ -85,7 +89,7 @@ if ($nodetype=='article') {
 
   $article->save();
   $articleId = $article->getIdentifier();
-  print_r("new NID: $articleId.".PHP_EOL);
+  //print_r("new NID: $articleId.".PHP_EOL);
 } else if ($nodetype=='exercise') {
 
   $nodetype='problem';
@@ -119,7 +123,7 @@ if ($nodetype=='article') {
 
   $problem->save();
   $problemId = $problem->getIdentifier();
-  print_r("new NID: $problemId.".PHP_EOL);
+  //print_r("new NID: $problemId.".PHP_EOL);
 }
 
 
@@ -128,7 +132,13 @@ $cache = _drutexml_cache_read($key);
 
 print_r("Cache Length: ".strlen($cache).PHP_EOL);
 
-return $articleID;
+if($articleId){
+  $newnid = $articleId;
+} else {
+  $newnid = $problemId;
+}
+
+print_r("New NID: " . $newnid . PHP_EOL);
 
 /*
   Output: "I created Node with this NID" > nodecreator.log
