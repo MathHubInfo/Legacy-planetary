@@ -367,19 +367,24 @@ function collection_node_insert($node){
 
 function collection_confirm_attachment($collection_id, $content_id) {
 
-  $count = db_query("SELECT COUNT(*) as count FROM collection_has_content WHERE cid=$collection_id")->fetchObject();
-
-  $how_many = $count->count + 1;
-
-  db_merge('collection_has_content')
-      ->key(array('cid' => $collection_id, 'nid' => $content_id))
-      ->fields(array('cid' => $collection_id, 'nid' => $content_id, 'rank' => $how_many))
-      ->execute();
+  collection_confirm_attachment_body($collection_id,$content_id);
 
   $content = node_load($content_id);
   drupal_set_message('The ' . $content->type . ' has been added to this collection');
   drupal_goto('node/' . $collection_id);
 }
+
+function collection_confirm_attachment_body($collection_id,$content_id) {
+  $count = db_query("SELECT COUNT(*) as count FROM collection_has_content WHERE cid=$collection_id")->fetchObject();
+
+  $how_many = $count->count + 1;
+
+  db_merge('collection_has_content')
+    ->key(array('cid' => $collection_id, 'nid' => $content_id))
+    ->fields(array('cid' => $collection_id, 'nid' => $content_id, 'rank' => $how_many))
+    ->execute();
+}
+
 
 /* Similar to collection_confirm_attachment above, 
  * except it does the reverse operation!
