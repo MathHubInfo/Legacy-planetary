@@ -29,14 +29,19 @@ function latexml_compile($location) {
   }
   $arg_location = $repo_path . $base_relpath;
 
-  shell_exec($run_ltx . ' ' . $arg_location . ' ' . $preamble);
+  $output = shell_exec($run_ltx . ' ' . $arg_location . ' ' . $preamble . ' 2>&1');
   shell_exec($run_sms . ' ' . $arg_location);
   $log_location = $base_relpath . '.ltxlog';
   $content = planetary_repo_load_file($location);
   $log = planetary_repo_load_file($log_location);
-  $result = array("content" => $content, "log" => $log);
+  if (strpos($output, "No obvious problems") !== false) { //TODO, rather implementation-specific solution, talk to Deyan about latexml return status
+    $result = array("content" => $content, "log" => $log, "success" => 'true');
+    return $result;
+  } else {
+    $result = array("content" => $content, "log" => $log, "success" => 'false');
+    return $result;
+  }
 
-  return $result;
 }
 
 function latexml_filter_info() {
@@ -57,14 +62,33 @@ function latexml_filter_info() {
 function latexml_filter_local_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   global $filter_context;
   global $filter_debug;
+  
+  if (!isset($filter_context['source'])) { //this is the first filter
+    $filter_context['source'] = $text;
+  }
+
+  if (isset($filter_context['failed']) && $filter_context['failed'] == "true") { //failed already
+    return $text;
+  }
 
   $dpath = $filter_context['mmt']['dpath'];
   $fpath = mmt_get_location($dpath);
   $response = latexml_compile($fpath);
 
-  return $response["content"];
+
+  if ($response['success'] == 'true') {
+    return $response["content"];
+  } else {
+    $filter_context['failed'] = true;
+    drupal_set_message("LateXML Compilation failed, log follows :", "error");
+    $response = "<p> <bf> Source: </bf> </p>" . _latexml_produce_preformatted($filter_context['source'])  . "<p> <bf> Log: </bf> </p>" . _latexml_produce_preformatted($result['log']);
+    return  $response;
+  }
 }
 
+function _latexml_produce_preformatted($text) {
+  return "<pre>" . check_plain($text) . "</pre>";
+}
 
 function latexml_filter_local_settings($form, $form_state, $filter, $format, $defaults) {
   $settings['latexml_profile'] = array(
