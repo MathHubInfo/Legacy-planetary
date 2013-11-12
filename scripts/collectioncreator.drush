@@ -1,0 +1,62 @@
+#!/usr/local/bin/drush
+
+/* 1. Would be interesting to take a path and upload all of the items
+   in that path to a collection.  
+*/
+
+$filepath = drush_shift();
+
+global $user;
+
+$manifest = $filepath . "/MANIFEST";
+$manifestHandle = fopen($manifest, 'r') or die("Error: can't open file " . $manifest);
+
+$metadata = $filepath . "/METADATA";
+$metadataHandle = fopen($metadata, 'r') or die("Error: can't open file " . $metadata);
+
+// Read the contents of the (simple) metadata file
+
+$title = rtrim(array_pop(explode(":",fgets($metadataHandle))), "\n");
+print_r("title: $title.".PHP_EOL);
+$description = rtrim(array_pop(explode(":",fgets($metadataHandle))),"\n");
+print_r("description: $description.".PHP_EOL);
+
+// create the collection
+
+$e = entity_create( 'node', array( 'type' => "collection" ) );
+node_object_prepare( $e );
+
+$collection = entity_metadata_wrapper( 'node', $e );
+$lang = $e->language;
+
+$collection->title = $title;
+
+$e->body['en'][0]['value'] = $description ;
+$e->body['und'][0]['format'] = 'tex_editor' ;
+
+$e->revision = 1; // Create new revision
+$e->log = "Added using script"; // Log message
+
+// Make sure the collection belongs to the PMBooks author
+$user->uid = 1000683;
+$e->uid = 1000683;
+$e->revision_uid = 1000683;
+
+$collection->save();
+$collectionId = $collection->getIdentifier();
+
+print_r("created a new collection with NID: $collectionId.".PHP_EOL);
+
+// Now add all the files in the manifest as new articles
+
+while (($line = fgets($manifestHandle)) !== FALSE ) {
+
+  $filename = rtrim($line, "\n");
+  print_r("Adding ".$filename." to the collection.".PHP_EOL);
+  $process_retval = exec("/home/planetary/beta/scripts/nodecreator.drush ". $filepath ." ". $filename);
+  $new_nid = rtrim(array_pop(explode(": ",$process_retval)), "\n");
+
+  print_r("Created new content with NID: " . $new_nid . ".".PHP_EOL);
+  // Now, somehow, we have to add the new nid to the $collectionId 
+  collection_confirm_attachment_body($collectionId, $new_nid);
+}

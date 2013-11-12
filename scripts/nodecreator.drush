@@ -1,0 +1,171 @@
+#!/usr/local/bin/drush
+
+/* 1. Takes TWO parameters:
+
+      - The directory to look in
+
+      - the "basename" of the set of files to base the node on.
+        The script will look for three files:
+        basename.body, basename.pre, and basename.meta
+   
+   [See http://drush.ws/docs/shellscripts.html for more details on the
+   anatomy of drush scripts.]
+
+ Sample metadata file (basename.meta):
+
+ nodetype:article|exercise (assume article is the default, if nothing specified)
+ title:Test LaTeX Article From File
+ type:Feature
+ msc:03B15
+ section:Collaboration
+
+*/
+
+$filepath = drush_shift();
+$basename = drush_shift();
+//$filepath = "/home/shared-folder/HoTT-book/diced/";
+//$filepath = "/home/planetary/beta/scripts/";
+$body = $filepath . '/' . $basename . ".body";
+$bodyHandle = fopen($body, 'r') or die("Error: can't open file " . $body);
+$body_contents = fread($bodyHandle, filesize($body));
+
+$preamble = $filepath . '/' . $basename . ".pre";
+$preambleHandle = fopen($preamble, 'r') or die("Error: can't open file " . $preamble);
+$preamble_contents = fread($preambleHandle, filesize($preamble));
+
+$metadata = $filepath . '/' . $basename . ".meta";
+$metadataHandle = fopen($metadata, 'r') or die("Error: can't open file " . $metadata);
+
+global $user;
+// Parse the metadata file
+
+// following a great tip at
+// http://stackoverflow.com/questions/5996554/parse-comma-delimited-file-in-php-then-add-to-db
+//
+// Note there is no "typechecking" so this is a pretty weak parse.  It just reads
+// the lines in a prescribed order.
+$nodetype = rtrim(array_pop(explode(":",fgets($metadataHandle))), "\n");
+print_r("nodetype: $nodetype.".PHP_EOL);
+$title = rtrim(array_pop(explode(":",fgets($metadataHandle))), "\n");
+print_r("title: $title.".PHP_EOL);
+$mathtype = rtrim(array_pop(explode(":",fgets($metadataHandle))),"\n");
+print_r("mathtype: $mathtype.".PHP_EOL);
+$msc = rtrim(array_pop(explode(":",fgets($metadataHandle))),"\n");
+print_r("msc: $msc.".PHP_EOL);
+$section = rtrim(array_pop(explode(":",fgets($metadataHandle))),"\n");
+print_r("section: $section.".PHP_EOL);
+
+$articleId=NULL;
+$problemId=NULL;
+
+if ($nodetype=='article') {
+  $e = entity_create( 'node', array( 'type' => $nodetype ) );
+  node_object_prepare( $e );
+
+  $article = entity_metadata_wrapper( 'node', $e );
+  $lang = $e->language;
+
+  // for now
+  $article->title = $title;
+  // need to set the appropriate field - note this will be slightly different for exercises
+  // TODO fix that
+  $e->field_latex['und'][0]['document'] = $body_contents ;
+  $e->field_latex['und'][0]['preamble'] = $preamble_contents ;
+  $e->field_latex['und'][0]['format'] = 'tex_editor' ;
+
+  // Set the other relevant metadata fields
+  $e->field_mathtype['und'][0]['value'] = $mathtype;
+  $e->field_msc['und'][0]['value'] = $msc;
+  $e->field_section['und'][0]['value'] = $section;
+
+  $e->revision = 1; // Create new revision
+  $e->log = "Added using script"; // Log message
+
+
+  // Make the article belong to the PMBooks author
+  $user->uid = 1000683;
+  $e->uid = 1000683;
+  $e->revision_uid = 1000683;
+
+  $article->save();
+  $articleId = $article->getIdentifier();
+  //print_r("new NID: $articleId.".PHP_EOL);
+} else if ($nodetype=='exercise') {
+
+  $nodetype='problem';
+
+  $e = entity_create( 'node', array( 'type' => $nodetype ) );
+  node_object_prepare( $e );
+
+  $problem = entity_metadata_wrapper( 'node', $e );
+  $lang = $e->language;
+
+  // for now
+  $problem->title = $title;
+  // need to set the appropriate field - note this will be slightly different for exercises
+  // TODO fix that
+  $e->field_problem_latex['und'][0]['document'] = $body_contents ;
+  $e->field_problem_latex['und'][0]['preamble'] = $preamble_contents ;
+  $e->field_problem_latex['und'][0]['format'] = 'tex_editor' ;
+
+  // Set the other relevant metadata fields
+  //$e->field_mathtype['und'][0]['value'] = $mathtype;
+  //$e->field_msc['und'][0]['value'] = $msc;
+  //$e->field_section['und'][0]['value'] = $section;
+
+  $e->revision = 1; // Create new revision
+  $e->log = "Added using script"; // Log message
+
+  // Make the problem belong to the PMBooks author
+  $user->uid = 1000683;
+  $e->uid = 1000683;
+  $e->revision_uid = 1000683;
+
+  $problem->save();
+  $problemId = $problem->getIdentifier();
+  //print_r("new NID: $problemId.".PHP_EOL);
+}
+
+
+$key = md5($body_contents);
+$cache = _drutexml_cache_read($key);
+
+print_r("Cache Length: ".strlen($cache).PHP_EOL);
+
+if($articleId){
+  $newnid = $articleId;
+} else {
+  $newnid = $problemId;
+}
+
+print_r("New NID: " . $newnid . PHP_EOL);
+
+/*
+  Output: "I created Node with this NID" > nodecreator.log
+*/
+
+// http://metameso.org/beta/devel/php
+// dpm(node_load(87578));
+exit();
+
+/* Next up:
+   Make exercises automatically.
+   Upload stuff to collections.
+   (Make them automatically if needed.)
+   Take an existing node, and adjust the content (e.g. given the canonical name as an argument)
+   Generally, keep a (potentially large) collection of articles up to date.
+   
+ */
+
+
+/* General notes:
+
+    call it via something like this:
+    ls -a1 | xargs nodecreator.drush `basename -`
+    or something like this:
+    for i in ./ *
+    do 
+     nodecreator.drush $i.pre $i.body $i.meta  
+    done
+   (alternatively, read from directory)
+*/
