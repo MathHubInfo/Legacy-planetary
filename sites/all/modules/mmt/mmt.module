@@ -84,8 +84,6 @@ function mmt_get_path_info($location) {
 
   $dpath = $docbases[$archive] . '/' . $omdocRelPath;
 
-
-
   $path_info = array(
     'location' => $location,
     'archive' => $archive,
@@ -492,7 +490,9 @@ function mmt_filter_presentation_process($text, $filter, $format, $langcode, $ca
   } else {
     $filter_context['failed'] = true;
     drupal_set_message("MMT Compilation failed, log follows :", "error");
-    return  _mmt_produce_preformatted($result['log']);  }
+    $response = "<p> <bf> Source: </bf> </p>" . _mmt_produce_preformatted($filter_context['source'])  . "<p> <bf> Log: </bf> </p>" . _mmt_produce_preformatted($result['log']);
+    return $response;
+  }
 }
 
 function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cache, $cache_id) {
@@ -517,7 +517,7 @@ function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cac
   if ($response == "") {
     drupal_set_message('Cannot connect to MMT instance, is MMT running?', 'error');
     $filter_context['failed'] = true;    
-    return _mmt_produce_preformatted($text);
+    return _mmt_produce_preformatted($filter_context['source']);
   }
 
   $result= json_decode($response, true);
@@ -526,9 +526,42 @@ function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cac
   } else {
     $filter_context['failed'] = true;
     drupal_set_message("MMT Compilation failed, log follows :", "error");
-    return  _mmt_produce_preformatted($result['log']);
+    
+    $errors = $result['errors'];
+    $sanitizedSource = _mmt_produce_preformatted($filter_context['source']);
+
+    $errMarkedSource = _mmt_mark_source_errors($sanitizedSource, $errors);
+
+    $response = "<p> <bf> Source: </bf> </p>" . $errMarkedSource  . "<p> <bf> Log: </bf> </p>" . _mmt_produce_preformatted($result['log']);
+    return  $response;
   }
 }
+
+function _mmt_mark_source_errors($source, $errors) {
+  for ($i = 0; $i < count($errors); $i++) {
+    $error = $errors[$i];
+    $message = $error['message'];
+    if (isset($error['message'])) {
+      $region = $error['region'];
+      $tfArr = explode("-",$region);
+      $fArr = explode(".", $tfArr[0]);
+      $fromLine = $fArr[0];
+      $fromColumn = $fArr[1];
+      $tArr = explode(".", $tfArr[1]);
+      $toLine = $tArr[0];
+      $toColumn = $tArr[1];
+      $lines = explode("\n", $source);
+      $lines[$fromLine - 1] = '<span style="background:#FF8888" title="Error: ' . $message .'">' . $lines[$fromLine - 1];
+      $lines[$toLine - 1] = $lines[$toLine - 1] . '</span>';
+      $source = join("\n", $lines);
+    }
+
+    return $source;
+  }
+
+
+}
+
 
 function _mmt_produce_preformatted($text) {
   return "<pre>" . check_plain($text) . "</pre>";
