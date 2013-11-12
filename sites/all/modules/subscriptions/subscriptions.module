@@ -1,0 +1,1024 @@
+<?php
+
+/**
+ * @mainpage Subscriptions module
+ *
+ * This module enables users to subscribe to be notified of changes to nodes or
+ * taxonomies, such as new comments in specific forums, or additions to some
+ * category of blog. Once enabled, all nodes will have an additional link that
+ * allows the user to change their subscriptions. Users get a tab on their user
+ * page to manage their own subscriptions. Users can also set an auto-subscribe
+ * function which notifies the user if anyone comments on posts they have made.
+ * Admins can turn this on by default.
+ */
+
+/**
+ * @file
+ * Subscriptions module.
+ */
+
+/**
+ * The path of Subscriptions's main configuration page.
+ */
+define('SUBSCRIPTIONS_CONFIG_PATH', 'admin/config/system/subscriptions');
+define('SUBSCRIPTIONS_CONFIG_PATH_LEVEL', count(explode('/', SUBSCRIPTIONS_CONFIG_PATH)));
+
+/**
+ * Implements hook_init().
+ *
+ * @ingroup hooks
+ * @ingroup init
+ */
+function subscriptions_init() {
+  define('SUBSCRIPTIONS_UNAVAILABLE', '<span class="error" title="' . t('(unavailable to regular users)') . '">&curren;</span>');
+  if (subscriptions_arg(0) == 's' && subscriptions_arg(1) == 'del') {
+    $router_item = menu_get_item('subscriptions/rem/' . substr(current_path(), 6));
+    if (isset($router_item) && $router_item['access']) {
+      menu_set_item(current_path(), $router_item);
+    }
+  }
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * @return array
+ *
+ * @ingroup hooks
+ * @ingroup menu
+ */
+function subscriptions_menu() {
+  $items[SUBSCRIPTIONS_CONFIG_PATH] = array(
+    'title' => 'Subscriptions',
+    'description' => 'Site and user default settings for Subscriptions.',
+    'page callback' => 'drupal_get_form',
+    'file' => 'subscriptions.admin.inc',
+    'page arguments' => array('subscriptions_settings_form'),
+    'access arguments' => array('administer site configuration'),
+  );
+  $items[SUBSCRIPTIONS_CONFIG_PATH . '/settings'] = array(
+    'title' => 'Site settings',
+    'weight' => -10,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items[SUBSCRIPTIONS_CONFIG_PATH . '/userdefaults'] = array(
+    'title' => 'User defaults',
+    'weight' => -5,
+    'file' => 'subscriptions.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('subscriptions_page_user_overview', SUBSCRIPTIONS_CONFIG_PATH_LEVEL + 2),
+    'type' => MENU_LOCAL_TASK,
+    'access arguments' => array('administer site configuration'),
+  );
+  $items[SUBSCRIPTIONS_CONFIG_PATH . '/userdefaults/settings'] = array(
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'title' => 'Overview',
+    'weight' => -100,
+  );
+  $items[SUBSCRIPTIONS_CONFIG_PATH . '/userdefaults/bulk'] = array(
+    'title' => 'Bulk operation',
+    'weight' => -80,
+    'page callback' => 'drupal_get_form',
+    'file' => 'subscriptions.admin.inc',
+    'page arguments' => array('subscriptions_page_user_bulk'),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => '_subscriptions_bulk_access',
+  );
+  $items[SUBSCRIPTIONS_CONFIG_PATH . '/intervals'] = array(
+    'title' => 'Interval',
+    'page callback' => 'drupal_get_form',
+    'file' => 'subscriptions.admin.inc',
+    'page arguments' => array('subscriptions_intervals'),
+    'type' => MENU_LOCAL_TASK,
+    'access arguments' => array('administer site configuration'),
+  );
+  $items['user/%user/subscriptions'] = array(
+    'title' => 'Subscriptions',
+    'file' => 'subscriptions.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('subscriptions_page_user_overview', 1),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => '_subscriptions_access',
+    'access arguments' => array(1),
+  );
+
+  $hide_overview_page = variable_get('subscriptions_hide_overview_page', 0);
+  $minimum_weight = 0;
+  if (!$hide_overview_page) {
+    $items['user/%user/subscriptions/overview'] = array(
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'title' => 'Overview',
+      'weight' => -100,
+    );
+  }
+  else {
+    foreach (subscriptions_types() as $stype => $data) {
+      if (isset($data['weight']) && $data['weight'] < $minimum_weight) {
+        $minimum_weight = $data['weight'];
+      }
+    }
+  }
+
+  foreach (subscriptions_types() as $stype => $data) {
+    $weight = (isset($data['weight']) ? $data['weight'] : 0);
+    $items['subscriptions/add/' . $stype] = array(
+      'title' => 'Add subscription',
+      'type' => MENU_CALLBACK,
+      'file' => 'subscriptions.admin.inc',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('subscriptions_add_form', $stype),
+      'access arguments' => array($data['access']),
+    );
+    $items['subscriptions/del/' . $stype] = array(
+      'type' => MENU_CALLBACK,
+      'file' => 'subscriptions.admin.inc',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('subscriptions_del_form', $stype),
+      'access arguments' => array($data['access']),
+    );
+
+    if (empty($data['page'])) {
+      continue;  // no page
+    }
+    $items['user/%user/subscriptions/' . $stype] = array(
+      'title' => 'N/A',  // for l.d.o, overwritten below
+      'type' => MENU_LOCAL_TASK,
+      'file' => 'subscriptions.admin.inc',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('subscriptions_page_form', 1, $stype),
+      'access callback' => '_subscriptions_access',
+      'access arguments' => array(1, $data['access']),
+      'weight' => $weight,
+    );
+    $items['user/%user/subscriptions/' . $stype]['title'] = $data['title'];
+
+    if ($hide_overview_page && $minimum_weight == $weight) {
+      // Install the first subscription type page as the default task.
+      $items['user/%user/subscriptions/' . $stype]['type'] = MENU_DEFAULT_LOCAL_TASK;
+      $default_item = $items['user/%user/subscriptions/' . $stype];
+      $items['user/%user/subscriptions'] = array_merge($items['user/%user/subscriptions'], array(
+        'file' => $default_item['file'],
+        'page callback' => $default_item['page callback'],
+        'page arguments' => $default_item['page arguments'],
+        'access callback' => $default_item['access callback'],
+        'access arguments' => $default_item['access arguments'],
+      ));
+      $hide_overview_page = FALSE;
+    }
+
+    if ($stype == 'node') {
+      continue;  // not in site settings
+    }
+    $items[SUBSCRIPTIONS_CONFIG_PATH . '/userdefaults/' . $stype] = array(
+      'title' => 'N/A',  // for l.d.o, overwritten below
+      'type' => MENU_LOCAL_TASK,
+      'file' => 'subscriptions.admin.inc',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('subscriptions_page_form', SUBSCRIPTIONS_CONFIG_PATH_LEVEL + 2, $stype),
+      'access arguments' => array('administer site configuration'),
+      'weight' => $weight,
+    );
+    $items[SUBSCRIPTIONS_CONFIG_PATH . '/userdefaults/' . $stype]['title'] = $data['title'];
+  }
+
+  // Unsubscribe links
+  $items['subscriptions/rem/%'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('subscriptions_delete_form', 2, 3, 4, 5, 6),
+    'type' => MENU_CALLBACK,
+    'access callback' => '_subscriptions_rem_access',
+    'access arguments' => array(2, 3, 4, 5, 6, 7),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_admin_paths().
+ *
+ * @return array
+ */
+function subscriptions_admin_paths() {
+  $paths = array(
+    'user/*/subscriptions' => TRUE,
+    'user/*/subscriptions/*' => TRUE,
+  );
+  return $paths;
+}
+
+/**
+ * Verifies remote access without password.
+ *
+ * @param $a2
+ * @param $a3
+ * @param $a4
+ * @param $a5
+ * @param $a6
+ * @param $md
+ *
+ * @return bool
+ */
+function _subscriptions_rem_access($a2, $a3, $a4, $a5, $a6, $md) {
+
+  return $md == md5(drupal_get_private_key() . $a2 . $a3 . $a4 . $a5 . $a6);
+}
+
+/**
+ * @param object|null $account
+ * @param string|null $access
+ *
+ * @return bool
+ */
+function _subscriptions_access($account, $access = NULL) {
+  global $user;
+  if ($account && $account->uid) {
+    if (isset($access)) {
+      $has_access = user_access($access, $account);
+    }
+    else {
+      foreach (subscriptions_types() as $stype => $data) {
+        if (user_access($data['access'], $account)) {
+          $has_access = TRUE;
+        }
+      }
+    }
+    return !empty($has_access) && ($account->uid == $user->uid || user_access('administer user subscriptions'));
+  }
+  return FALSE;
+}
+
+/*
+ * Access callback for bulk operations.
+ *
+ * @returns: bool
+ */
+function _subscriptions_bulk_access() {
+  return user_access('bulk-administer user subscriptions') && !empty($_SESSION['subscriptions']['bulk_op']);
+}
+
+/**
+ * Implements hook_permission().
+ *
+ * @return array
+ *
+ * @ingroup hooks
+ */
+function subscriptions_permission() {
+  // Enforce a reasonable ordering of the permissions.
+  $placeholders = array(
+    'subscribe to content'           => array(),
+    'subscribe to content types'     => array(),
+    'subscribe to all content types' => array(),
+  );
+  $return = array_merge(
+    array(
+      'administer user subscriptions' => array(
+        'title'           => t('Administer user subscriptions'),
+        'description'     => t('Administer the subscriptions of all other users.'),
+        'restrict access' => TRUE,
+      ),
+      'bulk-administer user subscriptions' => array(
+        'title'           => t('Administer user subscriptions using bulk user operations'),
+        'description'     => t('Add subscriptions to or remove subscriptions from multiple users at once from the user list.'),
+        'restrict access' => TRUE,
+      ),
+    ),
+    $placeholders,
+    subscriptions_types('permission'),
+    array(
+      'suspend own subscriptions' => array(
+        'title'       => t('Suspend own subscriptions'),
+        'description' => t('Temporarily suspend subscriptions &mdash; resuming is always allowed.'),
+      ),
+    )
+  );
+  foreach (array_keys($placeholders) as $key) {
+    if (empty($return[$key])) {
+      unset($return[$key]);
+    }
+  }
+  return $return;
+}
+
+/**
+ * Implements hook_user_insert().
+ *
+ * Set up the Subscriptions defaults for the new user.
+ *
+ * @param array $edit
+ * @param object $account
+ * @param null $category
+ *
+ * @ingroup hooks
+ */
+function subscriptions_user_insert(array $edit, &$account, $category) {
+  $new_uid = &drupal_static('subscriptions_user_insert', 0);
+  db_insert('subscriptions_user')
+    ->fields(array(
+      'uid' => $account->uid,
+    ))
+    ->execute();
+  // $account->roles isn't set yet, subscriptions_user_load() below will
+  // insert the role-specific initial subscriptions.
+  $new_uid = $account->uid;
+
+  $rids = array();
+  foreach (array_keys($account->roles) as $rid) {
+    $rids[] = -$rid;
+  }
+  $query = db_select('subscriptions', 's')
+    ->fields('s', array('module', 'field', 'value'));
+  $query->addExpression($new_uid, 'recipient_uid');
+  $query
+    ->fields('s', array('send_interval', 'author_uid', 'send_updates', 'send_comments'))
+    ->condition('s.recipient_uid', $rids, 'IN');
+  db_insert('subscriptions')
+    ->from($query)
+    ->execute();
+}
+
+/**
+ * Implements hook_user_delete().
+ *
+ * @param object $account
+ *
+ * @ingroup hooks
+ */
+function subscriptions_user_delete($account) {
+  db_delete('subscriptions_user')
+    ->condition('uid', $account->uid)
+    ->execute();
+  subscriptions_delete($account->uid);
+  db_delete('subscriptions_last_sent')
+    ->condition('uid', $account->uid)
+    ->execute();
+}
+
+/**
+ * Delete one or more subscriptions for a specific user.
+ *
+ * @param int $recipient_uid
+ *   The UID of the user whose subscription(s) to delete.
+ *   If this is the only argument, all subscriptions of that user are deleted.
+ * @param string|null $module
+ *   The module,...
+ * @param string|null $field
+ *   the field, and
+ * @param mixed|null $value
+ *   the value of the subscription(s) to delete.
+ * @param int|null $author_uid
+ *   The UID of the content author for by-author subscriptions.
+ *
+ * @return int|null|\DatabaseStatementInterface
+ *   The number of deleted rows or a database connection-dependent value.
+ */
+function subscriptions_delete($recipient_uid, $module = NULL, $field = NULL, $value = NULL, $author_uid = NULL) {
+  $query = db_delete('subscriptions');
+  foreach (array('module', 'field', 'value', 'author_uid', 'recipient_uid') as $column) {
+    if (!empty($$column)) {
+      $query->condition($column, $$column);
+    }
+  }
+  return $query->execute();
+}
+
+/**
+ * Delete one or more subscriptions for all users.
+ *
+ * @param string|null $module
+ *   The module,...
+ * @param string|null $field
+ *   the field, and
+ * @param mixed|null $value
+ *   the value of the subscription(s) to delete.
+ * @param int|null $author_uid
+ *   The UID of the content author, to delete by-author subscriptions.
+ *
+ * @return int|null|\DatabaseStatementInterface
+ *   The number of deleted rows or a database connection-dependent value.
+ */
+function subscriptions_delete_for_all_users($module = NULL, $field = NULL, $value = NULL, $author_uid = NULL) {
+  return subscriptions_delete(NULL, $module, $field, $value, $author_uid);
+}
+
+/**
+ * Helper function to do access checking and create a subscription.
+ *
+ * @param string $access_key
+ *   The key for checking access to the subscription item.
+ * @param string $module
+ *   Module that implements the subscription.
+ * @param string $field
+ *   Field that's being checked for the subscription.
+ * @param mixed $value
+ *   Value that must be in the field in order to trigger the subscription.
+ * @param int $author_uid
+ *   Optional ID of the author if the subscription is restricted to nodes by
+ *   on specific author.
+ * @param object|null $recipient
+ *   Optional user object of the recipient.
+ * @param int $send_interval
+ *   Optional send interval, must be >0.
+ * @param int $send_updates
+ *   Optional flag (0 or 1) to indicate whether to trigger on node updates.
+ * @param int $send_comments
+ *   Optional flag (0 or 1) to indicate whether to trigger on comment additions
+ *   or changes.
+ */
+function subscriptions_write($access_key, $module, $field, $value, $author_uid = -1, $recipient = NULL, $send_interval = 1, $send_updates = 0, $send_comments = 0) {
+  global $user;
+  // Access checking
+  $recipient_uid = isset($recipient) ? $recipient : $user->uid;
+  $access = subscriptions_types('access', $access_key);
+  if ($recipient_uid && $access && ($recipient_uid == $user->uid && user_access($access) || user_access('administer user subscriptions')) || $recipient_uid == 0 && user_access('administer site configuration')) {
+    subscriptions_write_subscription($module, $field, $value, $author_uid, $recipient_uid, $send_interval, $send_updates, $send_comments);
+  }
+}
+
+/**
+ * Queues events for notifications.
+ *
+ * @param array $event
+ *   Event array.
+ */
+function subscriptions_queue(array $event) {
+  global $user;
+
+  if (isset($event['node']->nid) && strpos('  ' . variable_get('subscriptions_blocked_nodes', '') . ' ', ' ' . $event['node']->nid . ' ')) {
+    return;
+  }
+
+  $event += array(
+    'uid' => $user->uid,
+    'load_args' => '',
+  );
+
+  foreach (module_implements('subscriptions_queue_alter') as $module) {
+    $function = $module . '_subscriptions_queue_alter';
+    $function($event);
+    if (empty($event)) {
+      return;  // $event was cleared, forget it
+    }
+  }
+
+  if (is_array($event['load_args'])) {
+    $event['load_args'] = serialize($event['load_args']);
+  }
+
+  foreach (module_implements('subscriptions') as $subs_module) {
+    $subs_module_query = module_invoke($subs_module, 'subscriptions', 'queue', $event);
+    // Allow other modules to alter the data.
+    drupal_alter('subscriptions_queue_query', $subs_module_query);
+
+    if (!isset($subs_module_query)) {
+      continue;
+    }
+    foreach ($subs_module_query as $module => $module_query) {
+      foreach ($module_query as $field => $query) {
+        $select = db_select('subscriptions', 's');
+        $select->innerJoin('subscriptions_user', 'su', 's.recipient_uid = su.uid');
+        $select->innerJoin('users', 'u', 'su.uid = u.uid');
+        $select->leftJoin('subscriptions_last_sent', 'sls', 'su.uid = sls.uid AND s.send_interval = sls.send_interval');
+        if (!empty($query['join'])) {
+          $select->innerJoin($query['join']['table'], $query['join']['alias'], $query['join']['on']);
+        }
+        $select
+          ->fields('u', array('uid', 'name', 'language'))
+          ->fields('s', array('module', 'field', 'value', 'author_uid', 'send_interval'))
+          ->fields('su', array('digest', 'suspended'));
+        $select->addExpression('COALESCE(sls.last_sent, 0)', 'last_sent');
+        $select->addExpression("'" . $event['load_function'] . "'", 'load_function');
+        $select->addExpression("'" . $event['load_args'] . "'", 'load_args');
+        $select->addExpression((int) $event['is_new'], 'is_new');
+        $select
+          ->condition('s.module', $module)
+          ->condition('s.field', $field)
+          // author-specific subscriptions trigger on comments, when the node author is subscribed to:
+          ->condition('s.author_uid', array(($module == 'node' && $event['type'] == 'comment' && isset($event['node']->uid) ? $event['node']->uid : $event['uid']) , -1), 'IN')
+          ->groupBy('u.uid');
+        if (db_driver() == 'pgsql') {
+          $select
+            ->groupBy('u.uid')->groupBy('u.name')->groupBy('u.language')
+            ->groupBy('s.module')->groupBy('s.field')->groupBy('s.value')->groupBy('s.author_uid')->groupBy('s.send_interval')
+            ->groupBy('su.digest')->groupBy('su.suspended')
+            ->groupBy('last_sent');
+        }
+
+        if (!empty($query['where'])) {
+          foreach ($query['where'] as $cond) {
+            $select->condition($cond[0], $cond[1], $cond[2]);
+          }
+        }
+
+        if (!empty($query['value'])) {
+          $select
+            ->condition('s.value', $query['value']);
+        }
+
+        if ($user->uid && !_subscriptions_get_setting('send_self', $user)) {
+          $select
+            ->condition('s.recipient_uid', $user->uid, '<>');
+        }
+        if (!empty($event['noqueue_uids'])) {
+          // Allow hook_subscriptions_queue_alter() modules to set uids that won't get any notifications queued:
+          $select
+            ->condition('s.recipient_uid', $event['noqueue_uids'], 'NOT IN');
+        }
+        if (!empty($query['groupby'])) {
+          $select
+            ->groupBy($query['groupby']);
+        }
+        $insert = db_insert('subscriptions_queue', array('return' => Database::RETURN_NULL))
+          ->from($select);
+        /*  for debugging:
+        $sqid = $insert->execute();
+        drupal_set_message($insert->__toString() . '<br />ID=' . $sqid . ' inserted.');
+        /*/
+        $insert->execute();
+        /**/
+      }
+    }
+  }
+}
+
+/**
+ * Gets subscription sid for the given parameters.
+ *
+ * @param int $uid
+ * @param string $module
+ * @param string $field
+ * @param mixed $value
+ * @param int $author_uid
+ *
+ * @return int
+ */
+function subscriptions_get_subscription($uid, $module, $field, $value, $author_uid = -1) {
+  static $subscriptions;
+
+  if (!isset($subscriptions[$uid][$module][$field][$value][$author_uid])) {
+    $subscriptions[$uid][$module][$field][$value][$author_uid] = db_query("SELECT sid FROM {subscriptions} WHERE module = :module AND field = :field AND value = :value AND author_uid = :author_uid AND recipient_uid = :recipient_uid", array(
+      ':module' => $module,
+      ':field' => $field,
+      ':value' => $value,
+      ':author_uid' => $author_uid,
+      ':recipient_uid' => $uid
+    ))->fetchField();
+  }
+
+  return $subscriptions[$uid][$module][$field][$value][$author_uid];
+}
+
+/**
+ * Create a subscription.
+ *
+ * @param string $module
+ * @param string $field
+ * @param mixed $value
+ * @param int $author_uid
+ * @param int $recipient_uid
+ * @param int $send_interval
+ * @param int $send_updates
+ * @param int $send_comments
+ */
+function subscriptions_write_subscription($module, $field, $value, $author_uid, $recipient_uid, $send_interval = 1, $send_updates = 0, $send_comments = 0) {
+  db_merge('subscriptions')
+    ->key(array(
+      'module'        => $module,
+      'field'         => $field,
+      'value'         => $value,
+      'recipient_uid' => $recipient_uid,
+      'author_uid'    => $author_uid,
+    ))
+    ->fields(array(
+      'send_interval' => $send_interval,
+      'send_updates'  => ($send_updates ? 1 : 0),
+      'send_comments' => ($send_comments ? 1 : 0),
+    ))
+    ->execute();
+}
+
+/**
+ * Provides the form definition for deleting subscriptions via
+ * s/del/... (aka subscriptions/rem/...) link.
+ *
+ * Callback of _subscriptions_menu().
+ *
+ * @param array $form
+ * @param array $form_state
+ *   FAPI form state.
+ * @param string $module
+ *   Module that controls the subscription.
+ * @param string $field
+ *   Field that controls the subscription (subscription type).
+ * @param mixed $value
+ *   Subscription parameter (depends on type).
+ * @param int $author_uid
+ *   User ID for author-specific subscriptions or -1/NULL for all authors.
+ * @param int $recipient_uid
+ *   User ID of the subscriber.
+ *
+ * @return array
+ *
+ * @ingroup forms
+ * @see _subscriptions_menu()
+ */
+function subscriptions_delete_form(array $form, array &$form_state, $module, $field, $value, $author_uid, $recipient_uid) {
+  $form['data'] = array('#type' => 'value', '#value' => array($module, $field, $value, $author_uid, $recipient_uid));
+  // We might be called from subscriptions_del_form() and don't want to submit to subscriptions_del_form_submit():
+  $form['#submit'][] = 'subscriptions_delete_form_submit';
+  return confirm_form($form, t('Are you sure you want to unsubscribe?'), '<front>', NULL, t('Unsubscribe'));
+}
+
+/**
+ * Deletes Subscription form submit handler.
+ *
+ * @param array $form
+ * @param array $form_state
+ */
+function subscriptions_delete_form_submit(array $form, array &$form_state) {
+  $data = $form_state['values']['data'];
+  subscriptions_delete($data['4'], $data['0'], $data['1'], $data['2'], $data['3']);
+  drupal_set_message(t('Your subscription was deactivated.'));
+  $form_state['redirect'] = '<front>';
+}
+
+/**
+ * Subscribes users to content they post, if not already subscribed
+ * (context: on_post, on_update, on_comment).
+ *
+ * @param string $module
+ * @param string $field
+ * @param int|string $value
+ * @param string $context
+ */
+function subscriptions_autosubscribe($module, $field, $value, $context) {
+  global $user;
+  // if user has auto subscribe enabled and he's not already subscribed
+  if ($user->uid && _subscriptions_get_setting('autosub_' . $context, $user) && !subscriptions_get_subscription($user->uid, $module, $field, $value)) {
+    subscriptions_write_subscription($module, $field, $value, -1, $user->uid, _subscriptions_get_setting('send_interval', $user), 1, 1);
+  }
+}
+
+/**
+ * Get subscriptions.
+ *
+ * @param array $params
+ *   Array of parameters for the query.
+ *
+ * @return array
+ *   Array of subscriptions indexed by uid, module, field, value, author_uid.
+ */
+function subscriptions_get(array $params) {
+  $subscriptions = array();
+  // Build query
+  $query = db_select('subscriptions', 's');
+  $query->fields('s');
+  foreach ($params as $field => $value) {
+    $query->condition($field, $value);
+  }
+  foreach ($query->execute() as $s) {
+    $subscriptions[$s->recipient_uid][$s->module][$s->field][$s->value][$s->author_uid] = 1;
+  }
+  return $subscriptions;
+}
+
+/**
+ * Hook subscription_types(). Get info about subscription types.
+ *
+ * @param string|null $field
+ * @param string|null $type
+
+ * @return array|null
+ *   Information for a given field and type
+ *   or information for a given field for all types
+ *
+ * @ingroup hooks
+ */
+function subscriptions_types($field = NULL, $type = NULL) {
+  static $types, $list;
+
+  if (!isset($types)) {
+    $types = module_invoke_all('subscriptions', 'types');
+    // Allow other modules to alter the data.
+    drupal_alter('subscriptions_types', $types);
+
+    foreach ($types as $stype => $data) {
+      if (!_subscriptions_validate_hook_result($stype, $data)) {
+        continue;
+      }
+      foreach ($data as $name => $value) {
+        $list[$name][$stype] = $value;
+      }
+    }
+  }
+  if ($type) {
+    return isset($types[$type][$field]) ? $types[$type][$field] : NULL;
+  }
+  elseif ($field) {
+    if ($field == 'permission' && isset($list['access']) && is_array($list['access'])) {
+      $result = array();
+      foreach ($list['access'] as $type => $access) {
+        if (isset($list['permission'][$type]) && is_array($list['permission'][$type])) {
+          $result[$access] = $list['permission'][$type];
+        }
+      }
+      return $result;
+    }
+    return isset($list[$field]) ? $list[$field] : array();
+  }
+  else {
+    return $types;
+  }
+}
+
+/**
+ * Checks return values of hook_subscriptions().
+ *
+ * @param mixed $stype
+ * @param array $data
+ *
+ * @return bool
+ */
+function _subscriptions_validate_hook_result($stype, array $data) {
+  if (isset($stype)) {
+    if (!is_numeric($stype) && is_array($data) && isset($data['title']) && isset($data['access']) &&
+      ($data['title'] === '' || isset($data['page']) && isset($data['fields']) && is_array($data['fields']))) {
+      return TRUE;
+    }
+  }
+
+  static $already_reported = FALSE;
+  if (!$already_reported) {
+    $modules = array();
+    $already_reported = TRUE;
+    foreach (module_implements('subscriptions') as $module) {
+      $hook = $module . '_subscriptions';
+      $types = $hook('types');
+      foreach ($types as $stype => $data) {
+        if (!_subscriptions_validate_hook_result($stype, $data)) {
+          $modules[$module] = $module;
+        }
+      }
+    }
+    drupal_set_message(t('The following modules return invalid data from %hook: !modules   Either they are buggy !Subscriptions add-ons, or they are unrelated to !Subscriptions and should not define %hook!', array('%hook' => 'hook_subscriptions()', '!modules' => '<ul><li>' . implode($modules, '</li><li>') . '</li></ul>', '!Subscriptions' => 'Subscriptions')), 'error', FALSE);
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * @return array
+ */
+function subscriptions_theme() {
+  return array(
+    'subscriptions_form_table' => array(
+      'file' => 'subscriptions.admin.inc',
+      'render element' => 'element',
+    )
+  );
+}
+
+/**
+ * Returns TRUE if the given $nid is blocked.
+ *
+ * @param int $nid
+ *
+ * @return bool
+ */
+function subscriptions_node_is_blocked($nid) {
+  return strpos('  ' . variable_get('subscriptions_blocked_nodes', '') . ' ', ' ' . $nid . ' ');
+}
+
+/**
+ * Helper function for uasort()ing arrays with elements that have a 'weight'.
+ *
+ * @param array $a
+ * @param array $b
+ *
+ * @return int
+ */
+function _subscriptions_cmp_by_weight(array $a, array $b) {
+  $a = (isset($a['weight']) ? $a['weight'] : 0);
+  $b = (isset($b['weight']) ? $b['weight'] : 0);
+  return ($a < $b ? -1 : ($a == $b ? 0 : +1));
+}
+
+/**
+ * Helper function to retrieve
+ *   send_self/autosub_on_post/autosub_on_update/autosub_on_comment/    | 1, 0,
+ *   digest/send_interval/send_updates/send_comments/                   | -1 = use default
+ *   send_interval_visible/send_updates_visible/send_comments_visible/  | 1, 0, -1 = only preference, -2 = always use site default
+ *   uses_defaults values;
+ *
+ * @param string $name
+ * @param object|int|null $account
+ *    NULL/0 (for site default), a user object, a uid (if >0) or a -rid (if <0).
+ *
+ * @return
+ */
+function _subscriptions_get_setting($name, $account) {
+  global $user;
+  $uid = -DRUPAL_AUTHENTICATED_RID;
+  if (empty($account) || is_object($account) && empty($account->uid) || is_numeric($account) && $account <= 0 ) {
+    unset($account);
+  }
+  elseif (is_numeric($account)) {
+    if ($account == $user->uid) {
+      $account = $user;
+      $uid = $user->uid;
+    }
+    else {
+      $uid = $account;
+      unset($account);
+    }
+  }
+  if (isset($account)) {
+    $uid = $account->uid;
+  }
+
+  static $defaults = array();
+  if (!isset($defaults[$uid][$name])) {
+    $result = db_select('subscriptions_user', 'su', array('fetch' => PDO::FETCH_ASSOC))
+      ->fields('su', array('uid', 'digest', 'send_interval', 'send_updates', 'send_comments', 'send_interval_visible', 'send_updates_visible', 'send_comments_visible', 'autosub_on_post', 'autosub_on_update', 'autosub_on_comment', 'send_self'))
+      ->condition('su.uid', array(-DRUPAL_AUTHENTICATED_RID, $uid), 'IN')
+      ->orderBy('su.uid')
+      ->execute();
+    foreach ($result as $s) {
+      $defaults[$s['uid']] = $s;
+    }
+    if (empty($defaults[$uid])) {
+      // Note: This should not happen -- subscriptions_user_insert() and
+      // subscriptions_user_delete() take care of inserting/removing records
+      // as users are created/deleted.
+      // If it does happen, then users were created without calling the proper
+      // hooks, or they may have been created on another multi-site (#351753).
+      // Let's add the missing records, as if the user were being created just
+      // now, with the expected hook_user() invocations:
+      if ($uid > 0) {
+        $account = user_load($uid);
+        subscriptions_user_insert(array(), $account, NULL);
+      }
+      else {
+        db_insert('subscriptions_user')
+          ->fields(array(
+            'uid' => $uid,
+          ))
+          ->execute();
+      }
+      return _subscriptions_get_setting($name, $uid);
+    }
+    $defaults[$uid]['uses_defaults'] = FALSE;
+    foreach ($defaults[$uid] as $key => $value) {
+      if ($value < 0) {  // not set, use site dft
+        $defaults[$uid][$key] = $defaults[-DRUPAL_AUTHENTICATED_RID][$key];
+        $defaults[$uid]['uses_defaults'] = TRUE;
+      }
+    }
+    foreach (array('interval', 'updates', 'comments') as $parm ) {
+      // Site overrides user values.
+      if ($defaults[-DRUPAL_AUTHENTICATED_RID]['send_' . $parm . '_visible'] == -2) {
+        $defaults[$uid]['send_' . $parm] = $defaults[-DRUPAL_AUTHENTICATED_RID]['send_' . $parm];
+      }
+    }
+  }
+  return $defaults[$uid][$name];
+}
+
+/**
+ * Returns whether notifications are suspended for the given user,
+ * and optionally alerts the user if delivery is suspended.
+ *
+ * @param int $uid
+ * @param bool $alert
+ *
+ * @return bool
+ */
+function subscriptions_suspended($uid, $alert = FALSE) {
+  /** @var $result bool */
+  $result = db_query("SELECT suspended FROM {subscriptions_user} WHERE uid = :uid", array(':uid' => $uid))->fetchField();
+  if ($result && $alert && empty($_POST)) {
+    _subscriptions_module_load_include('subscriptions', 'admin.inc');
+    _subscriptions_suspended_alert($uid, $result);
+  }
+  return $result;
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Display a message on user/uid/edit form if subscriptions notifications
+ * are suspended.
+ *
+ * @param array $form
+ * @param array $form_state
+ *
+ * @ingroup hooks
+ */
+function subscriptions_form_user_profile_form_alter(array &$form, array &$form_state) {
+  subscriptions_suspended(subscriptions_arg(1, 'uid'), TRUE);
+}
+
+/**
+ * Provides the data for resolving tokens.
+ *
+ * @param array $data
+ * @param array $queue_item
+ */
+function subscriptions_data(array &$data, array $queue_item) {
+  $data = array_merge_recursive($data, array('subs' => $queue_item));
+}
+
+/**
+ * Loads include files once.
+ *
+ * @param string $module
+ * @param string $ext
+ *
+ * @return bool
+ */
+function _subscriptions_module_load_include($module, $ext) {
+  static $loaded = array();
+
+  $key = "$module.$ext";
+  if (empty($loaded[$key])) {
+    $loaded[$key] = (bool) module_load_include($ext, $module);
+  }
+  return $loaded[$key];
+}
+
+/**
+ * Implements hook_user_operations().
+ *
+ * @return array|null
+ */
+function subscriptions_user_operations() {
+  if (user_access('bulk-administer user subscriptions')) {
+    return array(
+      array(
+        'label' => t('Subscribe the selected users to...'),
+        'callback' => '_subscriptions_bulk_operation',
+        'callback arguments' => array('sub'),
+      ),
+      array(
+        'label' => t('Unsubscribe the selected users from...'),
+        'callback' => '_subscriptions_bulk_operation',
+        'callback arguments' => array('unsub'),
+      ),
+    );
+  }
+  return NULL;
+}
+
+/**
+ * Callback for bulk subscriptions.
+ *
+ * @param $uids array
+ * @param $bulk_op string
+ */
+function _subscriptions_bulk_operation(array $uids, $bulk_op) {
+  $_SESSION['subscriptions']['bulk_op'] = $bulk_op;
+  $_SESSION['subscriptions']['uids'] = serialize($uids);
+  $_SESSION['subscriptions']['back_url'] = current_path();
+  drupal_goto(SUBSCRIPTIONS_CONFIG_PATH . '/userdefaults/bulk');
+}
+
+/**
+ * Returns arg($index) in the proper way.
+ *
+ * @param int $index
+ * @param bool $member_name
+ *
+ * @return mixed
+ */
+function subscriptions_arg($index, $member_name = FALSE) {
+  if (($mgi = menu_get_item()) && isset($mgi['map'][$index])) {
+    $path_exploded = $mgi['map'];
+  }
+  else {
+    $path_exploded = explode('/', current_path());
+  }
+  $arg = NULL;
+  if (!empty($path_exploded[$index])) {
+    $arg = $path_exploded[$index];
+    if ($member_name) {
+      if (is_object($arg) && isset($arg->$member_name)) {
+        $arg = $arg->$member_name;
+      }
+      else {
+        $arg = NULL;
+      }
+    }
+  }
+  return $arg;
+}
+
+/**
+ * Implements hook_coder_ignore().
+ */
+function subscriptions_coder_ignore() {
+  return array(
+    'path'        => drupal_get_path('module', 'subscriptions'),
+    'line prefix' => drupal_get_path('module', 'subscriptions') . '/',
+  );
+}
+

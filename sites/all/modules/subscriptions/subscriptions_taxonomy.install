@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Subscriptions Taxonomy module installation.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function subscriptions_taxonomy_install() {
+}
+
+/**
+ * Implements hook_update_last_removed().
+ *
+ * @return int
+ */
+function subscriptions_taxonomy_update_last_removed() {
+  return 2;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function subscriptions_taxonomy_uninstall() {
+}
+

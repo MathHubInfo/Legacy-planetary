@@ -1,0 +1,276 @@
+<?php
+/**
+ * @file
+ * Contains test cases for subscriptions reference module
+ */
+
+/**
+ * Base test case class for Subscriptions.
+ */
+class SubscriptionsTestCase extends DrupalWebTestCase {
+  function setUp() {
+    $modules = array_merge(array('subscriptions'), func_get_args());
+    parent::setUp($modules);
+  }
+  
+  /**
+   * Gets records from subscriptions_queue table.
+   * 
+   * @param array $conditions
+   *   conditions for db_select.
+   * @return array 
+   *   queue items - fetched records from queue table.
+   */
+  protected function getSubscriptionQueueItems($conditions = array()) {
+     $query = db_select('subscriptions_queue', 'sq')
+      ->fields('sq', array('sqid', 'value', 'field', 'uid', 'load_args',));
+     foreach ($conditions as $field => $value) {
+       $query->condition($field, $value);
+     }
+     $queue = $query->execute()->fetchAll();
+     return $queue;
+  } 
+  
+  /**
+   * Asserts number of subscription that exist 
+   * for specificed parameter for user.
+   */
+  protected function assertSubscriptions($params, $uid, $count, $message = '') {
+    $s = subscriptions_get($params);
+    if ($count == 0) {
+      // Check that user has no subscriptions.
+      $this->assertFalse(isset($s[$uid]), $message ? $message : t('User has no subscriptions.'));
+    } 
+    else {
+      // Check if that and only item is in the queue (uA is autosubscribed).
+      $this->assert(isset($s[$uid]) && count($s[$uid]) == $count, $message ? $message : t('User has @count subscriptions.', array('@count' => $count)));
+    }
+  }
+  
+  /**
+   * Asserts number of items in subscription queue for specified conditions.
+   */
+  protected function assertSubscriptionsQueue($conditions, $items, $message ='') {
+    $queue = $this->getSubscriptionQueueItems($conditions);
+    if ($items == 0) {
+      $this->assertFalse($queue, $message ? $message : t('Subscriptions queue is empty for provided conditions.'));
+    }
+    else {
+      $this->assertEqual(count($queue), $items, $message ? $message : t('@items items found in subscriptions queue.', array('@items' => $items)));
+    }
+  }
+  
+}
+
+/** 
+ * Class contains tests for Subscriptions by References module.
+ */
+class SubscriptionsReferenceTestCase extends SubscriptionsTestCase {
+  protected $parent;
+  protected $user_a;
+  protected $user_b;
+  
+  public static function getInfo() {
+    return array(
+      'name' => 'Subscription Reference Drupal Web Test',
+      'description' => 'Drupal Web tests for subscription reference.',
+      'group' => 'Subscription Reference',
+    );
+  }
+  
+  function setUp() {
+    parent::setUp('subscriptions_reference', 'subscriptions_reference_test');
+
+    // Create user A (uA).
+    $this->user_a = $this->drupalCreateUser(array(
+      'subscribe to test parent reference',
+    ));
+    $this->drupalLogin($this->user_a); // We need to set access attribute.
+    
+    // Create user B (uB).
+    $this->user_b = $this->drupalCreateUser(array(
+      'subscribe to test parent reference',
+    ));
+    $this->drupalLogin($this->user_b); // We need to set access attribute.
+    $this->drupalLogout();
+    
+    // Create parent node (nP) as uA.
+    $this->parent = $this->createParentNode($this->user_a->uid);
+
+  }
+
+  /**
+   * Creates parent node.
+   * 
+   * @param integer $uid 
+   * uid of node author.
+   */
+  function createParentNode($uid) {
+    $settings = array(
+      'type' => 'test_parent',
+      'uid' => $uid,
+    );
+    $parent = $this->drupalCreateNode($settings);
+    node_save($parent);
+    return $parent;
+  }
+  
+  /**
+   * Tests subscribe functions used by rules.
+   * 
+   * @see subscriptions_reference_subscribe()
+   * @see subscriptions_reference_unsubscribe()
+   * 
+   */
+  function testSubsciptionFunctions() {
+    // Default pararms for getting our subscriptions.
+    $params = array( 
+      'module' => SUBSCRIPTIONS_REFERENCE_MODULE, 
+      'field' => 'field_test_parent',
+      'value' => $this->parent->nid);
+    
+    // Subscribe uA to nP : Authors are not auto subscribed see : rules_subscribe_author_to_question for more
+    subscriptions_reference_subscribe($this->parent, $this->user_a);
+    $this->assertSubscriptions($params, $this->user_a->uid, 1, 'User A has a subscription');
+    
+    // Subscribe user B to parent node.
+    subscriptions_reference_subscribe($this->parent, $this->user_b);
+    // Check subscription of uB to nP.
+    $this->assertSubscriptions($params, $this->user_b->uid, 1, 'User B has a subscription');
+    $this->assertSubscriptions($params, $this->user_a->uid, 1, 'User A still has a subscription');
+    
+    // Unsubscribe user A.
+    subscriptions_reference_unsubscribe($this->parent, $this->user_a);
+    $this->assertSubscriptions($params, $this->user_b->uid, 1, 'User B still has a subscription');
+    $this->assertSubscriptions($params, $this->user_a->uid, 0);
+     
+  }
+  
+  /**
+   * Tests that correct notifications are being sent to users 
+   * subscribed to new content via subscriptions_reference.
+   * 
+   * @see subscriptions_reference_test.module in tests
+   */
+  function testUserGetsNotification() {
+   
+    // Subscribe uA to nP : Authors are not auto subscribed.
+    // @see : rules_subscribe_author_to_question for more.
+    // A is author.
+    subscriptions_reference_subscribe($this->parent, $this->user_a); 
+    // Create child (nC) for nP as uB.
+    $child_node_b = $this->createChildNode($this->user_b->uid, $this->parent->nid);
+    // Check if that and only that email is in the queue (uA is not autosubscribed).
+    $conditions = array(
+      'value' => $this->parent->nid,
+      'uid' => $this->user_a->uid,
+      'load_args' => $child_node_b->nid
+    );
+    $this->assertSubscriptionsQueue(array(), 1);
+    $this->assertSubscriptionsQueue($conditions, 1, 'Item\'s attributes match subscription');
+    // NOTE: we have one email to send to user A.
+    
+    // Create child to nP as user A.
+    $child_node_a = $this->createChildNode($this->user_a->uid, $this->parent->nid);
+    // Check if email is in the queue.
+    $conditions = array(
+      'value' => $this->parent->nid,
+      'uid' => $this->user_a->uid,
+      'load_args' => $child_node_a->nid
+    );
+    $this->assertSubscriptionsQueue($conditions, 1);
+    // NOTE: we have second email to send to user A.
+    
+    // Unsubscribe uA from nP.
+    subscriptions_reference_unsubscribe($this->parent, $this->user_a);
+    // Create child to nP as uB.
+    $child_node_b2 = $this->createChildNode($this->user_b->uid, $this->parent->nid);
+    // Check if email is not in the queue.
+    $conditions = array(
+      'value' => $this->parent->nid,
+      'uid' => $this->user_b->uid,
+      'load_args' => $child_node_b2->nid
+    );
+    $this->assertSubscriptionsQueue($conditions, 0);
+   
+    // Subscribe user B to node Parent.
+    subscriptions_reference_subscribe($this->parent, $this->user_b); // B is not an author
+    // Add child to Parent node as user A.
+    $child_node = $this->createChildNode($this->user_a->uid, $this->parent->nid);
+    
+    // Check that only user B gets notification.
+    $conditions = array(
+      'value' => $this->parent->nid,
+      'uid' => $this->user_b->uid,
+      'load_args' => $child_node->nid,
+    );
+    $this->assertSubscriptionsQueue($conditions, 1);
+    // NOTE: we have one email for user B (+ two for user A remaining).
+    
+    // Run CRON and check that correct emails were sent
+    // $this->cronRun(); this call somehow complicates things, 
+    // so just calling cron function in question directly.
+    subscriptions_mail_cron();
+    // Check that queue is empty after cron execution.
+    $queue = $this->getSubscriptionQueueItems();
+    $this->assertFalse($queue, 'Queue is empty');
+    // Check that emails were sent.
+    $mails = $this->drupalGetMails();   
+    $this->assertEqual(count($mails), 3, '3 emails were sent as expected');
+    // Check first email to user A.
+    $this->assertEqual($mails[0]['key'], 'node-reference-field-test-parent', 'Mail key is correct');
+    $this->assertEqual($mails[0]['to'], $this->user_a->mail, 'Mail is sent to correct email address');
+    // Check second email to user A.
+    $this->assertEqual($mails[1]['key'], 'node-reference-field-test-parent', 'Mail key is correct');
+    $this->assertEqual($mails[1]['to'], $this->user_a->mail, 'Mail is sent to correct email address');
+    // Check email to user B.
+    $this->assertEqual($mails[2]['key'], 'node-reference-field-test-parent', 'Mail key is correct');
+    $this->assertEqual($mails[2]['to'], $this->user_b->mail, 'Mail is sent to correct email address');
+    
+  }
+
+  /**
+   * Creates child node.
+   */
+  function createChildNode($uid, $parent_nid) {
+    $settings = array(
+      'type' => 'test_child',
+      'uid' => $uid,
+    );
+    $settings['field_test_parent'][LANGUAGE_NONE][0]['target_id'] = $parent_nid;
+    $node = $this->drupalCreateNode($settings);
+   
+    return $node;
+  }
+  
+}
+
+class SubscriptionReferenceUnitTestCase extends DrupalUnitTestCase {
+  
+  public static function getInfo() {
+    return array(
+      'name' => 'Subscription Reference Unit Test Case',
+      'description' => 'Unit tests for subscription reference.',
+      'group' => 'Subscription Reference',
+    );
+  }
+  
+  function test_hook_subscriptions_reference() {
+    //  @todo find a way to mock functions.
+  }
+  /**
+   * Tests that rule actions have correct settings in hook_rules_action_info().
+   */
+  function testSubscribeRules() {
+    module_load_include('inc', 'subscriptions_reference', 'subscriptions_reference.rules');
+    $actions = subscriptions_reference_rules_action_info();
+    foreach ($actions as $action) {
+      $this->assertTrue(function_exists($action['base']), 'Function exists for rules action.');
+      $this->assertTrue(isset($action['parameter']['node']), 'Node is a parameter of the action.');
+      $this->assertTrue(isset($action['parameter']['user']), 'User is a parameter of the action.');
+      $this->assertEqual($action['parameter']['node']['type'], 'node', 'Node parameter has correct type.');
+      $this->assertEqual($action['parameter']['user']['type'], 'user', 'User parameter has correct type.');
+    }
+  }
+  
+}

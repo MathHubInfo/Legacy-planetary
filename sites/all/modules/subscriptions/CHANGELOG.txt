@@ -1,0 +1,161 @@
+
+CHANGELOG for Subscriptions 1.x for Drupal 7
+
+
+subscriptions 7.x-1.x-dev:
+
+
+subscriptions 7.x-1.1 (2012-11-01):
+  Enhancements:
+    - Implement [subs:has-distinct-summary] token and improve the default template.
+    - #1821292: Implement an editable default template.
+    - Make the user/%/subscriptions pages use the admin theme, just like the user/%/edit page.
+    - #1779950: Add API for deleting subscriptions.
+    - #1683186 by joel_osc: Add support for translating the terms on the taxa subscriptions page into the user's language.
+    - Revised the README.txt file.
+  Bugs fixed:
+    - #1801344 by jerry, salvis: Fix all-zero Overview counts, replace broken hook_count_user_subscriptions() with hook_subscriptions_counts_alter().
+    - Some more template tuning while we're at it.
+    - Fix a line-wrap error in the mail template (sorry, translators!).
+    - #1781870: Use format_name() to display user names.
+    - #1710600 by Dmitriy.trt: Fix the missing pager on the Threads/Pages list.
+    - Hide comment settings if comment.module is not enabled.
+    - #1744576: Restore the node UI that was broken by the prior patch.
+    - #1744576: Make s/del/... work again.
+    - Always expand the node UI fieldset on the node/%/subscribe pages.
+    - #399628-19: Document the subscriptions_write() function (no functional change).
+
+
+subscriptions 7.x-1.0 (2012-06-22):
+  - Added some information about upgrading to the README.txt file.
+
+subscriptions 7.x-1.0-rc1 (2012-06-12):
+  - Tune some strings and remove an obsolete comment (no functional changes).
+  - Tentatively add the slash to hook_coder_ignore().
+  - Tentatively revert 'coder_review_ignore' to 'coder_ignore'.
+  - Fix the hook_coder_review_ignore() usage according to #144172/$1360744.
+  - #1616998: Bring the permissions into a reasonable order.
+  - Work around all Coder Review complaints (no functional changes).
+  - Extract subscriptions_taxonomy.admin.inc from subscriptions_taxonomy.module to reduce the footprint (no functional change).
+  - Fix the styling of the 'Admin information'.
+  - Remove the obsolete subscriptions_generate_full_node variable and configuration option.
+  - #1615340: Add a note to explain how to access parts of digest items in Mail Editor.
+  - #1603644: Restore the 'Subscriptions' menu title and fix the translation issues fixes.
+  - Update README.txt file.
+
+subscriptions 7.x-1.0-beta4 (2012-05-27):
+  - Fix subscriptions_blog_ui.module.
+  - #1572354: Abort subscriptions_mail_update_7000() if the module is disabled.
+  - #1489044: Update the README.txt file.
+  - Fix some minor translation issues.
+  - #1585516: Remove all arg() calls, which caused issues with non-standard paths.
+  - Replace $_GET['q'] with current_path(), for D8.
+  - #1015320: Check for $base_url errors during cron, too.
+  - #1348764: PostgreSQL GROUP BY quirk when creating or saving nodes.
+  - #1338506: Avoid auto-subscribing users that don't have the 'subscribe to content' permission.
+  - Clean up the Mail Editor link.
+  - #1249502: Add a link to the user list for bulk subscribe/unsubscribe.
+  - #1249502: Fix interference of default subscriptions with bulk subscribe/unsubscribe.
+  - #1490034: PostgreSQL GROUP BY quirk, still on Threads/Pages page.
+  - #1485764: PostgreSQL kludge on Threads/Pages page.
+  - #1485546: Fix #markup porting errors.
+  - #1249502: Implement bulk subscribe and unsubscribe.
+  - #1482720: PostgreSQL does not have IF(), use CASE instead.
+  - #1430446 by DamienMcKenna: Add more hook_alter calls.
+
+subscriptions 7.x-1.0-beta3 (2012-02-14):
+  - #1438302: Disallow updating Subscriptions Mail (especially from D6!) if Mail Editor or Token are missing.
+  - #1438302 by Dmitriy.trt: Fix errors about missing tables on upgrade from D6.
+  - Fix crash when trying to preview a template and there is no suitable content.
+  - #1438432: Fix unincluded subscriptions_add_form() and _del_form().
+  - Add a note to the template page when running without comment.module.
+  - #1431850: Fix crash when previewing a template when running without comment.module.
+  - Hide references to comments from the Pages/Threads page when running without comment.module.
+  - #1431864: Fix exception on Pages/Threads page when running without comment.module.
+  - Avoid possible error when installing Mail Editor and Subscriptions Mail at the same time.
+  - #1422880 by DamienMcKenna: Allow other modules to alter the node options.
+
+subscriptions 7.x-1.0-beta2 (2012-01-07):
+  - Fix minor string error.
+  - #1378692: Fix direct unsubscribe link not working.
+  - #1370820: Fix path element offsets that were broken by #1253846.
+  - Move the 'Overview' subtab into the first position on the 'User defaults' tab.
+  - #1369146: Fix the [Purge the queue] button.
+  - #1367768: Avoid passing an inacceptable NULL to an array parameter.
+
+subscriptions 7.x-1.0-beta1 (2011-12-11):
+  - #1253846: Move the configuration pages to admin/config/system/subscriptions.
+  - #1327376: Implement digest mode.
+  - Use content type names rather than machine names for the template descriptions.
+  - #1358634 by rbayliss: Fix double-escaped node type in node subscribe form.
+  - Fix inability to save blog subscriptions.
+  - Fix crash caused by empty user subscriptions form.
+  - #1331670: Fix suspend subscription sub-form.
+
+subscriptions 7.x-1.0-alpha6 (2011-10-30):
+  - Fix [subs:forum] token.
+  - Add support for term fields/tokens.
+  - Integrate the Token patch into Subscriptions, move the various token hooks where they belong, improve the rendering of the token tree.
+  - Avoid calling drupal_language_initialize(), too.
+  - #1323422: Avoid calling language_initialize().
+  - Rename [subs:module/field/value] to avoid confusion with core fields.
+  - Rename [subs:term] to [subs:category] and improve the cooperation with [subs:forum].
+  - #1321384: Fix 'Column not found' SQL error.
+  - Fix line endings of multiple files (no functional change).
+  - Move the token hooks to *.tokens.inc files.
+  - #1318454: Fix failure to find the proper template in cron.
+  - Add proper docblocks and fix most PhpStorm issues.
+  - Fix porting errors in the subscriptions pages.
+  - #1310848: Fix undefined function _subscriptions_content_load() call.
+  - Remove the installation-time installation reminder, because Mail Editor is not optional anymore.
+  - #1309396: Fix inability to uninstall Subscriptions Mail.
+  - #1305520: Fix the prior fix.
+  - #1305520: Fix missing column in pre-existing {mail_edit} table.
+  - #1305792: Fix inability to save user settings.
+  - #1304258: Fix deprecated call-time pass-by-reference typo.
+
+subscriptions 7.x-1.0-alpha5 (2011-10-08):
+  - MAJOR OVERHAUL:
+    -- Switch proprietary !variables to [tokens].
+    -- Integrate with new Mail Editor, including preview.
+    -- Migrate conditional text processing to Mail Editor.
+    -- Reduce templates to content types only.
+  - #1286838 by mgriego: Check permission before presenting taxa subscribe options.
+  - #1276182: Fix a warning in theme_subscriptions_ui_table().
+  - #1280192: Fix form_alter() of content bulk processing.
+  - Get ready for Mail Editor.
+  - Remove old D5 database tables, if they're still hanging around.
+  - Tune diagnostics in case of mail failures.
+  - #1252786: Fix incorrect teaser handling.
+  - #1259662: Fix completely broken subscriptions_tableselect.js.
+  - #1258698: Fix default subscriptions not being assigned to new users.
+
+subscriptions 7.x-1.0-alpha4 (2011-08-24):
+  - #1253788, 1253790: Remove the temporary SubscriptionsMailSystem (needs 7.5 now!).
+  - #1249862: Fix a typo in a {subscriptions_queue} SQL query.
+  - #1252786: Handle nodes without bodies.
+  - #1252656: Fix notice about missing $ret variable in subscriptions_install().
+  - #1252700: Fix empty last column in Page subscriptions list.
+  - #1250572: Remove the call to the dropped subscriptions_update_9() function.
+  - Fix various porting issues, mostly related to DBTNG and comments.
+  - #1244176: Remove inadvertently-left dpm() call.
+  - #1241944: Remove hard-coded dependency on comment.module.
+  - #1236872: Fix notifications for new or updated comments.
+  - #1228214: Fully qualify field parameter in SelectQuery::condition(), SelectQuery::orderBy() calls.
+
+subscriptions 7.x-1.0-alpha3 (2011-07-23):
+  - Fix the List-Id header.
+  - Switch to the D7 mail system paradigm.
+  - #1212582: Implement 'Suspend own subscriptions' permission.
+  - Fix admin/config/subscriptions description.
+  - #1215140: Fix PHP5.3 issue with the Purge Queue confirmation page.
+  - #1189366: Fix name of {users} core table.
+  - Remove left-over dpm() call, too.
+
+subscriptions 7.x-1.0-alpha2 (2011-05-31):
+  - #1172646: Remove left-over kpr() call.
+
+subscriptions 7.x-1.0-alpha1 (2011-05-30):
+  - Various fixes.
+  - Initial port to D7 (pre-ALPHA quality).
+  - Copied Subscriptions 6.x-1.4.

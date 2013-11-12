@@ -1,0 +1,471 @@
+<?php
+
+/**
+ * @file
+ * Provides a user interface for Subscriptions.
+ */
+
+/**
+ * Implements hook_node_view().
+ *
+ * Inject the node subform or a 'Subscribe' link into node pages
+ * (depending on the Display Settings).
+ *
+ * @param object $node
+ * @param string $view_mode
+ * @param string $langcode
+ *
+ * @return
+ *
+ * @ingroup hooks
+ * @ingroup form
+ */
+function subscriptions_ui_node_view($node, $view_mode, $langcode) {
+  global $user;
+
+  if ($node->nid && $view_mode == 'full' && subscriptions_ui_can_subscribe()) {
+    $arg2 = subscriptions_arg(2);
+    if (!variable_get('subscriptions_form_in_block', 0) &&
+        (!variable_get('subscriptions_form_link_only', 0) && (empty($arg2) || $arg2 == 'view') ||
+          variable_get('subscriptions_form_link_only', 0) && $arg2 == 'subscribe' )) {
+      if ($form = drupal_get_form('subscriptions_ui_node_form', $node, $arg2 == 'subscribe')) {
+        $node->content['subscriptions_ui'] = array(
+          'subscriptions_ui_form' => $form,
+          '#weight' => 100,
+        );
+        return;
+      }
+    }
+
+    subscriptions_suspended($user->uid, TRUE);
+    if (variable_get('subscriptions_form_link_only', 0) && $arg2 != 'subscribe' && (!variable_get('subscriptions_avoid_empty_subscribe_links', 0) || module_invoke_all('subscriptions', 'node_options', $user, $node))) {
+      /** @var $blocked_types array */
+      $blocked_types = variable_get('subscriptions_blocked_content_types', array());
+      if (in_array($node->type, $blocked_types) && !user_access('subscribe to all content types')) {
+        return;
+      }
+      $node->content['links']['node']['#links']['subscriptions-subscribe'] = array(
+        'href' => current_path() . '/subscribe',
+        'title' => t('Subscribe') . (in_array($node->type, $blocked_types) ? SUBSCRIPTIONS_UNAVAILABLE : ''),
+        'html' => TRUE,
+        'fragment' => 'subscribe',
+        'attributes' => array('title' => t('Receive notifications about changes and/or comments to this page (and possibly similar pages).')),
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ *
+ * Tell Drupal about the Subscriptions Interface block.
+ *
+ * @ingroup hooks
+ */
+function subscriptions_ui_block_info() {
+  $blocks[0]['info'] = t('Subscriptions interface');
+  $blocks[0]['cache'] = DRUPAL_CACHE_PER_PAGE;
+  $blocks[0]['region'] = 'content';
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Define the Subscriptions Interface block for node pages (depending on the Display Settings).
+ *
+ * @param int $delta
+ *
+ * @return array|null
+ *
+ * @ingroup hooks
+ */
+function subscriptions_ui_block_view($delta = 0) {
+  $arg2 = subscriptions_arg(2);
+  if (subscriptions_ui_can_subscribe() && variable_get('subscriptions_form_in_block', 0) &&
+      (!variable_get('subscriptions_form_link_only', 0) && (empty($arg2) || $arg2 == 'view') ||
+        variable_get('subscriptions_form_link_only', 0) && $arg2 == 'subscribe' )) {
+    return array(
+      'subject' => t('Subscriptions'),
+      'content' => drupal_get_form('subscriptions_ui_node_form', menu_get_object()),
+    );
+  }
+  return NULL;
+}
+
+
+/**
+ * Returns TRUE on node/NID pages if the NID is not blocked
+ * and no other module wants to provide the UI.
+ *
+ * @return bool
+ */
+function subscriptions_ui_can_subscribe() {
+  global $user;
+
+  $arg1 = subscriptions_arg(1, 'nid');
+  return ($user->uid && subscriptions_arg(0) == 'node' && is_numeric($arg1) && module_invoke('subscriptions_ui', 'get_permission_to_handle', $arg1, 'subscriptions_ui') !== FALSE);
+}
+
+/**
+ * Returns the form definition for the node subform.
+ *
+ * @param $form
+ * @param $form_state
+ * @param $node
+ *   Must be a valid node object.
+ * @param $expand
+ *   Force the fieldset to expand if TRUE.
+ *
+ * @return array|null
+ *
+ * @ingroup form
+ * @ingroup hooks
+ */
+function subscriptions_ui_node_form($form, &$form_state, $node, $expand = NULL) {
+  global $user;
+  $account = $user;
+  $expand = ($expand === TRUE || variable_get('subscriptions_form_expanded', 0));
+
+  if (subscriptions_node_is_blocked($node->nid)) {
+    return NULL;
+  }
+
+  /** @var $blocked_types array */
+  $blocked_types = variable_get('subscriptions_blocked_content_types', array());
+  if (in_array($node->type, $blocked_types)) {
+    if (!user_access('subscribe to all content types', $account)) {
+      return NULL;
+    }
+    $is_blocked = TRUE;
+  }
+
+  $show_node_info = variable_get('node_submitted_' . $node->type, 1);
+  $node_options = module_invoke_all('subscriptions', 'node_options', $account, $node);
+
+  // Allow other modules to alter the node options.
+  drupal_alter('subscriptions_node_options', $node_options);
+
+  if (!$node_options || !user_access('subscribe to content', $account)) {
+    return array();
+  }
+  uasort($node_options, '_subscriptions_cmp_by_weight');
+
+  foreach (array(
+    db_query("SELECT sid, module, field, value, author_uid, send_interval, send_updates, send_comments FROM {subscriptions} WHERE module = :module AND field = :field AND value = :value AND recipient_uid = :recipient_uid", array(
+      ':module' => 'node',
+      ':field' => 'nid',
+      ':value' => $node->nid,
+      ':recipient_uid' => $account->uid
+    ), array('fetch' => PDO::FETCH_ASSOC)),
+    db_query("SELECT sid, module, field, value, author_uid, send_interval, send_updates, send_comments FROM {subscriptions} WHERE module = :module AND field <> :field AND recipient_uid = :recipient_uid", array(
+      ':module' => 'node',
+      ':field' => 'nid',
+      ':recipient_uid' => $account->uid
+    ), array('fetch' => PDO::FETCH_ASSOC)),
+  ) as $result) {
+    foreach ($result as $s) {
+      $subscriptions[$s['field']][$s['value']][$s['author_uid']] = $s;
+    }
+  }
+  // Process all options building the array of indexed params for each
+  $nonlabeled_options = $options = $params = $default_comments = $default_updates = $default_subscriptions = array();
+  $index = 1; // If we start with zero, get some value sent as 0 => 0
+  $default_send_intervals = array();
+  foreach ($node_options as $field => $field_options) {
+    foreach ($field_options as $option) {
+      if (!is_array($option)) {
+        continue;
+      }
+      if ((!$show_node_info || !variable_get('subscriptions_show_by_author_options', 1)) && isset($option['params']['author_uid']) && $option['params']['author_uid'] >= 0) {
+        continue;
+      }
+      if ($option['params']['module'] == 'node' && $option['params']['field'] == 'type' && !empty($is_blocked)) {
+        $option['name'] .= '&nbsp;' . SUBSCRIPTIONS_UNAVAILABLE;
+      }
+      //$options[$index] = (isset($option['link']) ? l($option['name'], 'subscriptions/add/' . $option['link'], array('query' => drupal_get_destination(), 'html' => TRUE)) : $option['name']);
+      $options[$index] = $option['name'];
+      $nonlabeled_options[$index] = '';
+      $params[$index] = $param = $option['params'] + array('author_uid' => -1);
+      if (isset($subscriptions[$param['field']][$param['value']][$param['author_uid']])) {
+        $default_subscriptions[] = $index;
+        $default_send_intervals[$index] = $subscriptions[$param['field']][$param['value']][$param['author_uid']]['send_interval'];
+        if ($subscriptions[$param['field']][$param['value']][$param['author_uid']]['send_comments']) {
+          $default_comments[] = $index;
+        }
+        if ($subscriptions[$param['field']][$param['value']][$param['author_uid']]['send_updates']) {
+          $default_updates[] = $index;
+        }
+      }
+      else {
+        $default_send_intervals[$index] = _subscriptions_get_setting('send_interval', $account);
+        if (_subscriptions_get_setting('send_comments', $account)) {
+          $default_comments[] = $index;
+        }
+        if (_subscriptions_get_setting('send_updates', $account)) {
+          $default_updates[] = $index;
+        }
+      }
+      $index++;
+    }
+  }
+
+  $form['params'] = array('#type' => 'value', '#value' => $params);
+
+  $form['wrapper'] = array(
+    '#type' => 'fieldset',
+    '#title' => filter_xss(t('Subscribe') . (!empty($is_blocked) ? '&nbsp;' . SUBSCRIPTIONS_UNAVAILABLE : ''), array('span')),
+    '#collapsible' => TRUE,
+    '#collapsed' => !$expand,
+    '#theme' => 'subscriptions_ui_table',
+    '#attributes' => array('id' => 'subscribe'),
+  );
+  $form['wrapper']['subscriptions'] = array(
+    '#type' => 'checkboxes',
+    '#default_value' => $default_subscriptions,
+    '#options' => $options,
+    '#access' => TRUE,
+  );
+  $form['wrapper']['updates'] = array(
+    '#type' => 'checkboxes',
+    '#default_value' => $default_updates,
+    '#options' => $nonlabeled_options,
+    '#access' => _subscriptions_get_setting('send_updates_visible', $user) > 0,
+  );
+  if (module_exists('comment') && user_access('access comments')) {
+    $form['wrapper']['comments'] = array(
+      '#type' => 'checkboxes',
+      '#default_value' => $default_comments,
+      '#options' => $nonlabeled_options,
+      '#access' => _subscriptions_get_setting('send_comments_visible', $user) > 0,
+    );
+  }
+  $form['wrapper']['footer'] = array(
+    '#type' => 'item',
+    '#description' => t('The master checkboxes in the left-most column turn the given subscription on or off. Depending on the setup of the site, you may have additional options for active subscriptions.'),
+    '#weight' => 9,
+  );
+  $form['wrapper']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#weight' => 10,
+  );
+  $form['account'] = array('#type' => 'value', '#value' => $account);
+  $form['send_intervals'] = array('#type' => 'value', '#value' => $default_send_intervals);
+  return $form;
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * @return array
+ */
+function subscriptions_ui_theme() {
+  return array(
+    'subscriptions_ui_table' => array(
+      'render element' => 'element',
+    )
+  );
+}
+
+/**
+ * Theme subscriptions node subform table.
+ *
+ * @param array $element
+ *
+ * @return string
+ *
+ * @ingroup themeable
+ */
+function theme_subscriptions_ui_table($element) {
+  $rows = array();
+  $headers = array();
+  $header_strings = array(
+    array('class' => 'subscriptions-table', 'width' => '30%'),
+    array('data'  => t('On&nbsp;updates'), 'width' => '1*', 'style' => 'writing-mode: lr-tb'),
+    array('data'  => t('On&nbsp;comments'))
+  );
+  $element = $element['element'];
+  foreach (element_children($element['subscriptions']) as $key) {
+    $row = array();
+    foreach (array('subscriptions', 'updates', 'comments') as $eli => $elv) {
+      if (isset($element[$elv]) && $element[$elv]['#access']) {
+        $row[] = drupal_render($element[$elv][$key]);
+        $headers[$eli] = $header_strings[$eli];
+      }
+    }
+    $rows[] = $row;
+  }
+  $col_indexes = array_keys($headers);
+  unset($headers[end($col_indexes)]['width']);
+  $output = theme('table', array('header' => $headers, 'rows' => $rows));
+  $output .= drupal_render_children($element);
+  drupal_add_js(drupal_get_path('module', 'subscriptions') . '/subscriptions_tableselect.js');
+  return $output;
+}
+
+/**
+ * Node subscriptions node subform submit handler.
+ *
+ * @param array $form
+ * @param array $form_state
+ *
+ * @ingroup form
+ */
+function subscriptions_ui_node_form_submit(array $form, array &$form_state) {
+
+  $recipient_uid = $form_state['values']['account']->uid;
+  $default_send_intervals = $form_state['values']['send_intervals'];
+
+  foreach ($form_state['values']['subscriptions'] as $index => $value) {
+    $params = $form_state['values']['params'][$index];
+    $args = array($params['module'], $params['field'], $params['value'], $params['author_uid'], $recipient_uid);
+    if ($value) {
+      $args[] = $default_send_intervals[$index];
+      $args[] = !empty($form_state['values']['updates'][$index]);
+      $args[] = !empty($form_state['values']['comments'][$index]);
+      call_user_func_array('subscriptions_write_subscription', $args);
+    }
+    else {
+      subscriptions_delete($args['4'], $args['0'], $args['1'], $args['2'], $args['3']);
+    }
+  }
+  $form_state['redirect'] = str_replace('/subscribe', '', current_path());
+}
+
+/**
+ * Implementation of hook form_alter().
+ *
+ * Adds the Display Settings part to the admin/settings/subscriptions form.
+ *
+ * @param array $form
+ * @param array $form_state
+ *
+ * @ingroup hooks
+ * @ingroup form
+ */
+function subscriptions_ui_form_subscriptions_settings_form_alter(array &$form, array &$form_state) {
+  $tr = 't';
+
+  $form['display_settings'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Display settings'),
+      '#collapsible' => TRUE,
+      '#weight' => -4,
+  );
+  $description = t('How to display the subscriptions sub-form on node pages.  Default is the first option.<br />To use the block, <b>you must enable the block</b> !here; put it into the %content region and set the %block_title to !none.', array('!here' => l(t('here'), 'admin/structure/block'), '%content' => 'content', '%block_title' => $tr('Block title'), '!none' => '<em>&lt;none&gt;</em>'));
+  $form['display_settings']['subscriptions_form_in_block'] = array(
+    '#type'          => 'radios',
+    '#title'         => t('Node form position'),
+    '#options'       => array(
+                          t('Fieldset above node links (and comments)'),  // 0
+                          t('Fieldset in %block block (below the comments)', array('%block' => t('Subscriptions interface'))), // 1
+                        ),
+    '#default_value' => variable_get('subscriptions_form_in_block', 0),
+    '#description'   => filter_xss($description, array('a', 'br', 'b', 'em')),
+  );
+  $form['display_settings']['subscriptions_form_link_only'] = array(
+    '#type'          => 'radios',
+    '#title'         => t('Node form visibility'),
+    '#options'       => array(
+                          t('Always display the fieldset'),  // 0
+                          t('Display only a @subscribe link that makes the fieldset visible', array('@subscribe' => t('Subscribe'))), // 1
+                        ),
+    '#default_value' => variable_get('subscriptions_form_link_only', 0),
+    '#description'   => t('What to display.  Default is the first option.'),
+  );
+  $form['display_settings']['subscriptions_form_expanded'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t('Expand the node form fieldset'),
+    '#default_value' => variable_get('subscriptions_form_expanded', 0),
+    '#description'   => t('Displays the fieldset with the node page subscriptions sub-form in expanded state.  Default is OFF.'),
+  );
+  $form['display_settings']['note'] = array(
+    '#markup'         => '<p>' . t("Note: Our <b>favorite display settings</b> are the exact opposites of the defaults, but we chose the defaults, because they work without enabling the Subscriptions block.") . '</p>',
+  );
+  $form['display_settings']['subscriptions_show_by_author_options'] = array(
+    '#type'          => 'checkbox',
+    '#title'         => t("Show 'by author' subscriptions options"),
+    '#default_value' => variable_get('subscriptions_show_by_author_options', 1),
+    '#description'   => t("If you don't want your users to subscribe 'by author', then turn this off.  Default is ON."),
+  );
+}
+
+/**
+ * Asks for permission to display the subscriptions interface
+ * for the given node.
+ *
+ * This should be used as follows:
+ *   if (module_invoke('subscriptions_ui', 'get_permission_to_handle', $nid, 'mymodule') !== FALSE) {
+ *     my_module_display_interface($nid);
+ *   }
+ * and mymodule needs to implement hook_subscriptions_ui(), see below.
+ *
+ * @param int $nid
+ * @param string $module
+ *
+ * @return bool
+ */
+function subscriptions_ui_get_permission_to_handle($nid, $module) {
+  if (subscriptions_node_is_blocked($nid) || !user_access('subscribe to content')) {
+    return FALSE;
+  }
+
+  static $permissions = array();
+  if (empty($permissions[$nid])) {
+    foreach (module_implements('subscriptions_ui') as $m) {
+      $perm = module_invoke($m, 'subscriptions_ui', $nid);
+      if (empty($permissions[$nid]) || $permissions[$nid]['priority'] < $perm['priority'] ) {
+        $permissions[$nid] = $perm;
+      }
+    }
+  }
+  return $permissions[$nid]['module'] == $module;
+}
+
+/**
+ * Implements hook_subscriptions_ui().
+ *
+ * subscriptions_ui is willing to handle all $nids.
+ * Other modules can return a higher priority with their name
+ * (or a different name!) depending on the $nid, $user, etc.
+ *
+ * @param int $nid
+ *
+ * @return array
+ */
+function subscriptions_ui_subscriptions_ui($nid) {
+  return array('priority' => 0, 'module' => 'subscriptions_ui');
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ *
+ * Enables CCK (admin/content/types/CONTENT_TYPE/fields) to configure the
+ * position of the Subscribe fieldset within the node.
+ *
+ * @return array
+ *
+ * @ingroup hooks
+ */
+function subscriptions_ui_field_extra_fields() {
+  $extra = array();
+  if (variable_get('subscriptions_form_in_block', 0)) {
+    $types = db_query("SELECT type FROM {block_node_type} WHERE module = :module AND delta = :delta", array(
+      ':module' => 'subscriptions_ui',
+      ':delta' => 0,
+    ))->fetchCol();
+    if (empty($types)) {
+      $types = array_keys(node_type_get_types());
+    }
+    foreach ($types as $type) {
+      $extra['node'][$type]['display']['subscriptions_ui'] = array(
+        'label' => t('Subscribe'),
+        'description' => t('!Subscriptions_UI module form.', array('!Subscriptions_UI' => 'Subscriptions UI')),
+        'weight' => 100,
+      );
+    }
+  }
+  return $extra;
+}
+

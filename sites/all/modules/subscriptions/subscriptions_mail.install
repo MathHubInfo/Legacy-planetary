@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * @file
+ * Subscriptions Mail module installation.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function subscriptions_mail_install() {
+  if (module_exists('mail_edit')) {
+    // Add column to {mail_edit} table.
+    _subscriptions_mail_extend_mail_edit();
+  }
+}
+
+/**
+ * Adds a column to the {mail_edit} table.
+ */
+function _subscriptions_mail_extend_mail_edit() {
+  if (!function_exists('subscriptions_mail_schema_alter')) {
+    $t = get_t();
+    throw new DrupalUpdateException($t('@Subscriptions_Mail must be enabled before it can be updated', array(
+      '@Subscriptions_Mail' => 'Subscriptions Mail',
+    )) . ' - ');
+  }
+  $new_schema = array();
+  subscriptions_mail_schema_alter($new_schema);
+  foreach ($new_schema['mail_edit']['fields'] as $name => $spec) {
+    db_add_field('mail_edit', $name, $spec);
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function subscriptions_mail_uninstall() {
+  // Remove column from {mail_edit} table.
+  $new_schema = array();
+  module_load_include('module', 'subscriptions_mail');
+  subscriptions_mail_schema_alter($new_schema);
+  foreach ($new_schema['mail_edit']['fields'] as $name => $spec) {
+    db_drop_field('mail_edit', $name);
+  }
+
+  variable_del('subscriptions_mail_trash_silently');
+  variable_del('subscriptions_number_of_mails');
+  variable_del('subscriptions_site_mail_name');
+  variable_del('subscriptions_site_mail');
+  variable_del('subscriptions_watchgood');
+  variable_del('subscriptions_watchstats');
+}
+
+function subscriptions_mail_requirements($phase) {
+  $requirements = array();
+  if ($phase == 'update') {
+    $t = get_t();
+    if (!module_exists('mail_edit')) {
+      $requirements[] = array(
+        'title' => $t('Mail Editor'),
+        'value' => $t('Missing'),
+        'description' => $t('@Subscriptions_Mail requires the !Mail_Editor module to be installed.', array('@Subscriptions_Mail' => 'Subscriptions Mail', '!Mail_Editor' => l('Mail Editor', 'http://drupal.org/project/mail_edit', array('external' => TRUE)))),
+        'severity' => REQUIREMENT_ERROR,
+      );
+    }
+    if (!module_exists('token')) {
+      $requirements[] = array(
+        'title' => $t('Token'),
+        'value' => $t('Missing'),
+        'description' => $t('@Subscriptions_Mail requires the !Token module to be installed.', array('@Subscriptions_Mail' => 'Subscriptions Mail', '!Token' => l('Token', 'http://drupal.org/project/token', array('external' => TRUE)))),
+        'severity' => REQUIREMENT_ERROR,
+      );
+    }
+  }
+  return $requirements;
+}
+
+/**
+ * Database update function 7000: Extend the {mail_edit} table.
+ */
+function subscriptions_mail_update_7000() {
+  if (db_table_exists('mail_edit') && !db_field_exists('mail_edit', 'subscriptions_comment_body')) {
+    // Add column to {mail_edit} table.
+    _subscriptions_mail_extend_mail_edit();
+  }
+}
+
