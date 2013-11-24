@@ -129,7 +129,7 @@ drush site-install PROFILENAME --db-url=mysql://DBUSER:DBPASS@localhost/DBNAME \
   --site-name=SITENAME  --account-name=ADMINNAME --account-pass=ADMINPASS
 ```
 
-## APPLY SOME TWEAKS
+### Apply Some Tweaks
 
 `eqf_views` needs [this patch](https://drupal.org/files/efq_views-undefined_vars-1732942-11.patch).
 
