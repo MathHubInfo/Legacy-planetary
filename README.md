@@ -129,6 +129,18 @@ drush site-install PROFILENAME --db-url=mysql://DBUSER:DBPASS@localhost/DBNAME \
   --site-name=SITENAME  --account-name=ADMINNAME --account-pass=ADMINPASS
 ```
 
+## APPLY SOME TWEAKS
+
+`eqf_views` needs [this patch](https://drupal.org/files/efq_views-undefined_vars-1732942-11.patch).
+
+From the root of your drupal installation run:
+
+```
+drush make sites/all/modules/planetary_libs/planetary_libs.make --no-core
+```
+
+to automate the download of several needed libraries.
+
 ## GET THE ACE EDITOR, AND PUT IT IN YOUR LIBRARIES DIRECTORY
 
 Note that latest versions of this require a library that comes with GCC 4.7, see [these notes](http://askubuntu.com/questions/113291/how-do-i-install-gcc-4-7) on Ubuntu 12.04, including [this](http://superuser.com/a/394811/121972).
