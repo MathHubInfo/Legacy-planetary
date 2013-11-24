@@ -337,7 +337,8 @@ function planetary_libs_libraries_info() {
     ),
     'files' => array(
       'js' => array(
-        'build/release/libs/js/libs.js',
+        'js/deps/underscore/underscore-min.js',
+        'js/deps/bootstrap.js',
         'build/release/JOBAD.js',
       ),
       'css' => array(        
@@ -349,7 +350,8 @@ function planetary_libs_libraries_info() {
       'minified' => array(
         'files' => array(
           'js' => array(
-            'build/release/libs/js/libs.js',
+          'js/deps/underscore/underscore-min.js',
+          'js/deps/bootstrap.js',
             'build/release/JOBAD.min.js',
           ),
           'css' => array(

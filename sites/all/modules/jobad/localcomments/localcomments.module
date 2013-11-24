@@ -139,7 +139,6 @@ function localcomments_make_node($nid, $elid, $type, $title, $body) {
   $newnode->field_lc_type[$lang][0]['value'] = $type;
   
   node_object_prepare($newnode);//necessary ?
-  print_r($newnode);
   node_save($newnode);
   return $newnode->nid;
 }

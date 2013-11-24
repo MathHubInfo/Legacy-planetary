@@ -59,32 +59,10 @@ function mmt_install() {
   $extensions_S = variable_get("mmt_format_extensions", '');
   mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S);
 
-
-  $mlids = array();
-
-  $arch_item = array(
-    'link_path' => drupal_get_normal_path('mmt/archives'),
-    'link_title' => "Archives",
-    'weight' => 10,
-    'menu_name' => 'main-menu'
-  );
-  $mlids[] = menu_link_save($arch_item);
-
-  $forum_item = array(
-    'link_path' => drupal_get_normal_path('forum'),
-    'link_title' => "Discussion",
-    'weight' => 15,
-    'menu_name' => 'main-menu'
-  );
-  $mlids[] = menu_link_save($forum_item);
-  
-  
-  variable_set('mmt_mlids', $mlids);
-
   drupal_set_message("installed");
 }
 
-function delete_node_type($node_type_name, $remove_type = true) {
+function mmt_delete_node_type($node_type_name, $remove_type = true) {
   // deleting all node instances
   $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
   $nids = array();
@@ -98,17 +76,8 @@ function delete_node_type($node_type_name, $remove_type = true) {
   }
 }
 
-function mmt_uninstall() {
-  //deleting node types
-  delete_node_type('mmtdoc');	
-  delete_node_type('article', false);
-  delete_node_type('glossary', false); 
-  
-  $mlids = variable_get('mmt_mlids');
-  foreach ($mlids as $mlid) {
-	menu_link_delete($mlid);
-  }
-
+function mmt_uninstall() { 
+  mmt_delete_node_type('mmtdoc'); 
   drupal_set_message("uninstalled");
 }
 

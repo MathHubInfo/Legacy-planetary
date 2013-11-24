@@ -6,7 +6,7 @@
 function mws_menu() {
 
   $items['mws/search'] = array(
-    'title' => "Archive Callback",
+    'title' => "Search Callback",
 	'page callback' => 'mws_search',
 	'access callback' => true,
     'menu_name' => 'main-menu',
@@ -15,7 +15,7 @@ function mws_menu() {
 	);
 
   $items['mws/query'] = array(
-    'title' => "Archive Callback",
+    'title' => "Query Callback",
   	'page callback' => 'mws_query',
   	'access callback' => true,
     'menu_name' => 'main-menu',

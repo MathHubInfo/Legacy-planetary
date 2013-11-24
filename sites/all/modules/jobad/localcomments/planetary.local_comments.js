@@ -58,8 +58,8 @@ var local_comments = {
       return (typeof e.attr("id") != "undefined");
     }).attr("id");
 
-    if(typeof id == "undefined"){
-      return; 
+    if(typeof id == "undefined"){      
+      id = "test";//return; 
     }
 
     var comment_types = this.getCommentTypes(); 

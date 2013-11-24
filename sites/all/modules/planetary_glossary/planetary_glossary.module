@@ -32,7 +32,7 @@ function planetary_glossary_field_formatter_view($entity_type, $entity, $field, 
       $lang = $entity->language;
       foreach ($items as $delta => $item) {
 	      $location = $item['path'];
-        $path_info = mmt_get_path_info($location);
+        $path_info = oaff_get_path_info($location);
 
         global $filter_context;
         $filter_context = array();
@@ -160,7 +160,7 @@ function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $ins
       // 
       if (isset($items[$delta]['path'])) {
         $location = $items[$delta]['path'];
-        $path_info = mmt_get_path_info($location);
+        $path_info = oaff_get_path_info($location);
 
         $moduleid = $path_info['module'];
 
@@ -281,7 +281,7 @@ function planetary_glossary_field_widget_validate($element, &$form_state) {
     
     $location = $values["data"]["path"]; //TODO for manually created nodes, this needs to correspond to the <module>.<lang>.<ext> standard
     $lang = $values["data"]["lang"];
-    $path_info = mmt_get_path_info($location);
+    $path_info = oaff_get_path_info($location);
     
     $dpath = $path_info['dpath'];
     planetary_repo_save_file($location, $values["data"]["content"]["value"]);

@@ -40,7 +40,13 @@ function jobad_add_to_sidebar($instance, $element, $options) {
 
   $str .= "});\n";
   $str .= '});';
-  drupal_add_js($str, 'inline');
+
+  $instJS = variable_get("JOBADInstJS");
+  if (!isset($instJS[$instance])) {
+    $js[$instance] = '';
+  }
+  $js[$instance] = $js[$instance] . " \n" . $str;
+  variable_set("JOBADInstJS", $instJS);
 }
 
 
@@ -66,6 +72,10 @@ function jobad_initialize($where = NULL) {
 
   $inst_id = jobad_init_instance($nr, $where);
   variable_set('JOBADInstances', $nr);
+  $instJS = variable_get("JOBADInstJS");
+  if (isset($instJS[$inst_id])) {
+    drupal_add_js($instJS[$instance], 'inline');
+  }
   return $inst_id;
 }
 
@@ -78,7 +88,7 @@ function jobad_boot() {
   variable_set('JOBADLoaded', false);
   variable_set('JOBADInstances', 0);
   variable_set('JOBADModulesArray', array());
-  variable_set('JOBADJSBuffer', ''); //buffers js to be added to page, is dumped on every jobad_initialize call
+  variable_set('JOBADInstJS', array()); //instance-specific JS, dumped only after the instance is initialized
 }
 
 /**

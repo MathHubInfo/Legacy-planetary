@@ -11,11 +11,11 @@ var interactiveViewing = {
 	},
 	
 
-	contextMenuEntries: function(targetArray, JOBADInstance) {
-	   target = targetArray[0]  //for some reason jobad passes [target] instead of target
+	contextMenuEntries: function(target, JOBADInstance) {
+		
 		mmt.setCurrentPosition(target);
 		var res = this.visibMenu();
-      if (mmt.focusIsMath) {
+      	if (mmt.focusIsMath) {
 			var me = this;
 			res["infer type"] = me.inferType;
 			if (mmt.currentURI !== null) {
@@ -27,10 +27,10 @@ var interactiveViewing = {
 				//res["get OMDoc"] = mmt.openCurrentOMDoc();
 			}
 			var folded = $(mmt.focus).closest('.math-folded');
-         if (folded.length !== 0)
-            res['unfold'] = function(){folded.removeMClass('math-folded');};
-         else
-            res['fold'] = function(){$(mmt.focus).addMClass('math-folded');};
+         	if (folded.length !== 0)
+            	res['unfold'] = function(){folded.removeMClass('math-folded');};
+         	else
+            	res['fold'] = function(){$(mmt.focus).addMClass('math-folded');};
 			return res;
 		} else if ($(target).hasClass('folder')) {
 			return res;
