@@ -290,6 +290,7 @@ function planetmath_profile_patch_core() {
 
 // This seems to be pretty much what's needed...
 function planetmath_profile_forum_creator() {
+  module_load_include('inc', 'forum', 'forum.admin');
   dd("Profile- In planetmath_profile_forum_creator");
   set_time_limit(0);
 
