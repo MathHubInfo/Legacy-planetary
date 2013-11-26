@@ -115,7 +115,6 @@ function oaff_views_default_views() {
 }
 
 function oaff_node_view($node, $view_mode, $langcode) {
-  
   if ($view_mode != "full")
 		return;
   global $filter_context;
@@ -126,7 +125,9 @@ function oaff_node_view($node, $view_mode, $langcode) {
        $source = $filter_context['source'];
        $pre = oaff_produce_preformatted($source);
        $output = oaff_mark_source_errors($pre, $filter_context['status']);
-       $node->content['field_external'][0]['content']['#markup'] =  $output; 
+       $inst_id = mmt_initialize();
+
+       $node->content['field_external'][0]['content']['#markup'] =  '<div id="' . $inst_id . '" class="bootstrap" >' . $output . '</div>'; 
 
        if (!oaff_has_error($node->nid)) { //must mark this as with error
         db_insert('oaff_errors') 
