@@ -430,8 +430,8 @@ function oaff_create_article($title, $body) {
   node_object_prepare($newnode);//necessary ?
   node_save($newnode);
   return $newnode->nid;
-
 }
+
 # ------------------------------ End MMT Autoload Crawler --------------------------------- #
 
 /**
@@ -444,7 +444,6 @@ function oaff_node_insert($node) {
     oaff_save_path($nid, $dpath);
   }
 }
-
 
 function oaff_save_path($nid, $path) {
   //saving path
