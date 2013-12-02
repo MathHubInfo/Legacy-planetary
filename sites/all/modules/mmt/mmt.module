@@ -1,24 +1,20 @@
 <?php
-//########################## API FUNCTIONS ##############################\\
+// -------------------------- API FUNCTIONS --------------------------- \\
 
 /**
- * Initialize MMT, loads css and js files and uses jobad API
+ * Initialize MMT, loads CSS and JS files and uses jobad API
+ * called in mmt_node_view
  */
 function mmt_initialize() {
-  /**
-     * CSS
-     */
+    /* CSS */
     $mmtPath = drupal_get_path('module', 'mmt');
     $mmt_config = variable_get('mmt_config');
     $mmtUrl = $mmt_config['mmturl'];  
 
-    libraries_load("jobad");
- 
+    
     drupal_add_css($mmtPath . '/css/mmt.css', array('weight' => PHP_INT_MAX, 'every_page' => false));
     
-    /**
-     * JavaScript
-     */
+    /* JavaScript */
     drupal_add_js('var mmtUrl = "' . $mmtUrl . '";', 'inline');
     jobad_add_module($mmtPath . '/jobad/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
     jobad_add_module($mmtPath . '/jobad/hovering.js', "kwarc.mmt.hovering");
@@ -31,28 +27,31 @@ function mmt_initialize() {
     drupal_add_js($mmtPath . '/utils/mmt-html.js', 'file', array('cache' => false));
     drupal_add_js($mmtPath . '/utils/mathml.js', 'file', array('cache' => false));
     //modules
-    $instName = jobad_initialize();
-    return $instName;
 }
 
 
-function mmt_get_contentPres($path, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
-  $mmt_config = variable_get('mmt_config');
-  $mmtUrl = $mmt_config['mmturl'];
-  $url = $mmtUrl . '/:planetary/getContentPres';
-  $data = array('path' => $path, 'style' => $style);
-  $options = array(
-    'http' => array(
-        'header'  => "Content-type: application/json\r\n",
-        'method'  => 'POST',
-        'content' => json_encode($data),
-    ),
-  );
-  $context  = stream_context_create($options);
-  $result = file_get_contents($url, false, $context);
-  return $result;
+/**
+ * implements hook_node_view
+ * initializes mmt (loads CSS and JS files) 
+ * @param $node The node that is being assembled for rendering.
+ * @param $view_mode The $view_mode parameter from node_view() (e.g. "full").
+ * @param $langcode The language code used for rendering.
+ */
+function mmt_node_view($node, $view_mode, $langcode) {
+  if ($view_mode != "full")
+    return;
+  if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
+    mmt_initialize();
+  }
 }
 
+/**
+ * function to get presentation of a document from the connected MMT instance (MMT URL set in MMT config)
+ * @param $dpath the MMT URI of the document
+ * @param $body the content of the document
+ * @param $style the MMT style to be used for presentation
+ * @return the processing result and log
+ */
 function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
   $mmt_config = variable_get('mmt_config');
   $mmtUrl = $mmt_config['mmturl'];
@@ -75,7 +74,13 @@ function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styl
   return $response;
 }
 
-
+/**
+ * function to get compilation of a document from the connected MMT instance (MMT URL set in MMT config)
+ * @param $dpath the MMT URI of the document
+ * @param $body the content of the document
+ * @param $format the source format of the document, used to select the correct MMT compiler
+ * @return the processing result and log
+ */
 function mmt_get_compiled($body, $dpath, $format) {
   $mmt_config = variable_get('mmt_config');
   $mmtUrl = $mmt_config['mmturl'];
@@ -99,23 +104,14 @@ function mmt_get_compiled($body, $dpath, $format) {
   return $response;
 }
 
-function mmt_get_content($path) {
-  $mmt_config = variable_get('mmt_config');
-  $mmtUrl = $mmt_config['mmturl'];
-  $postPath = '???'; //default-for documents
-  if (substr_count($path, '?') == 1) { //mmt module
-    $postPath = '??';
-  }
-  $url = $mmtUrl . '/:mmt?' . $path . $postPath. '_present_' . 'xml';
-  $content = file_get_contents($url);
-  return $content;
-}
-
-/** gets a list of the mmt paths of all mmt theories that are included in the given one
+/**
+ * gets a list of the mmt paths of all mmt theories that are included in the given one
  * i.e. all theories this one depends on 
  * e.g.  
-  mmt_get_dependencies("http://docs.omdoc.org/smglo/dgraph.en.omdoc?dgraph.en");
-  mmt_get_dependencies("http://docs.omdoc.org/smglo/dgraph.omdoc?dgraph");
+ * mmt_get_dependencies("http://docs.omdoc.org/smglo/dgraph.en.omdoc?dgraph.en");
+ *  mmt_get_dependencies("http://docs.omdoc.org/smglo/dgraph.omdoc?dgraph");
+ * @param $mpath the module path (MMT URI) for which to search dependencies
+ * @return an array with URIs of all modules this depends on
 */
 function mmt_get_dependencies($mpath) {
   $mmt_config = variable_get('mmt_config');
@@ -141,47 +137,14 @@ function mmt_get_dependencies($mpath) {
   return array($results); 
 }
 
-########################## END API FUNCTIONS ##############################
+// ######################## END API FUNCTIONS ########################### \\
 
 
-//############################# MAIN HOOKS ###############################\\
 /**
- * Implementing hook_menu()
+ * Implements hook_menu()
  */
 function mmt_menu() {
-
-  $items['mmt/comp/%/log'] = array(
-    'title' => 'MMT->OMDoc log',
-    'type' => MENU_LOCAL_ACTION,
-    'context' => MENU_CONTEXT_INLINE,
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('mmt_filter_compilation_log', 2),
-    'access arguments' => array('administer blocks'),
-  );
-  $items['mmt/pres/%/log'] = array(
-    'title' => 'MMT->OMDoc presentation',
-    'type' => MENU_LOCAL_ACTION,
-    'context' => MENU_CONTEXT_INLINE,
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('mmt_filter_compilation_log', 2),
-    'access arguments' => array('administer blocks'),
-  );
-  $items['mmt/comp'] = array(
-    'title' => 'MMT->OMDoc',
-    'type' => MENU_LOCAL_ACTION,
-    'context' => MENU_CONTEXT_INLINE,
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('mmt_parent'),
-    'access arguments' => array('administer blocks'),
-  );
-  $items['mmt/pres'] = array(
-    'title' => 'MMT->OMDoc',
-    'type' => MENU_LOCAL_ACTION,
-    'context' => MENU_CONTEXT_INLINE,
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('mmt_parent'),
-    'access arguments' => array('administer blocks'),
-  );
+  $items = array();
   $items['admin/config/content/mmt'] = array(
     'title' => 'MMT configuration',
     'description' => 'Configure MMT Integration. ',
@@ -193,8 +156,14 @@ function mmt_menu() {
   return $items;
 }
 
-//--------------------------- MMT Configuration --------------------------\\
+// -------------------------- MMT Configuration ------------------------- \\
 
+
+/**
+ * validation function of mmt configuration form
+ * @param $form the form to be validated
+ * @param $form the form state, including filled in values
+ */
 function mmt_config_validate($form, &$form_state) {
   $mmturl = $form_state['values']['mmt_instance_url'];
   if (trim($mmturl) == '') {
@@ -202,11 +171,20 @@ function mmt_config_validate($form, &$form_state) {
   }
 }
 
+/**
+ * submit function of the mmy configuration form
+ * @param $form the form to be validated
+ * @param $form the form state, including filled in values
+ */
 function mmt_config_submit($form, &$form_state) {
   $mmturl = $form_state['values']['mmt_instance_url'];
   mmt_config_set($mmturl);
 }
 
+/**
+ * helper function to set mmt configuration, called by mmt_config_submit and mmt_install
+ * @param $mmturl the URL of the MMT instance connected to the OAFF
+ */
 function mmt_config_set($mmturl) {
   $mmt_config = variable_get('mmt_config');
   $mmt_config['mmturl'] = $mmturl;
@@ -214,6 +192,12 @@ function mmt_config_set($mmturl) {
   variable_set("mmt_config", $mmt_config);
 }
 
+/**
+ * MMT configuration form
+ * @param $form the form to be validated
+ * @param $form the form state, including filled in values
+ * @return the newly built form
+ */
 function mmt_config_form($form, &$form_state) {
   $form['mmt_instance_url'] = array(
     '#type' => 'textfield',
@@ -227,21 +211,14 @@ function mmt_config_form($form, &$form_state) {
 
   return system_settings_form($form);
 }
-#-------------------------- End MMT Configuration -------------------------#
+// ########################## End MMT Configuration ########################## \\
 
-
-
-//------------------------- Menu callback functions ---------------------\\
-function mmt_parent($form, $form_state) {
-  return $form;
-}
-
-#------------------------ End Menu callback functions ---------------------#
 
 
 // -------------------------------- MMT Filters ------------------------------------ \\
-/*
- * filter hooks for handling content formats
+/**
+ * filter hooks for handling content formats, implements hook_filter_info()
+ * declares two filters: for MMT compilation and for MMT presentation
  */
 function mmt_filter_info() {
   $filters = array();
@@ -269,6 +246,16 @@ function mmt_filter_info() {
   return $filters;
 }
 
+/**
+ * Processing function for the MMT presentation filter, implements callback_filter_process
+ * @param $text the text string to be filtered
+ * @param $filter the filter object containing settings for the given format
+ * @param $format The text format object assigned to the text to be filtered.
+ * @param $langcode The language code of the text to be filtered
+ * @param $cache A Boolean indicating whether the filtered text is going to be cached
+ * @param $cache_id The ID of the filtered text, if $cache is TRUE
+ * @return the presentation result
+ */
 function mmt_filter_presentation_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   global $filter_context;
   global $filter_debug;
@@ -305,6 +292,16 @@ function mmt_filter_presentation_process($text, $filter, $format, $langcode, $ca
   return $result['content'];
 }
 
+/**
+ * Processing function for the MMT compilation filter, implements callback_filter_process
+ * @param $text the text string to be filtered
+ * @param $filter the filter object containing settings for the given format
+ * @param $format The text format object assigned to the text to be filtered.
+ * @param $langcode The language code of the text to be filtered
+ * @param $cache A Boolean indicating whether the filtered text is going to be cached
+ * @param $cache_id The ID of the filtered text, if $cache is TRUE
+ * @return the compilation result
+ */
 function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   global $filter_debug;
   global $filter_context;
@@ -341,18 +338,18 @@ function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cac
   return $result['content'];
 }
 
-
-function mmt_filter_compilation_log($form, $form_state, $key) {
-  exit();
-  $val = _drutexml_cache_read($key);
-  $form["log"] =
-		array(
-		      "#markup" => "<pre>".htmlentities($val)."</pre>",
-		      );
-	return $form;
-}
-
+/**
+ * settings function for the MMT presentation filter, implements callback_filter_settings
+ * @param $form The prepopulated form array of the filter administration form
+ * @param $form_state The state of the (entire) configuration form
+ * @param $filter The filter object containing the current settings for the given format, in $filter->settings
+ * @param $format The format object being configured
+ * @param $defaults The default settings for the filter, as defined in 'default settings' in hook_filter_info(). These should be combined with $filter->settings to define the form element defaults
+ * @param $filters The complete list of filter objects that are enabled for the given format
+ * @return an array of settings
+ */
 function mmt_filter_presentation_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings = array();
   $settings['mmt_style'] = array(
     '#type' => 'textfield',
     '#title' => t('MMT Presentation Style'),
@@ -362,7 +359,18 @@ function mmt_filter_presentation_settings($form, $form_state, $filter, $format, 
   return $settings;
 }
 
+/**
+ * settings function for the MMT compilation filter, implements callback_filter_settings
+ * @param $form The prepopulated form array of the filter administration form
+ * @param $form_state The state of the (entire) configuration form
+ * @param $filter The filter object containing the current settings for the given format, in $filter->settings
+ * @param $format The format object being configured
+ * @param $defaults The default settings for the filter, as defined in 'default settings' in hook_filter_info(). These should be combined with $filter->settings to define the form element defaults
+ * @param $filters The complete list of filter objects that are enabled for the given format
+ * @return an array of settings
+ */
 function mmt_filter_compilation_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings = array();
   $settings['mmt_format'] = array(
     '#type' => 'textfield',
     '#title' => t('Input Format for MMT to compile'),
@@ -371,13 +379,16 @@ function mmt_filter_compilation_settings($form, $form_state, $filter, $format, $
   );
   return $settings;
 }
-# -------------------------------- End MMT Filters ------------------------------------ #
+// ############################# End MMT Filters #################################### \\
 
 
 
-# ------------------------------ Other Hooks --------------------------------- #
+// ------------------------------ Other Hooks --------------------------------- \\
 /**
  * implements hook_form_alter, adds URI field to mmt-specific forms
+ * @param $form Nested array of form elements that comprise the form.
+ * @param $form_state A keyed array containing the current state of the form. 
+ * @param $form_id String representing the name of the form itself. 
  */
 function mmt_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'mmtdoc_node_form') { 
@@ -391,19 +402,34 @@ function mmt_form_alter(&$form, &$form_state, $form_id) {
     }
   }
 }
-# ----------------------------- End Other Hookds ------------------------------ #
+// ############################## End Other Hookds ############################ #
 
-//------------------------------ MMT Formatter ---------------------------------\\
+// ----------------------------- MMT Formatter -------------------------------- \\
+
+/**
+ * implements hook_field_formatter_info, declares the formatter types implemented 
+ * by this module.
+ * Currently:  
+ *   'mmt_formatter' which formats mmt content 
+ */
 function mmt_field_formatter_info() {
    return array(
-   // This formatter changes the background color of the content region.
     'mmt_formatter' => array(
       'label' => t('Formatter of MMT content'),
       'field types' => array('vfs_file'),
     ),
   );
 }
-
+/**
+ * implements hook_filed_formatter view, 
+ * @param $entity_type The type of $entity
+ * @param $entity The entity being displayed
+ * @param $field The field structure
+ * @param $instance The field instance
+ * @param $langcode The language associated with $items
+ * @param $items Array of values for this field
+ * @param $display The display settings to use, as found in the 'display' entry of instance definitions
+ */
 function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
   
@@ -443,6 +469,5 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
   return $element;
 }
 
-# ------------------------------- End MMT Formatter ------------------------------- #
-################################## END MAIN HOOKS ##################################
+// ############################### End MMT Formatter ################################ \\
                                                  

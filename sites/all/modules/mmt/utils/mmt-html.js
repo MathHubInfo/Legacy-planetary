@@ -25,20 +25,20 @@ $.fn.addMClass = function(cl){
          this.setAttribute('class', cl);
    });
    return this;
-}
+};
 /* remove a class cl from all matched elements */
 $.fn.removeMClass = function(cl){
    this.each(function(){
       var classes = getClassArray(this);
-      var newclasses = classes.filter(function(elem){return (elem !== cl) && (elem !== "")});
+      var newclasses = classes.filter(function(elem){return (elem !== cl) && (elem !== "");});
       var newclassesAttr = newclasses.join(' ');
-      if (newclassesAttr == "")
+      if (newclassesAttr === "")
          $(this).removeAttr('class');
       else
          this.setAttribute('class', newclassesAttr);
    });
    return this;
-}
+};
 /* toggle class cl in all matched elements */
 $.fn.toggleMClass = function(cl){
    this.each(function(){
@@ -49,14 +49,14 @@ $.fn.toggleMClass = function(cl){
          $(this).removeMClass(cl);
    });
    return this;
-}
+};
 /* keep elements that have class cl */
 $.fn.filterMClass = function(cl){
    return this.filter(function(){
       var classes = getClassArray(this);
-      return (classes.indexOf(cl) !== -1)
+      return (classes.indexOf(cl) !== -1);
    });
-}
+};
 // end $.fn.f functions
 
 
@@ -68,7 +68,7 @@ var uris = {
 
 var mmt = {
 	/* these are auxiliary variables used to communicate information about the current focus from the context menu entries to the methods; they are not passed as an argument to avoid encoding problems */
-  	// focus: holds a reference to the object that was clicked by the user
+	// focus: holds a reference to the object that was clicked by the user
 	focus : null,
 	// focus: true if focus is within a math object
 	focusIsMath : false,    
@@ -82,24 +82,24 @@ var mmt = {
 	currentPosition : null, 
 	
 	/* set focus, focusIsMath, currentURI, currentElement, currentComponent, currentPosition according to elem */
-	setCurrentPosition : function(elem){
-	    var math = $(elem).closest('math')
+	setCurrentPosition : function(elem) {
+		var math = $(elem).closest('math');
 		this.focusIsMath = (math.length !== 0);
 		if (this.focusIsMath) {
-		   this.focus = this.getSelectedParent(elem);
-	   	this.currentElement = math.attr('jobad:owner');
-		   this.currentComponent = math.attr('jobad:component');
-		   this.currentPosition = this.focus.getAttribute('jobad:mmtref');
+			this.focus = this.getSelectedParent(elem);
+			this.currentElement = math.attr('jobad:owner');
+			this.currentComponent = math.attr('jobad:component');
+			this.currentPosition = this.focus.getAttribute('jobad:mmtref');
 		} else {
-		   this.focus = elem
-	   	   this.currentElement = null;
-		   this.currentComponent = null;
-		   this.currentPosition = null;
+			this.focus = elem;
+			this.currentElement = null;
+			this.currentComponent = null;
+			this.currentPosition = null;
 		}
 		if (elem.hasAttribute("jobad:href")) {
 			mmt.currentURI = elem.getAttribute('jobad:href');
 		} else {
-		   mmt.currentURI = null;
+			mmt.currentURI = null;
 		}
 	},
 	
@@ -127,11 +127,10 @@ var mmt = {
 		var doc = (arr.length >= 1) ? arr[0] : "";
 		var mod = (arr.length >= 2) ? arr[1] : "";
 		var sym = (arr.length >= 3) ? arr[2] : "";
+		var pres = ''; //default
 		if (present && this.notstyle !== null)
-			var pres = "_present_" + this.notstyle;
-		else
-			var pres = '';
-      var relativeURL = '/:mmt?' + doc + '?' + mod + '?' + sym + '?' + act + pres;
+			pres = "_present_" + this.notstyle;
+		var relativeURL = '/:mmt?' + doc + '?' + mod + '?' + sym + '?' + act + pres;
 		return this.makeURL(relativeURL);
 	},
 
@@ -140,27 +139,27 @@ var mmt = {
 			var targetnode = $('#' + targetid).children();
 			targetnode.replaceWith(data.firstChild);
 		}
-		if (async == null) async = true;
+		if (async === null) async = true;
 		$.ajax({ 'url': url,
-				 'dataType': 'xml',
-				 'async': async,
-				 'success': cont
-			   });
+			'dataType': 'xml',
+			'async': async,
+			'success': cont
+		});
 	},
 	
 	load : function (elem) {
-	   if (elem.hasAttribute('jobad:load')) {
-         var url = this.adaptMMTURI(elem.getAttribute('jobad:load'), '', true);
-         var res = null;
-         $.ajax({ 'url': url,
-                'dataType': 'xml',
-                'async': false,
-                'success': function cont(data) {res = data;}
-               });
-         //proxyAjax('get', url, '', cont, false, 'text/xml');
-         elem.removeAttribute('jobad:load');
-         return res.firstChild;
-      }
+		if (elem.hasAttribute('jobad:load')) {
+			var url = this.adaptMMTURI(elem.getAttribute('jobad:load'), '', true);
+			var res = null;
+			$.ajax({ 'url': url,
+				'dataType': 'xml',
+				'async': false,
+				'success': function cont(data) {res = data;}
+			});
+			//proxyAjax('get', url, '', cont, false, 'text/xml');
+			elem.removeAttribute('jobad:load');
+			return res.firstChild;
+		}
 	},
 	
 
@@ -177,23 +176,24 @@ var mmt = {
 	},
 	
 	sideBarClick : function(event,p) {
-	      if (event.detail == 1) navigation.navigate(p);
-	      else if (event.detail == 2) {
-	         if (graphWindow == null)
-	            openGraph(p);
-	         else
-	            graphWindow.navigateGraph(p);
-	      }
+		if (event.detail == 1) {
+			navigation.navigate(p);
+		} else if (event.detail == 2) {
+			if (graphWindow === null)
+				openGraph(p);
+			else
+				graphWindow.navigateGraph(p);
+		}
 	},
-
+	
 	/*
-	  There are some small UI problems left to fix:
-	  - context menu accessed from within lookup window should be on top of lookup window, currently underneath
-	  - lookup window should not move when scrolling vertically
-	  - title bar should be thinner
-	  - title bar should only show the cd and name component, but not the cdbase of the symbol href (full href should be shown as @title)
+	There are some small UI problems left to fix:
+	- context menu accessed from within lookup window should be on top of lookup window, currently underneath
+	- lookup window should not move when scrolling vertically
+	- title bar should be thinner
+	- title bar should only show the cd and name component, but not the cdbase of the symbol href (full href should be shown as @title)
 	*/
-	setLatinDialog : function (content, title){
+	setLatinDialog : function (content, title) {
 		var dia = $("<div><span></span></div>");//$("#latin-dialog");
 		dia.dialog({'title': title});
 		dia[0].replaceChild(content, dia[0].firstChild);
@@ -202,7 +202,7 @@ var mmt = {
 	
 	getSelectedParent : function (elem){
 		var s = $(elem).parents().andSelf().filterMClass('math-selected');
-		if (s.length == 0)
+		if (s.length === 0)
 			return elem;
 		else
 			return s[0];
@@ -213,7 +213,7 @@ var mmt = {
 	},
 	
 	isSelected : function(target) {
-		$(target).filterMClass("math-selected").length !== 0;
+		return $(target).filterMClass("math-selected").length !== 0;
 	},
 	
 	setSelected : function(target){
@@ -244,7 +244,7 @@ var mmt = {
 	 */
 	getTagName : function(object) {
 		var returnTagName = ""; //default return value
-		if (object == null || object.tagName === undefined) {
+		if (object === null || object.tagName === undefined) {
 			return null;
 		}
 		var tagNameOriginal = object.tagName;
@@ -264,9 +264,9 @@ var XML = {
 	elem : function (tag, content) {return this.elem1(tag, null, null, content);},
 	// helper function to produce xml elements with 1 attribute: <tag key="value">content</tag> or <tag key="value"/>
 	elem1 : function (tag, key, value, content) {
-		var atts = (key == null) ? "" : this.attr(key,value);
+		var atts = (key === null) ? "" : this.attr(key,value);
 		var begin = '<' + tag + atts;
-		if (content == null) {
+		if (content === null) {
 			return begin + '/>';
 		} else {
 			return begin + '>' + content + '</' + tag + '>';
@@ -285,12 +285,12 @@ var qmt = {
 
 	/* executes a QMT query (as constructed by helper functions) via ajax and runs a continuation on the result */
     exec : function (q, cont) {
-	   var qUrl = mmt.makeURL('/:query');
+		var qUrl = mmt.makeURL('/:query');
 		$.ajax({
 			url:qUrl, 
 			type:'POST',
 			data:q,
-		    dataType : 'xml',
+			dataType : 'xml',
 			processData:false,
 			contentType:'text/plain',
 			success:cont,

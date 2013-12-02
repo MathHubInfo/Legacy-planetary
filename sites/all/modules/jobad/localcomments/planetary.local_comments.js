@@ -13,18 +13,18 @@ var local_comments = {
     var notifications = Drupal.settings.localcomments.comments;
     var comment_types = this.getCommentTypes(); 
 
+    var showNotification = function(me) {
+      JOBADInstance.Sidebar.registerNotification(document.getElementById(me.id), {
+        "text": me.summary,
+        "trace": true,
+        "click": function(){
+          location.href = me.dest_url; 
+        },
+        "icon": comment_types[me.type]
+      }).on("contextmenu", false);
+    };
     for(var i=0;i<notifications.length;i++){
-      (function(){
-          var me = notifications[i];
-          JOBADInstance.Sidebar.registerNotification(document.getElementById(me.id), {
-            "text": me.summary,
-            "trace": true,
-            "click": function(){
-              location.href = me.dest_url; 
-            },
-            "icon": comment_types[me.type]
-          }).on("contextmenu", false);
-      })()
+      showNotification(notifications[i]);
     }
   },
   getCommentsFor: function(id){
@@ -66,7 +66,7 @@ var local_comments = {
 
     var result = {}; 
 
-   if(Drupal.settings.localcomments.shows_add_menu_entry){
+    if(Drupal.settings.localcomments.shows_add_menu_entry){
       var add_comment = function(type){
         var url = Drupal.settings.localcomments.nid; 
 
@@ -117,48 +117,14 @@ var local_comments = {
         });
         
         lc_dialog.dialog("open");
-
-        /*
-        $dialog
-        .attr("title", "New comment for '"+id+"'")
-        .append(
-          JOBAD.refs.$("<iframe />")
-          .attr("src", Drupal.settings.basePath+"?q=localcomment/"+escape(url)+"/"+escape(id)+"/"+escape(type)+"/?ajax")
-          .width("100%")
-          .height("95%")
-        )
-        .dialog({
-          height: 500,
-          width: 1000,
-          modal: true,
-          close: function(){
-            location.reload(); 
-          }
-        }).parent().css({
-          "position": "fixed",
-          "top": Math.max(0, ((window.innerHeight - $dialog.outerHeight()) / 2)),
-          "left": Math.max(0, ((window.innerWidth - $dialog.outerWidth()) / 2))
-        });
-        */
       };
 
       result["Add Comment"] = JOBAD.util.map(comment_types, function(icon, type){
-        return [type, function(){add_comment(type); }, icon]
-      }); 
-
-      var inner = {};
-      var keys = Object.keys(comment_types);
-      for (var i=0;i<keys.length;i++) {
-        inner[keys[i]] = (function() { add_comment(inner[keys[i]]); });
-      }
-
-      result = {};
-      result["Add Comment"] = inner;
+        return [type, function(){add_comment(type); }, icon];
+      });
     }
-
-    console.log(result);
+    
     return result; 
   }
 };
-
 JOBAD.modules.register(local_comments);

@@ -19,9 +19,9 @@ function localcomments_node_view($node, $view_mode, $langcode){
           )
     ), 'setting');
     $lc_path = drupal_get_path("module", "localcomments");
-    jobad_add_module($lc_path . "/planetary.local_comments.js", "planetary.local_comments");
-    //jobad_initialize("#node-" . ($node->nid));
-    drupal_add_css(".ui-menu { width: 150px; }", "inline");
+    // jobad_add_module($lc_path . "/planetary.local_comments.js", "planetary.local_comments");
+    //// jobad_initialize("#node-" . ($node->nid));
+    // drupal_add_css(".ui-menu { width: 150px; }", "inline");
   }
 }
 
@@ -74,6 +74,7 @@ function localcomments_getcomments($uri){
  * implements hook_menu() - Called when loading the menu to create a new message
  */
 function localcomments_menu() {
+  $items = array();
   $items['localcomment/%/%/%'] = array( // Using the '%node' load argument ensures that the nid attempting to be accessed belongs to an existing node.
     'title' => 'Send Message',
     'description' => 'Send a message',
@@ -146,7 +147,6 @@ function localcomments_make_node($nid, $elid, $type, $title, $body) {
 function localcomments_check_post() {
   return true; //for now
 }
-
 
 /**
 * Callback for the menu

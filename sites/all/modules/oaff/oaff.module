@@ -1,6 +1,11 @@
 <?php
 
+/**
+ * Implements hook_menu
+ * Adds entries for OAFF configuration and auto-loading nodes (from location set in config) 
+ */
 function oaff_menu() {
+  $items = array();
   $items['admin/config/content/oaff'] = array(
     'title' => 'OAFF configuration',
     'description' => 'Configure OAFF',
@@ -18,6 +23,10 @@ function oaff_menu() {
   return $items;
 }
 
+/**
+ * Implements access callback for OAFF auto-load feature
+ * Only admin has access to reload mmt nodes
+ */
 function oaff_setup_access() {
   global $user;
   if ($user-> uid == 1) {//only admin has rights 
@@ -27,93 +36,25 @@ function oaff_setup_access() {
   }
 }
 
-
-function oaff_views_api() {
-  return array(
-    'api' => "3.0",
-  );
+/**
+ * Function to setup OAFF-specific functionality (CSS & JS) on page
+ * OAFF-feature modules (e.g. MMT) define their own initialize methods 
+ * to load further features (e.g. JOBAD modules)
+ * Typically called from hook_node_view (i.e. for OAFF, oaff_node_view)
+ */
+function oaff_initialize() {
+    libraries_load("jobad");
+    // modules are loaded in specific oaff extensions (e.g. MMT)
+    $inst_name = jobad_initialize();
+    return $inst_name; 
 }
 
-function oaff_views_query_alter(&$view, &$query) {
-  $results = db_select('oaff_errors', 'e')
-    ->fields('e', array('nid'))
-    ->execute()
-    ->fetchAll();
-
-  $err_nodes = array();
-
-  foreach ($results as $result) {
-    $err_nodes[] = $result->nid;
-  }
-
-  $cond =  array(
-    "field" => 'node.nid',
-    "value" => $err_nodes,
-    'operator' => 'in');
-
-  $query->where[1]['conditions'][] = $cond;  
-}
-
-function oaff_views_default_views() {
-  $export = array();
-
-  $view = new view();
-  $view->name = 'oaff_broken_docs';
-  $view->description = '';
-  $view->tag = 'default';
-  $view->base_table = 'node';
-  $view->human_name = 'oaff_broken_docs';
-  $view->core = 7;
-  $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
-
-  /* Display: Master */
-  $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'oaff_broken_docs';
-  $handler->display->display_options['use_more_always'] = FALSE;
-  $handler->display->display_options['access']['type'] = 'perm';
-  $handler->display->display_options['cache']['type'] = 'none';
-  $handler->display->display_options['query']['type'] = 'views_query';
-  $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-  $handler->display->display_options['style_plugin'] = 'default';
-  $handler->display->display_options['row_plugin'] = 'node';
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'node';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
-  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  /* Sort criterion: Content: Post date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'node';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
-  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Filter criterion: Content: Published */
-  $handler->display->display_options['filters']['status']['id'] = 'status';
-  $handler->display->display_options['filters']['status']['table'] = 'node';
-  $handler->display->display_options['filters']['status']['field'] = 'status';
-  $handler->display->display_options['filters']['status']['value'] = 1;
-  $handler->display->display_options['filters']['status']['group'] = 1;
-  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
-  /* Filter criterion: Content: Type */
-  $handler->display->display_options['filters']['type']['id'] = 'type';
-  $handler->display->display_options['filters']['type']['table'] = 'node';
-  $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['value'] = array(
-    'glossary' => 'glossary',
-  );
-
-  /* Display: Page */
-  $handler = $view->new_display('page', 'Page', 'page');
-  $handler->display->display_options['path'] = 'oaff-broken-docs';
-
-  $views[$view->name] = $view;
-  return $views;
-}
-
+/**
+ * Implements hook_node_view
+ * @param $node The node that is being assembled for rendering.
+ * @param $view_mode The $view_mode parameter from node_view() (e.g. "full").
+ * @param $langcode The language code used for rendering.
+ */
 function oaff_node_view($node, $view_mode, $langcode) {
   if ($view_mode != "full")
 		return;
@@ -125,7 +66,7 @@ function oaff_node_view($node, $view_mode, $langcode) {
        $source = $filter_context['source'];
        $pre = oaff_produce_preformatted($source);
        $output = oaff_mark_source_errors($pre, $filter_context['status']);
-       $inst_id = mmt_initialize();
+       $inst_id = oaff_initialize();
 
        $node->content['field_external'][0]['content']['#markup'] =  '<div id="' . $inst_id . '" class="bootstrap" >' . $output . '</div>'; 
 
@@ -144,7 +85,7 @@ function oaff_node_view($node, $view_mode, $langcode) {
   		    ->execute();
         }
 
-	    $inst_id = mmt_initialize();
+	    $inst_id = oaff_initialize();
 
 	    $result = db_query('SELECT e.field_lc_elid_value, t.field_lc_type_value, n.entity_id, node.title
 	      FROM {field_data_field_lc_nid} n
@@ -192,6 +133,11 @@ function oaff_node_view($node, $view_mode, $langcode) {
   }
 }
 
+/**
+ * function to check if an OAFF node has an error (during compilation)
+ * @param $nid the id of the node that is being checked
+ * @return true if node compilation has failed last time, false otherwise
+ */
 function oaff_has_error($nid) {
   $result =  $result = db_select('oaff_errors', 'e')
     ->fields('e')
@@ -201,6 +147,12 @@ function oaff_has_error($nid) {
   return (count($result) > 0);
 }
 
+/**
+ * function to mark errors, annotates source string with error information
+ * @param $source the source string
+ * @param $status the compilation status (containing error information)
+ * @return the processed string (with errors marked)
+ */
 function oaff_mark_source_errors($source, $status) {
   $color_catalog = array("Error" => "#FF8888", "Warning" => "#FFFF44", "Fatal" => "#FF3333","Info" => "#9999FF");
   foreach ($status as $filter_name => $filter_status) {
@@ -223,21 +175,30 @@ function oaff_mark_source_errors($source, $status) {
   return $source;
 }
 
-
+/**
+ * Simple function to produce preformatted html element
+ * just wraps a <pre> element around the text
+ * @param $text the input text
+ * @return the processed text
+ */
 function oaff_produce_preformatted($text) {
   return "<pre>" . check_plain($text) . "</pre>";
 }
 
-//-------------------------------- MMT Autoload Crawler --------------------------------- \\
+// ------------------------------- OAFF Autoload Crawler -------------------------------- \\
 /**
- *  Creates nodes for all documents in planetary_repo path where there is a mmt-connected content type 
- * associated with that format (based on file extension).  
+ * Creates nodes for all documents in planetary_repo path where there is a oaff-connected content type 
+ * associated with that format (based on file extension).  (All set up in OAFF configuration)
  */
 function oaff_create_nodes() {
   _oaff_crawl_archives();
   return "Success";
 }
 
+/**
+ * function crawl oaff archives for files to create nodes from (based on extension and OAFF config)
+ * is called by oaff_create_nodes
+ */
 function _oaff_crawl_archives() {
   $res = planetary_repo_list("");
   foreach ($res as $file) {
@@ -247,6 +208,11 @@ function _oaff_crawl_archives() {
   }
 }
 
+/**
+ * function to crawl one archive for files to create oaff nodes from (based on extension and OAFF config)
+ * is called by _oaff_crawl_archives() for each found archive
+ * @param $path the VFS folder-path of the archive
+ */
 function _oaff_crawl_archive($path) { 
   $oaff_config = variable_get('oaff_config');
   $docbases = array();
@@ -277,6 +243,12 @@ function _oaff_crawl_archive($path) {
   oaff_set_children($oaff_config['archives_nid'], array($nid));
 }
 
+/**
+ * function to crawl the source folder (where the source files are) of an archive for files 
+ * to create oaff nodes from (based on extension and OAFF config)
+ * @param $archive the name of the archive
+ * @param $path the file path of the source folder
+ */
 function _oaff_crawl_source_folder($archive, $path) {
   $oaff_config = variable_get('oaff_config');
   $format = $oaff_config['formats'][$archive];
@@ -290,14 +262,12 @@ function _oaff_crawl_source_folder($archive, $path) {
     $title = $archive;
   }
   $cids = array();
-
   $body = '';
   foreach ($res as $file) {
     $fpath = $path . "/" . $file;
     if ($path == '') {
       $fpath = $file;
     }
-
     if($file[0] != '.') {
       if (planetary_repo_is_dir($fpath)) {  
         $cids[] = _oaff_crawl_source_folder($archive, $fpath);
@@ -322,9 +292,7 @@ function _oaff_crawl_source_folder($archive, $path) {
       }
     }
   }
-
   $path_info = oaff_get_path_info($path);
-  
   $menupath = $path_info['dpath'];  
   $nid = oaff_create_article($title, $body);
   oaff_set_children($nid, $cids);   
@@ -332,6 +300,11 @@ function _oaff_crawl_source_folder($archive, $path) {
   return $nid;
 }
 
+/**
+ * Explicitly save the parent-child relation of oaff nodes in the database (e.g. for building breadcrumb or menu later)
+ * @param $pid the node id of the parent node
+ * @param $cids the ids of the children 
+ */
 function oaff_set_children($pid, $cids) {
   foreach ($cids as $cid) {
     db_insert('oaff_node_parents')
@@ -343,6 +316,11 @@ function oaff_set_children($pid, $cids) {
   }
 }
 
+/**
+ * function to set breadcrumb when viewing oaff nodes
+ * adds, in order, links to OAFF ancestor nodes to the native drupal breadcrump
+ * @param $nid the id of the node for which to construct breadcrumb
+ */
 function oaff_set_breadcrumb($nid) {
   $oaff_config = variable_get('oaff_config');
   $a_nid = $oaff_config['archives_nid'];
@@ -356,8 +334,8 @@ function oaff_set_breadcrumb($nid) {
       ->condition('cid', $pids[count($pids) - 1],'=')
       ->execute()
       ->fetchAssoc();
-    if (!isset($result['pid'])) {//not an oaff node
-      return 0; //nothing to do
+    if (!isset($result['pid'])) {// not an oaff node
+      return 0; // nothing to do
     }
     $pid = $result['pid'];
     $pids[] = $pid;
@@ -365,7 +343,7 @@ function oaff_set_breadcrumb($nid) {
       $found_root = true;
     }
   }
-  $bc_entires = array();
+  $bc_entries = array();
   foreach ($pids as $pid) {
     $result = db_select('node', 'n')
       ->fields('n', array("title"))
@@ -384,6 +362,16 @@ function oaff_set_breadcrumb($nid) {
   drupal_set_breadcrumb($new_bc);
 }
 
+/**
+ * create an oaff node, called by _oaff_crawl_source_folder 
+ * @param $module the module name, becomes node title //TODO clarify document-module relation (e.g. for smglo)
+ * @param $lang, the language of the node
+ * @param $format the text format of the node
+ * @param $dpath the document path (MMT URI) of the current document 
+ * @param $location the physical location of the source file 
+ * @param $node_type the type of the node to be created
+ * @return the id of the newly created node
+ */
 function oaff_create_node($module, $lang, $format, $dpath, $location, $node_type) {
   $title = $module;
   $newnode = (object) array(
@@ -409,6 +397,13 @@ function oaff_create_node($module, $lang, $format, $dpath, $location, $node_type
   return $newnode->nid;
 }
 
+/**
+ * created an article node programmatically, (for OAFF documents corresponding to folders in source)
+ * called from _oaff_crawl_source_folder
+ * @param $title the title of the article (in principle, name of folder)
+ * @param $body the body of the article (constructed based on its contents in _oaff_crawl_source_folder
+ * @return the id of the newly created node
+ */
 function oaff_create_article($title, $body) {
   $newnode = (object) array(
    'type' => 'article',
@@ -432,10 +427,11 @@ function oaff_create_article($title, $body) {
   return $newnode->nid;
 }
 
-# ------------------------------ End MMT Autoload Crawler --------------------------------- #
+// ############################# End OAFF Autoload Crawler ########################### \\
 
 /**
- * implements hook_node_insert
+ * implements hook_node_insert, creates an alias path for the node based on its document path (MMT URI) 
+ * @param $node the node object to be inserted in the database
  */
 function oaff_node_insert($node) {
   if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
@@ -445,6 +441,11 @@ function oaff_node_insert($node) {
   }
 }
 
+/**
+ * saves a path alias for a node, used by oaff_node_insert
+ * @param $nid the node id
+ * @param $path the alias to be saved (the MMT URI of the node)
+ */ 
 function oaff_save_path($nid, $path) {
   //saving path
   if (substr($path, -1) == '/') {
@@ -457,7 +458,11 @@ function oaff_save_path($nid, $path) {
   path_save($pathOpt);
 }
 
-/** api for MMT/VFS paths and locations */
+/** 
+ * api for MMT/VFS paths and locations, translated MMT URIs to physical location of source files 
+ * @param $dpath the MMT URI
+ * @return the physical location of the doc
+ */
 function oaff_get_location($dpath)  {
   $oaff_config = variable_get('oaff_config');
   $docbases = $oaff_config['docbases'];
@@ -469,6 +474,11 @@ function oaff_get_location($dpath)  {
   }
 }
 
+/**
+ * builds information about a physical file location, including the archives it belongs in, filename, extension, etc
+ * @param $location the file path 
+ * @return an array with the path information
+ */
 function oaff_get_path_info($location) {
   $oaff_config = variable_get('oaff_config');
   $docbases = $oaff_config['docbases'];
@@ -520,8 +530,13 @@ function oaff_get_path_info($location) {
 }
 
 
-//--------------------------- MMT Configuration --------------------------\\
+// -------------------------- OAFF Configuration ------------------------- \\
 
+/**
+ * validation function of oaff configuration form
+ * @param $form the form to be validated
+ * @param $form the form state, including filled in values
+ */
 function oaff_config_validate($form, &$form_state) {
   $formats_S = $form_state['values']['oaff_archive_formats'];
   $formats_lines = explode("\n", $formats_S);
@@ -551,6 +566,11 @@ function oaff_config_validate($form, &$form_state) {
   }
 }
 
+/**
+ * submit function of the oaff configuration form
+ * @param $form the form to be validated
+ * @param $form the form state, including filled in values
+ */
 function oaff_config_submit($form, &$form_state) {
   $formats_S = $form_state['values']['oaff_archive_formats'];
   $node_types_S = $form_state['values']['oaff_format_node_types'];
@@ -559,6 +579,12 @@ function oaff_config_submit($form, &$form_state) {
   oaff_config_set($formats_S, $node_types_S, $extensions_S);
 }
 
+/**
+ * helper function to set oaff configuration, called by oaff_config_submit and oaff_install
+ * @param $formats_S string encoding information of archive - format pairs
+ * @param $node_types_S string encoding information of format - node_type pairs
+ * @param $extensions_S string encoding information of format - (file) extension pairs
+ */
 function oaff_config_set($formats_S, $node_types_S, $extensions_S) {
   $formats_lines = explode("\n", $formats_S);
   $formats = array();
@@ -594,6 +620,12 @@ function oaff_config_set($formats_S, $node_types_S, $extensions_S) {
   variable_set("oaff_config", $oaff_config);
 }
 
+/**
+ * OAFF configuration form
+ * @param $form the form to be validated
+ * @param $form the form state, including filled in values
+ * @return the newly built form
+ */
 function oaff_config_form($form, &$form_state) {
   $form['oaff_archive_formats'] = array(
     '#type' => 'textarea',
@@ -621,4 +653,4 @@ function oaff_config_form($form, &$form_state) {
 
   return system_settings_form($form);
 }
-#-------------------------- End MMT Configuration -------------------------#
+// ######################## End OAFF Configuration ######################### \\

@@ -13,40 +13,39 @@ var planetaryNavigation = {
   
 
     leftClick: function(target, JOBADInstance) {
-    	if(target.hasAttribute('loadable')) {
+		if(target.hasAttribute('loadable')) {
 			var elem = target.parent().get(0);
 			var uri = $(elem).attr('jobad:load');
 			var uriEnc = this.encode(uri);
-		    window.location.search = "?q=" + uriEnc;
+			window.location.search = "?q=" + uriEnc;
 			return true;
 		}
-	    return false;
+		return false;
     },
 
 
     contextMenuEntries: function(target, JOBADInstance) {
 		if (target.hasAttribute('jobad:href')) {			
 			var mr = $(target).closest('mrow');
-			var select = (mr.length == 0) ? target : mr[0];
+			var select = (mr.length === 0) ? target : mr[0];
 			mmt.setSelected(select);
 			var uri = target.attr('jobad:href');
-			console.log(uri);
-		 	var me = this;
+			var me = this;
 			return {
-				'Go To Declaration': function() {me.planetaryOpen(uri)},
-			}
+				'Go To Declaration': function() {me.planetaryOpen(uri);},
+			};
 		}
 		return false;
 	},
 
 	planetaryOpen : function(uri) {
-	  uriSegs = uri.split("?");
-	  if (uriSegs.length < 2) {//document path 
-	    window.location.search = "?q=" + this.encode(uri);
-      } else { //module, symbol or fragment path
-		var modUri = uriSegs[0]; //getting doc
-		window.location.search = "?q=" + this.encode(modUri);        
-      }
+		uriSegs = uri.split("?");
+		if (uriSegs.length < 2) {//document path 
+			window.location.search = "?q=" + this.encode(uri);
+		} else { //module, symbol or fragment path
+			var modUri = uriSegs[0]; //getting doc
+			window.location.search = "?q=" + this.encode(modUri);        
+		}
 	},
 
 
@@ -55,7 +54,7 @@ var planetaryNavigation = {
 		//mirroring drupal in not escaping slashes
 		return rawEncoded.replace(/%2F/g, "/");
     },
-}
+};
 
 
 JOBAD.modules.register(planetaryNavigation);
