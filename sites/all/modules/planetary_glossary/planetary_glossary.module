@@ -1,6 +1,6 @@
 <?php
 
-require_once("glossary_local.php");
+require_once("LocalGlossary.php");
 
 $glossary = null;
 
@@ -73,6 +73,7 @@ function getGlossary() {
 }
 
 function planetary_glossary_menu() {
+   $items = array();
    $items['glossary/imports'] = array(
       'title' => 'Autocomplete glossary imports',
       'type' => MENU_CALLBACK,
@@ -99,6 +100,8 @@ function planetary_glossary_sync($form, &$form_status) {
 
 	$query = new EntityFieldQuery();
 
+  // TODO This looks broken and unfinished, commented out for now 
+  /*
 	$query->entityCondition('entity_type', 'node')
 		->fieldCondition('field_news_types', 'value', 'spotlight', '=')
 		->fieldCondition('field_photo', 'fid', 'NULL', '!=')
@@ -118,6 +121,7 @@ function planetary_glossary_sync($form, &$form_status) {
 	foreach (planetary_repo_list("/") as $file) {
 		
 	}
+  */
 	return $form;
 }
 

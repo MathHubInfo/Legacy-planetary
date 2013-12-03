@@ -385,7 +385,7 @@ function mmt_filter_compilation_settings($form, $form_state, $filter, $format, $
 
 // ------------------------------ Other Hooks --------------------------------- \\
 /**
- * implements hook_form_alter, adds URI field to mmt-specific forms
+ * implements hook_form_alter, adds filter context
  * @param $form Nested array of form elements that comprise the form.
  * @param $form_state A keyed array containing the current state of the form. 
  * @param $form_id String representing the name of the form itself. 
@@ -398,11 +398,10 @@ function mmt_form_alter(&$form, &$form_state, $form_id) {
        global $filter_context;
        $filter_context = array();
        $filter_context['mmt'] = $path_info;
-
     }
   }
 }
-// ############################## End Other Hookds ############################ #
+// ############################## End Other Hooks ############################ #
 
 // ----------------------------- MMT Formatter -------------------------------- \\
 
@@ -438,9 +437,7 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
       $lang = $entity->language;
       foreach ($items as $delta => $item) {
         $location = $item['path'];
-
         $path_info = oaff_get_path_info($location);
-
         global $filter_context;
         $filter_context = array();
         $filter_context['mmt']['dpath'] = $path_info['dpath'];
@@ -451,18 +448,16 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
         $element[$delta] = array(
           "#type" => "container",
           '#attributes' => array(
-               'class' => array('contextual-links-region'),
-               ),
-          "context_links" =>
-          array(
-          "#type" => "contextual_links",
-          "#contextual_links" => $filter_debug
+            'class' => array('contextual-links-region'),
           ),
-          "content" =>
-          array(
-          '#markup' => $markup,
+          "context_links" => array(
+            "#type" => "contextual_links",
+            "#contextual_links" => $filter_debug
+          ),
+          "content" => array(
+            '#markup' => $markup,
           )
-          );
+        );
       }
       break;
     }

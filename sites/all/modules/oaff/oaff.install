@@ -74,7 +74,19 @@ function oaff_install() {
   $node_types_S = variable_get("oaff_format_node_types", '');
   $extensions_S = variable_get("oaff_format_extensions", '');
   oaff_config_set($formats_S, $node_types_S, $extensions_S);
-
+  
+  // Creating OAFF node type
+  /* should replace mmtdoc at some point
+  $oaff_doc = (object) array(
+    'type' => 'oaff_doc',
+    'name' => 'OAFF Document',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal, multilingual OAFF Document',
+    'has_title' => true,
+  ); 
+  
+  node_type_save($oaff_doc);
+  */
   drupal_set_message("Installed OAFF");
 }
 
@@ -98,8 +110,9 @@ function oaff_uninstall() {
 }
 
 
-/** declares tables for MMT-specific content */ 
+/** declares tables for OAFF-specific content */ 
 function oaff_schema() {
+  $schema = array();
   $schema['oaff_errors'] = array(
     'description' => 'the base table for oaff nodes ',
     'fields' => array(
@@ -109,13 +122,13 @@ function oaff_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
-      'nid' => array(
+    'nid' => array(
 	    'description' => 'The id of the node that has the error',
         'type' => 'int', 
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
-      'type' => array(
+    'type' => array(
         'description' => 'The Error status, 1 for warning, 2 for error, 3 for fatal',
         'type' => 'int',
         'unsigned' => TRUE,

@@ -135,33 +135,34 @@ function planetary_repo_git_settings(&$element) {
     );
 }
 
-function planetary_repo_git_pull() {
+function planetary_repo_git_pull($rel_path) {
   $exec = variable_get('planetary_repo_git_exec', "/usr/bin/git");
-  $path = variable_get('planetary_repo_git_path');
-  shell_exec("cd $path; git pull");
+  $base_path = variable_get('planetary_repo_git_path'); 
+  $path = dirname($base_path . $rel_path);
+  $ret = shell_exec("cd $path; git pull 2>&1");
 }
 
-function planetary_repo_git_push() {
+function planetary_repo_git_push($rel_path) {
   global $user;
   $uname = $user->name;
-
   $exec = variable_get('planetary_repo_git_exec', "/usr/bin/git");
-  $path = variable_get('planetary_repo_git_path');
-  shell_exec("cd $path; git add *; git commit -m 'change by user $uname'; git push origin master ");
+  $base_path = variable_get('planetary_repo_git_path');
+  $path = dirname($base_path . $rel_path);
+  shell_exec("cd $path; git add .; git commit -m 'change by user $uname'; git push origin master ");
 }
 
 function planetary_repo_git_save($path, $content) {
-  planetary_repo_git_push();
   $full_path = planetary_repo_git_access_path($path);
   if (!$full_path) 
     return false;
   $f = fopen($full_path, "w");
   fwrite($f, $content);
   fclose($f);
+  planetary_repo_git_push($path);
 }
 
 function planetary_repo_git_load($path) {
-  planetary_repo_git_pull();
+  planetary_repo_git_pull($path);
   $full_path = planetary_repo_git_access_path($path);
   $f = fopen($full_path, "r");
   $content = fread($f, 1000000);
@@ -170,7 +171,7 @@ function planetary_repo_git_load($path) {
 }
 
 function planetary_repo_git_list($path) {
-  planetary_repo_git_pull();
+  planetary_repo_git_pull($path);
   $full_path = planetary_repo_git_access_path($path);
   $content = array();
   if ($full_path) {
@@ -184,7 +185,7 @@ function planetary_repo_git_list($path) {
 }
 
 function planetary_repo_git_stat($path) {
-  planetary_repo_git_pull();
+  planetary_repo_git_pull($path);
   $full_path = planetary_repo_git_access_path($path);
   if ($full_path) {
     if (!file_exists($full_path))
