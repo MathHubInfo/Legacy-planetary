@@ -16,7 +16,7 @@ function delete_node_type($node_type_name, $remove_type = true) {
 
 
 function oaff_create_archives_node() {
-  $htmlText = file_get_contents(drupal_get_path('module', 'oaff') . '/archives.xhtml');
+  $html_text = file_get_contents(drupal_get_path('module', 'oaff') . '/archives.xhtml');
 
   $archives_node = (object) array(
    'type' => 'page',
@@ -33,27 +33,66 @@ function oaff_create_archives_node() {
 
   $archives_node->title = 'Archives';
   node_object_prepare($archives_node);
-  $archives_node->body['und']['0'] = array('value' => $htmlText, 'summary' => 'Archives available in the OAFF', 'format' => 'full_html');
+  $archives_node->body['und']['0'] = array('value' => $html_text, 'summary' => 'Archives available in the OAFF', 'format' => 'full_html');
   node_save($archives_node);
-  $pathOpt = array(
+  $path_opt = array(
     'source' => 'node/' . $archives_node->nid,
     'alias' => 'oaff/archives',
   );
-  path_save($pathOpt);
+  path_save($path_opt);
 
   return $archives_node->nid;
 }
 
+function oaff_create_contribute_node() {
+  $html_text = file_get_contents(drupal_get_path('module', 'oaff') . '/contribute.xhtml');
+
+  $contribute_node = (object) array(
+   'type' => 'page',
+   'uid' => 0,
+   'created' => strtotime("now"),
+   'changed' => strtotime("now"),
+   'status' => 1,
+   'comment' => 2,
+   'promote' => 0,
+   'moderate' => 0,
+   'sticky' => 0,
+   'language' => 'und'
+  );
+
+  $contribute_node->title = 'Contribute';
+  node_object_prepare($contribute_node);
+  $contribute_node->body['und']['0'] = array('value' => $html_text, 'summary' => 'Ways to contribute to the OAFF', 'format' => 'full_html');
+  node_save($contribute_node);
+  $path_opt = array(
+    'source' => 'node/' . $contribute_node->nid,
+    'alias' => 'oaff/contribute',
+  );
+  path_save($path_opt);
+
+  return $contribute_node->nid;
+}
+
+
 function oaff_install() {
   $a_nid = oaff_create_archives_node();
+  $c_nid = oaff_create_contribute_node();
   $oaff_config = array();
   $oaff_config['archives_nid'] = $a_nid;
-  
+  $oaff_config['contribute_nid'] = $c_nid;
   $mlids = array();
 
   $arch_item = array(
     'link_path' => drupal_get_normal_path('oaff/archives'),
     'link_title' => "Archives",
+    'weight' => 10,
+    'menu_name' => 'main-menu'
+  );
+  $mlids[] = menu_link_save($arch_item);
+
+  $arch_item = array(
+    'link_path' => drupal_get_normal_path('oaff/contribute'),
+    'link_title' => "Contribute",
     'weight' => 10,
     'menu_name' => 'main-menu'
   );
@@ -90,13 +129,12 @@ function oaff_install() {
   drupal_set_message("Installed OAFF");
 }
 
-
-
 function oaff_uninstall() {
   $oaff_config = variable_get('oaff_config');
   $a_nid = $oaff_config['archives_nid'];
   node_delete($a_nid);
-  
+  $c_nid = $oaff_config['contribute_nid'];
+  node_delete($c_nid);
   //for easy debugging, deleting content on reinstall
   delete_node_type('mmtdoc', false); 
   delete_node_type('article', false);
@@ -116,23 +154,47 @@ function oaff_schema() {
   $schema['oaff_errors'] = array(
     'description' => 'the base table for oaff nodes ',
     'fields' => array(
-	  'eid' => array(
-	    'description' => 'The primary identifier of a node with error',
+	    'eid' => array(
+	      'description' => 'The primary identifier of a node with error',
         'type' => 'serial', 
-        'unsigned' => TRUE,
-        'not null' => TRUE,
+        'unsigned' => true,
+        'not null' => true,
       ),
-    'nid' => array(
-	    'description' => 'The id of the node that has the error',
+      'nid' => array(
+	      'description' => 'The id of the node that has the error',
         'type' => 'int', 
-        'unsigned' => TRUE,
-        'not null' => TRUE,
+        'unsigned' => true,
+        'not null' => true,
       ),
-    'type' => array(
+      'status' => array(
         'description' => 'The Error status, 1 for warning, 2 for error, 3 for fatal',
         'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'infos' => array(
+        'description' => 'The number of Info messages',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'warnings' => array(
+        'description' => 'The number of Warning messages',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'errors' => array(
+        'description' => 'The number of Error messages',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'fatals' => array(
+        'description' => 'The number of Fatal messages',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
       ),
     ),
     'primary key' => array('eid'),	
@@ -144,25 +206,24 @@ function oaff_schema() {
     'rid' => array(
       'description' => 'The primary identifier of a parent relation',
         'type' => 'serial', 
-        'unsigned' => TRUE,
-        'not null' => TRUE,
+        'unsigned' => true,
+        'not null' => true,
       ),
     'cid' => array(
       'description' => 'The id of the (child) node',
         'type' => 'int', 
-        'unsigned' => TRUE,
-        'not null' => TRUE,
+        'unsigned' => true,
+        'not null' => true,
       ),
     'pid' => array(
         'description' => 'The id of the parent',
         'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
+        'unsigned' => true,
+        'not null' => true,
       ),
     ),
     'primary key' => array('rid'),  
   );
-
-
+  
   return $schema;
 }

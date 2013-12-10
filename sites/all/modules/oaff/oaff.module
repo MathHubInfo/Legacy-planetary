@@ -20,8 +20,50 @@ function oaff_menu() {
     'access callback' => 'oaff_setup_access',
     'menu_name' => 'navigation'
   );
+   $items['contextual/%/information'] = array(
+    'title' => 'Block information',
+    'type' => MENU_LOCAL_ACTION,
+    'context' => MENU_CONTEXT_INLINE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('oaff_contextual_info', 1),
+    'access callback' => true,
+  );
+  // To use local task menu items, there must be a parent page.
+  $items['contextual'] = array(
+    'title' => 'Oaff contextual example',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array("oaff_contextual_basic"),
+    'type' => MENU_CALLBACK,
+    'access callback' => true,
+  );
   return $items;
 }
+
+function oaff_contextual_basic($form, &$form_state) {
+  $form = array();
+  
+  return $form;
+}
+
+function oaff_contextual_info($form, &$form_state, $key) {
+  $form = array();
+  print_r($key);
+  
+  $result = "test";
+  
+  $form["log"] =
+    array(
+          "#markup" => "<pre>". $result . "</pre>",
+          );
+
+  $form["result"] =
+    array(
+          "#markup" => "<pre>". $result . "</pre>",
+          );
+
+  return $form;
+}
+
 
 /**
  * Implements access callback for OAFF auto-load feature
@@ -63,27 +105,20 @@ function oaff_node_view($node, $view_mode, $langcode) {
 
   if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
   	if (isset($filter_context['failed']) && $filter_context['failed']) { //time to report errors
-       $source = $filter_context['source'];
-       $pre = oaff_produce_preformatted($source);
-       $output = oaff_mark_source_errors($pre, $filter_context['status']);
-       $inst_id = oaff_initialize();
+      $source = $filter_context['source'];
+      $pre = oaff_produce_preformatted($source);
+      $output = oaff_mark_source_errors($pre, $filter_context['status']);
+      $inst_id = oaff_initialize();
 
-       $node->content['field_external'][0]['content']['#markup'] =  '<div id="' . $inst_id . '" class="bootstrap" >' . $output . '</div>'; 
-
-       if (!oaff_has_error($node->nid)) { //must mark this as with error
-        db_insert('oaff_errors') 
-	      ->fields(array(
- 		    'nid' => $node->nid,
- 		    'type' => 2, //todo
-		  ))->execute();
-       }
-
+      $node->content['field_external'][0]['content']['#markup'] =  '<div id="' . $inst_id . '" class="bootstrap" >' . $output . '</div>'; 
+      
+      oaff_save_error($node->nid, $filter_context['status']);// mark this node as having an error
     } else {
     	if (oaff_has_error($node->nid)) {// must mark this as fixed
-          db_delete('oaff_errors')
-  			->condition('nid', $node->nid)
+        db_delete('oaff_errors')
+  			  ->condition('nid', $node->nid)
   		    ->execute();
-        }
+      }
 
 	    $inst_id = oaff_initialize();
 
@@ -126,11 +161,12 @@ function oaff_node_view($node, $view_mode, $langcode) {
 
 	        jobad_add_to_sidebar($inst_id, '$(document.getElementById("' . $elid . '"))', $options);
 	    }
-
 	    $content = $node->content['field_external'][0]['content']['#markup'];
 	    $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '" class="bootstrap" >' . $content . '</div>'; 
-	}
+      // $node->content['field_external'][0]['content']['#contextual_links'] = "<p>test</p>"; 
+	  }
   }
+
 }
 
 /**
@@ -147,6 +183,55 @@ function oaff_has_error($nid) {
   return (count($result) > 0);
 }
 
+
+function oaff_save_error($nid, $status) {
+  $state = 0;
+  $infos = 0;
+  $warnings = 0;
+  $errors = 0;
+  $fatals = 0;
+  
+  foreach ($status as $compiler_state) {
+    if ($state < $compiler_state['conversion']) {
+      $state = $compiler_state['conversion'];
+    }
+    foreach ($compiler_state['messages'] as $msg) {
+      if ($msg['type'] == "Info") {
+        $infos += 1;
+      } elseif ($msg['type'] == "Warning") {
+        $warnings += 1;
+      } elseif ($msg['type'] == "Error") {
+        $errors += 1;
+      } elseif ($msg['type'] == "Fatal") {
+        $fatals += 1;
+      } else {
+        drupal_set_message('Unexpected error msg type in oaff_save_error: ' . $msg['type'], 'warning');
+      }
+    }
+  }
+  if (oaff_has_error($nid)) {// update
+    db_update('oaff_errors') 
+      ->fields(array(
+        'status' => $state, 
+        'infos' => $infos,
+        'warnings' => $warnings,
+        'errors' => $errors,
+        'fatals' => $fatals))
+      ->condition('nid', $nid, '=')
+      ->execute();
+  } else { // insert
+    db_insert('oaff_errors') 
+      ->fields(array(
+        'nid' => $nid,
+        'status' => $state, 
+        'infos' => $infos,
+        'warnings' => $warnings,
+        'errors' => $errors,
+        'fatals' => $fatals))
+      ->execute();
+  }
+}
+
 /**
  * function to mark errors, annotates source string with error information
  * @param $source the source string
@@ -157,18 +242,22 @@ function oaff_mark_source_errors($source, $status) {
   $color_catalog = array("Error" => "#FF8888", "Warning" => "#FFFF44", "Fatal" => "#FF3333","Info" => "#9999FF");
   foreach ($status as $filter_name => $filter_status) {
     foreach ($filter_status['messages'] as $msg) {
-  	  $from_line = $msg['srcref']['from']['line'];
+      $lines = explode("\n", $source);
+      if (!isset($msg['srcref'])) {
+        $msg['srcref'] = array("from" => array("line" => 1, "col" =>  0),
+                               "to" => array("line" => count($lines) - 2 , "col" =>  -1));
+      } 
+  	  $from_line = $msg['srcref']['from']['line']; 
   	  $from_col = $msg['srcref']['from']['col'];
   	  $to_line = $msg['srcref']['to']['line'];
   	  $to_col = $msg['srcref']['to']['col'];
 
-  	  $lines = explode("\n", $source);
-  	  $before = substr($lines[$from_line], 0, $from_col -1);
-  	  $after = substr($lines[$from_line], $from_col -1);
+      $before = substr($lines[$to_line], 0, $to_col);
+      $after = substr($lines[$to_line], $to_col);
+      $lines[$to_line] = $before . '</span>' . $after;
+  	  $before = substr($lines[$from_line], 0, $from_col);
+  	  $after = substr($lines[$from_line], $from_col);
   	  $lines[$from_line] = $before . '<span style="background:' . $color_catalog[$msg['type']] .'" title="' . $msg['type'] . ': ' . $msg['shortMsg'] . '">' . $after;
-  	  $before = substr($lines[$to_line], 0, $to_col -1);
-  	  $after = substr($lines[$to_line], $to_col - 1);
-  	  $lines[$to_line] = $before . '</span>' . $after;
   	  $source = join("\n", $lines);
   	}
   }
@@ -182,7 +271,7 @@ function oaff_mark_source_errors($source, $status) {
  * @return the processed text
  */
 function oaff_produce_preformatted($text) {
-  return "<pre>" . check_plain($text) . "</pre>";
+  return "<pre>\n" . check_plain($text) . "\n</pre>";
 }
 
 // ------------------------------- OAFF Autoload Crawler -------------------------------- \\
@@ -254,8 +343,6 @@ function _oaff_crawl_source_folder($archive, $path) {
   $format = $oaff_config['formats'][$archive];
   $node_type = $oaff_config['node_types'][$format];
   $extension = $oaff_config['extensions'][$format];
-  $docbase = $oaff_config['docbases'][$archive];
-  
   $res = planetary_repo_list($path);
   $title = $path;
   if ($path == '') {
@@ -286,8 +373,12 @@ function _oaff_crawl_source_folder($archive, $path) {
           $path_info = oaff_get_path_info($fpath);
           $dpath = $path_info['dpath']; 
 
-          $cids[] = oaff_create_node($module, $lang, $format, $dpath, $fpath, $node_type);        
-          $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
+          $nid = oaff_create_node($module, $lang, $format, $dpath, $fpath, $node_type);
+          $cids[] = $nid;
+          $node = node_load($nid);
+          $view = node_view($node, 'teaser');
+          $rendered = drupal_render($view);
+          $body .= $rendered;
         }
       }
     }
@@ -299,6 +390,59 @@ function _oaff_crawl_source_folder($archive, $path) {
   oaff_save_path($nid, $menupath);
   return $nid;
 }
+
+// TODO fix the redundancy with oaff_crawl_source_folder()
+function oaff_create_oaff_doc($fpath, $archive) {
+  $oaff_config = variable_get('oaff_config');
+  $format = $oaff_config['formats'][$archive];
+  $node_type = $oaff_config['node_types'][$format];
+  $extension = $oaff_config['extensions'][$format];
+  $loc_parts = explode('/', $fpath);
+  $file = $loc_parts[count($loc_parts) - 1];
+  $parts = explode('.', $file);
+  $ext = $parts[count($parts) - 1];
+  if ($ext == $extension) {
+    $module = $parts[0];
+    $lang = 'und'; // default
+    if (count($parts) == 3) {
+      $lang = $parts[1];
+    }
+    $path_info = oaff_get_path_info($fpath);
+    $dpath = $path_info['dpath']; 
+    $nid = oaff_create_node($module, $lang, $format, $dpath, $fpath, $node_type); 
+    // updating parent;
+    $node = node_load($nid);
+    $view = node_view($node, 'teaser');
+    $rendered = drupal_render($view);
+  
+    $base = implode("/", array_slice(explode("/", $dpath), 0, -1));
+    $path = drupal_lookup_path("source", $base);
+    $parent = menu_get_object("node", 1, $path);    
+    // updating parent child table
+    oaff_set_children($parent->nid, array($nid));
+
+    // updating parent body 
+    $result = db_select('field_data_body', 'f')
+      ->fields('f', array("body_value"))
+      ->condition('entity_id', $parent->nid, '=')
+      ->execute()
+      ->fetchAssoc();
+    
+    $value = $result['body_value'];
+    $value .= $rendered;
+
+    db_update('field_data_body') // Table name no longer needs {}
+     ->fields(array(
+      'body_value' => $value,
+     ))
+    ->condition('entity_id', $parent->nid, '=')
+    ->execute();
+    return $nid;
+  } else {
+    return -1;
+  }
+}
+
 
 /**
  * Explicitly save the parent-child relation of oaff nodes in the database (e.g. for building breadcrumb or menu later)
@@ -420,7 +564,7 @@ function oaff_create_article($title, $body) {
   $newnode->title = $title;
   $newnode->body['und'][0]['value'] = $body;
   $newnode->body['und'][0]['summary'] = $body;  
-  $newnode->body['und'][0]['format'] = 'filtered_html';  
+  $newnode->body['und'][0]['format'] = 'full_html';  
 
   node_object_prepare($newnode);//necessary ?
   node_save($newnode);

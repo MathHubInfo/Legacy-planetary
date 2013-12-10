@@ -46,46 +46,60 @@ function _latexml_produce_status_msg($log) {
   $msgline_pattern = '/^([^ :]+)\:([^ :]+)\:([^ ]+)(\s(.*))?$/';
   $details_pattern = '/^\t(.*)/';
 
-  $currentMessage = array();
+  $current_message = array();
+  $last_is_msg = false;
   
   for ($i = 0; $i < count($logLines); $i++) {
     $line = $logLines[$i];
+    $matches = array();
     $isMsgLine = preg_match($msgline_pattern, $line, $matches);
     if ($isMsgLine) {
-      if (isset($currentMessage['type'])) { //have to save previous msg
-        $status['messages'][] = $currentMessage;
-        $currentMessage = array();
+      $last_is_msg = true;
+      if (isset($current_message['type'])) { // have to save previous msg
+        $status['messages'][] = $current_message;
+        $current_message = array();
       }
       if ($matches[1] == 'Status') {
         $status['conversion'] = $matches[3];
       } else {
-        $currentMessage['type'] = $matches[1];
-        $currentMessage['shortMsg'] = $matches[5];
-        $currentMessage['longMsg'] = '';
+        $current_message['type'] = $matches[1];
+        $current_message['shortMsg'] = check_plain($matches[5]);
+        $current_message['longMsg'] = '';
       }
     } else {
-      $isDetailsLine = preg_match($details_pattern, $line, $matches);
-      if ($isDetailsLine) {
-        if (isset($currentMessage['srcref'])) {
-          $currentMessage['longMsg'] .=  $line . "\n";
+      $is_details_line = preg_match($details_pattern, $line, $matches);
+      if ($is_details_line && $last_is_msg) {
+        $last_is_msg = false;
+        if (isset($current_message['srcref'])) {
+          $current_message['longMsg'] .=  $line . "\n";
         } else { //this is the source ref line
           $trange_pattern = '/^.*textrange\(from=(\d*);(\d*),to=(\d*);(\d*)\)/';
-          preg_match($trange_pattern, $line, $matches);
-          $currentMessage["srcref"] = array();
-          $currentMessage["srcref"]['from'] = array();
-          $currentMessage["srcref"]['from']['line'] = $matches[1];
-          $currentMessage["srcref"]['from']['col'] = $matches[2];
-          $currentMessage["srcref"]['to'] = array();
-          $currentMessage["srcref"]['to']['line'] = $matches[3];
-          $currentMessage["srcref"]['to']['col'] = $matches[4];
+          $valid_trange = preg_match($trange_pattern, $line, $matches);
+          if ($valid_trange) {
+            $current_message["srcref"] = array();
+            $current_message["srcref"]['from'] = array();
+            $current_message["srcref"]['from']['line'] = $matches[1] + 1; // oaff standard is that lines nr starts at 1 not 0
+            $current_message["srcref"]['from']['col'] = $matches[2];
+            $current_message["srcref"]['to'] = array();
+            $current_message["srcref"]['to']['line'] = $matches[3] + 1; // oaff standard is that lines nr starts at 1 not 0
+            $current_message["srcref"]['to']['col'] = $matches[4];
+          } else {
+            $current_message["srcref"] = array();
+            $current_message["srcref"]['from'] = array();
+            $current_message["srcref"]['from']['line'] = 1;
+            $current_message["srcref"]['from']['col'] = 1;
+            $current_message["srcref"]['to'] = array();
+            $current_message["srcref"]['to']['line'] = 1;
+            $current_message["srcref"]['to']['col'] = 2;
+          }
         }
-      }  
+      } 
       // else just random line, skip ahead 
     }
   }
-  if (isset($currentMessage['type'])) { //have to save last msg
-    $statua['messages'][] = $currentMessage;
-    $currentMessage = array();
+  if (isset($current_message['type'])) { // have to save last msg
+    $status['messages'][] = $current_message;
+    $current_message = array();
   }
   return $status;
 }
@@ -135,6 +149,7 @@ function latexml_filter_local_process($text, $filter, $format, $langcode, $cache
 }
 
 function latexml_filter_local_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings = array();
   $settings['latexml_profile'] = array(
     '#type' => 'textfield',
     '#title' => t('LateXML Profile'),
