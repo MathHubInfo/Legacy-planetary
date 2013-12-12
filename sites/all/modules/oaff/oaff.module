@@ -102,8 +102,9 @@ function oaff_node_view($node, $view_mode, $langcode) {
 		return;
   global $filter_context;
   oaff_set_breadcrumb($node->nid);
-
-  if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
+  $oaff_config = variable_get('oaff_config');
+  $oaff_node_types = $oaff_config['handled_node_types'];
+  if (in_array($node->type, $oaff_node_types)) {
   	if (isset($filter_context['failed']) && $filter_context['failed']) { //time to report errors
       $source = $filter_context['source'];
       $pre = oaff_produce_preformatted($source);
@@ -289,10 +290,15 @@ function oaff_create_nodes() {
  * is called by oaff_create_nodes
  */
 function _oaff_crawl_archives() {
-  $res = planetary_repo_list("");
-  foreach ($res as $file) {
-    if (planetary_repo_is_dir($file) && $file[0] != '.') {
-      _oaff_crawl_archive($file);
+  $groups = planetary_repo_list("");
+  foreach ($groups as $group) {
+    if (planetary_repo_is_dir($group) && $group[0] != '.') {
+      $archives = planetary_repo_list($group);
+      foreach ($archives as $archive) {
+        if (planetary_repo_is_dir(oaff_join_path(array($group, $archive))) && $archive[0] != '.') {
+          _oaff_crawl_archive($group, $archive);
+        }
+      }
     }
   }
 }
@@ -302,7 +308,7 @@ function _oaff_crawl_archives() {
  * is called by _oaff_crawl_archives() for each found archive
  * @param $path the VFS folder-path of the archive
  */
-function _oaff_crawl_archive($path) { 
+function _oaff_crawl_archive($group, $archive_path) { 
   $oaff_config = variable_get('oaff_config');
   $docbases = array();
   if (isset($oaff_config['docbases'])) {
@@ -310,7 +316,7 @@ function _oaff_crawl_archive($path) {
   }
 
   //getting info from manifest
-  $mf_path = $path . "/META-INF/MANIFEST.MF";
+  $mf_path = oaff_join_path(array($group, $archive_path, "META-INF/MANIFEST.MF"));
   
   $manifest = planetary_repo_load_file($mf_path);
   $mf_lines = explode("\n",$manifest);
@@ -328,9 +334,118 @@ function _oaff_crawl_archive($path) {
   $oaff_config['docbases'] = $docbases;
   variable_set('oaff_config', $oaff_config);
   //crawling source folder
-  $nid = _oaff_crawl_source_folder($archive, $archive . "/source");
-  oaff_set_children($oaff_config['archives_nid'], array($nid));
+  $nid_s = oaff_crawl_dimension_folder($group, $archive, "source", "");
+  $nid_n = oaff_crawl_dimension_folder($group, $archive, "narration", "");
+  $nid_c = oaff_crawl_dimension_folder($group, $archive, "content", "");
+  oaff_set_children($oaff_config['archives_nid'], array($nid_n));
 }
+
+function oaff_join_path($arguments) {
+  $path = '';
+  $args = array();
+  foreach ($arguments as $a) {
+    if ($a !== '') {
+      $args[] = $a;
+    }
+  }
+  $arg_count = count($args);
+  for ($i = 0; $i < $arg_count; $i++) {
+    $folder = $args[$i];
+    if ($i != 0 and $folder[0] == DIRECTORY_SEPARATOR) {
+      $folder = substr($folder, 1);
+    } 
+    if ($i != $arg_count - 1 and substr($folder, -1) == DIRECTORY_SEPARATOR) {
+      $folder = substr($folder, 0, -1);
+    }
+    $path .= $folder;
+    if ($i != $arg_count - 1) {
+      $path .= DIRECTORY_SEPARATOR;
+    }
+  }
+  return $path;
+}
+
+
+function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
+  $extension = "omdoc";
+  if ($dimension == "source") { // getting source extension from config
+    $oaff_config = variable_get('oaff_config');
+    $extension = $oaff_config['extensions'][$oaff_config['formats'][$archive]];
+  }
+  $folder_path = oaff_join_path(array($group, $archive, $dimension, $rel_path));
+  $cids = array();
+  $items = planetary_repo_list($folder_path);
+  foreach ($items as $item) {
+    if ($item[0] != '.') { // ignoring hidden files and folders
+      $item_path = oaff_join_path(array($folder_path, $item));
+      if (planetary_repo_is_dir($item_path)) {
+        $cids[] = oaff_crawl_dimension_folder($group, $archive, $dimension, oaff_join_path(array($rel_path, $item)));
+      } else {
+        $pathinfo = pathinfo($item_path);
+        if (isset($pathinfo['extension']) && $pathinfo['extension'] == $extension) {
+          $cids[] = oaff_make_file_node($group, $archive, $dimension, $rel_path, $item);
+        } // else ingore 
+      }
+    }
+  }
+  $path_info = oaff_get_path_info($folder_path);
+  $menupath = $path_info['dpath'];  
+  $nid = oaff_make_folder_node($folder_path, $cids); 
+  oaff_set_children($nid, $cids);   
+  oaff_save_path($nid, $menupath);
+  return $nid;
+}
+
+function oaff_make_folder_node($folder_path, $cids) {
+  // setting title
+  $title = pathinfo($folder_path)['filename'];
+  // setting body
+  $body = '';
+  foreach ($cids as $cid) {
+    $node = node_load($cid);
+    $view = node_view($node, 'teaser');
+    $rendered = drupal_render($view);
+    $body .= $rendered;
+  }
+  // creating node
+  $nid = oaff_create_article($title, $body);
+  return $nid;
+}
+
+function oaff_make_file_node($group, $archive, $dimension, $rel_path, $item) {
+  $oaff_config = variable_get('oaff_config');
+  $pathinfo = pathinfo($item);
+  $module = $pathinfo['filename'];
+  $extension = $pathinfo['extension'];
+  $lang = 'und'; // default;
+  $mod_pathinfo = pathinfo($module);
+  if (isset($mod_pathinfo['extension'])) {
+    $lang = $mod_pathinfo['extension'];
+  }
+  $format = $oaff_config['formats'][$archive];
+  $node_type = $oaff_config['node_types'][$format];
+  if ($dimension == "narration") {
+    $format = 'mmt';
+    $node_type = 'oaff_doc';
+  }
+  if ($dimension == "content") {
+    $format = 'mmt';
+    $node_type = 'oaff_mod';
+  }
+  if ($dimension == "source") {
+    $format = 'plain_text';
+    $node_type = 'oaff_src';
+  }
+
+  $fpath = oaff_join_path(array($group, $archive, $dimension, $rel_path, $item));
+  $fpath_info = oaff_get_path_info($fpath);
+  $dpath = $fpath_info['dpath'];
+  $nid = oaff_create_node($module, $lang, $format, $dpath, $fpath, $node_type);
+  return $nid;
+}
+
+
+
 
 /**
  * function to crawl the source folder (where the source files are) of an archive for files 
@@ -578,7 +693,9 @@ function oaff_create_article($title, $body) {
  * @param $node the node object to be inserted in the database
  */
 function oaff_node_insert($node) {
-  if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
+  $oaff_config = variable_get('oaff_config');
+  $oaff_node_types = $oaff_config['handled_node_types'];
+  if (in_array($node->type, $oaff_node_types)) {
     $nid = $node->nid;
     $dpath = $node->field_external['und']['0']['dpath']['value'];
     oaff_save_path($nid, $dpath);
@@ -595,11 +712,11 @@ function oaff_save_path($nid, $path) {
   if (substr($path, -1) == '/') {
     $path = substr($path, 0, -1);
   }
-  $pathOpt = array(
+  $path_opt = array(
     'source' => 'node/' . $nid,
     'alias' => $path,
   );
-  path_save($pathOpt);
+  path_save($path_opt);
 }
 
 /** 
@@ -624,53 +741,44 @@ function oaff_get_location($dpath)  {
  * @return an array with the path information
  */
 function oaff_get_path_info($location) {
+  $oaff_path_info = array();
+  $oaff_path_info['location'] = $location;
   $oaff_config = variable_get('oaff_config');
   $docbases = $oaff_config['docbases'];
 
-  $lparts = explode('/', $location); //format is <archive-name>/source/<fragment path>
-  $archive = $lparts[0];
+  // location format is <group-name>/<archive-name>/<dimension>/<fragment path>
+  $pathinfo = pathinfo($location);
+  $module = $pathinfo['filename'];
+  $oaff_path_info['module'] = $module;
 
-  $filename = $lparts[count($lparts) - 1];
-  $folderSegs = array_slice($lparts, 0, -1);
-  $parent = join("/", $folderSegs);
+  $filename = $pathinfo['basename']; 
+  $oaff_path_info['filename'] = $filename;
   
-  $fparts = explode('.', $filename);
-  $extension = $fparts[count($fparts) - 1];
+  if (isset($path_info['extension'])) {
+    $oaff_path_info['extension'] = $pathinfo['extension'];
+  }
+  $lang = 'und'; // default;
+  $mod_pathinfo = pathinfo($module);
+  if (isset($mod_pathinfo['extension'])) {
+    $lang = $mod_pathinfo['extension'];
+  }
+  $oaff_path_info['lang'] = $lang;
+
+  $parent = dirname($location);
+  $oaff_path_info['parent'] = $parent; 
+
+  $loc_segs = explode('/', $location);
   
-  $lang = 'und'; //default
-  if (count($fparts) == 3) { //three file parts means <module>.<lang>.<ext>
-    $lang = $fparts[1]; 
+  $oaff_path_info['group'] = $loc_segs[0];
+  $oaff_path_info['archive'] = $loc_segs[1];
+  $oaff_path_info['dimension'] = $loc_segs[2];
+
+  $dpath = $location; // default
+  if ($oaff_path_info['dimension'] == "content") {
+    $dpath = $parent . "?" . $module; 
   }
-
-  $modName = $fparts[0];
-
-  //getting dpath  
-  $relPathSegments = array_slice($lparts, 2);
-  $relPath = "";//default for toplevel
-  if (count($relPathSegments) != 0) {
-    $relPath = join('/', $relPathSegments);
-  }
-
-  $rparts = explode('.', $relPath);
-
-  if (count($rparts) > 1) { //there is an extension
-    $rparts[count($rparts) - 1] = "omdoc"; 
-  }
-  $omdocRelPath = join(".", $rparts); 
-
-  $dpath = $docbases[$archive] . '/' . $omdocRelPath;
-
-  $path_info = array(
-    'location' => $location,
-    'archive' => $archive,
-    'filename' => $filename,
-    'extension' => $extension,
-    'module' => $modName,
-    'parent' => $parent, //parent folder
-    'lang' => $lang,
-    'dpath' => $dpath,
-    );
-  return $path_info;
+  $oaff_path_info['dpath'] = $dpath;
+  return $oaff_path_info;
 }
 
 

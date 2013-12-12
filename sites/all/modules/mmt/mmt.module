@@ -40,8 +40,10 @@ function mmt_initialize() {
 function mmt_node_view($node, $view_mode, $langcode) {
   if ($view_mode != "full")
     return;
-  if ($node->type == 'glossary' || $node->type == 'mmtdoc') {
-    mmt_initialize();
+  $oaff_config = variable_get('oaff_config');
+  $oaff_node_types = $oaff_config['handled_node_types'];
+  if (in_array($node->type, $oaff_node_types)) {
+     mmt_initialize();
   }
 }
 

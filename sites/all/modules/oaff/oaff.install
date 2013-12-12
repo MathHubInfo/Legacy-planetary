@@ -1,5 +1,71 @@
 <?php
 
+function oaff_add_vfs_field($node_type) {
+  // Check if our field is not already created.
+    
+  if (!field_info_field('field_external')) {
+    $field = array(
+        'field_name' => 'field_external',
+        'type' => 'vfs_file', // declared in vfs module
+    );
+    field_create_field($field);
+  }
+
+  // Create the instance on the bundle.
+  $instance = array(
+    'field_name' => 'field_external',
+    'entity_type' => 'node',
+    'label' => 'Content',
+    'bundle' => $node_type,
+    // If you don't set the "required" property then the field wont be required by default.
+    'required' => true,
+    'widget' => array(
+      'type' => 'textfield',
+    ),
+    'display' => array(
+      'default' => array( 
+        'type' => 'mmt_formatter', // TODO replace with oaff_formatter
+      ),
+    ),    
+  );
+  field_create_instance($instance);
+}
+
+function oaff_create_node_types() {
+  // Creating node type for OAFF documents
+  $oaff_doc = (object) array(
+    'type' => 'oaff_doc',
+    'name' => 'OAFF Document',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal, multilingual OAFF Document',
+    'has_title' => true,
+  ); 
+  node_type_save($oaff_doc);
+  oaff_add_vfs_field('oaff_doc');
+  
+  // Creating node type for OAFF modules
+  $oaff_mod = (object) array(
+    'type' => 'oaff_mod',
+    'name' => 'OAFF Module',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal, multilingual OAFF Module',
+    'has_title' => true,
+  ); 
+  node_type_save($oaff_mod);
+  oaff_add_vfs_field('oaff_mod');
+
+  // Creating node type for OAFF documents
+  $oaff_src = (object) array(
+    'type' => 'oaff_src',
+    'name' => 'OAFF Source File',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal, multilingual OAFF Source File',
+    'has_title' => true,
+  ); 
+  node_type_save($oaff_src);
+  oaff_add_vfs_field('oaff_src');
+}
+
 function delete_node_type($node_type_name, $remove_type = true) {
   // deleting all node instances
   $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
@@ -73,11 +139,12 @@ function oaff_create_contribute_node() {
   return $contribute_node->nid;
 }
 
-
 function oaff_install() {
+  oaff_create_node_types();
   $a_nid = oaff_create_archives_node();
   $c_nid = oaff_create_contribute_node();
   $oaff_config = array();
+  $oaff_config['handled_node_types'] = array('mmtdoc', 'glossary', 'oaff_doc', 'oaff_mod', 'oaff_src');
   $oaff_config['archives_nid'] = $a_nid;
   $oaff_config['contribute_nid'] = $c_nid;
   $mlids = array();
@@ -114,18 +181,6 @@ function oaff_install() {
   $extensions_S = variable_get("oaff_format_extensions", '');
   oaff_config_set($formats_S, $node_types_S, $extensions_S);
   
-  // Creating OAFF node type
-  /* should replace mmtdoc at some point
-  $oaff_doc = (object) array(
-    'type' => 'oaff_doc',
-    'name' => 'OAFF Document',
-    'base' => 'node_content',
-    'description' => 'A node containing an flexiformal, multilingual OAFF Document',
-    'has_title' => true,
-  ); 
-  
-  node_type_save($oaff_doc);
-  */
   drupal_set_message("Installed OAFF");
 }
 
@@ -136,7 +191,11 @@ function oaff_uninstall() {
   $c_nid = $oaff_config['contribute_nid'];
   node_delete($c_nid);
   //for easy debugging, deleting content on reinstall
+  delete_node_type('oaff_doc'); 
+  delete_node_type('oaff_mod'); 
+  delete_node_type('oaff_src'); 
   delete_node_type('mmtdoc', false); 
+  
   delete_node_type('article', false);
   delete_node_type('glossary', false); 
 
@@ -146,7 +205,6 @@ function oaff_uninstall() {
   }
   drupal_set_message("Uninstalled OAFF");
 }
-
 
 /** declares tables for OAFF-specific content */ 
 function oaff_schema() {
