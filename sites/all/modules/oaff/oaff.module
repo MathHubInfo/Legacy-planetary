@@ -14,9 +14,24 @@ function oaff_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['oaff/autoload'] = array(
-    'title' => "OAFF Init Nodes",
+  $items['oaff/autoload-modules'] = array(
+    'title' => "OAFF Init Modules",
     'page callback' => 'oaff_create_nodes',
+    'page arguments' => array("content"),
+    'access callback' => 'oaff_setup_access',
+    'menu_name' => 'navigation'
+  );
+  $items['oaff/autoload-docs'] = array(
+    'title' => "OAFF Init Documents",
+    'page callback' => 'oaff_create_nodes',
+    'page arguments' => array("narration"),
+    'access callback' => 'oaff_setup_access',
+    'menu_name' => 'navigation'
+  );
+  $items['oaff/autoload-sources'] = array(
+    'title' => "OAFF Init Sources",
+    'page callback' => 'oaff_create_nodes',
+    'page arguments' => array("source"),
     'access callback' => 'oaff_setup_access',
     'menu_name' => 'navigation'
   );
@@ -280,8 +295,8 @@ function oaff_produce_preformatted($text) {
  * Creates nodes for all documents in planetary_repo path where there is a oaff-connected content type 
  * associated with that format (based on file extension).  (All set up in OAFF configuration)
  */
-function oaff_create_nodes() {
-  _oaff_crawl_archives();
+function oaff_create_nodes($dimension) {
+  _oaff_crawl_archives($dimension);
   return "Success";
 }
 
@@ -289,14 +304,14 @@ function oaff_create_nodes() {
  * function crawl oaff archives for files to create nodes from (based on extension and OAFF config)
  * is called by oaff_create_nodes
  */
-function _oaff_crawl_archives() {
+function _oaff_crawl_archives($dimension) {
   $groups = planetary_repo_list("");
   foreach ($groups as $group) {
     if (planetary_repo_is_dir($group) && $group[0] != '.') {
       $archives = planetary_repo_list($group);
       foreach ($archives as $archive) {
         if (planetary_repo_is_dir(oaff_join_path(array($group, $archive))) && $archive[0] != '.') {
-          _oaff_crawl_archive($group, $archive);
+          _oaff_crawl_archive($group, $archive, $dimension);
         }
       }
     }
@@ -308,7 +323,7 @@ function _oaff_crawl_archives() {
  * is called by _oaff_crawl_archives() for each found archive
  * @param $path the VFS folder-path of the archive
  */
-function _oaff_crawl_archive($group, $archive_path) { 
+function _oaff_crawl_archive($group, $archive_path, $dimension) { 
   $oaff_config = variable_get('oaff_config');
   $docbases = array();
   if (isset($oaff_config['docbases'])) {
@@ -333,11 +348,9 @@ function _oaff_crawl_archive($group, $archive_path) {
   $docbases[$archive] = $docbase;
   $oaff_config['docbases'] = $docbases;
   variable_set('oaff_config', $oaff_config);
-  //crawling source folder
-  $nid_s = oaff_crawl_dimension_folder($group, $archive, "source", "");
-  $nid_n = oaff_crawl_dimension_folder($group, $archive, "narration", "");
-  $nid_c = oaff_crawl_dimension_folder($group, $archive, "content", "");
-  oaff_set_children($oaff_config['archives_nid'], array($nid_n));
+  //crawling dimension folder
+  $nid = oaff_crawl_dimension_folder($group, $archive, $dimension, "");
+  oaff_set_children($oaff_config['archives_nid'], array($nid));
 }
 
 function oaff_join_path($arguments) {
@@ -425,11 +438,11 @@ function oaff_make_file_node($group, $archive, $dimension, $rel_path, $item) {
   $format = $oaff_config['formats'][$archive];
   $node_type = $oaff_config['node_types'][$format];
   if ($dimension == "narration") {
-    $format = 'mmt';
+    $format = 'mmt_omdoc';
     $node_type = 'oaff_doc';
   }
   if ($dimension == "content") {
-    $format = 'mmt';
+    $format = 'mmt_omdoc';
     $node_type = 'oaff_mod';
   }
   if ($dimension == "source") {
@@ -773,11 +786,19 @@ function oaff_get_path_info($location) {
   $oaff_path_info['archive'] = $loc_segs[1];
   $oaff_path_info['dimension'] = $loc_segs[2];
 
-  $dpath = $location; // default
+  $alias = $location; // default
   if ($oaff_path_info['dimension'] == "content") {
-    $dpath = $parent . "?" . $module; 
+    $alias = $parent . "?" . $module; 
   }
+  $oaff_path_info['alias'] = $alias;
+  
+  $frag_segs = array_slice($loc_segs, 3);
+  $frag_path = oaff_join_path($frag_segs);
+  $docbase = $docbases[$oaff_path_info['archive']];
+  
+  $dpath = oaff_join_path(array($docbase, $frag_path));
   $oaff_path_info['dpath'] = $dpath;
+  
   return $oaff_path_info;
 }
 
