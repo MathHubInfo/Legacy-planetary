@@ -270,7 +270,8 @@ function mmt_filter_presentation_process($text, $filter, $format, $langcode, $ca
     $filter_context['source'] = $text;
   }
   
-  $dpath = $filter_context['mmt']['dpath'];
+  $fpath = $filter_context['mmt']['location'];
+  $dpath = oaff_get_path_info($fpath)['dpath'];
   $style = $filter->settings['mmt_style'];
   $response = mmt_get_presentation($dpath, $text, $style);
   
@@ -316,7 +317,8 @@ function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cac
     $filter_context['source'] = $text;
   }
 
-  $dpath = $filter_context['mmt']['dpath'];
+  $fpath = $filter_context['mmt']['location'];
+  $dpath = oaff_get_path_info($fpath)['dpath'];
   $format = $filter->settings['mmt_format'];
   $response = mmt_get_compiled($text, $dpath, $format);
 
@@ -439,10 +441,9 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
       $lang = $entity->language;
       foreach ($items as $delta => $item) {
         $location = $item['path'];
-        $path_info = oaff_get_path_info($location);
         global $filter_context;
         $filter_context = array();
-        $filter_context['mmt']['dpath'] = $path_info['dpath'];
+        $filter_context['mmt']['location'] = $location;
         $content = planetary_repo_load_file($location);
         global $filter_debug;
         $filter_debug = array();

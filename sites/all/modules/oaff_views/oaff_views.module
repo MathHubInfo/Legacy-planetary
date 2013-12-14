@@ -24,20 +24,28 @@ function oaff_views_menu() {
     'page callback' => 'oaff_views_add_doc',
     'access callback' => true,
     'type' => MENU_CALLBACK,
-
   );
-  $items['oaff-latest-updates'] = array(
-    'title' => "Latest Updates",
-    'page callback' => 'oaff_views_add_doc',
+  $items['oaff-sort-unpopularity'] = array(
+    'title' => "Unpopular entries",
+    'page callback' => 'todo',
     'access callback' => true,
     'type' => MENU_CALLBACK,
-
+  );
+  $items['oaff-show-questions'] = array(
+    'title' => "Uesr Questions",
+    'page callback' => 'todo',
+    'access callback' => true,
+    'type' => MENU_CALLBACK,
   );
   return $items;
 }
 
 function oaff_views_add_doc() {
   return drupal_get_form('oaff_views_add_doc_form');
+}
+
+function todo() {
+  return "<p> Coming soon...</p>";
 }
 
 function oaff_views_add_doc_form() {
@@ -99,7 +107,7 @@ function oaff_views_broken_nodes() {
     });
   foreach ($results as $entry) {
     $msg .= '<div class="views-row">';
-    $msg .= '<div typeof="sioc:Item foaf:Document" about="/~mihnea/planetary/?q=http%3A//docs.omdoc.org/smglom/copelanderdoesconstant.de.omdoc" class="node node-mmtdoc node-teaser contextual-links-region" id="node-' . $entry->nid . '">';
+    $msg .= '<div typeof="sioc:Item foaf:Document" about="/~mihnea/planetary/?q=http%3A//docs.omdoc.org/smglom/copelanderdoesconstant.de.omdoc" class="node node-oaff_doc node-teaser contextual-links-region" id="node-' . $entry->nid . '">';
     $msg .= '<h2> <a href="?q=/node/' . $entry->nid . '">' . $entry->title. '</a></h2>';
     $msg .= '<span class="submitted"><span >' . date("D M j, Y, g:i a", $entry->created) . ' &mdash; <a  class="username" title="View user profile." href="/~mihnea/planetary/?q=user/' . $entry->uid . ' ">' . $entry->name . '</a></span></span>';
     $msg .= '<div class="clearfix">
@@ -205,7 +213,7 @@ function oaff_views_views_default_views() {
   $handler->display->display_options['filters']['type']['field'] = 'type';
   $handler->display->display_options['filters']['type']['value'] = array(
     'glossary' => 'glossary',
-    'mmtdoc' => 'mmtdoc',
+    'oaff_doc' => 'oaff_doc',
   );
 
   /* Display: Page */

@@ -5,5 +5,4 @@ package     = OAFF
 
 dependencies[] = jobad
 dependencies[] = planetary_repo	
-dependencies[] = localcomments
 dependencies[] = oaff

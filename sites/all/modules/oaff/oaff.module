@@ -14,24 +14,9 @@ function oaff_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['oaff/autoload-modules'] = array(
-    'title' => "OAFF Init Modules",
-    'page callback' => 'oaff_create_nodes',
-    'page arguments' => array("content"),
-    'access callback' => 'oaff_setup_access',
-    'menu_name' => 'navigation'
-  );
   $items['oaff/autoload-docs'] = array(
-    'title' => "OAFF Init Documents",
+    'title' => "Initialize Nodes",
     'page callback' => 'oaff_create_nodes',
-    'page arguments' => array("narration"),
-    'access callback' => 'oaff_setup_access',
-    'menu_name' => 'navigation'
-  );
-  $items['oaff/autoload-sources'] = array(
-    'title' => "OAFF Init Sources",
-    'page callback' => 'oaff_create_nodes',
-    'page arguments' => array("source"),
     'access callback' => 'oaff_setup_access',
     'menu_name' => 'navigation'
   );
@@ -138,6 +123,7 @@ function oaff_node_view($node, $view_mode, $langcode) {
 
 	    $inst_id = oaff_initialize();
 
+      /* should be moved to local commments
 	    $result = db_query('SELECT e.field_lc_elid_value, t.field_lc_type_value, n.entity_id, node.title
 	      FROM {field_data_field_lc_nid} n
 	      INNER JOIN {field_data_field_lc_elid} e
@@ -177,8 +163,9 @@ function oaff_node_view($node, $view_mode, $langcode) {
 
 	        jobad_add_to_sidebar($inst_id, '$(document.getElementById("' . $elid . '"))', $options);
 	    }
+      */
 	    $content = $node->content['field_external'][0]['content']['#markup'];
-	    $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '" class="bootstrap" >' . $content . '</div>'; 
+	    $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '" class="bootstrap" >' . $content . '</div>';
       // $node->content['field_external'][0]['content']['#contextual_links'] = "<p>test</p>"; 
 	  }
   }
@@ -295,8 +282,8 @@ function oaff_produce_preformatted($text) {
  * Creates nodes for all documents in planetary_repo path where there is a oaff-connected content type 
  * associated with that format (based on file extension).  (All set up in OAFF configuration)
  */
-function oaff_create_nodes($dimension) {
-  _oaff_crawl_archives($dimension);
+function oaff_create_nodes() {
+  _oaff_crawl_archives();
   return "Success";
 }
 
@@ -304,14 +291,14 @@ function oaff_create_nodes($dimension) {
  * function crawl oaff archives for files to create nodes from (based on extension and OAFF config)
  * is called by oaff_create_nodes
  */
-function _oaff_crawl_archives($dimension) {
+function _oaff_crawl_archives() {
   $groups = planetary_repo_list("");
   foreach ($groups as $group) {
     if (planetary_repo_is_dir($group) && $group[0] != '.') {
       $archives = planetary_repo_list($group);
       foreach ($archives as $archive) {
         if (planetary_repo_is_dir(oaff_join_path(array($group, $archive))) && $archive[0] != '.') {
-          _oaff_crawl_archive($group, $archive, $dimension);
+          _oaff_crawl_archive($group, $archive);
         }
       }
     }
@@ -323,7 +310,7 @@ function _oaff_crawl_archives($dimension) {
  * is called by _oaff_crawl_archives() for each found archive
  * @param $path the VFS folder-path of the archive
  */
-function _oaff_crawl_archive($group, $archive_path, $dimension) { 
+function _oaff_crawl_archive($group, $archive_path) { 
   $oaff_config = variable_get('oaff_config');
   $docbases = array();
   if (isset($oaff_config['docbases'])) {
@@ -349,7 +336,7 @@ function _oaff_crawl_archive($group, $archive_path, $dimension) {
   $oaff_config['docbases'] = $docbases;
   variable_set('oaff_config', $oaff_config);
   //crawling dimension folder
-  $nid = oaff_crawl_dimension_folder($group, $archive, $dimension, "");
+  $nid = oaff_crawl_dimension_folder($group, $archive, 'source', "");
   oaff_set_children($oaff_config['archives_nid'], array($nid));
 }
 
@@ -402,16 +389,18 @@ function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
     }
   }
   $path_info = oaff_get_path_info($folder_path);
-  $menupath = $path_info['dpath'];  
-  $nid = oaff_make_folder_node($folder_path, $cids); 
+  $menupath = $path_info['alias'];  
+  $title = $archive; //default
+  if ($rel_path != "") {
+    $title = pathinfo($folder_path)['filename'];
+  }
+  $nid = oaff_make_folder_node($title, $cids); 
   oaff_set_children($nid, $cids);   
   oaff_save_path($nid, $menupath);
   return $nid;
 }
 
-function oaff_make_folder_node($folder_path, $cids) {
-  // setting title
-  $title = pathinfo($folder_path)['filename'];
+function oaff_make_folder_node($title, $cids) {
   // setting body
   $body = '';
   foreach ($cids as $cid) {
@@ -446,8 +435,7 @@ function oaff_make_file_node($group, $archive, $dimension, $rel_path, $item) {
     $node_type = 'oaff_mod';
   }
   if ($dimension == "source") {
-    $format = 'plain_text';
-    $node_type = 'oaff_src';
+    $node_type = 'oaff_doc';
   }
 
   $fpath = oaff_join_path(array($group, $archive, $dimension, $rel_path, $item));
@@ -512,7 +500,7 @@ function _oaff_crawl_source_folder($archive, $path) {
     }
   }
   $path_info = oaff_get_path_info($path);
-  $menupath = $path_info['dpath'];  
+  $menupath = $path_info['alias'];  
   $nid = oaff_create_article($title, $body);
   oaff_set_children($nid, $cids);   
   oaff_save_path($nid, $menupath);
@@ -710,8 +698,9 @@ function oaff_node_insert($node) {
   $oaff_node_types = $oaff_config['handled_node_types'];
   if (in_array($node->type, $oaff_node_types)) {
     $nid = $node->nid;
-    $dpath = $node->field_external['und']['0']['dpath']['value'];
-    oaff_save_path($nid, $dpath);
+    $location = $node->field_external['und']['0']['path'];
+    $alias = oaff_get_path_info($location)['alias'];
+    oaff_save_path($nid, $alias);
   }
 }
 

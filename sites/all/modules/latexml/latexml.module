@@ -1,17 +1,8 @@
 <?php
 
 function latexml_compile($location) {
-  $segs = explode('/', $location);
-  $name = $segs[count($segs) - 1];
-  $name_parts = explode('.', $name);
-  $ext = $name_parts[count($name_parts) - 1];    
-
-  $base_name_parts = array_slice($name_parts, 0, -1);
-
-
-  $base_name = join('.', $base_name_parts);
-  $segs[count($segs) - 1] = $base_name;
-  $base_relpath = join('/', $segs);
+  $pathinfo = pathinfo($location);
+  $base_relpath = oaff_join_path(array($pathinfo['dirname'], $pathinfo['filename']));
   
   $latexml_scripts_path = drupal_get_path('module', 'latexml') . '/scripts/'; 
   $run_ltx = $latexml_scripts_path . 'run-latexml';
@@ -31,7 +22,8 @@ function latexml_compile($location) {
   $output = shell_exec($run_ltx . ' ' . $arg_location . ' ' . $preamble . ' 2>&1');
   shell_exec($run_sms . ' ' . $arg_location);
   $log_location = $base_relpath . '.ltxlog';
-  $content = planetary_repo_load_file($location);
+  $out_location = $base_relpath . '.omdoc';
+  $content = planetary_repo_load_file($out_location);
   $log = planetary_repo_load_file($log_location);
   $latexml_status = _latexml_produce_status_msg($log);
   $result = array("content" => $content, "status" => $latexml_status);
@@ -131,8 +123,7 @@ function latexml_filter_local_process($text, $filter, $format, $langcode, $cache
     return $text;
   }
 
-  $dpath = $filter_context['mmt']['dpath'];
-  $fpath = oaff_get_location($dpath);
+  $fpath = $filter_context['mmt']['location'];
   $response = latexml_compile($fpath);
 
   if (!isset($filter_context['status'])) {
