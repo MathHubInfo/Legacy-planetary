@@ -32,7 +32,7 @@ function oaff_views_menu() {
     'type' => MENU_CALLBACK,
   );
   $items['oaff-show-questions'] = array(
-    'title' => "Uesr Questions",
+    'title' => "User Questions",
     'page callback' => 'todo',
     'access callback' => true,
     'type' => MENU_CALLBACK,
