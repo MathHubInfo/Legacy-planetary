@@ -50,8 +50,8 @@ Drupal.wysiwyg.editor.attach.ace = function(context, params, settings) {
 
     require(["editor_tools/main"], function(main) {
       handlers = main.enrich_editor(editor, "#ace_"+params.field, {root_path: Drupal.settings.editor_tools.editor_tools_path+"/"});
-      toolbar = handlers.toolbar;
-      interpretter = handlers.interpretter;
+      var toolbar = handlers.toolbar;
+      var interpretter = handlers.interpretter;
 
       function download(file, callback) {
         jQuery.get(file, function(data) {
