@@ -25,17 +25,24 @@ var planetaryNavigation = {
 
 
     contextMenuEntries: function(target, JOBADInstance) {
+		var blob_url = 'http://gl.mathhub.info/' + oaff_node_group  + "/" + oaff_node_archive + "/blob/master/source/" + oaff_node_rel_path;
+		var blame_url = 'http://gl.mathhub.info/' + oaff_node_group  + "/" + oaff_node_archive + "/blame/master/source/" + oaff_node_rel_path;
+		var res = {
+			'View Source' : function() {window.open(blob_url, '_blank');},
+			'View Change History' : function() {window.open(blame_url, '_blank');},
+		};
+		console.log(res);
 		if (target.hasAttribute('jobad:href')) {			
 			var mr = $(target).closest('mrow');
 			var select = (mr.length === 0) ? target : mr[0];
 			mmt.setSelected(select);
 			var uri = target.attr('jobad:href');
 			var me = this;
-			return {
-				'Go To Declaration': function() {me.planetaryOpen(uri);},
-			};
-		}
-		return false;
+			console.log(res);
+			res['Go To Declaration'] = function() {me.planetaryOpen(uri);};		
+			console.log(res);
+		} 
+		return res;
 	},
 
 	planetaryOpen : function(uri) {
