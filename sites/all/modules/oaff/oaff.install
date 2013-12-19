@@ -35,7 +35,7 @@ function oaff_create_node_types() {
   // Creating node type for OAFF documents
   $oaff_doc = (object) array(
     'type' => 'oaff_doc',
-    'name' => 'OAFF Document',
+    'name' => 'MathHub Document',
     'base' => 'node_content',
     'description' => 'A node containing an flexiformal, multilingual OAFF Document',
     'has_title' => true,
@@ -46,7 +46,7 @@ function oaff_create_node_types() {
   // Creating node type for OAFF modules
   $oaff_mod = (object) array(
     'type' => 'oaff_mod',
-    'name' => 'OAFF Module',
+    'name' => 'MathHub Module',
     'base' => 'node_content',
     'description' => 'A node containing an flexiformal, multilingual OAFF Module',
     'has_title' => true,
@@ -57,7 +57,7 @@ function oaff_create_node_types() {
   // Creating node type for OAFF documents
   $oaff_src = (object) array(
     'type' => 'oaff_src',
-    'name' => 'OAFF Source File',
+    'name' => 'MathHub Source File',
     'base' => 'node_content',
     'description' => 'A node containing an flexiformal, multilingual OAFF Source File',
     'has_title' => true,
@@ -282,6 +282,60 @@ function oaff_schema() {
     ),
     'primary key' => array('rid'),  
   );
-  
+
+  $schema['oaff_node_lang_groups'] = array(
+    'description' => 'the base table for representing relations between oaff nodes ',
+    'fields' => array(
+    'gid' => array(
+      'description' => 'The primary identifier of a language group relation',
+        'type' => 'serial', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'bid' => array(
+      'description' => 'The id of base node',
+        'type' => 'int', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'lid' => array(
+        'description' => 'The id of the language variant',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'location' => array(
+        'description' => 'The file path',
+        'type' => 'varchar',
+        'length' => 511,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('gid'),  
+  );
+  $schema['oaff_node_mtime'] = array(
+    'description' => ' last modified time of mathhub nodes according to planetary system ',
+    'fields' => array(
+    'mid' => array(
+      'description' => 'The primary identifier of a language group relation',
+        'type' => 'serial', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'nid' => array(
+      'description' => 'The node id',
+        'type' => 'int', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'mtime' => array(
+        'description' => 'The modification time',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('mid'),  
+  );
   return $schema;
 }

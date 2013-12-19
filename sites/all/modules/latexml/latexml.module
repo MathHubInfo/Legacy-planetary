@@ -19,8 +19,10 @@ function latexml_compile($location) {
     drupal_set_message('Unknown repository provider: "' . $prepo_provider . '" (expected local or git). Cannot find base path, defaulting to /tmp/','warning');
   }
   $arg_location = $repo_path . $base_relpath;
-  $output = shell_exec($run_ltx . ' ' . $arg_location . ' ' . $preamble . ' 2>&1');
-  shell_exec($run_sms . ' ' . $arg_location);
+  shell_exec('lmh gen --omdoc ' . $arg_location);
+  //old way of generating to be removed once constantin confirms lmh command
+  //$output = shell_exec($run_ltx . ' ' . $arg_location . ' ' . $preamble . ' 2>&1');
+  //shell_exec($run_sms . ' ' . $arg_location);
   $log_location = $base_relpath . '.ltxlog';
   $out_location = $base_relpath . '.omdoc';
   $content = planetary_repo_load_file($out_location);

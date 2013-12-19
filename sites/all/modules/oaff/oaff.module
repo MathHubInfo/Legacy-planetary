@@ -39,6 +39,99 @@ function oaff_menu() {
   return $items;
 }
 
+function oaff_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'oaff_doc_node_form') {
+    $nid = $form['#node']->nid;
+    $elems = oaff_get_language_group($nid);
+    $lang_dict = array('und' => 'base', 'de' => 'deutsch', 'en' => 'english');
+
+    //sorting alphabetically (excluding extension)
+    usort($elems, function($a,$b) {
+      return strcmp(pathinfo($a->location)['filename'], pathinfo($b->location)['filename']);
+    });
+    $bid = $elems[0]->lid; //based doc
+
+
+    $form['variants'] = array(
+      '#type' => 'hidden',
+      '#value' => array(),
+    );  
+    foreach ($elems as $elem) {
+      $location = $elem->location;
+      $lid = $elem->lid;
+      $path_info = oaff_get_path_info($location);
+      $lang = $lang_dict[$path_info['lang']];
+      $form['variants']['#value'][] = $lang;
+      if ($bid == $lid) {
+        $form['module'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Module Name',
+        '#default_value' => $path_info['base_module'],
+        '#disabled' => true,
+        '#description' => t(' The base name of module'),
+      );
+      }
+
+      $form['content'][$lang] = array(
+          '#type' => 'fieldset',
+          '#collapsible' => true,
+          '#title' => $lang,
+          '#collapsed' => ($nid != $lid),
+          '#tree' => true,
+      );
+      $form['content'][$lang]['location'] = array(
+        '#type' => 'hidden',
+        '#value' => $location,
+        );
+      $form['content'][$lang]['body'] = array(
+        '#type' => 'text_format',
+        '#title' => 'Body',
+        '#format' => 'tex',
+        '#default_value' => planetary_repo_load_file($location),
+        '#description' => t(' The body of the ' .  $lang . ' language version '),
+      ); 
+    }
+    unset($form['field_external']);
+    unset($form['title']);
+    $form['actions']['submit']['#submit'] = array('oaff_mathhub_doc_act');
+    $form['#submit'] = array('oaff_mathhub_doc_submit');
+  }
+}
+
+
+
+function oaff_mathhub_doc_submit($form, $form_state) {
+ }
+
+
+function oaff_mathhub_doc_act($form, $form_state) {
+  $variants = $form_state['values']['variants'];
+  foreach ($variants as $variant) {
+    $location = $form_state['values'][$variant]['location'];
+    $body = $form_state['values'][$variant]['body']['value'];
+    planetary_repo_save_file($location, $body);
+  }
+}
+
+function oaff_get_language_group($nid) {
+  //getting bid
+  $result = db_select('oaff_node_lang_groups', 'g')
+      ->fields('g', array("bid", "location"))
+      ->condition('lid', $nid,'=')
+      ->execute()
+      ->fetchAssoc();
+  if (isset($result['bid'])) {
+    $bid = $result['bid'];
+  }
+  $result = db_select('oaff_node_lang_groups', 'g')
+      ->fields('g', array("lid", "location"))
+      ->condition('bid', $bid,'=')
+      ->execute()
+      ->fetchAll();
+
+  return $result;
+}
+
 function oaff_contextual_basic($form, &$form_state) {
   $form = array();
   
@@ -316,7 +409,7 @@ function _oaff_crawl_archive($group, $archive_path) {
   if (isset($oaff_config['docbases'])) {
     $docbases = $oaff_config['docbases'];
   }
-
+  
   //getting info from manifest
   $mf_path = oaff_join_path(array($group, $archive_path, "META-INF/MANIFEST.MF"));
   
@@ -374,6 +467,8 @@ function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
   }
   $folder_path = oaff_join_path(array($group, $archive, $dimension, $rel_path));
   $cids = array();
+  $lang_groups = array();
+
   $items = planetary_repo_list($folder_path);
   foreach ($items as $item) {
     if ($item[0] != '.') { // ignoring hidden files and folders
@@ -381,9 +476,15 @@ function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
       if (planetary_repo_is_dir($item_path)) {
         $cids[] = oaff_crawl_dimension_folder($group, $archive, $dimension, oaff_join_path(array($rel_path, $item)));
       } else {
-        $pathinfo = pathinfo($item_path);
+        $pathinfo = oaff_get_path_info($item_path);
         if (isset($pathinfo['extension']) && $pathinfo['extension'] == $extension) {
-          $cids[] = oaff_make_file_node($group, $archive, $dimension, $rel_path, $item);
+          $nid = oaff_make_file_node($group, $archive, $dimension, $rel_path, $item);
+          $cids[] = $nid;
+          $base_module = $pathinfo['base_module'];
+          if ($pathinfo['lang'] == 'und') { 
+            $lang_groups[$base_module]['base'] = $nid;
+          } 
+          $lang_groups[$base_module]['variants'][] = array('lid' => $nid, 'location' => $item_path);
         } // else ingore 
       }
     }
@@ -397,6 +498,7 @@ function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
   $nid = oaff_make_folder_node($title, $cids); 
   oaff_set_children($nid, $cids);   
   oaff_save_path($nid, $menupath);
+  oaff_set_lang_groups($lang_groups);
   return $nid;
 }
 
@@ -575,6 +677,47 @@ function oaff_set_children($pid, $cids) {
       ->execute();
   }
 }
+
+
+function oaff_set_mtime($nid, $mtime) {
+ db_insert('oaff_node_mtime')
+      ->fields(array(
+        'nid' => $nid,
+        'mtime' => $mtime,
+      ))
+      ->execute();
+}
+
+function oaff_get_mtime($nid) {
+  $result = db_select('oaff_node_mtime', 'm')
+      ->fields('m', array("mtime"))
+      ->condition('nid', $nid,'=')
+      ->execute()
+      ->fetchAssoc();
+  return $result['mtime'];
+}
+
+
+
+
+
+function oaff_set_lang_groups($groups) {
+  foreach ($groups as $group) {
+    $variants = $group['variants'];
+    if (isset($group['base'])) {
+      foreach ($variants as $variant) {  
+        db_insert('oaff_node_lang_groups')
+          ->fields(array(
+            'bid' => $group['base'],
+            'lid' => $variant['lid'],
+            'location' => $variant['location'],
+          ))
+          ->execute();
+      }
+    }
+  }
+}
+
 
 /**
  * function to set breadcrumb when viewing oaff nodes
@@ -756,11 +899,12 @@ function oaff_get_path_info($location) {
   $filename = $pathinfo['basename']; 
   $oaff_path_info['filename'] = $filename;
   
-  if (isset($path_info['extension'])) {
+  if (isset($pathinfo['extension'])) {
     $oaff_path_info['extension'] = $pathinfo['extension'];
   }
   $lang = 'und'; // default;
   $mod_pathinfo = pathinfo($module);
+  $oaff_path_info['base_module'] = $mod_pathinfo['filename'];
   if (isset($mod_pathinfo['extension'])) {
     $lang = $mod_pathinfo['extension'];
   }
@@ -781,6 +925,7 @@ function oaff_get_path_info($location) {
   }
   $oaff_path_info['alias'] = $alias;
   
+  $oaff_path_info['rel_parent'] = oaff_join_path(array_slice($loc_segs, 3, -1));
   $frag_segs = array_slice($loc_segs, 3);
   $frag_path = oaff_join_path($frag_segs);
   $docbase = $docbases[$oaff_path_info['archive']];

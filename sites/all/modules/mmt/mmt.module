@@ -447,7 +447,18 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
         $content = planetary_repo_load_file($location);
         global $filter_debug;
         $filter_debug = array();
-        $markup = check_markup($content, $item['filter'], $lang);
+        $mtime = planetary_repo_stat_file($location)['mtime'];
+        $last_ran_time = oaff_get_mtime($entity->nid);
+        $pathinfo = oaff_get_path_info($location);
+        $html_filename = $pathinfo['module'] . '.narration_present_html';
+        $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'narration_present_html', $pathinfo['rel_parent'], $html_filename));
+        if ($last_ran_time == $mtime) {
+          $markup = planetary_repo_load_file($html_location);
+        } else {
+          $markup = check_markup($content, $item['filter'], $lang);
+          oaff_set_mtime($entity->nid, $mtime);
+          planetary_repo_save_file($html_location, $markup);
+        }
         $element[$delta] = array(
           "#type" => "container",
           '#attributes' => array(
