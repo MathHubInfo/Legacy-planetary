@@ -109,7 +109,9 @@ function oaff_mathhub_doc_act($form, $form_state) {
   foreach ($variants as $variant) {
     $location = $form_state['values'][$variant]['location'];
     $body = $form_state['values'][$variant]['body']['value'];
-    planetary_repo_save_file($location, $body);
+    if ($form['content'][$variant]['body']['#default_value'] != $body) { //something changed
+      planetary_repo_save_file($location, $body);
+    }
   }
 }
 
@@ -336,6 +338,7 @@ function oaff_save_error($nid, $status) {
  */
 function oaff_mark_source_errors($source, $status) {
   $color_catalog = array("Error" => "#FF8888", "Warning" => "#FFFF44", "Fatal" => "#FF3333","Info" => "#9999FF");
+  print_r($status);
   foreach ($status as $filter_name => $filter_status) {
     foreach ($filter_status['messages'] as $msg) {
       $lines = explode("\n", $source);
