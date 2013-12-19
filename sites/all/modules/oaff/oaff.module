@@ -338,7 +338,6 @@ function oaff_save_error($nid, $status) {
  */
 function oaff_mark_source_errors($source, $status) {
   $color_catalog = array("Error" => "#FF8888", "Warning" => "#FFFF44", "Fatal" => "#FF3333","Info" => "#9999FF");
-  print_r($status);
   foreach ($status as $filter_name => $filter_status) {
     foreach ($filter_status['messages'] as $msg) {
       $lines = explode("\n", $source);
