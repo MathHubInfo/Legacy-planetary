@@ -53,16 +53,16 @@ function oaff_views_add_doc_form() {
 
   $form['archive'] = array(
     '#type' => 'textfield',
-    '#title' => 'Containing Archive',
+    '#title' => 'Archive',
     '#required' => true,
   );
   $form['title'] = array(
     '#type' => 'textfield',
-    '#title' => 'Document Title',
+    '#title' => 'Module Name',
     '#required' => true,
   );
   $form['body'] = array(
-    '#type' => 'textarea',
+    '#type' => 'text_format',
     '#title' => 'Document Body',
     '#required' => true,
   );

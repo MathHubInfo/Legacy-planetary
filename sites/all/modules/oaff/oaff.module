@@ -196,19 +196,19 @@ function oaff_node_view($node, $view_mode, $langcode) {
   if ($view_mode != "full")
 		return;
   global $filter_context;
-  oaff_set_breadcrumb($node->nid);
   $oaff_config = variable_get('oaff_config');
   $oaff_node_types = $oaff_config['handled_node_types'];
-  $location = $node->field_external['und']['0']['path'];
-  $pathinfo = oaff_get_path_info($location);
-  $archive = $pathinfo['archive'];
-  $group = $pathinfo['group'];
-  $rel_path = $pathinfo['rel_path'];
-  drupal_add_js("var oaff_node_group = '$group';", "inline");
-  drupal_add_js("var oaff_node_archive = '$archive';", "inline");
-  drupal_add_js("var oaff_node_rel_path = '$rel_path';", "inline");
-
+  
   if (in_array($node->type, $oaff_node_types)) {
+    oaff_set_breadcrumb($node->nid);
+    $location = $node->field_external['und']['0']['path'];
+    $pathinfo = oaff_get_path_info($location);
+    $archive = $pathinfo['archive'];
+    $group = $pathinfo['group'];
+    $rel_path = $pathinfo['rel_path'];
+    drupal_add_js("var oaff_node_group = '$group';", "inline");
+    drupal_add_js("var oaff_node_archive = '$archive';", "inline");
+    drupal_add_js("var oaff_node_rel_path = '$rel_path';", "inline");
   	if (isset($filter_context['failed']) && $filter_context['failed']) { //time to report errors
       $source = $filter_context['source'];
       $pre = oaff_produce_preformatted($source);
