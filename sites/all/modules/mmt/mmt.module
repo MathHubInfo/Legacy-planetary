@@ -274,12 +274,6 @@ function mmt_filter_presentation_process($text, $filter, $format, $langcode, $ca
   $dpath = oaff_get_path_info($fpath)['dpath'];
   $style = $filter->settings['mmt_style'];
   $response = mmt_get_presentation($dpath, $text, $style);
-  
-  $key = md5($text);
-  _drutexml_cache_set($key, $response);	
-  if (isset($filter_debug)) {
-	  $filter_debug["mmt_presentation"] = array("mmt/pres", array($key));
-  }
 
   if ($response == "") {
     drupal_set_message('Cannot connect to MMT instance, is MMT running?', 'error');
@@ -321,13 +315,6 @@ function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cac
   $dpath = oaff_get_path_info($fpath)['dpath'];
   $format = $filter->settings['mmt_format'];
   $response = mmt_get_compiled($text, $dpath, $format);
-
-  $key = md5($text);
-  _drutexml_cache_set($key, utf8_encode($response));	
- 
-  if (isset($filter_debug)) {
-	  $filter_debug["mmt_compilation"] = array("mmt/comp", array($key));
-  }
 
   if ($response == "") {
     drupal_set_message('Cannot connect to MMT instance, is MMT running?', 'error');
