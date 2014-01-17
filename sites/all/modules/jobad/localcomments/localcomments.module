@@ -30,6 +30,10 @@ function localcomments_active_for_type($type){
   return in_array($type, $types);
 }
 
+function foo($camelCase) {
+  return $test;
+}
+
 function localcomments_getcomments($uri){
     $view = views_get_view('local_comments');
     $view->init();
