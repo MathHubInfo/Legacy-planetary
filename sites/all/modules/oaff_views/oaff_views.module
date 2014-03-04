@@ -1,5 +1,8 @@
 <?php
 
+
+
+
 /**
  * Implements hook_views_api
  * declared API version used for views 
@@ -9,6 +12,7 @@ function oaff_views_views_api() {
     'api' => "3.0",
   );
 }
+
 
 function oaff_views_menu() {
   $items = array();
@@ -27,13 +31,13 @@ function oaff_views_menu() {
   );
   $items['oaff-sort-unpopularity'] = array(
     'title' => "Unpopular entries",
-    'page callback' => 'todo',
+    'page callback' => 'oaff_views_todo',
     'access callback' => true,
     'type' => MENU_CALLBACK,
   );
   $items['oaff-show-questions'] = array(
     'title' => "User Questions",
-    'page callback' => 'todo',
+    'page callback' => 'oaff_views_todo',
     'access callback' => true,
     'type' => MENU_CALLBACK,
   );
@@ -44,7 +48,7 @@ function oaff_views_add_doc() {
   return drupal_get_form('oaff_views_add_doc_form');
 }
 
-function todo() {
+function oaff_views_todo() {
   return "<p> Coming soon...</p>";
 }
 
@@ -89,7 +93,6 @@ function oaff_views_add_doc_callback($form, &$form_state) {
   $nid = oaff_create_oaff_doc($location, $archive);
   $form_state['redirect'] = 'node/'. $nid;
 }
-
 
 function oaff_views_broken_nodes() {
   $query = db_select('node', 'n');
@@ -141,7 +144,6 @@ function oaff_views_broken_nodes() {
   $msg .= "</div>";
   return $msg;
 }
-
 
 /**
  * implements hook_views_default_views
@@ -222,4 +224,26 @@ function oaff_views_views_default_views() {
 
   $views[$view->name] = $view;
   return $views;
+}
+
+
+
+function oaff_views_node_insert($node) {
+  
+  $message_id = "heartbeat_add_node";
+  $uid = $node->uid;
+  $uid_target = 0;
+  $nid = $node->nid; // 0;
+  $nid_target = 0;
+  $variables = array(
+    '!node_title' => l($node->title, 'node/' . $node->nid), 
+    '!username' => l(user_load($node->uid)->name, 'user/' . $node->uid), 
+    '!node_type' => $node->type, 
+    '!types' => $node->type . 's',
+    );
+  $access = null;
+  $time = 0;
+  $in_group = 0;
+
+  heartbeat_api_log($message_id, $uid, $uid_target = 0, $nid = 0, $nid_target = 0, $variables = array(), $access = null, $time = 0, $in_group = 0);
 }

@@ -31,16 +31,13 @@ var planetaryNavigation = {
 			'View Source' : function() {window.open(blob_url, '_blank');},
 			'View Change History' : function() {window.open(blame_url, '_blank');},
 		};
-		console.log(res);
 		if (target.hasAttribute('jobad:href')) {			
 			var mr = $(target).closest('mrow');
 			var select = (mr.length === 0) ? target : mr[0];
 			mmt.setSelected(select);
 			var uri = target.attr('jobad:href');
 			var me = this;
-			console.log(res);
 			res['Go To Declaration'] = function() {me.planetaryOpen(uri);};		
-			console.log(res);
 		} 
 		return res;
 	},

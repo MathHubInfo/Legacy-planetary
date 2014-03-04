@@ -1,0 +1,14 @@
+name = Rules for Heartbeat Activity
+description = Integrates heartbeat with the rules module. Activity can get logged triggered by rules and heartbeat rules defines a couple of rules triggers as well.
+package = Heartbeat
+core = 7.x
+
+dependencies[] = token
+dependencies[] = rules
+dependencies[] = heartbeat
+; Information added by drupal.org packaging script on 2012-09-04
+version = "7.x-1.1"
+core = "7.x"
+project = "heartbeat"
+datestamp = "1346786566"
+

@@ -10,19 +10,16 @@ function latexml_compile($location) {
   $preamble = $latexml_scripts_path . 'pre.tex';
 
   $prepo_provider = variable_get('planetary_repo_provider');
-  $repo_path = '/tmp/'; //default
+  $repo_path = '/tmp/'; // default
   if ($prepo_provider == 'local') {
     $repo_path = variable_get('planetary_repo_local_path');
   } elseif ($prepo_provider == 'git') {
     $repo_path = variable_get('planetary_repo_git_path');
   } else {
-    drupal_set_message('Unknown repository provider: "' . $prepo_provider . '" (expected local or git). Cannot find base path, defaulting to /tmp/','warning');
+    drupal_set_message('Unknown repository provider: "' . $prepo_provider . '" (expected local or git). Cannot find base path, defaulting to /tmp/', 'warning');
   }
   $arg_location = $repo_path . $base_relpath;
   shell_exec('lmh gen --omdoc ' . $arg_location);
-  //old way of generating to be removed once constantin confirms lmh command
-  //$output = shell_exec($run_ltx . ' ' . $arg_location . ' ' . $preamble . ' 2>&1');
-  //shell_exec($run_sms . ' ' . $arg_location);
   $log_location = $base_relpath . '.ltxlog';
   $out_location = $base_relpath . '.omdoc';
   $content = planetary_repo_load_file($out_location);
@@ -35,7 +32,7 @@ function latexml_compile($location) {
 function _latexml_produce_status_msg($log) {
   $status = array();
   $status['messages'] = array();
-  $logLines = explode("\n", $log);
+  $log_lines = explode("\n", $log);
   
   $msgline_pattern = '/^([^ :]+)\:([^ :]+)\:([^ ]+)(\s(.*))?$/';
   $details_pattern = '/^\t(.*)/';
@@ -43,11 +40,11 @@ function _latexml_produce_status_msg($log) {
   $current_message = array();
   $last_is_msg = false;
   
-  for ($i = 0; $i < count($logLines); $i++) {
-    $line = $logLines[$i];
+  for ($i = 0; $i < count($log_lines); $i++) {
+    $line = $log_lines[$i];
     $matches = array();
-    $isMsgLine = preg_match($msgline_pattern, $line, $matches);
-    if ($isMsgLine) {
+    $is_msg_line = preg_match($msgline_pattern, $line, $matches);
+    if ($is_msg_line) {
       $last_is_msg = true;
       if (isset($current_message['type'])) { // have to save previous msg
         $status['messages'][] = $current_message;
@@ -66,7 +63,7 @@ function _latexml_produce_status_msg($log) {
         $last_is_msg = false;
         if (isset($current_message['srcref'])) {
           $current_message['longMsg'] .=  $line . "\n";
-        } else { //this is the source ref line
+        } else { // this is the source ref line
           $trange_pattern = '/^.*textrange\(from=(\d*);(\d*),to=(\d*);(\d*)\)/';
           $valid_trange = preg_match($trange_pattern, $line, $matches);
           if ($valid_trange) {
@@ -117,11 +114,11 @@ function latexml_filter_local_process($text, $filter, $format, $langcode, $cache
   global $filter_context;
   global $filter_debug;
   
-  if (!isset($filter_context['source'])) { //this is the first filter
+  if (!isset($filter_context['source'])) { // this is the first filter
     $filter_context['source'] = $text;
   }
 
-  if (isset($filter_context['failed']) && $filter_context['failed'] == "true") { //failed already
+  if (isset($filter_context['failed']) && $filter_context['failed'] == "true") { // failed already
     return $text;
   }
 

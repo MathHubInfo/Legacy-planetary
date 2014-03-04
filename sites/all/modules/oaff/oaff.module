@@ -45,11 +45,11 @@ function oaff_form_alter(&$form, &$form_state, $form_id) {
     $elems = oaff_get_language_group($nid);
     $lang_dict = array('und' => 'base', 'de' => 'deutsch', 'en' => 'english');
 
-    //sorting alphabetically (excluding extension)
-    usort($elems, function($a,$b) {
+    // sorting alphabetically (excluding extension)
+    usort($elems, function($a, $b) {
       return strcmp(pathinfo($a->location)['filename'], pathinfo($b->location)['filename']);
     });
-    $bid = $elems[0]->lid; //based doc
+    $bid = $elems[0]->lid; // based doc
 
 
     $form['variants'] = array(
@@ -109,17 +109,17 @@ function oaff_mathhub_doc_act($form, $form_state) {
   foreach ($variants as $variant) {
     $location = $form_state['values'][$variant]['location'];
     $body = $form_state['values'][$variant]['body']['value'];
-    if ($form['content'][$variant]['body']['#default_value'] != $body) { //something changed
+    if ($form['content'][$variant]['body']['#default_value'] != $body) { // something changed
       planetary_repo_save_file($location, $body);
     }
   }
 }
 
 function oaff_get_language_group($nid) {
-  //getting bid
+  // getting bid
   $result = db_select('oaff_node_lang_groups', 'g')
       ->fields('g', array("bid", "location"))
-      ->condition('lid', $nid,'=')
+      ->condition('lid', $nid, '=')
       ->execute()
       ->fetchAssoc();
   if (isset($result['bid'])) {
@@ -127,7 +127,7 @@ function oaff_get_language_group($nid) {
   }
   $result = db_select('oaff_node_lang_groups', 'g')
       ->fields('g', array("lid", "location"))
-      ->condition('bid', $bid,'=')
+      ->condition('bid', $bid, '=')
       ->execute()
       ->fetchAll();
 
@@ -166,7 +166,7 @@ function oaff_contextual_info($form, &$form_state, $key) {
  */
 function oaff_setup_access() {
   global $user;
-  if ($user-> uid == 1) {//only admin has rights 
+  if ($user-> uid == 1) {// only admin has rights 
     return true;
   } else {
   return false;
@@ -209,7 +209,7 @@ function oaff_node_view($node, $view_mode, $langcode) {
     drupal_add_js("var oaff_node_group = '$group';", "inline");
     drupal_add_js("var oaff_node_archive = '$archive';", "inline");
     drupal_add_js("var oaff_node_rel_path = '$rel_path';", "inline");
-  	if (isset($filter_context['failed']) && $filter_context['failed']) { //time to report errors
+  	if (isset($filter_context['failed']) && $filter_context['failed']) { // time to report errors
       $source = $filter_context['source'];
       $pre = oaff_produce_preformatted($source);
       $output = oaff_mark_source_errors($pre, $filter_context['status']);
@@ -284,7 +284,7 @@ function oaff_node_view($node, $view_mode, $langcode) {
 function oaff_has_error($nid) {
   $result =  $result = db_select('oaff_errors', 'e')
     ->fields('e')
-    ->condition('nid', $nid,'=')
+    ->condition('nid', $nid, '=')
     ->execute()
     ->fetchAll();
   return (count($result) > 0);
@@ -346,7 +346,7 @@ function oaff_save_error($nid, $status) {
  * @return the processed string (with errors marked)
  */
 function oaff_mark_source_errors($source, $status) {
-  $color_catalog = array("Error" => "#FF8888", "Warning" => "#FFFF44", "Fatal" => "#FF3333","Info" => "#9999FF");
+  $color_catalog = array("Error" => "#FF8888", "Warning" => "#FFFF44", "Fatal" => "#FF3333", "Info" => "#9999FF");
   $log = '<div> <a style="cursor:pointer;" onclick="if ($(this).html() == \'Show Log\') {$(this).html(\'Hide Log\')} else {$(this).html(\'Show Log\')}; $(\'#oaff_error_log\' ).toggle( \'fold\' );" >Show Log</a></div>';
   $log .= '<div id="oaff_error_log" style="display: none;"><ul>';
   foreach ($status as $filter_name => $filter_status) {
@@ -398,12 +398,24 @@ function oaff_produce_preformatted($text) {
 }
 
 // ------------------------------- OAFF Autoload Crawler -------------------------------- \\
+
 /**
  * Creates nodes for all documents in planetary_repo path where there is a oaff-connected content type 
  * associated with that format (based on file extension).  (All set up in OAFF configuration)
  */
 function oaff_create_nodes() {
+  $oaff_config = variable_get('oaff_config');
+  $oaff_config['latest_nodes'] = 0;
+  variable_set('oaff_config', $oaff_config);
+  
   _oaff_crawl_archives();
+  $oaff_config = variable_get('oaff_config');
+  $nr_nodes = $oaff_config['latest_nodes'];
+  if ($nr_nodes == 0) {
+    drupal_set_message("Successfully crawled archives, nothing new to import");
+  } else {
+    drupal_set_message("Successfully created $nr_nodes nodes");
+  }
   return "Success";
 }
 
@@ -420,13 +432,17 @@ function _oaff_crawl_archives() {
         if (planetary_repo_is_dir(oaff_join_path(array($group, $archive))) && $archive[0] != '.') {
           _oaff_crawl_archive($group, $archive);
         }
+        $oaff_config = variable_get('oaff_config');
+        if ($oaff_config['latest_nodes'] >= 1000) {
+          break 2;
+        }
       }
     }
   }
 }
 
 /**
- * function to crawl one archive for files to create oaff nodes from (based on extension and OAFF config)
+ *  function to crawl one archive for files to create oaff nodes from (based on extension and OAFF config)
  * is called by _oaff_crawl_archives() for each found archive
  * @param $path the VFS folder-path of the archive
  */
@@ -437,27 +453,34 @@ function _oaff_crawl_archive($group, $archive_path) {
     $docbases = $oaff_config['docbases'];
   }
   
-  //getting info from manifest
+  // getting info from manifest
   $mf_path = oaff_join_path(array($group, $archive_path, "META-INF/MANIFEST.MF"));
   
   $manifest = planetary_repo_load_file($mf_path);
-  $mf_lines = explode("\n",$manifest);
-  $docbase = 'http://docs.omdoc.org/default'; //default
-  $archive = 'default'; //default
+  $mf_lines = explode("\n", $manifest);
+  $docbase = 'http://docs.omdoc.org/default'; // default
+  $archive = 'default'; // default
   foreach ($mf_lines as $line) {
-    $pair = explode(":", $line,2);
+    $pair = explode(":", $line, 2);
     if (trim($pair[0]) == "narration-base") {
       $docbase = trim($pair[1]);
     } elseif (trim($pair[0]) == "id") {
       $archive = trim($pair[1]);
     }
   }
-  $docbases[$archive] = $docbase;
-  $oaff_config['docbases'] = $docbases;
-  variable_set('oaff_config', $oaff_config);
-  //crawling dimension folder
-  $nid = oaff_crawl_dimension_folder($group, $archive, 'source', "");
-  oaff_set_children($oaff_config['archives_nid'], array($nid));
+  
+  if (isset($oaff_config['formats'][$archive])) {
+    drupal_set_message("Crawling archive $archive."); 
+    // crawling archive
+    $docbases[$archive] = $docbase;
+    $oaff_config['docbases'] = $docbases;
+    variable_set('oaff_config', $oaff_config);
+    // crawling dimension folder
+    $nid = oaff_crawl_dimension_folder($group, $archive, 'source', "");
+    oaff_set_children($oaff_config['archives_nid'], array($nid));
+  } else {
+    drupal_set_message("Ignoring archive $archive because format is not configured. Please update OAFF configuration to enable it.", 'warning');
+  }
 }
 
 function oaff_join_path($arguments) {
@@ -484,7 +507,6 @@ function oaff_join_path($arguments) {
   }
   return $path;
 }
-
 
 function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
   $extension = "omdoc";
@@ -515,32 +537,38 @@ function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
         } // else ingore 
       }
     }
+    $oaff_config = variable_get('oaff_config');
+    if ($oaff_config['latest_nodes'] >= 1000) {
+      break;
+    }
   }
-  $path_info = oaff_get_path_info($folder_path);
-  $menupath = $path_info['alias'];  
-  $title = $archive; //default
-  if ($rel_path != "") {
-    $title = pathinfo($folder_path)['filename'];
-  }
-  $nid = oaff_make_folder_node($title, $cids); 
+  $nid = oaff_make_folder_node($group, $archive, $dimension, $rel_path);  
   oaff_set_children($nid, $cids);   
-  oaff_save_path($nid, $menupath);
   oaff_set_lang_groups($lang_groups);
   return $nid;
 }
 
-function oaff_make_folder_node($title, $cids) {
-  // setting body
-  $body = '';
-  foreach ($cids as $cid) {
-    $node = node_load($cid);
-    $view = node_view($node, 'teaser');
-    $rendered = drupal_render($view);
-    $body .= $rendered;
+function oaff_make_folder_node($group, $archive, $dimension, $rel_path) {
+  $fpath = oaff_join_path(array($group, $archive, $dimension, $rel_path));
+  $title = $archive; // default
+  if ($rel_path != "") {
+    $title = pathinfo($fpath)['filename'];
   }
-  // creating node
-  $nid = oaff_create_article($title, $body);
-  return $nid;
+  $fpath_info = oaff_get_path_info($fpath);
+  $node_path = drupal_lookup_path('source', $fpath_info['alias']);
+  if (!$node_path) { // node doesn't exist so we create it
+    $dpath = $fpath_info['dpath'];
+    // creating node
+    $nid = oaff_create_node($title, 'und', 'folder', $dpath, $fpath, 'oaff_virtdoc');
+    $oaff_config = variable_get('oaff_config');
+    $oaff_config['latest_nodes'] += 1;
+    variable_set('oaff_config', $oaff_config);
+    return $nid;
+  } else {
+    $fragments = explode("/", $node_path);
+    $nid = $fragments[1];
+    return $nid;
+  }
 }
 
 function oaff_make_file_node($group, $archive, $dimension, $rel_path, $item) {
@@ -555,86 +583,24 @@ function oaff_make_file_node($group, $archive, $dimension, $rel_path, $item) {
   }
   $format = $oaff_config['formats'][$archive];
   $node_type = $oaff_config['node_types'][$format];
-  if ($dimension == "narration") {
-    $format = 'mmt_omdoc';
-    $node_type = 'oaff_doc';
-  }
-  if ($dimension == "content") {
-    $format = 'mmt_omdoc';
-    $node_type = 'oaff_mod';
-  }
-  if ($dimension == "source") {
-    $node_type = 'oaff_doc';
-  }
-
+  
   $fpath = oaff_join_path(array($group, $archive, $dimension, $rel_path, $item));
   $fpath_info = oaff_get_path_info($fpath);
   $dpath = $fpath_info['dpath'];
-  $nid = oaff_create_node($module, $lang, $format, $dpath, $fpath, $node_type);
-  return $nid;
+
+  $node_path = drupal_lookup_path('source', $fpath_info['alias']);
+  if (!$node_path) { // node doesn't exist so we create it
+    $nid = oaff_create_node($module, $lang, $format, $dpath, $fpath, $node_type);   
+    $oaff_config['latest_nodes'] += 1; 
+    variable_set('oaff_config', $oaff_config);
+    return $nid;
+  } else {
+    $fragments = explode("/", $node_path);
+    $nid = $fragments[1];
+    return $nid;
+  }
 }
 
-
-
-
-/**
- * function to crawl the source folder (where the source files are) of an archive for files 
- * to create oaff nodes from (based on extension and OAFF config)
- * @param $archive the name of the archive
- * @param $path the file path of the source folder
- */
-function _oaff_crawl_source_folder($archive, $path) {
-  $oaff_config = variable_get('oaff_config');
-  $format = $oaff_config['formats'][$archive];
-  $node_type = $oaff_config['node_types'][$format];
-  $extension = $oaff_config['extensions'][$format];
-  $res = planetary_repo_list($path);
-  $title = $path;
-  if ($path == '') {
-    $title = $archive;
-  }
-  $cids = array();
-  $body = '';
-  foreach ($res as $file) {
-    $fpath = $path . "/" . $file;
-    if ($path == '') {
-      $fpath = $file;
-    }
-    if($file[0] != '.') {
-      if (planetary_repo_is_dir($fpath)) {  
-        $cids[] = _oaff_crawl_source_folder($archive, $fpath);
-        $path_info = oaff_get_path_info($fpath);
-        $dpath = $path_info['dpath'];
-        $body .= '<p><a href="?q='. drupal_encode_path($dpath) .'">' . $file . "</a></p>\n";
-      } else {
-        $parts = explode('.', $file);
-        $ext = $parts[count($parts) - 1];
-        if ($ext == $extension) {
-          $module = $parts[0];
-          $lang = 'und'; //default
-          if (count($parts) == 3) {
-            $lang = $parts[1];
-          }
-          $path_info = oaff_get_path_info($fpath);
-          $dpath = $path_info['dpath']; 
-
-          $nid = oaff_create_node($module, $lang, $format, $dpath, $fpath, $node_type);
-          $cids[] = $nid;
-          $node = node_load($nid);
-          $view = node_view($node, 'teaser');
-          $rendered = drupal_render($view);
-          $body .= $rendered;
-        }
-      }
-    }
-  }
-  $path_info = oaff_get_path_info($path);
-  $menupath = $path_info['alias'];  
-  $nid = oaff_create_article($title, $body);
-  oaff_set_children($nid, $cids);   
-  oaff_save_path($nid, $menupath);
-  return $nid;
-}
 
 // TODO fix the redundancy with oaff_crawl_source_folder()
 function oaff_create_oaff_doc($fpath, $archive) {
@@ -705,7 +671,6 @@ function oaff_set_children($pid, $cids) {
   }
 }
 
-
 function oaff_set_mtime($nid, $mtime) {
  db_insert('oaff_node_mtime')
       ->fields(array(
@@ -718,15 +683,11 @@ function oaff_set_mtime($nid, $mtime) {
 function oaff_get_mtime($nid) {
   $result = db_select('oaff_node_mtime', 'm')
       ->fields('m', array("mtime"))
-      ->condition('nid', $nid,'=')
+      ->condition('nid', $nid, '=')
       ->execute()
       ->fetchAssoc();
   return $result['mtime'];
 }
-
-
-
-
 
 function oaff_set_lang_groups($groups) {
   foreach ($groups as $group) {
@@ -761,7 +722,7 @@ function oaff_set_breadcrumb($nid) {
   while (!$found_root) {
     $result = db_select('oaff_node_parents', 'c')
       ->fields('c', array("pid"))
-      ->condition('cid', $pids[count($pids) - 1],'=')
+      ->condition('cid', $pids[count($pids) - 1], '=')
       ->execute()
       ->fetchAssoc();
     if (!isset($result['pid'])) {// not an oaff node
@@ -777,7 +738,7 @@ function oaff_set_breadcrumb($nid) {
   foreach ($pids as $pid) {
     $result = db_select('node', 'n')
       ->fields('n', array("title"))
-      ->condition('nid', $pid,'=')
+      ->condition('nid', $pid, '=')
       ->execute()
       ->fetchAssoc();
     $path = drupal_get_path_alias('node/' . $pid);
@@ -793,8 +754,8 @@ function oaff_set_breadcrumb($nid) {
 }
 
 /**
- * create an oaff node, called by _oaff_crawl_source_folder 
- * @param $module the module name, becomes node title //TODO clarify document-module relation (e.g. for smglo)
+ * create an oaff node, called by _oaff_crawl_dimension_folder 
+ * @param $title the node title (module name in smglom)
  * @param $lang, the language of the node
  * @param $format the text format of the node
  * @param $dpath the document path (MMT URI) of the current document 
@@ -802,8 +763,7 @@ function oaff_set_breadcrumb($nid) {
  * @param $node_type the type of the node to be created
  * @return the id of the newly created node
  */
-function oaff_create_node($module, $lang, $format, $dpath, $location, $node_type) {
-  $title = $module;
+function oaff_create_node($title, $lang, $format, $dpath, $location, $node_type) {
   $newnode = (object) array(
    'type' => $node_type,
    'uid' => 0,
@@ -822,7 +782,7 @@ function oaff_create_node($module, $lang, $format, $dpath, $location, $node_type
   $newnode->field_external['und']['0']['filter'] = $format;
   $newnode->field_external['und']['0']['dpath']['value'] = $dpath;
 
-  node_object_prepare($newnode);//necessary ?
+  node_object_prepare($newnode);// necessary ?
   node_save($newnode);
   return $newnode->nid;
 }
@@ -852,7 +812,7 @@ function oaff_create_article($title, $body) {
   $newnode->body['und'][0]['summary'] = $body;  
   $newnode->body['und'][0]['format'] = 'full_html';  
 
-  node_object_prepare($newnode);//necessary ?
+  node_object_prepare($newnode);// necessary ?
   node_save($newnode);
   return $newnode->nid;
 }
@@ -880,7 +840,7 @@ function oaff_node_insert($node) {
  * @param $path the alias to be saved (the MMT URI of the node)
  */ 
 function oaff_save_path($nid, $path) {
-  //saving path
+  // saving path
   if (substr($path, -1) == '/') {
     $path = substr($path, 0, -1);
   }
@@ -896,12 +856,12 @@ function oaff_save_path($nid, $path) {
  * @param $dpath the MMT URI
  * @return the physical location of the doc
  */
-function oaff_get_location($dpath)  {
+function oaff_get_location($dpath) {
   $oaff_config = variable_get('oaff_config');
   $docbases = $oaff_config['docbases'];
   foreach ($docbases as $archive => $base) {
-    if (strpos($dpath, $base) === 0) {
-      $fragment = substr($dpath, strlen($base) + 1); //+1 removes the connecting slash as in 'base/fragment'
+    if (strncmp($dpath, $base, strlen($base)) === 0) { // $dpath starts with $base   
+      $fragment = substr($dpath, strlen($base) + 1); // +1 removes the connecting slash as in 'base/fragment'
       return $archive . '/source/' . $fragment;
     }
   }
@@ -974,8 +934,8 @@ function oaff_get_path_info($location) {
  * @param $form the form state, including filled in values
  */
 function oaff_config_validate($form, &$form_state) {
-  $formats_S = $form_state['values']['oaff_archive_formats'];
-  $formats_lines = explode("\n", $formats_S);
+  $formats_s = $form_state['values']['oaff_archive_formats'];
+  $formats_lines = explode("\n", $formats_s);
   foreach ($formats_lines as $line) {
     $pair = explode(' ', $line);
     if (count($pair) != 2) {
@@ -983,8 +943,8 @@ function oaff_config_validate($form, &$form_state) {
     }
   }
 
-  $node_types_S = $form_state['values']['oaff_format_node_types'];
-  $node_types_lines = explode("\n", $node_types_S);
+  $node_types_s = $form_state['values']['oaff_format_node_types'];
+  $node_types_lines = explode("\n", $node_types_s);
   foreach ($node_types_lines as $line) {
     $pair = explode(' ', $line);
     if (count($pair) != 2) {
@@ -992,8 +952,8 @@ function oaff_config_validate($form, &$form_state) {
     }
   }
   
-  $extensions_S = $form_state['values']['oaff_format_extensions'];
-  $extensions_lines = explode("\n", $extensions_S);
+  $extensions_s = $form_state['values']['oaff_format_extensions'];
+  $extensions_lines = explode("\n", $extensions_s);
   foreach ($extensions_lines as $line) {
     $pair = explode(' ', $line);
     if (count($pair) != 2) {
@@ -1008,11 +968,11 @@ function oaff_config_validate($form, &$form_state) {
  * @param $form the form state, including filled in values
  */
 function oaff_config_submit($form, &$form_state) {
-  $formats_S = $form_state['values']['oaff_archive_formats'];
-  $node_types_S = $form_state['values']['oaff_format_node_types'];
-  $extensions_S = $form_state['values']['oaff_format_extensions'];
+  $formats_s = $form_state['values']['oaff_archive_formats'];
+  $node_types_s = $form_state['values']['oaff_format_node_types'];
+  $extensions_s = $form_state['values']['oaff_format_extensions'];
   
-  oaff_config_set($formats_S, $node_types_S, $extensions_S);
+  oaff_config_set($formats_s, $node_types_s, $extensions_s);
 }
 
 /**
@@ -1021,8 +981,8 @@ function oaff_config_submit($form, &$form_state) {
  * @param $node_types_S string encoding information of format - node_type pairs
  * @param $extensions_S string encoding information of format - (file) extension pairs
  */
-function oaff_config_set($formats_S, $node_types_S, $extensions_S) {
-  $formats_lines = explode("\n", $formats_S);
+function oaff_config_set($formats_s, $node_types_s, $extensions_s) {
+  $formats_lines = explode("\n", $formats_s);
   $formats = array();
   foreach ($formats_lines as $line) {
     if (trim($line) != '') {
@@ -1031,7 +991,7 @@ function oaff_config_set($formats_S, $node_types_S, $extensions_S) {
     }
   }
 
-  $node_types_lines = explode("\n", $node_types_S);
+  $node_types_lines = explode("\n", $node_types_s);
   $node_types = array();
   foreach ($node_types_lines as $line) {
     if (trim($line) != '') {
@@ -1040,7 +1000,7 @@ function oaff_config_set($formats_S, $node_types_S, $extensions_S) {
     }
   }
 
-  $extensions_lines = explode("\n", $extensions_S);
+  $extensions_lines = explode("\n", $extensions_s);
   $extensions = array();
   foreach ($extensions_lines as $line) {
     if (trim($line) != '') {   

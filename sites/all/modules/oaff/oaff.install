@@ -44,26 +44,16 @@ function oaff_create_node_types() {
   oaff_add_vfs_field('oaff_doc');
   
   // Creating node type for OAFF modules
-  $oaff_mod = (object) array(
-    'type' => 'oaff_mod',
-    'name' => 'MathHub Module',
+  $oaff_doc = (object) array(
+    'type' => 'oaff_virtdoc',
+    'name' => 'MathHub Virtual Document',
     'base' => 'node_content',
-    'description' => 'A node containing an flexiformal, multilingual OAFF Module',
+    'description' => 'A node containing an flexiformal, multilingual OAFF document, that does not have a corresponding source file',
     'has_title' => true,
   ); 
-  node_type_save($oaff_mod);
-  oaff_add_vfs_field('oaff_mod');
+  node_type_save($oaff_doc);
+  oaff_add_vfs_field('oaff_virtdoc');
 
-  // Creating node type for OAFF documents
-  $oaff_src = (object) array(
-    'type' => 'oaff_src',
-    'name' => 'MathHub Source File',
-    'base' => 'node_content',
-    'description' => 'A node containing an flexiformal, multilingual OAFF Source File',
-    'has_title' => true,
-  ); 
-  node_type_save($oaff_src);
-  oaff_add_vfs_field('oaff_src');
 }
 
 function delete_node_type($node_type_name, $remove_type = true) {
@@ -74,7 +64,7 @@ function delete_node_type($node_type_name, $remove_type = true) {
     $nids[] = $row->nid;
   }
   node_delete_multiple($nids);
-  //deleting node type
+  // deleting node type
   if ($remove_type) {
     node_type_delete($node_type_name);
   }
@@ -144,9 +134,10 @@ function oaff_install() {
   $a_nid = oaff_create_archives_node();
   $c_nid = oaff_create_contribute_node();
   $oaff_config = array();
-  $oaff_config['handled_node_types'] = array('mmtdoc', 'glossary', 'oaff_doc', 'oaff_mod', 'oaff_src');
+  $oaff_config['handled_node_types'] = array('mmtdoc', 'glossary', 'oaff_doc', 'oaff_virtdoc');
   $oaff_config['archives_nid'] = $a_nid;
   $oaff_config['contribute_nid'] = $c_nid;
+  $oaff_config['latest_nodes'] = 0;
   $mlids = array();
 
   $arch_item = array(
@@ -176,10 +167,10 @@ function oaff_install() {
   $oaff_config['mlids'] = $mlids;
   variable_set('oaff_config', $oaff_config);
 
-  $formats_S = variable_get("oaff_archive_formats", '');
-  $node_types_S = variable_get("oaff_format_node_types", '');
-  $extensions_S = variable_get("oaff_format_extensions", '');
-  oaff_config_set($formats_S, $node_types_S, $extensions_S);
+  $formats_s = variable_get("oaff_archive_formats", '');
+  $node_types_s = variable_get("oaff_format_node_types", '');
+  $extensions_s = variable_get("oaff_format_extensions", '');
+  oaff_config_set($formats_s, $node_types_s, $extensions_s);
   
   drupal_set_message("Installed OAFF");
 }
@@ -190,10 +181,9 @@ function oaff_uninstall() {
   node_delete($a_nid);
   $c_nid = $oaff_config['contribute_nid'];
   node_delete($c_nid);
-  //for easy debugging, deleting content on reinstall
+  // for easy debugging, deleting content on reinstall
   delete_node_type('oaff_doc'); 
-  delete_node_type('oaff_mod'); 
-  delete_node_type('oaff_src'); 
+  delete_node_type('oaff_virtdoc'); 
   delete_node_type('mmtdoc', false); 
   
   delete_node_type('article', false);
@@ -308,7 +298,7 @@ function oaff_schema() {
         'description' => 'The file path',
         'type' => 'varchar',
         'length' => 511,
-        'not null' => TRUE,
+        'not null' => true,
       ),
     ),
     'primary key' => array('gid'),  

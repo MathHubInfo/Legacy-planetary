@@ -7,26 +7,28 @@
  */
 function mmt_initialize() {
     /* CSS */
-    $mmtPath = drupal_get_path('module', 'mmt');
+    $mmt_path = drupal_get_path('module', 'mmt');
     $mmt_config = variable_get('mmt_config');
-    $mmtUrl = $mmt_config['mmturl'];  
+    $mmt_url = $mmt_config['mmturl'];  
 
     
-    drupal_add_css($mmtPath . '/css/mmt.css', array('weight' => PHP_INT_MAX, 'every_page' => false));
+    drupal_add_css($mmt_path . '/css/mmt.css', array('weight' => PHP_INT_MAX, 'every_page' => false));
     
     /* JavaScript */
-    drupal_add_js('var mmtUrl = "' . $mmtUrl . '";', 'inline');
-    jobad_add_module($mmtPath . '/jobad/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
-    jobad_add_module($mmtPath . '/jobad/hovering.js', "kwarc.mmt.hovering");
-    jobad_add_module($mmtPath . '/jobad/interactive-viewing.js', "kwarc.mmt.intvw");
+    drupal_add_js('var mmtUrl = "' . $mmt_url . '";', 'inline');
+    jobad_add_module($mmt_path . '/jobad/planetary-navigation.js', "kwarc.mmt.planetary.navigation");
+    jobad_add_module($mmt_path . '/jobad/ontology-navigation.js', "kwarc.mmt.ontology.navigation");
+    jobad_add_module($mmt_path . '/jobad/hovering.js', "kwarc.mmt.hovering");
+    jobad_add_module($mmt_path . '/jobad/interactive-viewing.js', "kwarc.mmt.intvw");
 
-    //if search enabled
-    //jobad_add_module($mmtPath . '/jobad/search.js', "kwarc.mmt.search");
 
-    //mmt js libs
-    drupal_add_js($mmtPath . '/utils/mmt-html.js', 'file', array('cache' => false));
-    drupal_add_js($mmtPath . '/utils/mathml.js', 'file', array('cache' => false));
-    //modules
+    // if search enabled
+    // jobad_add_module($mmt_path . '/jobad/search.js', "kwarc.mmt.search");
+
+    // mmt js libs
+    drupal_add_js($mmt_path . '/utils/mmt-html.js', 'file', array('cache' => false));
+    drupal_add_js($mmt_path . '/utils/mathml.js', 'file', array('cache' => false));
+    // modules
 }
 
 
@@ -48,16 +50,31 @@ function mmt_node_view($node, $view_mode, $langcode) {
 }
 
 /**
+ * function to get content from mmt (optionally presented with a style)
+ * @param $dpath the path from where to get the content
+ * @param $style the style to be used for presentation
+ * @return the rendered content
+ */
+function mmt_get($dpath, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
+  $mmt_config = variable_get('mmt_config');
+  $mmt_url = $mmt_config['mmturl'];
+  $url = "$mmt_url/:mmt?get%20$dpath??%20present%20$style%20respond";
+  $response = file_get_contents($url);
+  return $response;
+}
+
+
+/**
  * function to get presentation of a document from the connected MMT instance (MMT URL set in MMT config)
  * @param $dpath the MMT URI of the document
  * @param $body the content of the document
  * @param $style the MMT style to be used for presentation
  * @return the processing result and log
  */
-function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
+function mmt_present($dpath, $body, $style = 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5') {
   $mmt_config = variable_get('mmt_config');
-  $mmtUrl = $mmt_config['mmturl'];
-  $url = $mmtUrl . '/:planetary/getPresentation';
+  $mmt_url = $mmt_config['mmturl'];
+  $url = $mmt_url . '/:planetary/getPresentation';
   $data = array('body' => $body, 'style' => $style);
   if (isset($dpath)) {
     $data['dpath'] = $dpath;
@@ -77,16 +94,16 @@ function mmt_get_presentation($dpath, $body, $style = 'http://cds.omdoc.org/styl
 }
 
 /**
- * function to get compilation of a document from the connected MMT instance (MMT URL set in MMT config)
+ * function to compile a source document with the connected MMT instance (MMT URL set in MMT config)
  * @param $dpath the MMT URI of the document
  * @param $body the content of the document
  * @param $format the source format of the document, used to select the correct MMT compiler
  * @return the processing result and log
  */
-function mmt_get_compiled($body, $dpath, $format) {
+function mmt_compile($body, $dpath, $format) {
   $mmt_config = variable_get('mmt_config');
-  $mmtUrl = $mmt_config['mmturl'];
-  $url = $mmtUrl . '/:planetary/getCompiled';
+  $mmt_url = $mmt_config['mmturl'];
+  $url = $mmt_url . '/:planetary/getCompiled';
 
   $data = array('body' => $body, 'format' => $format);
   if (isset($dpath)) {
@@ -117,8 +134,8 @@ function mmt_get_compiled($body, $dpath, $format) {
 */
 function mmt_get_dependencies($mpath) {
   $mmt_config = variable_get('mmt_config');
-  $mmtUrl = $mmt_config['mmturl'];
-  $url = $mmtUrl . '/:query';
+  $mmt_url = $mmt_config['mmturl'];
+  $url = $mmt_url . '/:query';
   $data = '<related><individual uri="'.$mpath.'"/><toobject relation="Includes"/></related>';
 
   $options = array(
@@ -133,7 +150,7 @@ function mmt_get_dependencies($mpath) {
   $xml = new SimpleXMLElement($response);
   $xmlpaths = $xml->xpath('/results/result/uri');
   $results = array();
-  foreach ($xmlpaths as $xmlpath){
+  foreach ($xmlpaths as $xmlpath) {
     $results[] = (string)$xmlpath['path'];
   }
   return array($results); 
@@ -167,8 +184,8 @@ function mmt_menu() {
  * @param $form the form state, including filled in values
  */
 function mmt_config_validate($form, &$form_state) {
-  $mmturl = $form_state['values']['mmt_instance_url'];
-  if (trim($mmturl) == '') {
+  $mmt_url = $form_state['values']['mmt_instance_url'];
+  if (trim($mmt_url) == '') {
     form_set_error('mmt_instance_url', t('MMT URL cannot be empty'));
   }
 }
@@ -179,17 +196,17 @@ function mmt_config_validate($form, &$form_state) {
  * @param $form the form state, including filled in values
  */
 function mmt_config_submit($form, &$form_state) {
-  $mmturl = $form_state['values']['mmt_instance_url'];
-  mmt_config_set($mmturl);
+  $mmt_url = $form_state['values']['mmt_instance_url'];
+  mmt_config_set($mmt_url);
 }
 
 /**
  * helper function to set mmt configuration, called by mmt_config_submit and mmt_install
- * @param $mmturl the URL of the MMT instance connected to the OAFF
+ * @param $mmt_url the URL of the MMT instance connected to the OAFF
  */
-function mmt_config_set($mmturl) {
+function mmt_config_set($mmt_url) {
   $mmt_config = variable_get('mmt_config');
-  $mmt_config['mmturl'] = $mmturl;
+  $mmt_config['mmturl'] = $mmt_url;
 
   variable_set("mmt_config", $mmt_config);
 }
@@ -232,7 +249,6 @@ function mmt_filter_info() {
       'mmt_style' => 'http://cds.omdoc.org/styles/omdoc/mathml.omdoc?html5',
     ),
     'settings callback' => 'mmt_filter_presentation_settings',
- //   'tips callback' => '_mmt_filter_presentation_tips',
   );
   $filters['mmt-compilation'] = array(
     'title' => t('MMT Compilation filter'),
@@ -242,7 +258,6 @@ function mmt_filter_info() {
       'mmt_format' => 'mmt',
     ),
     'settings callback' => 'mmt_filter_compilation_settings',
- //   'tips callback' => '_mmt_filter_presentation_tips',
   );
 
   return $filters;
@@ -262,31 +277,34 @@ function mmt_filter_presentation_process($text, $filter, $format, $langcode, $ca
   global $filter_context;
   global $filter_debug;
   
-  if (isset($filter_context['failed']) && $filter_context['failed'] == "true") { //failed already
+  if (isset($filter_context['failed']) && $filter_context['failed'] == "true") { // failed already
     return $text;
   }
 
-  if (!isset($filter_context['source'])) { //this is the first filter
+  if (!isset($filter_context['source'])) { // this is the first filter
     $filter_context['source'] = $text;
   }
   
   $fpath = $filter_context['mmt']['location'];
   $dpath = oaff_get_path_info($fpath)['dpath'];
   $style = $filter->settings['mmt_style'];
-  $response = mmt_get_presentation($dpath, $text, $style);
-
-  if ($response == "") {
-    drupal_set_message('Cannot connect to MMT instance, is MMT running?', 'error');
-    $filter_context['failed'] = true;    
-    return $text;
-  }
-
-  $result= json_decode($response, true);
-  $filter_context['status']['mmt_pres'] = $result['status'];
-  if ($result['status']['conversion'] != 0) { //compilation succeeded
-    $filter_context['failed'] = true;
-  }
-  return $result['content'];
+  if ($text == "") { // no source => we get what is currently already in MMT ( node type probably virtdoc)
+    $response = mmt_get($dpath, $style);
+    return $response;
+  } else {
+    $response = mmt_present($dpath, $text, $style);
+    if ($response == "") {
+      drupal_set_message('Cannot connect to MMT instance, is MMT running?', 'error');
+      $filter_context['failed'] = true;    
+      return $text;
+    }
+    $result = json_decode($response, true);
+    $filter_context['status']['mmt_pres'] = $result['status'];
+    if ($result['status']['conversion'] != 0) { // compilation failed
+      $filter_context['failed'] = true;
+    }
+    return $result['content'];
+  } 
 }
 
 /**
@@ -303,25 +321,25 @@ function mmt_filter_compilation_process($text, $filter, $format, $langcode, $cac
   global $filter_debug;
   global $filter_context;
 
-  if (isset($filter_context['failed']) && $filter_context['failed'] == "true") { //failed already
+  if (isset($filter_context['failed']) && $filter_context['failed'] == "true") { // failed already
     return $text;
   }
 
-  if (!isset($filter_context['source'])) { //this is the first filter
+  if (!isset($filter_context['source'])) { // this is the first filter
     $filter_context['source'] = $text;
   }
 
   $fpath = $filter_context['mmt']['location'];
   $dpath = oaff_get_path_info($fpath)['dpath'];
   $format = $filter->settings['mmt_format'];
-  $response = mmt_get_compiled($text, $dpath, $format);
+  $response = mmt_compile($text, $dpath, $format);
 
   if ($response == "") {
     drupal_set_message('Cannot connect to MMT instance, is MMT running?', 'error');
     $filter_context['failed'] = true;    
     return $text;
   }
-  $result= json_decode($response, true);
+  $result = json_decode($response, true);
   $filter_context['status']['mmt_comp'] = $result['status'];
   if ($result['status']['conversion'] != 0) {
     $filter_context['failed'] = true;
@@ -383,7 +401,7 @@ function mmt_filter_compilation_settings($form, $form_state, $filter, $format, $
  */
 function mmt_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'mmtdoc_node_form') { 
-    if(array_key_exists('nid', $form_state['node'])) { //editing existing node
+    if (array_key_exists('nid', $form_state['node'])) { // editing existing node
        $location = $form_state['node']->field_external['und']['0']['path']; 
        $path_info = oaff_get_path_info($location);
        global $filter_context;
@@ -431,14 +449,21 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
         global $filter_context;
         $filter_context = array();
         $filter_context['mmt']['location'] = $location;
-        $content = planetary_repo_load_file($location);
+        $pathinfo = oaff_get_path_info($location);
+        
+        if ($entity->type == "oaff_virtdoc") { // there is no source
+          $content = "";
+          $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'export/narration', $pathinfo['rel_parent'], '.html'));
+        } else {
+          $content = planetary_repo_load_file($location);
+          $html_filename = $pathinfo['module'] . '.html';
+          $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'export/narration', $pathinfo['rel_parent'], $html_filename));
+        }
         global $filter_debug;
         $filter_debug = array();
         $mtime = planetary_repo_stat_file($location)['mtime'];
         $last_ran_time = oaff_get_mtime($entity->nid);
-        $pathinfo = oaff_get_path_info($location);
-        $html_filename = $pathinfo['module'] . '.narration_present_html';
-        $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'narration_present_html', $pathinfo['rel_parent'], $html_filename));
+
         if ($last_ran_time == $mtime) {
           $markup = planetary_repo_load_file($html_location);
         } else {

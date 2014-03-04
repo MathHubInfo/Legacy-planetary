@@ -1,0 +1,17 @@
+name = Heartbeat Organic Groups
+description = "Heartbeat OG integrates with the Organic Groups module. The module provides default streams, message templates, display suite layout settings for those templates and more. It also recognizes group context."
+package = Heartbeat
+core = 7.x
+files[] = plugins/og.inc
+files[] = streams/groupactivity.inc
+files[] = streams/groupsactivity.inc
+files[] = streams/membersactivity.inc
+dependencies[] = heartbeat
+dependencies[] = og_context
+
+; Information added by drupal.org packaging script on 2012-09-04
+version = "7.x-1.1"
+core = "7.x"
+project = "heartbeat"
+datestamp = "1346786566"
+

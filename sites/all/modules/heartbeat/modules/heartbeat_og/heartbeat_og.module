@@ -1,0 +1,35 @@
+<?php
+/**
+ * @file
+ * Integration module for Heartbeat and Organic Groups.
+ */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function heartbeat_og_ctools_plugin_api($module, $api) {
+  if ($module == 'heartbeat' && $api == 'heartbeat') {
+    return array('version' => 1);
+  }
+  if ($module == 'ds' && $api == 'ds') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implement hook_og_permission().
+ */
+function heartbeat_og_og_permission() {
+  $items = array();
+
+  if (module_exists('heartbeat_plugins')) {
+	  $items['post-activity-statuses'] = array(
+	    'title' => t('Post activity statuses in a group'),
+	    'description' => t("Allow user to post heartbeat activity statuses inside a group."),
+	    'roles' => array(OG_AUTHENTICATED_ROLE),
+	    'default role' => array(OG_AUTHENTICATED_ROLE),
+	  );
+  }
+
+  return $items;
+}

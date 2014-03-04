@@ -1,0 +1,33 @@
+name = Heartbeat activity
+description = Logs user activity when certain events occur, triggering actions. The logged data is accessable through heartbeat displays.
+package = Heartbeat
+core = 7.x
+dependencies[] = ctools
+
+configure = admin/structure/heartbeat
+files[] = heartbeat.module
+files[] = heartbeat.entity.inc
+files[] = heartbeat.streams.inc
+files[] = includes/heartbeatmessagetemplate.inc
+files[] = includes/heartbeatactivity.inc
+files[] = includes/heartbeatparser.inc
+files[] = includes/heartbeatstreamconfig.inc
+files[] = includes/heartbeatstream.inc
+files[] = streams/singleactivity.inc
+files[] = streams/viewsactivity.inc
+files[] = views/views_handler_field_heartbeat_message.inc
+files[] = views/views_handler_field_heartbeat_attachments.inc
+files[] = views/views_handler_field_heartbeat_buttons.inc
+files[] = views/views_handler_field_heartbeat_message_id.inc
+files[] = views/views_handler_filter_heartbeat_message_id.inc
+files[] = views/views_handler_filter_heartbeat_stream.inc
+files[] = views/views_plugin_row_heartbeat_view.inc
+files[] = views/views_plugin_row_heartbeat_rss.inc
+files[] = tests/heartbeat.entity.test
+files[] = tests/heartbeat.api.test
+; Information added by drupal.org packaging script on 2012-09-04
+version = "7.x-1.1"
+core = "7.x"
+project = "heartbeat"
+datestamp = "1346786566"
+
