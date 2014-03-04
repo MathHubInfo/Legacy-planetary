@@ -126,6 +126,7 @@ function drutexml_filter_info() {
     'process callback' => '_drutexml_filter_latex_process',
     'default settings' => array(
       'latexml_url' => 'http://latexml.mathweb.org/convert',
+      'latexml_profile' => 'planetmath',
       'latexml_preamble' => '',
     ),
     'cache' => $debug_drutexml == 0,
