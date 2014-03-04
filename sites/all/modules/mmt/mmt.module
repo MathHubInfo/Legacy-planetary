@@ -464,7 +464,7 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
         $mtime = planetary_repo_stat_file($location)['mtime'];
         $last_ran_time = oaff_get_mtime($entity->nid);
 
-        if ($last_ran_time == $mtime) {
+        if ($last_ran_time == $mtime && planetary_repo_stat_file($html_location) != null) {
           $markup = planetary_repo_load_file($html_location);
         } else {
           $markup = check_markup($content, $item['filter'], $lang);
