@@ -346,23 +346,33 @@ function oaff_save_error($nid, $status) {
  * @return the processed string (with errors marked)
  */
 function oaff_mark_source_errors($source, $status) {
-  $color_catalog = array("Error" => "#FF8888", "Warning" => "#FFFF44", "Fatal" => "#FF3333", "Info" => "#9999FF");
-  $log = '<div> <a style="cursor:pointer;" onclick="if ($(this).html() == \'Show Log\') {$(this).html(\'Hide Log\')} else {$(this).html(\'Show Log\')}; $(\'#oaff_error_log\' ).toggle( \'fold\' );" >Show Log</a></div>';
+
+  $color_catalog = array("Error" => "#FF8888", "Warning" => "#BBBB00", "Fatal" => "#FF3333", "Info" => "#9999FF");
+  // creating log
+  $log = '<div> <p style="color:red"> Conversion Failed <a style="cursor:pointer;" onclick="if ($(this).html() == \'Show Log\') {$(this).html(\'Hide Log\')} else {$(this).html(\'Show Log\')}; $(\'#oaff_error_log\' ).toggle( \'fold\' );" >Show Log</a> </p> </div>';
   $log .= '<div id="oaff_error_log" style="display: none;"><ul>';
   foreach ($status as $filter_name => $filter_status) {
     foreach ($filter_status['messages'] as $msg) {
-       $log .= "<li>";
-       $srcref = $msg['srcref']['from']['line'] . "." . $msg['srcref']['from']['line'] . "-" ;
-       $srcref .= $msg['srcref']['to']['line'] . "." . $msg['srcref']['to']['line'];
-       
-       $log .= "<p><u> {$msg['type']} at $srcref </u> : {$msg['shortMsg']} </p>";
-       $log .= "<pre> {$msg['longMsg']} </pre>";
-       $log .= "</li>"; 
+      $log .= "<li>";
+      $srcref_msg = '';
+      if (isset($msg['srcref'])) {
+        $srcref_msg .= 'at ';
+        $srcref_msg .= $msg['srcref']['from']['line'] . "." . $msg['srcref']['from']['col'] . "-" ;
+        $srcref_msg .= $msg['srcref']['to']['line'] . "." . $msg['srcref']['to']['col'];
+      }
+
+      $short_msg = check_plain($msg['shortMsg']);
+      $long_msg = check_plain($msg['longMsg']);
+      $color = $color_catalog[$msg['type']];
+      $log .= "<p><u style=\"color:{$color}\"> {$msg['type']} $srcref_msg </u> : $short_msg </p>";
+      $log .= "<pre> $long_msg </pre>";
+      $log .= "</li>"; 
     }
   }
   $log .= "</ul></div>";
 
-
+  // creating error highlighting in source (disabled curently due to bad source refs)
+  /*
   foreach ($status as $filter_name => $filter_status) {
     foreach ($filter_status['messages'] as $msg) {
       $lines = explode("\n", $source);
@@ -384,7 +394,8 @@ function oaff_mark_source_errors($source, $status) {
   	  $source = join("\n", $lines);
   	}
   }
-  return $source . $log;
+  */
+  return $log . $source;
 }
 
 /**

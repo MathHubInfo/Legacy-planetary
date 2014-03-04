@@ -54,13 +54,12 @@ function _latexml_produce_status_msg($log) {
         $status['conversion'] = $matches[3];
       } else {
         $current_message['type'] = $matches[1];
-        $current_message['shortMsg'] = check_plain($matches[5]);
+        $current_message['shortMsg'] = $matches[5];
         $current_message['longMsg'] = '';
       }
     } else {
       $is_details_line = preg_match($details_pattern, $line, $matches);
       if ($is_details_line && $last_is_msg) {
-        $last_is_msg = false;
         if (isset($current_message['srcref'])) {
           $current_message['longMsg'] .=  $line . "\n";
         } else { // this is the source ref line
@@ -75,17 +74,13 @@ function _latexml_produce_status_msg($log) {
             $current_message["srcref"]['to']['line'] = $matches[3] + 1; // oaff standard is that lines nr starts at 1 not 0
             $current_message["srcref"]['to']['col'] = $matches[4];
           } else {
-            $current_message["srcref"] = array();
-            $current_message["srcref"]['from'] = array();
-            $current_message["srcref"]['from']['line'] = 1;
-            $current_message["srcref"]['from']['col'] = 1;
-            $current_message["srcref"]['to'] = array();
-            $current_message["srcref"]['to']['line'] = 1;
-            $current_message["srcref"]['to']['col'] = 2;
+            // no source ref, adding to long message
+            $current_message['longMsg'] .= $line . "\n";
           }
         }
-      } 
-      // else just random line, skip ahead 
+      } else { // random line, skipping and setting message 
+        $last_is_msg = false;
+      }
     }
   }
   if (isset($current_message['type'])) { // have to save last msg
