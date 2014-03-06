@@ -22,9 +22,15 @@ function latexml_compile($location) {
   shell_exec('lmh gen --omdoc ' . $arg_location);
   $log_location = $base_relpath . '.ltxlog';
   $out_location = $base_relpath . '.omdoc';
-  $content = planetary_repo_load_file($out_location);
-  $log = planetary_repo_load_file($log_location);
-  $latexml_status = _latexml_produce_status_msg($log);
+  if (planetary_repo_stat_file($log_location) == null || planetary_repo_stat_file($out_location) == null) {
+    // TODO add a message to status
+    $latexml_status = array("conversion" => 3, "messages" => array()); // conversion failed => fatal error 
+    $content = ""; 
+  } else {
+    $log = planetary_repo_load_file($log_location);
+    $latexml_status = _latexml_produce_status_msg($log);
+    $content = planetary_repo_load_file($out_location);  
+  }
   $result = array("content" => $content, "status" => $latexml_status);
   return $result;
 }
@@ -52,7 +58,7 @@ function _latexml_produce_status_msg($log) {
       }
       if ($matches[1] == 'Status') {
         $status['conversion'] = $matches[3];
-      } else {
+      } else if ($matches[1] == "Info" || $matches[1] == "Warning" || $matches[1] == "Error" || $matches[1] == "Fatal") {
         $current_message['type'] = $matches[1];
         $current_message['shortMsg'] = $matches[5];
         $current_message['longMsg'] = '';
