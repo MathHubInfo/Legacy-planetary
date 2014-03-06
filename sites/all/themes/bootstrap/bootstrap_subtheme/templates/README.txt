@@ -1,3 +1,6 @@
-This folder is where you would place template files. By default, the base theme
-provides all the necessary template files in ./bootstrap/templates. If you wish
-to override them, copy them from that folder and place them in here.
+This folder is where you should place all your overriding template files. By
+default, the Bootstrap base theme provides all the necessary template files in
+various folders inside of sites/*/themes/bootstrap/theme. For example, the
+page.tpl.php template file is located at
+sites/*/themes/bootstrap/theme/system/page.tpl.php. To override any of these
+files, copy them from the Bootstrap base theme and place them in here.

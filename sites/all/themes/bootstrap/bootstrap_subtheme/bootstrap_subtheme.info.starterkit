@@ -3,7 +3,11 @@ description = A Bootstrap Sub-theme.
 core = 7.x
 base theme = bootstrap
 
-; Regions
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Regions
+;;;;;;;;;;;;;;;;;;;;;
+
 regions[navigation]     = 'Navigation'
 regions[header]         = 'Top Bar'
 regions[highlighted]    = 'Highlighted'
@@ -12,41 +16,50 @@ regions[content]        = 'Content'
 regions[sidebar_first]  = 'Primary'
 regions[sidebar_second] = 'Secondary'
 regions[footer]         = 'Footer'
+regions[page_top]       = 'Page top'
+regions[page_bottom]    = 'Page bottom'
 
-; Stylesheets
+
+;;;;;;;;;;;;;;;;;;;;;
+;; Stylesheets
+;;;;;;;;;;;;;;;;;;;;;
+
 stylesheets[all][] = css/style.css
 
-;**********************************
-; METHOD 1: Bootstrap Source Files
-;**********************************
+
+; For information on choosing the desired method, please read the Drupal
+; Bootstrap sub-theme "how-to" documentation:
+; https://drupal.org/node/1978010
+
+; ;----------------------------------
+; ; METHOD 1: Bootstrap Source Files
+; ;----------------------------------
 ; 
-; ; Scripts
-; scripts[] = 'bootstrap/js/bootstrap-affix.js'
-; scripts[] = 'bootstrap/js/bootstrap-alert.js'
-; scripts[] = 'bootstrap/js/bootstrap-button.js'
-; scripts[] = 'bootstrap/js/bootstrap-carousel.js'
-; scripts[] = 'bootstrap/js/bootstrap-collapse.js'
-; scripts[] = 'bootstrap/js/bootstrap-dropdown.js'
-; scripts[] = 'bootstrap/js/bootstrap-modal.js'
-; scripts[] = 'bootstrap/js/bootstrap-tooltip.js'
-; scripts[] = 'bootstrap/js/bootstrap-popover.js'
-; scripts[] = 'bootstrap/js/bootstrap-scrollspy.js'
-; scripts[] = 'bootstrap/js/bootstrap-transition.js'
-; scripts[] = 'bootstrap/js/bootstrap-typeahead.js'
+; ;;;;;;;;;;;;;;;;;;;;;
+; ;; Scripts
+; ;;;;;;;;;;;;;;;;;;;;;
 ; 
-; ; Settings inherited by base theme, uncomment to override.
-; ;settings[toggle_name] = 0
-; ;settings[toggle_search] = 1
-; ; Disable the CDN as we are using our own source files.
-; settings[cdn_bootstrap] = 0
+; scripts[] = 'bootstrap/js/affix.js'
+; scripts[] = 'bootstrap/js/alert.js'
+; scripts[] = 'bootstrap/js/button.js'
+; scripts[] = 'bootstrap/js/carousel.js'
+; scripts[] = 'bootstrap/js/collapse.js'
+; scripts[] = 'bootstrap/js/dropdown.js'
+; scripts[] = 'bootstrap/js/modal.js'
+; scripts[] = 'bootstrap/js/tooltip.js'
+; scripts[] = 'bootstrap/js/popover.js'
+; scripts[] = 'bootstrap/js/scrollspy.js'
+; scripts[] = 'bootstrap/js/tab.js'
+; scripts[] = 'bootstrap/js/transition.js'
+;
+; ; Disable BootstrapCDN if using Bootstrap source files in your sub-theme.
+; settings[bootstrap_cdn] = ''
 
 
-;*************************
-; METHOD 2: Bootstrap CDN
-;*************************
-; 
-; ; Settings inherited by base theme, uncomment to override.
-; ;settings[toggle_name] = 0
-; ;settings[toggle_search] = 1
-; ;settings[cdn_bootstrap] = 1
-; ;settings[cdn_bootstrap_version] = 2.3.1
+; ;-------------------------
+; ; METHOD 2: Bootstrap CDN
+; ;-------------------------
+;
+; Method 2 uses BootstrapCDN, the only thing you might need to provide here
+; is overrides to Bootstrap theme settings. Copy them here from the base theme
+; to override.
