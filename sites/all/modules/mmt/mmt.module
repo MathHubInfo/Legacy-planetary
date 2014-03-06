@@ -469,8 +469,11 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
         } else {
           $markup = check_markup($content, $item['filter'], $lang);
           if (!isset($filter_context['failed']) || !$filter_context['failed']) {
-            oaff_set_mtime($entity->nid, $mtime);
-            planetary_repo_save_file($html_location, $markup);
+            oaff_set_mtime($entity->nid, $mtime); 
+            $html_parent = pathinfo($html_location)['dirname'];
+            if (planetary_repo_stat_file($html_parent) != null) {
+              planetary_repo_save_file($html_location, $markup);
+            } // TODO else create parents
           }
         }
         $element[$delta] = array(
