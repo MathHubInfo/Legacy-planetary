@@ -14,9 +14,15 @@ function oaff_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['oaff/autoload-docs'] = array(
+  $items['oaff/initialize-nodes'] = array(
     'title' => "Initialize Nodes",
     'page callback' => 'oaff_create_nodes',
+    'access callback' => 'oaff_setup_access',
+    'menu_name' => 'navigation'
+  );
+  $items['oaff/crawl-nodes'] = array(
+    'title' => "Crawl Loaded Nodes",
+    'page callback' => 'oaff_crawl_nodes',
     'access callback' => 'oaff_setup_access',
     'menu_name' => 'navigation'
   );
@@ -38,6 +44,7 @@ function oaff_menu() {
   );
   return $items;
 }
+
 
 function oaff_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'oaff_doc_node_form') {
@@ -217,9 +224,9 @@ function oaff_node_view($node, $view_mode, $langcode) {
 
       $node->content['field_external'][0]['content']['#markup'] =  '<div id="' . $inst_id . '" class="bootstrap" >' . $output . '</div>'; 
       
-      oaff_save_error($node->nid, $filter_context['status']);// mark this node as having an error
+      oaff_save_error_status($node->nid, $filter_context['status']);// mark this node as having an error
     } else {
-    	if (oaff_has_error($node->nid)) {// must mark this as fixed
+    	if (oaff_has_errors($node->nid)) {// must mark this as fixed
         db_delete('oaff_errors')
   			  ->condition('nid', $node->nid)
   		    ->execute();
@@ -281,7 +288,7 @@ function oaff_node_view($node, $view_mode, $langcode) {
  * @param $nid the id of the node that is being checked
  * @return true if node compilation has failed last time, false otherwise
  */
-function oaff_has_error($nid) {
+function oaff_has_errors($nid) {
   $result =  $result = db_select('oaff_errors', 'e')
     ->fields('e')
     ->condition('nid', $nid, '=')
@@ -291,51 +298,27 @@ function oaff_has_error($nid) {
 }
 
 
-function oaff_save_error($nid, $status) {
-  $state = 0;
-  $infos = 0;
-  $warnings = 0;
-  $errors = 0;
-  $fatals = 0;
-  
-  foreach ($status as $compiler_state) {
-    if ($state < $compiler_state['conversion']) {
-      $state = $compiler_state['conversion'];
-    }
-    foreach ($compiler_state['messages'] as $msg) {
-      if ($msg['type'] == "Info") {
-        $infos += 1;
-      } elseif ($msg['type'] == "Warning") {
-        $warnings += 1;
-      } elseif ($msg['type'] == "Error") {
-        $errors += 1;
-      } elseif ($msg['type'] == "Fatal") {
-        $fatals += 1;
-      } else {
-        drupal_set_message('Unexpected error msg type in oaff_save_error: ' . $msg['type'], 'warning');
-      }
-    }
+function oaff_save_error_status($nid, $status) {
+  if (oaff_has_errors($nid)) { // delete any pre-existing status
+     db_delete('oaff_errors')
+          ->condition('nid', $nid)
+          ->execute();
   }
-  if (oaff_has_error($nid)) {// update
-    db_update('oaff_errors') 
-      ->fields(array(
-        'status' => $state, 
-        'infos' => $infos,
-        'warnings' => $warnings,
-        'errors' => $errors,
-        'fatals' => $fatals))
-      ->condition('nid', $nid, '=')
-      ->execute();
-  } else { // insert
-    db_insert('oaff_errors') 
+  $type_map = array("Info" => 0, "Warning" => 1, "Error" => 2, "Fatal" => 3);
+  foreach ($status as $compiler => $compiler_state) {
+    foreach ($compiler_state['messages'] as $msg) {
+      $short_msg = $msg['shortMsg'];
+      if (strlen($short_msg) > 1000) {// limiting size to under 1023 to fit in db
+        $short_msg = substr($short_msg, 0, 1000) . " ...";
+      }
+      db_insert('oaff_errors') 
       ->fields(array(
         'nid' => $nid,
-        'status' => $state, 
-        'infos' => $infos,
-        'warnings' => $warnings,
-        'errors' => $errors,
-        'fatals' => $fatals))
+        'type' => $type_map[$msg['type']], 
+        'compiler' => $compiler,
+        'short_msg' => $short_msg))
       ->execute();
+    }
   }
 }
 
@@ -408,6 +391,49 @@ function oaff_produce_preformatted($text) {
   return "<pre>\n" . check_plain($text) . "\n</pre>";
 }
 
+// ------------------------------- OAFF Node Crawler -------------------------------- \\
+
+/**
+ * crawl the nodes already loaded in drupal to check for validity, and errors, and so on
+ */
+function oaff_crawl_nodes() {
+  $oaff_config = variable_get("oaff_config");
+  if (isset($_GET['restart']) && $_GET['restart'] == 'true') {
+    $oaff_config['crawl_nodes_offset'] = 0;
+  }
+  $offset = $oaff_config['crawl_nodes_offset'];
+  $results = db_select('node', 'n')
+              ->fields('n', array('nid'))
+              ->condition('n.type', 'oaff_doc', '=')
+              ->range($offset, 100)
+              ->execute()
+              ->fetchAll();
+
+  foreach ($results as $result) {
+    node_view(node_load($result->nid));
+  }
+  $crawled = count($results);
+  $oaff_config['crawl_nodes_offset'] += $crawled;
+  variable_set('oaff_config', $oaff_config);
+  if ($crawled == 0) {
+    if ($offset == 0) {
+      drupal_set_message("Nothing to crawl (no nodes) (perhaps initialize nodes)");
+    } else {
+      drupal_set_message("Finished crawling nodes, no new nodes (perhaps restart)");
+    }
+  } else {
+    drupal_set_message("Crawled $crawled nodes (with offset $offset)");
+  }
+  drupal_set_breadcrumb(array());
+  $out = '<div> <button onclick="window.location = \'?q=oaff/crawl-nodes&restart=true\'" class="btn btn-danger"> Restart </button>';
+  $out .= ' <button class="btn btn-primary " onclick="window.location = \'?q=oaff/crawl-nodes\'"> Continue </button> </div> ';
+  return $out;
+}
+
+// ############################# End OAFF Node Crawler ########################### \\
+
+
+
 // ------------------------------- OAFF Autoload Crawler -------------------------------- \\
 
 /**
@@ -427,7 +453,8 @@ function oaff_create_nodes() {
   } else {
     drupal_set_message("Successfully created $nr_nodes nodes");
   }
-  return "Success";
+  $out = '<div> <button class="btn btn-primary " onclick="window.location = \'?q=oaff/initialize-nodes\'"> Continue </button> </div> ';
+  return $out;
 }
 
 /**
@@ -520,7 +547,7 @@ function oaff_join_path($arguments) {
 }
 
 function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
-  $extension = "omdoc";
+    $extension = "omdoc";
   if ($dimension == "source") { // getting source extension from config
     $oaff_config = variable_get('oaff_config');
     $extension = $oaff_config['extensions'][$oaff_config['formats'][$archive]];
@@ -531,7 +558,8 @@ function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
 
   $items = planetary_repo_list($folder_path);
   foreach ($items as $item) {
-    if ($item[0] != '.') { // ignoring hidden files and folders
+    if ($item[0] != '.' && $item != "all.tex" && $item != "localpaths.tex") { // ignoring hidden files and folders, 
+                                                                              // also lmh/stex specific ones  
       $item_path = oaff_join_path(array($folder_path, $item));
       if (planetary_repo_is_dir($item_path)) {
         $cids[] = oaff_crawl_dimension_folder($group, $archive, $dimension, oaff_join_path(array($rel_path, $item)));
@@ -729,11 +757,15 @@ function oaff_set_breadcrumb($nid) {
 
   $found_root = false;
   $pids = array();
-  $pids[] = $nid; 
+  // $pids[] = $nid; 
   while (!$found_root) {
+    $last = $nid;
+    if (count($pids) > 0) {
+      $last = $pids[count($pids) - 1];
+    }
     $result = db_select('oaff_node_parents', 'c')
       ->fields('c', array("pid"))
-      ->condition('cid', $pids[count($pids) - 1], '=')
+      ->condition('cid', $last, '=')
       ->execute()
       ->fetchAssoc();
     if (!isset($result['pid'])) {// not an oaff node

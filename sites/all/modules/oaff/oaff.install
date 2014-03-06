@@ -138,6 +138,7 @@ function oaff_install() {
   $oaff_config['archives_nid'] = $a_nid;
   $oaff_config['contribute_nid'] = $c_nid;
   $oaff_config['latest_nodes'] = 0;
+  $oaff_config['crawl_nodes_offset'] = 0;
   $mlids = array();
 
   $arch_item = array(
@@ -214,34 +215,22 @@ function oaff_schema() {
         'unsigned' => true,
         'not null' => true,
       ),
-      'status' => array(
-        'description' => 'The Error status, 1 for warning, 2 for error, 3 for fatal',
+      'type' => array(
+        'description' => 'The Error type, 0 for info, 1 for warning, 2 for error, 3 for fatal',
         'type' => 'int',
         'unsigned' => true,
         'not null' => true,
       ),
-      'infos' => array(
-        'description' => 'The number of Info messages',
-        'type' => 'int',
-        'unsigned' => true,
+      'compiler' => array(
+        'description' => 'The compiler that generated the error',
+        'type' => 'varchar',
+        'length' => 63,
         'not null' => true,
-      ),
-      'warnings' => array(
-        'description' => 'The number of Warning messages',
-        'type' => 'int',
-        'unsigned' => true,
-        'not null' => true,
-      ),
-      'errors' => array(
-        'description' => 'The number of Error messages',
-        'type' => 'int',
-        'unsigned' => true,
-        'not null' => true,
-      ),
-      'fatals' => array(
-        'description' => 'The number of Fatal messages',
-        'type' => 'int',
-        'unsigned' => true,
+        ),
+      'short_msg' => array(
+        'description' => 'The short error message',
+        'type' => 'varchar',
+        'length' => 1023,
         'not null' => true,
       ),
     ),
