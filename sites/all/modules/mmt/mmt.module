@@ -453,11 +453,11 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
         
         if ($entity->type == "oaff_virtdoc") { // there is no source
           $content = "";
-          $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'export/narration', $pathinfo['rel_parent'], '.html'));
+          $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'export/planetary/narration', $pathinfo['rel_parent'], '.html'));
         } else {
           $content = planetary_repo_load_file($location);
           $html_filename = $pathinfo['module'] . '.html';
-          $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'export/narration', $pathinfo['rel_parent'], $html_filename));
+          $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'export/planetary/narration', $pathinfo['rel_parent'], $html_filename));
         }
         global $filter_debug;
         $filter_debug = array();
