@@ -13,11 +13,10 @@ var planetaryNavigation = {
   
 
     leftClick: function(target, JOBADInstance) {
-		if(target.hasAttribute('loadable')) {
-			var elem = target.parent().get(0);
-			var uri = $(elem).attr('jobad:load');
+		if(target.hasAttribute('jobad:href')) {
+			var uri = target.attr("jobad:href");
 			var uriEnc = this.encode(uri);
-			window.location.search = "?q=" + uriEnc;
+			window.location = uriEnc;
 			return true;
 		}
 		return false;
@@ -55,8 +54,14 @@ var planetaryNavigation = {
 
     encode : function(uri) {
 		var rawEncoded = encodeURIComponent(uri);
-		//mirroring drupal in not escaping slashes
-		return rawEncoded.replace(/%2F/g, "/");
+		var matches = uri.match(/^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/);
+		var fragment = ""; //default
+		if (matches[7] != undefined) {
+			fragment = "#" + matches[7].substring(1); //removing beginning '?'
+		}
+		var path = matches[4] + "source/" + matches[6] + fragment;
+
+		return path;
     },
 };
 
