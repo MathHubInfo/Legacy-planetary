@@ -29,6 +29,7 @@ var planetaryNavigation = {
 		var res = {
 			'View Source' : function() {window.open(blob_url, '_blank');},
 			'View Change History' : function() {window.open(blame_url, '_blank');},
+			'View Graph' : function() {$('#modal').modal()},
 		};
 		if (target.hasAttribute('jobad:href')) {			
 			var mr = $(target).closest('mrow');

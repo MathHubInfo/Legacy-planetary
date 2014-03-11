@@ -14,33 +14,17 @@ function oaff_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['oaff/initialize-nodes'] = array(
+  $items['mh/initialize-nodes'] = array(
     'title' => "Initialize Nodes",
     'page callback' => 'oaff_create_nodes',
     'access callback' => 'oaff_setup_access',
     'menu_name' => 'navigation'
   );
-  $items['oaff/crawl-nodes'] = array(
+  $items['mh/crawl-nodes'] = array(
     'title' => "Crawl Loaded Nodes",
     'page callback' => 'oaff_crawl_nodes',
     'access callback' => 'oaff_setup_access',
     'menu_name' => 'navigation'
-  );
-   $items['contextual/%/information'] = array(
-    'title' => 'Block information',
-    'type' => MENU_LOCAL_ACTION,
-    'context' => MENU_CONTEXT_INLINE,
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('oaff_contextual_info', 1),
-    'access callback' => true,
-  );
-  // To use local task menu items, there must be a parent page.
-  $items['contextual'] = array(
-    'title' => 'Oaff contextual example',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array("oaff_contextual_basic"),
-    'type' => MENU_CALLBACK,
-    'access callback' => true,
   );
   return $items;
 }
@@ -222,8 +206,8 @@ function oaff_node_view($node, $view_mode, $langcode) {
       $output = oaff_mark_source_errors($pre, $filter_context['status']);
       $inst_id = oaff_initialize();
 
-      $node->content['field_external'][0]['content']['#markup'] =  '<div id="' . $inst_id . '" class="bootstrap" >' . $output . '</div>'; 
-      
+      $node->content['field_external'][0]['content']['#markup'] =  
+         '<div id="' . $inst_id . '" class="bootstrap" >' . $output . '</div>';      
       oaff_save_error_status($node->nid, $filter_context['status']);// mark this node as having an error
     } else {
     	if (oaff_has_errors($node->nid)) {// must mark this as fixed
@@ -276,12 +260,44 @@ function oaff_node_view($node, $view_mode, $langcode) {
 	    }
       */
 	    $content = $node->content['field_external'][0]['content']['#markup'];
-	    $node->content['field_external'][0]['content']['#markup'] = '<div id="' . $inst_id . '" class="bootstrap" >' . $content . '</div>';
+      
+	    $node->content['field_external'][0]['content']['#markup'] = 
+      '<div id="' . $inst_id . '" class="bootstrap" >' . $content . '</div>' . 
+      oaff_svg_html($pathinfo);
+
       // $node->content['field_external'][0]['content']['#contextual_links'] = "<p>test</p>"; 
 	  }
   }
 
 }
+
+
+function oaff_svg_html($pathinfo) {
+  $arr = explode(".",$pathinfo['rel_path']);
+  $svg_path = planetary_repo_access_rel_path(oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], "export/svg", $arr[0] . ".svg")));
+  $svg_content = file_get_contents($svg_path);
+  $out = '<div id="modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width:80%">
+      <div class="modal-content">    
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">' . $pathinfo['filename'] . '</h4>
+         </div>
+        <div class="modal-body" style="overflow:auto"> ' .
+          $svg_content .
+       '</div>
+      </div>
+    </div>  
+  </div>';
+  /*
+         <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+  */
+  return $out; 
+}
+
 
 /**
  * function to check if an OAFF node has an error (during compilation)
@@ -425,8 +441,8 @@ function oaff_crawl_nodes() {
     drupal_set_message("Crawled $crawled nodes (with offset $offset)");
   }
   drupal_set_breadcrumb(array());
-  $out = '<div> <button onclick="window.location = \'?q=oaff/crawl-nodes&restart=true\'" class="btn btn-danger"> Restart </button>';
-  $out .= ' <button class="btn btn-primary " onclick="window.location = \'?q=oaff/crawl-nodes\'"> Continue </button> </div> ';
+  $out = '<div> <button onclick="window.location = \'/mh/crawl-nodes&restart=true\'" class="btn btn-danger"> Restart </button>';
+  $out .= ' <button class="btn btn-primary " onclick="window.location = \'/mh/crawl-nodes\'"> Continue </button> </div> ';
   return $out;
 }
 
@@ -445,6 +461,7 @@ function oaff_create_nodes() {
   $oaff_config['latest_nodes'] = 0;
   variable_set('oaff_config', $oaff_config);
   
+  _oaff_create_meta_nodes();
   _oaff_crawl_archives();
   $oaff_config = variable_get('oaff_config');
   $nr_nodes = $oaff_config['latest_nodes'];
@@ -453,8 +470,44 @@ function oaff_create_nodes() {
   } else {
     drupal_set_message("Successfully created $nr_nodes nodes");
   }
-  $out = '<div> <button class="btn btn-primary " onclick="window.location = \'?q=oaff/initialize-nodes\'"> Continue </button> </div> ';
+  $out = '<div> <button class="btn btn-primary " onclick="window.location = \'/mh/initialize-nodes\'"> Continue </button> </div> ';
   return $out;
+}
+
+
+/**
+ * function crawl oaff archives for files to create nodes from (based on extension and OAFF config)
+ * is called by oaff_create_nodes
+ */
+function _oaff_create_meta_nodes() {
+  $oaff_config = variable_get('oaff_config');
+  $archives_nid = $oaff_config['archives_nid'];
+  $archives_node = node_load($archives_nid);
+  $archives_body = $archives_node->body['und'][0]['value'];
+  if ($archives_body == "") {
+    $archives_body = "<ul>";
+    $groups = planetary_repo_list("");
+    foreach ($groups as $group) {
+      if (planetary_repo_is_dir($group) && $group[0] != '.') {
+        $archives = planetary_repo_list($group);
+        foreach ($archives as $archive) {
+          if (planetary_repo_is_dir(oaff_join_path(array($group, $archive))) && $archive[0] != '.') {
+            $arch_info = _oaff_get_archive_info($group, $archive);
+            $archive_id = $arch_info['id'];
+            if (isset($oaff_config['formats'][$archive_id])) {
+              $archives_body .= "<li> <a href=\"/$group/$archive\"> $archive_id </a> </li>";
+              oaff_create_static_node($archive_id, "$group/$archive", "<ul><li><a href=\"/$group/$archive/source\">Content</a> </li></ul>");
+            }
+          }
+        }
+      }
+    }
+    $archives_body .= "</ul>";
+    $archives_node->body['und'][0]['value'] = $archives_body;
+    node_save($archives_node);
+  } else {
+    drupal_set_message("Archives node already has content, delete to regenerate or update it manually if needed", 'warning');
+  }
 }
 
 /**
@@ -479,17 +532,9 @@ function _oaff_crawl_archives() {
   }
 }
 
-/**
- *  function to crawl one archive for files to create oaff nodes from (based on extension and OAFF config)
- * is called by _oaff_crawl_archives() for each found archive
- * @param $path the VFS folder-path of the archive
- */
-function _oaff_crawl_archive($group, $archive_path) { 
+
+function _oaff_get_archive_info($group, $archive_path) {
   $oaff_config = variable_get('oaff_config');
-  $docbases = array();
-  if (isset($oaff_config['docbases'])) {
-    $docbases = $oaff_config['docbases'];
-  }
   
   // getting info from manifest
   $mf_path = oaff_join_path(array($group, $archive_path, "META-INF/MANIFEST.MF"));
@@ -506,18 +551,50 @@ function _oaff_crawl_archive($group, $archive_path) {
       $archive = trim($pair[1]);
     }
   }
+  return array('docbase' => $docbase, 'id' => $archive);
+}
+
+/**
+ *  function to crawl one archive for files to create oaff nodes from (based on extension and OAFF config)
+ * is called by _oaff_crawl_archives() for each found archive
+ * @param $path the VFS folder-path of the archive
+ */
+function _oaff_crawl_archive($group, $archive_path) { 
+  $oaff_config = variable_get('oaff_config');
+  $docbases = array();
+  if (isset($oaff_config['docbases'])) {
+    $docbases = $oaff_config['docbases'];
+  }
+  $archive_ids = array();
+  if (isset($oaff_config['archive_id'])) {
+    $archive_ids = $oaff_config['archive_id'];
+  }
+  if (!isset($archive_ids['archive_id'][$group])) {
+    $archive_ids['archive_id'][$group] = array();
+  }
+  if (!isset($archive_ids['archive_id'][$group][$archive_path])) {
+    $archive_ids['archive_id'][$group][$archive_path] = array();
+  }
+
+  // getting info from manifest
+  $arch_info = _oaff_get_archive_info($group, $archive_path);
+  $docbase = $arch_info['docbase'];
+  $archive_id = $arch_info['id'];
   
-  if (isset($oaff_config['formats'][$archive])) {
-    drupal_set_message("Crawling archive $archive."); 
+  if (isset($oaff_config['formats'][$archive_id])) {
+    drupal_set_message("Crawling archive $archive_id."); 
     // crawling archive
-    $docbases[$archive] = $docbase;
+    $docbases[$archive_id] = $docbase;
     $oaff_config['docbases'] = $docbases;
+    $oaff_config['archive_id'][$group][$archive_path] = $archive_id;
     variable_set('oaff_config', $oaff_config);
     // crawling dimension folder
-    $nid = oaff_crawl_dimension_folder($group, $archive, 'source', "");
+    $nid = oaff_crawl_dimension_folder($group, $archive_path, $archive_id, 'source', "");
     oaff_set_children($oaff_config['archives_nid'], array($nid));
+    return true;
   } else {
-    drupal_set_message("Ignoring archive $archive because format is not configured. Please update OAFF configuration to enable it.", 'warning');
+    drupal_set_message("Ignoring archive $archive_id because format is not configured. Please update OAFF configuration to enable it.", 'warning');
+    return false;
   }
 }
 
@@ -546,13 +623,13 @@ function oaff_join_path($arguments) {
   return $path;
 }
 
-function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
+function oaff_crawl_dimension_folder($group, $archive_path, $archive_id, $dimension, $rel_path) {
     $extension = "omdoc";
   if ($dimension == "source") { // getting source extension from config
     $oaff_config = variable_get('oaff_config');
-    $extension = $oaff_config['extensions'][$oaff_config['formats'][$archive]];
+    $extension = $oaff_config['extensions'][$oaff_config['formats'][$archive_id]];
   }
-  $folder_path = oaff_join_path(array($group, $archive, $dimension, $rel_path));
+  $folder_path = oaff_join_path(array($group, $archive_path, $dimension, $rel_path));
   $cids = array();
   $lang_groups = array();
 
@@ -562,11 +639,11 @@ function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
                                                                               // also lmh/stex specific ones  
       $item_path = oaff_join_path(array($folder_path, $item));
       if (planetary_repo_is_dir($item_path)) {
-        $cids[] = oaff_crawl_dimension_folder($group, $archive, $dimension, oaff_join_path(array($rel_path, $item)));
+        $cids[] = oaff_crawl_dimension_folder($group, $archive_path, $archive_id, $dimension, oaff_join_path(array($rel_path, $item)));
       } else {
         $pathinfo = oaff_get_path_info($item_path);
         if (isset($pathinfo['extension']) && $pathinfo['extension'] == $extension) {
-          $nid = oaff_make_file_node($group, $archive, $dimension, $rel_path, $item);
+          $nid = oaff_make_file_node($group, $archive_path, $archive_id, $dimension, $rel_path, $item);
           $cids[] = $nid;
           $base_module = $pathinfo['base_module'];
           if ($pathinfo['lang'] == 'und') { 
@@ -581,15 +658,51 @@ function oaff_crawl_dimension_folder($group, $archive, $dimension, $rel_path) {
       break;
     }
   }
-  $nid = oaff_make_folder_node($group, $archive, $dimension, $rel_path);  
+  $nid = oaff_make_folder_node($group, $archive_path, $archive_id, $dimension, $rel_path);  
   oaff_set_children($nid, $cids);   
   oaff_set_lang_groups($lang_groups);
   return $nid;
 }
 
-function oaff_make_folder_node($group, $archive, $dimension, $rel_path) {
-  $fpath = oaff_join_path(array($group, $archive, $dimension, $rel_path));
-  $title = $archive; // default
+
+function oaff_create_static_node($title, $alias, $content = "") {
+  $static_node = (object) array(
+   'type' => 'page',
+   'uid' => 0,
+   'created' => strtotime("now"),
+   'changed' => strtotime("now"),
+   'status' => 1,
+   'comment' => 2,
+   'promote' => 0,
+   'moderate' => 0,
+   'sticky' => 0,
+   'language' => 'und'
+  );
+
+  $static_node->title = $title;
+  node_object_prepare($static_node);
+  $static_node->body['und']['0'] = array('value' => $content, 'format' => 'full_html');
+  node_save($static_node);
+  $path_opt = array(
+    'source' => 'node/' . $static_node->nid,
+    'alias' => $alias,
+  );
+  path_save($path_opt);
+  
+  $arch_item = array(
+    'link_path' => drupal_get_normal_path($alias),
+    'link_title' => $title,
+    'weight' => 10,
+    'menu_name' => 'main-menu'
+  );
+  $mlid = menu_link_save($arch_item);
+
+  return array('nid' => $static_node->nid, 'mlid' => $mlid);
+}
+
+function oaff_make_folder_node($group, $archive_path, $archive_id, $dimension, $rel_path) {
+  $fpath = oaff_join_path(array($group, $archive_path, $dimension, $rel_path));
+  $title = $archive_id; // default
   if ($rel_path != "") {
     $title = pathinfo($fpath)['filename'];
   }
@@ -610,7 +723,7 @@ function oaff_make_folder_node($group, $archive, $dimension, $rel_path) {
   }
 }
 
-function oaff_make_file_node($group, $archive, $dimension, $rel_path, $item) {
+function oaff_make_file_node($group, $archive_path, $archive_id, $dimension, $rel_path, $item) {
   $oaff_config = variable_get('oaff_config');
   $pathinfo = pathinfo($item);
   $module = $pathinfo['filename'];
@@ -620,10 +733,10 @@ function oaff_make_file_node($group, $archive, $dimension, $rel_path, $item) {
   if (isset($mod_pathinfo['extension'])) {
     $lang = $mod_pathinfo['extension'];
   }
-  $format = $oaff_config['formats'][$archive];
+  $format = $oaff_config['formats'][$archive_id];
   $node_type = $oaff_config['node_types'][$format];
   
-  $fpath = oaff_join_path(array($group, $archive, $dimension, $rel_path, $item));
+  $fpath = oaff_join_path(array($group, $archive_path, $dimension, $rel_path, $item));
   $fpath_info = oaff_get_path_info($fpath);
   $dpath = $fpath_info['dpath'];
 
@@ -949,10 +1062,11 @@ function oaff_get_path_info($location) {
   $oaff_path_info['archive'] = $loc_segs[1];
   $oaff_path_info['dimension'] = $loc_segs[2];
 
-  $alias = $location; // default
-  if ($oaff_path_info['dimension'] == "content") {
-    $alias = $parent . "?" . $module; 
+  $alias = $location; //default
+  if (isset($pathinfo['extension'])) {
+    $alias = $parent . '/' . $module . '.omdoc'; // just changing the extension to .omdoc
   }
+
   $oaff_path_info['alias'] = $alias;
   
   $oaff_path_info['rel_parent'] = oaff_join_path(array_slice($loc_segs, 3, -1));
@@ -960,7 +1074,8 @@ function oaff_get_path_info($location) {
   $frag_segs = array_slice($loc_segs, 3);
   $frag_path = oaff_join_path($frag_segs);
   $oaff_path_info['rel_path'] = $frag_path;
-  $docbase = $docbases[$oaff_path_info['archive']];
+  $archive_id = $oaff_config['archive_id'][$oaff_path_info['group']][$oaff_path_info['archive']];
+  $docbase = $docbases[$archive_id];
   
   $dpath = oaff_join_path(array($docbase, $frag_path));
   $oaff_path_info['dpath'] = $dpath;

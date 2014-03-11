@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 /**
  * Implements hook_views_api
  * declared API version used for views 
@@ -16,32 +12,32 @@ function oaff_views_views_api() {
 
 function oaff_views_menu() {
   $items = array();
-  $items['oaff-broken-docs'] = array(
+  $items['mh/broken-docs'] = array(
     'title' => "Broken Documents",
     'page callback' => 'oaff_views_broken_nodes',
     'access callback' => true,
     'type' => MENU_CALLBACK,
   );
-  $items['oaff-errors'] = array(
+  $items['mh/common-errors'] = array(
     'title' => "Common Errors",
     'page callback' => 'oaff_views_common_errors',
     'access callback' => true,
     'type' => MENU_CALLBACK,
   );
 
-  $items['oaff-add-doc'] = array(
+  $items['mh/add-document'] = array(
     'title' => "Add Document",
     'page callback' => 'oaff_views_add_doc',
     'access callback' => true,
     'type' => MENU_CALLBACK,
   );
-  $items['oaff-sort-unpopularity'] = array(
-    'title' => "Unpopular entries",
+  $items['mh/latest-updates'] = array(
+    'title' => "Latest Updates",
     'page callback' => 'oaff_views_todo',
     'access callback' => true,
     'type' => MENU_CALLBACK,
   );
-  $items['oaff-show-questions'] = array(
+  $items['mh/show-questions'] = array(
     'title' => "User Questions",
     'page callback' => 'oaff_views_todo',
     'access callback' => true,
@@ -100,14 +96,16 @@ function oaff_views_add_doc_callback($form, &$form_state) {
   $form_state['redirect'] = 'node/'. $nid;
 }
 
-
-
 function oaff_views_common_errors() {
   $results = db_select('oaff_errors', 'e')
              ->fields('e', array('nid', 'type', 'compiler', 'short_msg'))
              ->execute()
              ->fetchAll();
 
+  if (count($results) == 0) {
+    drupal_set_message("No errors found");
+    return "";
+  }
   $compilers = array();
   foreach ($results as $result) {
     $msg = $result->short_msg;
@@ -131,7 +129,6 @@ function oaff_views_common_errors() {
     return $a['occurs'] < $b['occurs'];
   };
 
-
   $errors = array();
   foreach ($compilers as $compiler => $types) {
     foreach ($types as $type => $msgs) {
@@ -147,7 +144,6 @@ function oaff_views_common_errors() {
     }
   }
   usort($errors, $comp); 
-
 
   $name_map = array(0 => 'Info', 1 => "Warning", 2 => "Error", 3 =>  "Fatal Error");
   $color_map = array(0 => '#9999FF', 1 => "#BBBB11", 2 => "#FF6666", 3 =>  "#FF2222");
@@ -184,8 +180,6 @@ function oaff_views_common_errors() {
     // $out .= drupal_render($node);
     $i += 1;
   }
-
-
   $out .= '</div>';
 
   return $out;
@@ -197,15 +191,19 @@ function oaff_views_broken_nodes() {
           ->fields('e', array('nid', 'type'))
           ->execute()
           ->fetchAll();
+  if (count($results) == 0) {
+    drupal_set_message("No documents have errors");
+    return "";
+  }
 
   $nodes = array();
-
   foreach ($results as $result) {
     if (!isset($nodes[$result->nid])) {
       $nodes[$result->nid] = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
     }
     $nodes[$result->nid][$result->type] += 1;
   }
+
   $query = db_select('node', 'n');
   $query->join('users', 'u', 'u.uid = n.uid');
   $results = $query    
@@ -214,7 +212,6 @@ function oaff_views_broken_nodes() {
     ->condition('n.nid', array_keys($nodes), "IN")
     ->execute()
     ->fetchAll();
-
   $msg = "<div>";
   /*
   usort($results, function($a, $b) {
@@ -255,7 +252,7 @@ function oaff_views_broken_nodes() {
     }
     $msg = substr($msg, 0, -1); // removing last comma
     $msg .= "</span></li>";
-    $msg .= '<li ><a title="' . $entry->title .'" href="?q=' . $alias . '">See details</a></li></ul></div></div>';
+    $msg .= '<li ><a title="' . $entry->title .'" href="/' . $alias . '">See details</a></li></ul></div></div>';
     $msg .= "</div></div>";
     $msg .= "<hr/>";
   }

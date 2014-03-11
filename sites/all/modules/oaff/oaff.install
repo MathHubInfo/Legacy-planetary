@@ -70,100 +70,17 @@ function delete_node_type($node_type_name, $remove_type = true) {
   }
 }
 
-
-function oaff_create_archives_node() {
-  $html_text = file_get_contents(drupal_get_path('module', 'oaff') . '/archives.xhtml');
-
-  $archives_node = (object) array(
-   'type' => 'page',
-   'uid' => 0,
-   'created' => strtotime("now"),
-   'changed' => strtotime("now"),
-   'status' => 1,
-   'comment' => 2,
-   'promote' => 0,
-   'moderate' => 0,
-   'sticky' => 0,
-   'language' => 'und'
-  );
-
-  $archives_node->title = 'Archives';
-  node_object_prepare($archives_node);
-  $archives_node->body['und']['0'] = array('value' => $html_text, 'summary' => 'Archives available in the OAFF', 'format' => 'full_html');
-  node_save($archives_node);
-  $path_opt = array(
-    'source' => 'node/' . $archives_node->nid,
-    'alias' => 'oaff/archives',
-  );
-  path_save($path_opt);
-
-  return $archives_node->nid;
-}
-
-function oaff_create_contribute_node() {
-  $html_text = file_get_contents(drupal_get_path('module', 'oaff') . '/contribute.xhtml');
-
-  $contribute_node = (object) array(
-   'type' => 'page',
-   'uid' => 0,
-   'created' => strtotime("now"),
-   'changed' => strtotime("now"),
-   'status' => 1,
-   'comment' => 2,
-   'promote' => 0,
-   'moderate' => 0,
-   'sticky' => 0,
-   'language' => 'und'
-  );
-
-  $contribute_node->title = 'Contribute';
-  node_object_prepare($contribute_node);
-  $contribute_node->body['und']['0'] = array('value' => $html_text, 'summary' => 'Ways to contribute to the OAFF', 'format' => 'full_html');
-  node_save($contribute_node);
-  $path_opt = array(
-    'source' => 'node/' . $contribute_node->nid,
-    'alias' => 'oaff/contribute',
-  );
-  path_save($path_opt);
-
-  return $contribute_node->nid;
-}
-
 function oaff_install() {
   oaff_create_node_types();
-  $a_nid = oaff_create_archives_node();
-  $c_nid = oaff_create_contribute_node();
   $oaff_config = array();
   $oaff_config['handled_node_types'] = array('mmtdoc', 'glossary', 'oaff_doc', 'oaff_virtdoc');
-  $oaff_config['archives_nid'] = $a_nid;
-  $oaff_config['contribute_nid'] = $c_nid;
   $oaff_config['latest_nodes'] = 0;
   $oaff_config['crawl_nodes_offset'] = 0;
   $mlids = array();
 
-  $arch_item = array(
-    'link_path' => drupal_get_normal_path('oaff/archives'),
-    'link_title' => "Archives",
-    'weight' => 10,
-    'menu_name' => 'main-menu'
-  );
-  $mlids[] = menu_link_save($arch_item);
-
-  $arch_item = array(
-    'link_path' => drupal_get_normal_path('oaff/contribute'),
-    'link_title' => "Contribute",
-    'weight' => 10,
-    'menu_name' => 'main-menu'
-  );
-  $mlids[] = menu_link_save($arch_item);
-
-  $forum_item = array(
-    'link_path' => drupal_get_normal_path('forum'),
-    'link_title' => "Discussion",
-    'weight' => 15,
-    'menu_name' => 'main-menu'
-  );
-  $mlids[] = menu_link_save($forum_item);
+  $arch_info = oaff_create_static_node('Archives', 'mh/archives', "");
+  $oaff_config['archives_nid'] = $arch_info['nid'];
+  $mlids[] = $arch_info['nid'];
   
   $oaff_config['mlids'] = $mlids;
   variable_set('oaff_config', $oaff_config);
@@ -180,8 +97,7 @@ function oaff_uninstall() {
   $oaff_config = variable_get('oaff_config');
   $a_nid = $oaff_config['archives_nid'];
   node_delete($a_nid);
-  $c_nid = $oaff_config['contribute_nid'];
-  node_delete($c_nid);
+  
   // for easy debugging, deleting content on reinstall
   delete_node_type('oaff_doc'); 
   delete_node_type('oaff_virtdoc'); 

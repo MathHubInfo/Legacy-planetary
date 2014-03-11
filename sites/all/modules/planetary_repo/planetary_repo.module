@@ -212,14 +212,16 @@ function planetary_repo_repo_provider() {
         "load" => 'planetary_repo_local_load',
         "list" => 'planetary_repo_local_list',
         "stat" => 'planetary_repo_local_stat',
+        "access" => 'planetary_repo_local_access_path',
       ),
     "git" => array(
         "label" => "Git File System",
         "settings" => 'planetary_repo_git_settings',
-	"save" => 'planetary_repo_git_save',
+      	"save" => 'planetary_repo_git_save',
         "load" => 'planetary_repo_git_load',
         "list" => 'planetary_repo_git_list',
         "stat" => 'planetary_repo_git_stat',
+        "access" => 'planetary_repo_git_access_path',
       )
     );
 }
@@ -283,6 +285,15 @@ function planetary_repo_list($path) {
     return $providers[$current]["list"]($path);
   };
 }
+
+function planetary_repo_access_rel_path($path) {
+  $current = variable_get('planetary_repo_provider', null);
+  if ($current) {
+    $providers = module_invoke_all("repo_provider");
+    return $providers[$current]["access"]($path);
+  };
+}
+
 
 function planetary_repo_config_form($form, &$form_state) {
   $providers = module_invoke_all("repo_provider");
