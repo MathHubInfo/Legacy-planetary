@@ -32,16 +32,30 @@ function oaff_menu() {
 
 function oaff_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'oaff_doc_node_form') {
+    
+
     $nid = $form['#node']->nid;
     $elems = oaff_get_language_group($nid);
     $lang_dict = array('und' => 'base', 'de' => 'deutsch', 'en' => 'english');
+
+    if (isset($_GET['start']) && isset($_GET['end'])) {
+      $start = $_GET['start'];
+      $end = $_GET['end'];
+      $lang = $lang_dict[$form['#node']->language];
+      drupal_add_js('
+        jQuery(function() {
+          var mytxt = jQuery("#edit-' . $lang .' .form-textarea").get(0);
+          mytxt.focus();
+          mytxt.setSelectionRange(' .$start. ',' .$end.');
+        });
+        ', 'inline');
+    }
 
     // sorting alphabetically (excluding extension)
     usort($elems, function($a, $b) {
       return strcmp(pathinfo($a->location)['filename'], pathinfo($b->location)['filename']);
     });
     $bid = $elems[0]->lid; // based doc
-
 
     $form['variants'] = array(
       '#type' => 'hidden',
@@ -201,10 +215,10 @@ function oaff_node_view($node, $view_mode, $langcode) {
     drupal_add_js("var oaff_node_archive = '$archive';", "inline");
     drupal_add_js("var oaff_node_rel_path = '$rel_path';", "inline");
   	if (isset($filter_context['failed']) && $filter_context['failed']) { // time to report errors
+      $inst_id = oaff_initialize();
       $source = $filter_context['source'];
       $pre = oaff_produce_preformatted($source);
-      $output = oaff_mark_source_errors($pre, $filter_context['status']);
-      $inst_id = oaff_initialize();
+      $output = oaff_mark_source_errors($pre, $filter_context['status'],$node->nid);
 
       $node->content['field_external'][0]['content']['#markup'] =  
          '<div id="' . $inst_id . '" class="bootstrap" >' . $output . '</div>';      
@@ -344,7 +358,7 @@ function oaff_save_error_status($nid, $status) {
  * @param $status the compilation status (containing error information)
  * @return the processed string (with errors marked)
  */
-function oaff_mark_source_errors($source, $status) {
+function oaff_mark_source_errors($source, $status, $nid) {
 
   $color_catalog = array("Error" => "#FF8888", "Warning" => "#BBBB00", "Fatal" => "#FF3333", "Info" => "#9999FF");
   // creating log
@@ -369,6 +383,46 @@ function oaff_mark_source_errors($source, $status) {
     }
   }
   $log .= "</ul></div>";
+
+  //wrapping lines with ids for later referencing
+  $lines = explode("\n", $source);
+  $new_lines = array();
+  $line_offsets = array(0);
+  $i = 0;
+  while ($i < count($lines)) {
+    $new_lines[] = "<span id=\"src_line_$i\"> {$lines[$i]} </span>";
+    $line_offsets[] = $line_offsets[$i] + strlen($lines[$i]);
+    $i += 1;
+  }
+  $source = implode("\n", $new_lines);
+  
+
+  foreach ($status as $filter_name =>$filter_status) {
+    foreach ($filter_status['messages'] as $msg) {
+      if (isset($msg['srcref'])) {
+        $from_line = $msg['srcref']['from']['line']; 
+        $from_col = $msg['srcref']['from']['col'];
+        $from = $line_offsets[$from_line] + $from_col;
+        $to_line = $msg['srcref']['to']['line'];
+        $to_col = $msg['srcref']['to']['col'];
+        $to = $line_offsets[$to_line] + $to_col;
+        $selector="#src_line_$from_line";
+
+        drupal_add_js('
+          jQuery(function(){
+            JOBAD1.Sidebar.registerNotification($("' . $selector . '"), 
+              { 
+                "class": "' . strtolower($msg['type']) .'",
+                "text": "' .  $msg['shortMsg'] . '", 
+                "click": function() {
+                  window.open("/node/'.$nid.'/edit&start=' . $from . '&end=' . $to . '");
+                }
+            });
+          });', array('type' => 'inline', 'weight' => 100));
+      }
+    }
+  }
+  
 
   // creating error highlighting in source (disabled curently due to bad source refs)
   /*
