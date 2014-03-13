@@ -77,12 +77,23 @@ function oaff_install() {
   $oaff_config['latest_nodes'] = 0;
   $oaff_config['crawl_nodes_offset'] = 0;
   $mlids = array();
-
-  $arch_info = oaff_create_static_node('Archives', 'mh/archives', "");
+  $nids = array();
+  $arch_info = oaff_create_static_node('Archives', 'mh/archives', "", true);
   $oaff_config['archives_nid'] = $arch_info['nid'];
-  $mlids[] = $arch_info['nid'];
+  $nids[] = $arch_info['nid'];
+  $mlids[] = $arch_info['mlid'];
+  //adding source menu item (pointing to gitlab)
+  $arch_item = array(
+      'link_path' => 'http://gl.mathhub.info',
+      'link_title' => 'Sources',
+      'weight' => 10,
+      'options' => array('attributes' => array('target' => '_blank')),
+      'menu_name' => 'main-menu'
+    );
+  $mlids[] = menu_link_save($arch_item);
   
   $oaff_config['mlids'] = $mlids;
+  $oaff_config['nids'] = $nids;
   variable_set('oaff_config', $oaff_config);
 
   $formats_s = variable_get("oaff_archive_formats", '');
@@ -95,21 +106,20 @@ function oaff_install() {
 
 function oaff_uninstall() {
   $oaff_config = variable_get('oaff_config');
-  $a_nid = $oaff_config['archives_nid'];
-  node_delete($a_nid);
   
   // for easy debugging, deleting content on reinstall
   delete_node_type('oaff_doc'); 
-  delete_node_type('oaff_virtdoc'); 
-  delete_node_type('mmtdoc', false); 
-  
-  delete_node_type('article', false);
-  delete_node_type('glossary', false); 
-
+  delete_node_type('oaff_virtdoc');   
+ 
   $mlids = $oaff_config['mlids'];
   foreach ($mlids as $mlid) {
     menu_link_delete($mlid);
   }
+  $nids = $oaff_config['nids'];
+  foreach ($nids as $nid) {
+    node_delete($nid);
+  }
+
   drupal_set_message("Uninstalled OAFF");
 }
 

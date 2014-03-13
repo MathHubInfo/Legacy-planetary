@@ -91,7 +91,7 @@ function oaff_form_alter(&$form, &$form_state, $form_id) {
       $form['content'][$lang]['body'] = array(
         '#type' => 'text_format',
         '#title' => 'Body',
-        '#format' => 'tex',
+        '#format' => 'stex',
         '#default_value' => planetary_repo_load_file($location),
         '#description' => t(' The body of the ' .  $lang . ' language version '),
       ); 
@@ -106,7 +106,7 @@ function oaff_form_alter(&$form, &$form_state, $form_id) {
 
 
 function oaff_mathhub_doc_submit($form, $form_state) {
- }
+}
 
 
 function oaff_mathhub_doc_act($form, $form_state) {
@@ -118,6 +118,9 @@ function oaff_mathhub_doc_act($form, $form_state) {
       planetary_repo_save_file($location, $body);
     }
   }
+  $nid = $form['#node']->nid;
+  $alias = drupal_get_path_alias('node/' . $nid);
+  drupal_goto($alias);
 }
 
 function oaff_get_language_group($nid) {
@@ -217,8 +220,7 @@ function oaff_node_view($node, $view_mode, $langcode) {
   	if (isset($filter_context['failed']) && $filter_context['failed']) { // time to report errors
       $inst_id = oaff_initialize();
       $source = $filter_context['source'];
-      $pre = oaff_produce_preformatted($source);
-      $output = oaff_mark_source_errors($pre, $filter_context['status'],$node->nid);
+      $output = oaff_mark_source_errors(check_plain($source), $filter_context['status'],$node->nid);
 
       $node->content['field_external'][0]['content']['#markup'] =  
          '<div id="' . $inst_id . '" class="bootstrap" >' . $output . '</div>';      
@@ -277,7 +279,12 @@ function oaff_node_view($node, $view_mode, $langcode) {
       
 	    $node->content['field_external'][0]['content']['#markup'] = 
       '<div id="' . $inst_id . '" class="bootstrap" >' . $content . '</div>' . 
-      oaff_svg_html($pathinfo);
+      oaff_svg_html($pathinfo) . '<div id="dynamic_modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width:80%">
+      <div id="dynamic_modal_content" class="modal-content">    
+      </div>
+    </div>  
+  </div>';
 
       // $node->content['field_external'][0]['content']['#contextual_links'] = "<p>test</p>"; 
 	  }
@@ -287,10 +294,17 @@ function oaff_node_view($node, $view_mode, $langcode) {
 
 
 function oaff_svg_html($pathinfo) {
-  $arr = explode(".",$pathinfo['rel_path']);
-  $svg_path = planetary_repo_access_rel_path(oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], "export/svg", $arr[0] . ".svg")));
+  $relpath = $pathinfo['rel_path'];
+  $args = explode(".", $relpath);
+  if (count($args) == 1) {
+    $svgname = oaff_join_path(array($relpath, ".svg"));
+  } else {
+    array_pop($args);
+    $svgname = implode(".",$args) . ".svg";
+  }
+  $svg_path = planetary_repo_access_rel_path(oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], "export/svg", $svgname)));
   $svg_content = file_get_contents($svg_path);
-  $out = '<div id="modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  $out = '<div id="svg_modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="max-width:80%">
       <div class="modal-content">    
         <div class="modal-header">
@@ -395,17 +409,16 @@ function oaff_mark_source_errors($source, $status, $nid) {
     $i += 1;
   }
   $source = implode("\n", $new_lines);
-  
 
   foreach ($status as $filter_name =>$filter_status) {
     foreach ($filter_status['messages'] as $msg) {
       if (isset($msg['srcref'])) {
         $from_line = $msg['srcref']['from']['line']; 
         $from_col = $msg['srcref']['from']['col'];
-        $from = $line_offsets[$from_line] + $from_col;
+        $from = $line_offsets[$from_line - 1] + $from_col; //-1 since arrays start at 0, line numbers at 1
         $to_line = $msg['srcref']['to']['line'];
         $to_col = $msg['srcref']['to']['col'];
-        $to = $line_offsets[$to_line] + $to_col;
+        $to = $line_offsets[$to_line - 1] + $to_col; //-1 since arrays start at 0, line numbers at 1
         $selector="#src_line_$from_line";
 
         drupal_add_js('
@@ -448,17 +461,7 @@ function oaff_mark_source_errors($source, $status, $nid) {
   	}
   }
   */
-  return $log . $source;
-}
-
-/**
- * Simple function to produce preformatted html element
- * just wraps a <pre> element around the text
- * @param $text the input text
- * @return the processed text
- */
-function oaff_produce_preformatted($text) {
-  return "<pre>\n" . check_plain($text) . "\n</pre>";
+  return "<pre>\n" . $source . "\n</pre>" . $log;
 }
 
 // ------------------------------- OAFF Node Crawler -------------------------------- \\
@@ -475,7 +478,7 @@ function oaff_crawl_nodes() {
   $results = db_select('node', 'n')
               ->fields('n', array('nid'))
               ->condition('n.type', 'oaff_doc', '=')
-              ->range($offset, 100)
+              ->range($offset, 30)
               ->execute()
               ->fetchAll();
 
@@ -550,7 +553,9 @@ function _oaff_create_meta_nodes() {
             $archive_id = $arch_info['id'];
             if (isset($oaff_config['formats'][$archive_id])) {
               $archives_body .= "<li> <a href=\"/$group/$archive\"> $archive_id </a> </li>";
-              oaff_create_static_node($archive_id, "$group/$archive", "<ul><li><a href=\"/$group/$archive/source\">Content</a> </li></ul>");
+              $archive_desc = "<ul><li><a href=\"/$group/$archive/source\">Content</a> </li><li><a href=\"http://gl.mathhub.info/$group/$archive\" target=\"_blank\">Sources</a> </li></ul>";              
+              $node_info = oaff_create_static_node($archive_id, "$group/$archive", $archive_desc);
+              $oaff_config['nids'][] = $node_info['nid'];
             }
           }
         }
@@ -559,6 +564,7 @@ function _oaff_create_meta_nodes() {
     $archives_body .= "</ul>";
     $archives_node->body['und'][0]['value'] = $archives_body;
     node_save($archives_node);
+    variable_set('oaff_config',$oaff_config);
   } else {
     drupal_set_message("Archives node already has content, delete to regenerate or update it manually if needed", 'warning');
   }
@@ -719,7 +725,7 @@ function oaff_crawl_dimension_folder($group, $archive_path, $archive_id, $dimens
 }
 
 
-function oaff_create_static_node($title, $alias, $content = "") {
+function oaff_create_static_node($title, $alias, $content, $show_in_menu = false) {
   $static_node = (object) array(
    'type' => 'page',
    'uid' => 0,
@@ -743,15 +749,18 @@ function oaff_create_static_node($title, $alias, $content = "") {
   );
   path_save($path_opt);
   
-  $arch_item = array(
-    'link_path' => drupal_get_normal_path($alias),
-    'link_title' => $title,
-    'weight' => 10,
-    'menu_name' => 'main-menu'
-  );
-  $mlid = menu_link_save($arch_item);
-
-  return array('nid' => $static_node->nid, 'mlid' => $mlid);
+  if ($show_in_menu) { //adding menu entry
+    $arch_item = array(
+      'link_path' => drupal_get_normal_path($alias),
+      'link_title' => $title,
+      'weight' => 10,
+      'menu_name' => 'main-menu'
+    );
+    $mlid = menu_link_save($arch_item);
+    return array('nid' => $static_node->nid, 'mlid' => $mlid);
+  } else {
+    return array('nid' => $static_node->nid);
+  }
 }
 
 function oaff_make_folder_node($group, $archive_path, $archive_id, $dimension, $rel_path) {
@@ -953,7 +962,7 @@ function oaff_set_breadcrumb($nid) {
       ->fetchAssoc();
     $path = drupal_get_path_alias('node/' . $pid);
     $title = $result['title'];
-    $bc_entries[] =  '<a href="?q=' . $path . '">' . $title . '</a>';
+    $bc_entries[] =  '<a href="/' . $path . '">' . $title . '</a>';
   }
   $breadcrumb = drupal_get_breadcrumb();
   foreach ($breadcrumb as $entry) {

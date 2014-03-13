@@ -15,7 +15,7 @@ var planetaryNavigation = {
     leftClick: function(target, JOBADInstance) {
 		if(target.hasAttribute('jobad:href')) {
 			var uri = target.attr("jobad:href");
-			var uriEnc = this.encode(uri);
+			var uriEnc = planetary.encode(uri);
 			window.location = uriEnc;
 			return true;
 		}
@@ -29,7 +29,7 @@ var planetaryNavigation = {
 		var res = {
 			'View Source' : function() {window.open(blob_url, '_blank');},
 			'View Change History' : function() {window.open(blame_url, '_blank');},
-			'View Graph' : function() {$('#modal').modal()},
+			'View Graph' : function() {$('#svg_modal').modal()},
 		};
 		if (target.hasAttribute('jobad:href')) {			
 			var mr = $(target).closest('mrow');
@@ -37,23 +37,42 @@ var planetaryNavigation = {
 			mmt.setSelected(select);
 			var uri = target.attr('jobad:href');
 			var me = this;
-			res['Go To Declaration'] = function() {me.planetaryOpen(uri);};		
+			res['Go To Declaration'] = function() {planetary.navigate(uri);};
+			res['Show Definition'] = function() {
+				$.ajax({ 
+				  'url': mmtUrl + "/:immt/query",
+   	  			  'type' : 'POST',
+			      'data' : '{ "subject" : "' + uri + '",' + 
+			      	'"relation" : "isDefinedBy",' + 
+			        '"return" : "planetary"}',
+			       'dataType' : 'html',
+			       'processData' : 'false',
+	       			'contentType' : 'text/plain',
+	              'crossDomain': true,
+                  'success': function cont(data) {
+                  	console.log(data);
+  					$('#dynamic_modal_content').html(data);
+  					$('#dynamic_modal').modal();
+                  },
+                  'error' : function( reqObj, status, error ) {
+					console.log( "ERROR:", error, "\n ",status );
+		    	  },
+                });
+			};
 		} 
 		return res;
 	},
+    
+};
 
-	planetaryOpen : function(uri) {
-		uriSegs = uri.split("?");
-		if (uriSegs.length < 2) {//document path 
-			window.location.search = "?q=" + this.encode(uri);
-		} else { //module, symbol or fragment path
-			var modUri = uriSegs[0]; //getting doc
-			window.location.search = "?q=" + this.encode(modUri);        
-		}
-	},
+JOBAD.modules.register(planetaryNavigation);
+})(jQuery);
 
-
-    encode : function(uri) {
+var planetary = {
+  navigate: function(uri) {
+  	window.open(planetary.encode(uri));        
+  },
+  encode : function(uri) {
 		var rawEncoded = encodeURIComponent(uri);
 		var matches = uri.match(/^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/);
 		var fragment = ""; //default
@@ -65,7 +84,3 @@ var planetaryNavigation = {
 		return path;
     },
 };
-
-
-JOBAD.modules.register(planetaryNavigation);
-})(jQuery);

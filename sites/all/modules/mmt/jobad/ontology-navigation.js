@@ -16,8 +16,8 @@ var ontologyNavigation = {
     	var menu_entries = {};
     	if (target.hasAttribute('jobad:href')) {
 			var uri = target.attr('jobad:href');
-			menu_entries['Used In'] = me.getRelated(uri, qmt.tosubject("RefersTo"));
-			menu_entries['Uses'] = me.getRelated(uri, qmt.toobject("RefersTo"));
+			menu_entries['Used In'] = me.getRelated(uri, qmt.tosubject("Includes"));
+			menu_entries['Uses'] = me.getRelated(uri, qmt.toobject("Includes"));
 		}
 		return menu_entries;
     },
@@ -29,31 +29,15 @@ var ontologyNavigation = {
     	qmt.exec(query, 
     			 function(data) { 
     				$(data).find("uri").each(function (i, val) {
-    					related_uris[$(val).attr('path')] = function() {me.planetaryOpen(uri);};
+    					var path = $(val).attr('path');
+    					related_uris[path] = function() {planetary.navigate(path);};
     				});
     			 },
     			 false);
-    	console.log(related_uris);
     	return related_uris;
     },
 
-    planetaryOpen : function(uri) {
-    	window.location = uri;
-    	return;
-		uriSegs = uri.split("?");
-		if (uriSegs.length < 2) {//document path 
-			window.location.search = "?q=" + this.encode(uri);
-		} else { //module, symbol or fragment path
-			var modUri = uriSegs[0]; //getting doc
-			window.location.search = "?q=" + this.encode(modUri);        
-		}
-	},
-
-	encode : function(uri) {
-		var rawEncoded = encodeURIComponent(uri);
-		//mirroring drupal in not escaping slashes
-		return rawEncoded.replace(/%2F/g, "/");
-    },
+	
 };
 
 JOBAD.modules.register(ontologyNavigation);

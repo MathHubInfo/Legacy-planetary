@@ -170,7 +170,7 @@ function oaff_views_common_errors() {
       if ($count == 1) {
         $occurs = $count. ' occurence';
       }
-      $out .= '<li><a href="?q=' . $alias . '"> ' . $title . ' </a> <span>'. $occurs . '</span> </li>';
+      $out .= '<li><a href="/' . $alias . '"> ' . $title . ' </a> <span>'. $occurs . '</span> </li>';
     }
     $out .= '</ul></div>';
     $out .= '</ul></div>';
@@ -222,8 +222,8 @@ function oaff_views_broken_nodes() {
     $alias = drupal_lookup_path('alias', 'node/' . $entry->nid);
     $msg .= '<div class="views-row">';
     $msg .= '<div class="node-teaser contextual-links-region" id="node-' . $entry->nid . '">';
-    $msg .= '<h3> <a href="?q=' . $alias . '">' . $entry->title. '</a></h3>';
-    $msg .= '<span class="submitted"><span >' . date("D M j, Y, g:i a", $entry->created) . ' &mdash; <a class="username" title="View user profile." href="?q=user/' . $entry->uid . ' ">' . $entry->name . '</a></span></span>';
+    $msg .= '<h3> <a href="/' . $alias . '">' . $entry->title. '</a></h3>';
+    $msg .= '<span class="submitted"><span >' . date("D M j, Y, g:i a", $entry->created) . ' &mdash; <a class="username" title="View user profile." href="/user/' . $entry->uid . ' ">' . $entry->name . '</a></span></span>';
     $msg .= '<div class="clearfix">
           <div class="links"><ul class="links list-inline"><li><span>';
     $infos = $nodes[$entry->nid][0];

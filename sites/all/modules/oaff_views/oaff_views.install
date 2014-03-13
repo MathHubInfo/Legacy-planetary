@@ -2,8 +2,8 @@
 
 function oaff_views_install() {
   $oaff_config = variable_get('oaff_config');
-  $contr_info = oaff_create_static_node("Contribute", "mh/contribute", file_get_contents(drupal_get_path('module', 'oaff_views') . '/contribute.xhtml'));
-  $oaff_config['contribute_nid'] = $contr_info['nid'];
+  $contr_info = oaff_create_static_node("Contribute", "mh/contribute", file_get_contents(drupal_get_path('module', 'oaff_views') . '/contribute.xhtml'), true);
+  $oaff_config['views_nids'] = array($contr_info['nid']);
   $oaff_config['views_mlids'] = array($contr_info['mlid']);
   variable_set('oaff_config', $oaff_config);
 }
@@ -14,6 +14,8 @@ function oaff_views_uninstall() {
   foreach ($mlids as $mlid) {
     menu_link_delete($mlid);
   }
-  $c_nid = $oaff_config['contribute_nid'];
-  node_delete($c_nid);
+  $nids = $oaff_config['views_nids'];
+  foreach ($nids as $nid) {
+    node_delete($nid);
+  }
 }

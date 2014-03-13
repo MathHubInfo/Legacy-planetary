@@ -15,7 +15,6 @@ function latexml_compile($location) {
   }
   $arg_location = oaff_join_path(array($repo_path, $location));
   $lmh_status = shell_exec('lmh gen --omdoc ' . $arg_location);
-
   $log_location = $base_relpath . '.ltxlog';
   $out_location = $base_relpath . '.omdoc';
   if (planetary_repo_stat_file($log_location) == null || planetary_repo_stat_file($out_location) == null) {
@@ -130,7 +129,7 @@ function latexml_filter_local_process($text, $filter, $format, $langcode, $cache
 
   $filter_context['status']['latexml'] = $response['status'];
 
-  if ($response['status']['conversion'] != 0) {
+  if ($response['status']['conversion'] != 0) { // && $response['status']['conversion'] != 1
     $filter_context['failed'] = true;
   }
 
