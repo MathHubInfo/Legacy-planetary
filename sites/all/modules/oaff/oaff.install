@@ -82,6 +82,10 @@ function oaff_install() {
   $oaff_config['archives_nid'] = $arch_info['nid'];
   $nids[] = $arch_info['nid'];
   $mlids[] = $arch_info['mlid'];
+  $contr_info = oaff_create_static_node("Contribute", "mh/contribute", file_get_contents(drupal_get_path('module', 'oaff_views') . '/contribute.xhtml'), true);
+  $nids[] = $contr_info['nid'];
+  $mlids[] = $contr_info['mlid'];
+  
   //adding source menu item (pointing to gitlab)
   $arch_item = array(
       'link_path' => 'http://gl.mathhub.info',
