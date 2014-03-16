@@ -1,0 +1,4 @@
+name = MathHub Mailer
+description = Implements and sets the MathHub Mailer as drupal's default  mailing solution 
+core = 7.x
+package = OAFF
