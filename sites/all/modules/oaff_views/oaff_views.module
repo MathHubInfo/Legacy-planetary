@@ -340,25 +340,3 @@ function oaff_views_views_default_views() {
   $views[$view->name] = $view;
   return $views;
 }
-
-
-
-function oaff_views_node_insert($node) {
-  
-  $message_id = "heartbeat_add_node";
-  $uid = $node->uid;
-  $uid_target = 0;
-  $nid = $node->nid; // 0;
-  $nid_target = 0;
-  $variables = array(
-    '!node_title' => l($node->title, 'node/' . $node->nid), 
-    '!username' => l(user_load($node->uid)->name, 'user/' . $node->uid), 
-    '!node_type' => $node->type, 
-    '!types' => $node->type . 's',
-    );
-  $access = null;
-  $time = 0;
-  $in_group = 0;
-
-  heartbeat_api_log($message_id, $uid, $uid_target = 0, $nid = 0, $nid_target = 0, $variables = array(), $access = null, $time = 0, $in_group = 0);
-}
