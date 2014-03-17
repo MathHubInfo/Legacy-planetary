@@ -113,7 +113,8 @@ function oaff_uninstall() {
   
   // for easy debugging, deleting content on reinstall
   delete_node_type('oaff_doc'); 
-  delete_node_type('oaff_virtdoc');   
+  delete_node_type('oaff_virtdoc');  
+  delete_node_type('mmtdoc', false);
  
   $mlids = $oaff_config['mlids'];
   foreach ($mlids as $mlid) {

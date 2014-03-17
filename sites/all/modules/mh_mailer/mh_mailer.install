@@ -9,10 +9,6 @@ function mh_mailer_install() {
   //drupal_set_message($res);
 }
 
-
-
-
 function mh_mailer_uninstall() {
 	variable_set('mail_system', array());
-
 }
