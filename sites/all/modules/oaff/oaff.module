@@ -553,9 +553,11 @@ function _oaff_create_meta_nodes() {
             $archive_id = $arch_info['id'];
             if (isset($oaff_config['formats'][$archive_id])) {
               $archives_body .= "<li> <a href=\"/$group/$archive\"> $archive_id </a> </li>";
-              $archive_desc = "<ul><li><a href=\"/$group/$archive/source\">Content</a> </li><li><a href=\"http://gl.mathhub.info/$group/$archive\" target=\"_blank\">Sources</a> </li></ul>";              
-              $node_info = oaff_create_static_node($archive_id, "$group/$archive", $archive_desc);
-              $oaff_config['nids'][] = $node_info['nid'];
+              $archive_desc = "<ul><li><a href=\"/$group/$archive/source\">Content</a> </li><li><a href=\"http://gl.mathhub.info/$group/$archive\" target=\"_blank\">Sources</a> </li></ul>";
+              if (!drupal_lookup_path('source', "$group/$archive")) {
+                $node_info = oaff_create_static_node($archive_id, "$group/$archive", $archive_desc);
+                //$oaff_config['nids'][] = $node_info['nid'];
+              }
             }
           }
         }
