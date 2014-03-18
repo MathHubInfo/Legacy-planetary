@@ -26,7 +26,22 @@ function oaff_menu() {
     'access callback' => 'oaff_setup_access',
     'menu_name' => 'navigation'
   );
+  $items['mh/help'] = array(
+    'title' => "Help",
+    'page callback' => 'oaff_help_page',
+    'access callback' => true,
+    'menu_name' => 'navigation'
+  );
   return $items;
+}
+
+function oaff_help_page() {
+  $out = '<p> Using MathHub should be documented on the <a href="/">homepage</a>. For any other issues, use the links below. </p>';
+  $out .= '<div>';
+  $out .= '<a href="mailto:m.iancu@jacobs-university.de?Subject=[MathHub]" target="_blank" class="btn btn-primary"> Contact a human </a> ';
+  $out .= '<a href="http://gl.mathhub.info/MathHub/webmh/issues/new?issue" target="_blank" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Requires Authentication"> Report an Issue </a>';
+  $out .= '</div>';
+  return $out;
 }
 
 
