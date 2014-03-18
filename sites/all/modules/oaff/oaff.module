@@ -443,7 +443,7 @@ function oaff_mark_source_errors($source, $status, $nid) {
                 "class": "' . strtolower($msg['type']) .'",
                 "text": "' .  $msg['shortMsg'] . '", 
                 "click": function() {
-                  window.open("/node/'.$nid.'/edit&start=' . $from . '&end=' . $to . '");
+                  window.open("/node/'.$nid.'/edit?start=' . $from . '&end=' . $to . '");
                 }
             });
           });', array('type' => 'inline', 'weight' => 100));
@@ -513,7 +513,7 @@ function oaff_crawl_nodes() {
     drupal_set_message("Crawled $crawled nodes (with offset $offset)");
   }
   drupal_set_breadcrumb(array());
-  $out = '<div> <button onclick="window.location = \'/mh/crawl-nodes&restart=true\'" class="btn btn-danger"> Restart </button>';
+  $out = '<div> <button onclick="window.location = \'/mh/crawl-nodes?restart=true\'" class="btn btn-danger"> Restart </button>';
   $out .= ' <button class="btn btn-primary " onclick="window.location = \'/mh/crawl-nodes\'"> Continue </button> </div> ';
   return $out;
 }
