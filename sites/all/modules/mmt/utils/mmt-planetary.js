@@ -13,12 +13,13 @@ var planetary = {
 		pathname = pathname + "/";
 	} 
 	var path = pathname + matches[6];
-	window.open(path);
+	window.location = path;
   },
 
   navigate: function(uri) {
-  	window.open(planetary.encode(uri));        
+  	window.location = planetary.encode(uri);        
   },
+  
   encode : function(uri) {
 	var rawEncoded = encodeURIComponent(uri);
 	var matches = uri.match(/^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/);
