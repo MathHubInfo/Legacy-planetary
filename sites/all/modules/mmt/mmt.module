@@ -454,9 +454,7 @@ function mmt_field_formatter_view($entity_type, $entity, $field, $instance, $lan
         if ($entity->type == 'mmtdoc') { //there (might be) no source
           $content = "";
           $html_filename = $pathinfo['module'] . '.html';
-          $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'export/html/narration', $pathinfo['rel_parent'], $html_filename)); 
-          print_r($html_location);
-          
+          $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'export/html/narration', $pathinfo['rel_parent'], $html_filename));           
         } else if ($entity->type == "oaff_virtdoc") { // there is no source
           $content = "";
           $html_location = oaff_join_path(array($pathinfo['group'], $pathinfo['archive'], 'export/planetary-headers/narration', $pathinfo['rel_parent'], '.html'));
