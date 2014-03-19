@@ -27,7 +27,9 @@ function mmt_initialize() {
 
     // mmt js libs
     drupal_add_js($mmt_path . '/utils/mmt-html.js', 'file', array('cache' => false));
+    drupal_add_js($mmt_path . '/utils/mmt-planetary.js', 'file', array('cache' => false));
     drupal_add_js($mmt_path . '/utils/mathml.js', 'file', array('cache' => false));
+    
     // modules
 }
 

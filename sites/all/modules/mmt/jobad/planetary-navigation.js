@@ -15,9 +15,7 @@ var planetaryNavigation = {
     leftClick: function(target, JOBADInstance) {
 		if(target.hasAttribute('jobad:href')) {
 			var uri = target.attr("jobad:href");
-			var uriEnc = planetary.encode(uri);
-			window.location = uriEnc;
-			return true;
+			var uriEnc = planetary.relNavigate(uri);
 		}
 		return false;
     },
@@ -50,7 +48,6 @@ var planetaryNavigation = {
 	       			'contentType' : 'text/plain',
 	              'crossDomain': true,
                   'success': function cont(data) {
-                  	console.log(data);
   					$('#dynamic_modal_content').html(data);
   					$('#dynamic_modal').modal();
                   },
@@ -68,19 +65,3 @@ var planetaryNavigation = {
 JOBAD.modules.register(planetaryNavigation);
 })(jQuery);
 
-var planetary = {
-  navigate: function(uri) {
-  	window.open(planetary.encode(uri));        
-  },
-  encode : function(uri) {
-		var rawEncoded = encodeURIComponent(uri);
-		var matches = uri.match(/^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/);
-		var fragment = ""; //default
-		if (matches[7] != undefined) {
-			fragment = "#" + matches[7].substring(1); //removing beginning '?'
-		}
-		var path = matches[4] + "source/" + matches[6] + fragment;
-
-		return path;
-    },
-};

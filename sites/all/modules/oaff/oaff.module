@@ -701,7 +701,7 @@ function oaff_join_path($arguments) {
 }
 
 function oaff_crawl_dimension_folder($group, $archive_path, $archive_id, $dimension, $rel_path) {
-    $extension = "omdoc";
+  $extension = "omdoc";
   if ($dimension == "source") { // getting source extension from config
     $oaff_config = variable_get('oaff_config');
     $extension = $oaff_config['extensions'][$oaff_config['formats'][$archive_id]];
@@ -716,6 +716,7 @@ function oaff_crawl_dimension_folder($group, $archive_path, $archive_id, $dimens
                                                                               // also lmh/stex specific ones  
       $item_path = oaff_join_path(array($folder_path, $item));
       if (planetary_repo_is_dir($item_path)) {
+        print_r($item_path);
         $cids[] = oaff_crawl_dimension_folder($group, $archive_path, $archive_id, $dimension, oaff_join_path(array($rel_path, $item)));
       } else {
         $pathinfo = oaff_get_path_info($item_path);
