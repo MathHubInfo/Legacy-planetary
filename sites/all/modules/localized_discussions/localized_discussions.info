@@ -1,0 +1,5 @@
+name = Localized Discussions
+description = Localized Discussions 
+core = 7.x
+package  = OAFF
+dependencies[] = jobad

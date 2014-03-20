@@ -1,0 +1,91 @@
+<?php
+
+// called when modules is installed
+function localized_discussions_install() {
+  // create local_discussion_question node type
+  // create local_discussion_answer node type (or use comments directly)
+  
+
+  // Question Document
+  $q_doc = (object) array(
+    'type' => 'local_discussion_question',
+    'name' => 'Question',
+    'base' => 'node_content',
+    'description' => 'Question for localized discussions',
+    'body_label' => 'Body',
+    'has_title' => true,
+  ); 
+  
+  node_add_body_field($q_doc);
+  node_type_save($q_doc);
+
+  if (!field_info_field('xml_fragment_id')) {
+    $field = array(
+        'field_name' => 'xml_fragment_id',
+        'type' => 'text', 
+    );
+    field_create_field($field);
+  }
+
+  // Create the instance on the bundle.
+  $instance = array(
+    'field_name' => 'xml_fragment_id',
+    'entity_type' => 'node',
+    'label' => 'XML Fragment ID',
+    'label_display' => 'hidden',
+    'bundle' => 'local_discussion_question',
+    // If you don't set the "required" property then the field wont be required by default.
+    'required' => true,
+  );
+  field_create_instance($instance);
+
+  if (!field_info_field('referenced_nid')) {
+    $field = array(
+        'field_name' => 'referenced_nid',
+        'type' => 'text', 
+    );
+    field_create_field($field);
+  }
+
+  // Create the instance on the bundle.
+  $instance = array(
+    'field_name' => 'referenced_nid',
+    'entity_type' => 'node',
+    'label' => 'Referred Node ID',
+    'label_display' => 'hidden',
+    'bundle' => 'local_discussion_question',
+    // If you don't set the "required" property then the field wont be required by default.
+    'required' => true,
+  );
+  field_create_instance($instance);
+
+}
+
+// called when modules is uninstalled
+function localized_discussions_uninstall() {
+ // clean up (delete everything you create in hook_install)
+ localized_discussions_delete_node_type('local_discussion_question');
+ // also delete field type ?	
+}
+
+function localized_discussions_delete_node_type($node_type_name, $remove_type = true) {
+  // deleting all node instances
+  $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+  node_delete_multiple($nids);
+  // deleting node type
+  if ($remove_type) {
+    node_type_delete($node_type_name);
+  }
+}
+
+
+/*
+//declares database schema, hanled by drupal
+function localized_discussions_schema() {
+	
+}
+*/
