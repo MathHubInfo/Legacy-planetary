@@ -1,0 +1,75 @@
+<?php
+
+
+/**
+ * implements hook_form_alter, adds content field to jobad_demo forms
+ */
+function jobad_demo_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'jobad_demo_node_form') {
+    $form['jcontent'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Main Content - write valid html here'),
+	);
+
+	if(array_key_exists('nid', $form_state['node'])) { //editing existing node
+		$nid = $form_state['node']->nid;
+		$result = db_select('jbd_body', 'm')->fields('m',array('jcontent'))->condition('nid', $nid, '=')->execute()->fetchAssoc();
+		$jcontent = $result['jcontent'];
+		$form['jcontent']['#default_value'] = $jcontent;
+		$form['jcontent']['#disabled'] = TRUE;
+	}
+  }
+}
+
+
+/**
+ * implements hook_node_insert, inserts content to jbd_body table, for jobad-specific nodes
+ */
+function jobad_demo_node_insert($node) {
+  if ($node->type == 'jobad_demo') {
+    db_insert('jbd_body')->fields(array('nid' => $node->nid, 'jcontent' => $node->jcontent))->execute();
+  }
+}
+
+
+
+/**
+ * implements hook_node_load, loads URI from mmturi table, for mmt-specific nodes
+ */
+function jobad_demo_node_load($nodes, $types) {
+  $jbdNodes = array();
+  foreach ($nodes as $node) {
+    if ($node->type == 'jobad_demo') {
+      $jbdNodes[$node->nid] = $node;
+    }
+  }
+  if (count($jbdNodes) > 0) { //something to do	
+    $result = db_query('SELECT nid,jcontent FROM {jbd_body} WHERE nid IN (:nids)', array(':nids' => array_keys($jbdNodes)));
+    foreach ($result as $record) {
+      $nodes[$record->nid]->jcontent = $record->jcontent; 
+    }
+  }
+}
+
+
+/**
+ * implements hook_node_view, renders mmt-specific nodes by loading html from MMT instance
+ */
+function jobad_demo_node_view($node, $view_mode, $langcode) {
+  if ($node->type == 'jobad_demo') {
+    $basePath = drupal_get_path('module', 'jobad_demo');
+    jobad_add_module($basePath . '/modules/example1.js', "test.color.click");
+    jobad_add_module($basePath . '/modules/example2.js', "test.p");
+    jobad_add_module($basePath . '/modules/example3.js', "test.color.menu");
+    jobad_add_module($basePath . '/modules/example4.js', "test.color.hover");
+    jobad_add_module($basePath . '/modules/example5.js', "test.sidebar");
+
+	$inst_id = jobad_initialize();
+    $node->content['main'] = array(
+      '#markup' => '<div id=' . $inst_id . '>' . $node->jcontent . '</div>',
+      '#weight' => 10,
+    );
+  }
+}
+
+

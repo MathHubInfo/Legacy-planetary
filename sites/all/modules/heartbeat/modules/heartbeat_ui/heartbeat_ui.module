@@ -1,0 +1,132 @@
+<?php
+
+/**
+ * Implements hook_help().
+ */
+function heartbeat_ui_help($path, $arg) {
+  switch ($path) {
+    case 'admin/structure/heartbeat-templates/manage/%heartbeat_message_template':
+      return '<p>' . t('Heartbeat activity message templates.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_menu().
+ * TODO Fix admin/structure/heartbeat/cache-clear
+ */
+function heartbeat_ui_menu() {
+
+  $items = array();
+
+  // Build menu
+  $items['admin/structure/heartbeat'] = array(
+    'title' => 'Heartbeat',
+    'description' => 'Administer heartbeat.',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('admin heartbeat configure'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+
+  // Administer settings
+  $items['admin/structure/heartbeat/settings'] = array(
+    'title' => 'Heartbeat settings',
+    'description' => 'Administer settings for heartbeat.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('heartbeat_admin_settings'),
+    'access arguments' => array('admin heartbeat configure'),
+    'file' => 'heartbeat_ui.admin.inc',
+    'weight' => 1,
+  );
+  $items['admin/structure/heartbeat/cache-clear'] = array(
+    'title' => 'Delete all activity logs',
+    'description' => 'Delete all heartbeat activity logs.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('heartbeat_activity_delete_all_confirm'),
+    'access arguments' => array('admin heartbeat delete all'),
+    'file' => 'heartbeat_ui.admin.inc',
+    'weight' => 2,
+  );
+
+  return $items;
+
+}
+
+/**
+ * Implements hook_permission().
+ */
+function heartbeat_ui_permission() {
+  $permissions = array(
+    'admin heartbeat configure' => array(
+      'title' => t('Configure heartbeat'),
+      'description' => t('Manage the heartbeat streams and configuration settings.')
+    ),
+    'admin heartbeat streams' => array(
+      'title' => t('Administer heartbeat streams'),
+      'description' => t('Manage the heartbeat streams.')
+    ),
+  );
+
+  return $permissions;
+
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function heartbeat_ui_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && $plugin == 'export_ui') {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_admin_menu_map() on behalf of Heartbeat module.
+ */
+function heartbeat_ui_admin_menu_map() {
+
+  return;
+  // TODO Fix this again. This requires that streams and templates have urls
+  // of their own in the menu system, so we can add the fields and display ourself.
+  $map['admin/structure/heartbeat_ui/list/%heartbeat_message_template/edit'] = array(
+    'parent' => 'admin/structure/heartbeat_ui/list',
+    //'hide' => 'admin/structure/heartbeat_ui/list',
+    'arguments' => array(
+      array('%heartbeat_message_template' => array_keys(heartbeat_templates_names())),
+    ),
+  );
+
+  foreach (entity_get_info() as $obj_type => $info) {
+    foreach ($info['bundles'] as $bundle_name => $bundle_info) {
+      if (isset($bundle_info['admin'])) {
+        $arguments = array();
+        switch ($obj_type) {
+          case 'heartbeat_activity':
+            $fields = array();
+            foreach (field_info_instances($obj_type, $bundle_name) as $field) {
+              $fields[] = $field['field_name'];
+            }
+            $arguments = array(
+              '%heartbeat_message_template' => array($bundle_name),
+              '%field_ui_menu' => $fields,
+            );
+          break;
+        }
+        if (!empty($arguments)) {
+          $path = $bundle_info['admin']['path'];
+          $map["$path/fields/%field_ui_menu"]['parent'] = "$path/fields";
+          $map["$path/fields/%field_ui_menu"]['arguments'][] = $arguments;
+        }
+      }
+    }
+  }
+
+  return $map;
+}
+
+/**
+ * Helper function to get a readable time.
+ */
+function _heartbeat_activity_get_time($time) {
+  return format_interval($time, 6, $GLOBALS['language']->language);
+}

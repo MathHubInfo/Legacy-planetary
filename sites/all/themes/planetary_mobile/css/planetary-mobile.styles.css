@@ -1,0 +1,49 @@
+img, media {
+  max-width: 100%;
+}
+
+header .l-branding .site-logo {
+    float: left;
+}
+
+.l-main {
+    clear: both;
+}
+
+@namespace jobad "http://omdoc.org/presentation";
+
+
+.keyword.folder {
+    display: none;
+}
+
+.l-content h1 {
+    display: none;
+}
+
+.links--inline {
+    display: none;
+}
+
+table.decllist tr.omdoc-structure {
+ display : none;
+}
+
+#block-system-powered-by {
+ display : none;
+}
+
+span {
+    color: blue;
+}
+
+table.decllist tr:first-child {
+ display: none;
+}
+
+.ltx_tag_itemize {
+ float: left;
+ margin-right: 5px;
+}
+
+/* No files to import found in partials/components/**\/* */

@@ -1,0 +1,251 @@
+<?php
+
+function oaff_add_vfs_field($node_type) {
+  // Check if our field is not already created.
+    
+  if (!field_info_field('field_external')) {
+    $field = array(
+        'field_name' => 'field_external',
+        'type' => 'vfs_file', // declared in vfs module
+    );
+    field_create_field($field);
+  }
+
+  // Create the instance on the bundle.
+  $instance = array(
+    'field_name' => 'field_external',
+    'entity_type' => 'node',
+    'label' => 'Content',
+    'bundle' => $node_type,
+    // If you don't set the "required" property then the field wont be required by default.
+    'required' => true,
+    'widget' => array(
+      'type' => 'textfield',
+    ),
+    'display' => array(
+      'default' => array( 
+        'type' => 'mmt_formatter', // TODO replace with oaff_formatter
+      ),
+    ),    
+  );
+  field_create_instance($instance);
+}
+
+function oaff_create_node_types() {
+  // Creating node type for OAFF documents
+  $oaff_doc = (object) array(
+    'type' => 'oaff_doc',
+    'name' => 'MathHub Document',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal, multilingual OAFF Document',
+    'has_title' => true,
+  ); 
+  node_type_save($oaff_doc);
+  oaff_add_vfs_field('oaff_doc');
+  
+  // Creating node type for OAFF modules
+  $oaff_doc = (object) array(
+    'type' => 'oaff_virtdoc',
+    'name' => 'MathHub Virtual Document',
+    'base' => 'node_content',
+    'description' => 'A node containing an flexiformal, multilingual OAFF document, that does not have a corresponding source file',
+    'has_title' => true,
+  ); 
+  node_type_save($oaff_doc);
+  oaff_add_vfs_field('oaff_virtdoc');
+
+}
+
+function delete_node_type($node_type_name, $remove_type = true) {
+  // deleting all node instances
+  $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+  node_delete_multiple($nids);
+  // deleting node type
+  if ($remove_type) {
+    node_type_delete($node_type_name);
+  }
+}
+
+function oaff_install() {
+  oaff_create_node_types();
+  $oaff_config = array();
+  $oaff_config['handled_node_types'] = array('mmtdoc', 'glossary', 'oaff_doc', 'oaff_virtdoc');
+  $oaff_config['latest_nodes'] = 0;
+  $oaff_config['crawl_nodes_offset'] = 0;
+  $mlids = array();
+  $nids = array();
+  $arch_info = oaff_create_static_node('Archives', 'mh/archives', "", true);
+  $oaff_config['archives_nid'] = $arch_info['nid'];
+  $nids[] = $arch_info['nid'];
+  $mlids[] = $arch_info['mlid'];
+  $contr_info = oaff_create_static_node("Contribute", "mh/contribute", file_get_contents(drupal_get_path('module', 'oaff_views') . '/contribute.xhtml'), true);
+  $nids[] = $contr_info['nid'];
+  $mlids[] = $contr_info['mlid'];
+  
+  //adding source menu item (pointing to gitlab)
+  $arch_item = array(
+      'link_path' => 'http://gl.mathhub.info',
+      'link_title' => 'Sources',
+      'weight' => 10,
+      'options' => array('attributes' => array('target' => '_blank')),
+      'menu_name' => 'main-menu'
+    );
+  $mlids[] = menu_link_save($arch_item);
+  
+  $oaff_config['mlids'] = $mlids;
+  $oaff_config['nids'] = $nids;
+  variable_set('oaff_config', $oaff_config);
+
+  $formats_s = variable_get("oaff_archive_formats", '');
+  $node_types_s = variable_get("oaff_format_node_types", '');
+  $extensions_s = variable_get("oaff_format_extensions", '');
+  oaff_config_set($formats_s, $node_types_s, $extensions_s);
+  
+  drupal_set_message("Installed OAFF");
+}
+
+function oaff_uninstall() {
+  $oaff_config = variable_get('oaff_config');
+  
+  // for easy debugging, deleting content on reinstall
+  delete_node_type('oaff_doc'); 
+  delete_node_type('oaff_virtdoc');  
+  delete_node_type('mmtdoc', false);
+ 
+  $mlids = $oaff_config['mlids'];
+  foreach ($mlids as $mlid) {
+    menu_link_delete($mlid);
+  }
+  $nids = $oaff_config['nids'];
+  foreach ($nids as $nid) {
+    node_delete($nid);
+  }
+
+  drupal_set_message("Uninstalled OAFF");
+}
+
+/** declares tables for OAFF-specific content */ 
+function oaff_schema() {
+  $schema = array();
+  $schema['oaff_errors'] = array(
+    'description' => 'the base table for oaff nodes ',
+    'fields' => array(
+	    'eid' => array(
+	      'description' => 'The primary identifier of a node with error',
+        'type' => 'serial', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'nid' => array(
+	      'description' => 'The id of the node that has the error',
+        'type' => 'int', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'type' => array(
+        'description' => 'The Error type, 0 for info, 1 for warning, 2 for error, 3 for fatal',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+      'compiler' => array(
+        'description' => 'The compiler that generated the error',
+        'type' => 'varchar',
+        'length' => 63,
+        'not null' => true,
+        ),
+      'short_msg' => array(
+        'description' => 'The short error message',
+        'type' => 'varchar',
+        'length' => 1023,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('eid'),	
+  );
+
+  $schema['oaff_node_parents'] = array(
+    'description' => 'the base table for representing relations between oaff nodes ',
+    'fields' => array(
+    'rid' => array(
+      'description' => 'The primary identifier of a parent relation',
+        'type' => 'serial', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'cid' => array(
+      'description' => 'The id of the (child) node',
+        'type' => 'int', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'pid' => array(
+        'description' => 'The id of the parent',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('rid'),  
+  );
+
+  $schema['oaff_node_lang_groups'] = array(
+    'description' => 'the base table for representing relations between oaff nodes ',
+    'fields' => array(
+    'gid' => array(
+      'description' => 'The primary identifier of a language group relation',
+        'type' => 'serial', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'bid' => array(
+      'description' => 'The id of base node',
+        'type' => 'int', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'lid' => array(
+        'description' => 'The id of the language variant',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'location' => array(
+        'description' => 'The file path',
+        'type' => 'varchar',
+        'length' => 511,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('gid'),  
+  );
+  $schema['oaff_node_mtime'] = array(
+    'description' => ' last modified time of mathhub nodes according to planetary system ',
+    'fields' => array(
+    'mid' => array(
+      'description' => 'The primary identifier of a language group relation',
+        'type' => 'serial', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'nid' => array(
+      'description' => 'The node id',
+        'type' => 'int', 
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    'mtime' => array(
+        'description' => 'The modification time',
+        'type' => 'int',
+        'unsigned' => true,
+        'not null' => true,
+      ),
+    ),
+    'primary key' => array('mid'),  
+  );
+  return $schema;
+}

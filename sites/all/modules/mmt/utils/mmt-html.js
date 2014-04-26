@@ -1,13 +1,13 @@
 /* Utility functions and state provided for MMT/OMDoc-based html documents */
 
-// the following functions jQuery.fn.f add functionality to jQuery and can be used as $(...).f
+// the following functions $.fn.f add functionality to jQuery and can be used as $(...).f
 
 // contrary to the built-in jQuery analogues, these work for 'pref:name' attributes and math elements
 // do not replace calls to these function with the jQuery analogues!
 
-(function($) {
+$ = jQuery;
 
-jQuery.fn.hasAttribute = function(name) {  
+$.fn.hasAttribute = function(name) {  
 	return (typeof this.attr(name) !== 'undefined' && this.attr(name) !== false);
 };
 
@@ -18,7 +18,7 @@ function getClassArray(elem) {
 }
 
 /* add a class cl to all matched elements */
-jQuery.fn.addMClass = function(cl){
+$.fn.addMClass = function(cl){
    this.each(function(){
       if (this.hasAttribute('class'))
          $(this).attr('class', $(this).attr('class') + ' ' + cl);   
@@ -28,7 +28,7 @@ jQuery.fn.addMClass = function(cl){
    return this;
 }
 /* remove a class cl from all matched elements */
-jQuery.fn.removeMClass = function(cl){
+$.fn.removeMClass = function(cl){
    this.each(function(){
       var classes = getClassArray(this);
       var newclasses = classes.filter(function(elem){return (elem !== cl) && (elem !== "")});
@@ -41,7 +41,7 @@ jQuery.fn.removeMClass = function(cl){
    return this;
 }
 /* toggle class cl in all matched elements */
-jQuery.fn.toggleMClass = function(cl){
+$.fn.toggleMClass = function(cl){
    this.each(function(){
       var classes = getClassArray(this);
       if (classes.indexOf(cl) == -1)
@@ -52,13 +52,13 @@ jQuery.fn.toggleMClass = function(cl){
    return this;
 }
 /* keep elements that have class cl */
-jQuery.fn.filterMClass = function(cl){
+$.fn.filterMClass = function(cl){
    return this.filter(function(){
       var classes = getClassArray(this);
       return (classes.indexOf(cl) !== -1)
    });
 }
-// end jQuery.fn.f functions
+// end $.fn.f functions
 
 
 /* some common URIs */
@@ -104,54 +104,81 @@ var mmt = {
 		}
 	},
 	
+	/* the notation style is used for operations that must be executed relative to a sytle, e.g., presentation */
 	notstyle : uris.mathmlstyle,
 
+	/* the active theory is used for operations that must be executed relative to a theory, e.g., parsing */
+	getActiveTheory : function() {
+	   return $('#inputtheory').val();
+	},
+	/* sets the active theory
+	  @param uri any MMT URI (symbol part is ignored if present; no action if document URI)
+	*/
+   setActiveTheory : function(uri) {
+      var arr = this.splitMMTURI(uri);
+      if (arr[1] != "") {
+         var thy = arr[0] + '?' + arr[1]
+         this.activeTheory = thy;
+         $('#inputtheory').val(thy);
+      }
+   },
+   
    /*
-	* Converts a relative to an absolute url if the base url is set.
+	 * Converts a relative to an absolute url if the base url is set.
     * Necessary when used within another application to connect with external mmt server (e.g. in planetary)
     */
-    makeURL : function(relUrl) {
+   makeURL : function(relUrl) {
 		if ((typeof mmtUrl) != 'undefined') {
 			return mmtUrl + relUrl; //compute absolute uri to external mmt server
 		} else { 
 			return relUrl;
 		}	
-	},
+   },
 
-	/*
-	 * adaptMMTURI - convert MMTURI to URL using current catalog and possibly notation style
-	 * act: String: action to call on MMTURI
-	 * present: Boolean: add presentation to action
-	 */
-	adaptMMTURI : function (uri, act, present) {
-		var arr = uri.split("?");
+   /*
+    * splits a URI into the (doc, mod, sym) triple; omitted parts are returned as ""
+    */
+   splitMMTURI : function(uri) {
+   	var arr = uri.split("?");
 		var doc = (arr.length >= 1) ? arr[0] : "";
 		var mod = (arr.length >= 2) ? arr[1] : "";
 		var sym = (arr.length >= 3) ? arr[2] : "";
+		return [doc, mod, sym];
+	},
+	
+	/*
+	 * adaptMMTURI - convert MMTURI to URL using current catalog and possibly notation style
+	 * act: String: additional action to call after "get uri"
+	 * present: Boolean: add presentation to action
+	 */
+	adaptMMTURI : function (uri, act, present) {
+		var arr = this.splitMMTURI(uri);
 		if (present && this.notstyle !== null)
-			var pres = "_present_" + this.notstyle;
+			var pres = " present " + this.notstyle;
 		else
 			var pres = '';
-        var relativeURL = '/:mmt?' + doc + '?' + mod + '?' + sym + '?' + act + pres;
+		var relativeURL = '/:mmt?get ' + arr[0] + '?' + arr[1] + '?' + arr[2] + ' ' + act + pres + " respond";
 		return this.makeURL(relativeURL);
 	},
 
-    ajaxReplaceIn : function (url, targetid) {
+   ajaxReplaceIn : function (url, targetid, async) {
 		function cont(data) {
-			var targetnode = $('#' + targetid).children('div');
+			var targetnode = $('#' + targetid).children();
 			targetnode.replaceWith(data.firstChild);
 		}
-		jQuery.ajax({ 'url': url,
+		if (async == null) async = true;
+		$.ajax({ 'url': url,
 				 'dataType': 'xml',
+				 'async': async,
 				 'success': cont
 			   });
 	},
-		
+	
 	load : function (elem) {
 	   if (elem.hasAttribute('jobad:load')) {
          var url = this.adaptMMTURI(elem.getAttribute('jobad:load'), '', true);
          var res = null;
-         jQuery.ajax({ 'url': url,
+         $.ajax({ 'url': url,
                 'dataType': 'xml',
                 'async': false,
                 'success': function cont(data) {res = data;}
@@ -176,6 +203,15 @@ var mmt = {
 		window.open(url, '_blank', '', false);
 	},
 	
+	sideBarClick : function(event,p) {
+	      if (event.detail == 1) navigation.navigate(p);
+	      else if (event.detail == 2) {
+	         if (graphWindow == null)
+	            openGraph(p);
+	         else
+	            graphWindow.navigateGraph(p);
+	      }
+	},
 
 	/*
 	  There are some small UI problems left to fix:
@@ -185,7 +221,6 @@ var mmt = {
 	  - title bar should only show the cd and name component, but not the cdbase of the symbol href (full href should be shown as @title)
 	*/
 	setLatinDialog : function (content, title){
-        console.log("got here");
 		var dia = $("#latin-dialog");
 		dia.dialog('option', 'title', title);
 		dia[0].replaceChild(content, dia[0].firstChild);
@@ -252,11 +287,13 @@ var mmt = {
 var XML = {
    // helper function to produce xml attributes: key="value"
 	attr : function (key, value) {return ' ' + key + '="' + value + '"';},
-	// helper function to produce xml elements: <tag>content</tag> or <tag/>
-	elem : function (tag, content) {return this.elem1(tag, null, null, content);},
-	// helper function to produce xml elements with 1 attribute: <tag key="value">content</tag> or <tag key="value"/>
-	elem1 : function (tag, key, value, content) {
-		var atts = (key == null) ? "" : this.attr(key,value);
+	// helper function to produce xml elements with 0-2 attributes:
+	// <tag key1="value1" key2="value">content</tag>
+	// all arguments except tag can be null
+	elem : function (tag, content, key1, value1, key2, value2) {
+		var att1 = (key1 == null) ? "" : this.attr(key1,value1);
+		var att2 = (key2 == null) ? "" : this.attr(key2,value2);
+		var atts = att1 + att2
 		var begin = '<' + tag + atts;
 		if (content == null) {
 			return begin + '/>';
@@ -266,28 +303,64 @@ var XML = {
 	},
 };
 
+var qmtAux = {
+	// returns a binary convenience function that returns a QMT query expression for a unary atomic function
+	// the second argument is an MMT URI that the unary function is parametrized by 
+	// defaultParam: a function returning the default value of the second argument of the returned function
+	extensionFunction : function(name, defaultParam) {
+	   return function(o, param) {
+	      var p = (param == null) ? ((defaultParam == null) ? mmt.getActiveTheory() : defaultParam()) : param; 
+	      return XML.elem('function', o, 'name', name, 'param', p);
+	   };
+   },
+};
+
 // functions to build and run QMT queries
 var qmt = {
-   // helper functions to build queries (as XML strings)
-	individual : function (p) {return XML.elem1('individual', 'uri', p);},
-	component : function (o, c) {return XML.elem1('component', 'index', c, o);},
-	subobject : function (o, p) {return XML.elem1('subobject', 'position', p, o);},
-	type : function (o,meta) {return XML.elem1('type', 'meta', meta, o);},
-	present : function (o) {return XML.elem1('present', 'style', mmt.notstyle, o);},
+    // helper functions to build queries (as XML strings)
+	// Query
+	literalPath : function (p) {return XML.elem('literal', null, 'uri', p);},
+	literalString : function (p) {return XML.elem('literal', p);},
+	bound      : function(i) {return XML.elem('bound', null, 'index', i);},
+	component  : function (o, c) {return XML.elem('component', o, 'index', c);},
+	subobject  : function (o, p) {return XML.elem('subobject', o, 'position', p);},
+	related	   : function(to, by) {return XML.elem('related', to + by);},
+	tuple       : function(os) {return XML.elem('tuple', os);},
+	projection  : function(o, i) {return XML.elem('projection', o, 'index', i);},
+	let         : function(v, i) {return XML.elem('let', v + i);},
+    // RelationExp
+    toobject    : function(rel) {return XML.elem('toobject', null, 'relation', rel);},
+    tosubject    : function(rel) {return XML.elem('tosubject', null, 'relation', rel);},
+
+    //other
+	parse       : qmtAux.extensionFunction('parse'),
+	infer       : qmtAux.extensionFunction('infer'),
+	simplify    : qmtAux.extensionFunction('simplify'),
+	analyze     : qmtAux.extensionFunction('analyze'),
+	present     : qmtAux.extensionFunction('present', function(){return mmt.notstyle;}),
+	presentDecl : qmtAux.extensionFunction('presentDecl', function(){return mmt.notstyle;}),
 
 	/* executes a QMT query (as constructed by helper functions) via ajax and runs a continuation on the result */
-    exec : function (q, cont) {
+    exec : function (q, cont, aSync) {
+ 	   if (aSync == null) {
+ 	   	aSync = true;
+ 	   }
+
 	   var qUrl = mmt.makeURL('/:query');
-		jQuery.ajax({
-			url:qUrl, 
-			type:'POST',
-			data:q,
-		    dataType : 'xml',
-			processData:false,
-			contentType:'text/plain',
-			success:cont,
+		$.ajax({
+            'crossDomain': true,
+			'url' : qUrl, 
+			'type' : 'POST',
+			'data' :q,
+		    'dataType' : 'xml',
+			'processData' :false,
+			'contentType' : 'text/plain',
+			'success' : cont,
+			'error' : function( reqObj, status, error ){
+				console.log( "ERROR:", error, "\n ",status );
+ 
+			},
+			'async' : aSync,
 		});
 	},
 };
-    window.mmt = mmt;
-})(jQuery);

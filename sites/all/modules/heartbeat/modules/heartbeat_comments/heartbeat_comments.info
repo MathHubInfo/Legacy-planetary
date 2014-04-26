@@ -1,0 +1,13 @@
+name = Heartbeat comments
+description = Gives the possibility react on messages. For activity in node context, node comments can be used.
+package = Heartbeat
+dependencies[] = heartbeat
+dependencies[] = heartbeat_plugins
+files[] = plugins/activitycomments.inc
+core = "7.x"
+; Information added by drupal.org packaging script on 2012-09-04
+version = "7.x-1.1"
+core = "7.x"
+project = "heartbeat"
+datestamp = "1346786566"
+

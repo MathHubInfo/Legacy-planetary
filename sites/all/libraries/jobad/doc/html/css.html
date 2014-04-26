@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>[CSS] - JOBAD Documentation</title>
+		<style type="text/css">
+/* Basic styles https://gist.github.com/cpatuzzo/3331384 */
+		body {
+		  font-family: Helvetica, arial, sans-serif;
+		  font-size: 14px;
+		  line-height: 1.6;
+		  padding-top: 10px;
+		  padding-bottom: 10px;
+		  background-color: white;
+		  padding: 30px;
+		  color: #333;
+		}
+		 
+		body > *:first-child {
+		  margin-top: 0 !important;
+		}
+		 
+		body > *:last-child {
+		  margin-bottom: 0 !important;
+		}
+		 
+		a {
+		  color: #4183C4;
+		  text-decoration: none;
+		}
+		 
+		a.absent {
+		  color: #cc0000;
+		}
+		 
+		a.anchor {
+		  display: block;
+		  padding-left: 30px;
+		  margin-left: -30px;
+		  cursor: pointer;
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  bottom: 0;
+		}
+		 
+		h1, h2, h3, h4, h5, h6 {
+		  margin: 20px 0 10px;
+		  padding: 0;
+		  font-weight: bold;
+		  -webkit-font-smoothing: antialiased;
+		  cursor: text;
+		  position: relative;
+		}
+		 
+		h2:first-child, h1:first-child, h1:first-child + h2, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
+		  margin-top: 0;
+		  padding-top: 0;
+		}
+		 
+		h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+		  text-decoration: none;
+		}
+		 
+		h1 tt, h1 code {
+		  font-size: inherit;
+		}
+		 
+		h2 tt, h2 code {
+		  font-size: inherit;
+		}
+		 
+		h3 tt, h3 code {
+		  font-size: inherit;
+		}
+		 
+		h4 tt, h4 code {
+		  font-size: inherit;
+		}
+		 
+		h5 tt, h5 code {
+		  font-size: inherit;
+		}
+		 
+		h6 tt, h6 code {
+		  font-size: inherit;
+		}
+		 
+		h1 {
+		  font-size: 28px;
+		  color: black;
+		}
+		 
+		h2 {
+		  font-size: 24px;
+		  border-bottom: 1px solid #cccccc;
+		  color: black;
+		}
+		 
+		h3 {
+		  font-size: 18px;
+		}
+		 
+		h4 {
+		  font-size: 16px;
+		}
+		 
+		h5 {
+		  font-size: 14px;
+		}
+		 
+		h6 {
+		  color: #777777;
+		  font-size: 14px;
+		}
+		 
+		p, blockquote, ul, ol, dl, table, pre {
+		  margin: 15px 0;
+		}
+
+		li {
+		  margin: 7px 0;		
+		}
+		 
+		hr {
+		  border: 0 none;
+		  color: #cccccc;
+		  height: 4px;
+		  padding: 0;
+		}
+		 
+		body > h2:first-child {
+		  margin-top: 0;
+		  padding-top: 0;
+		}
+		 
+		body > h1:first-child {
+		  margin-top: 0;
+		  padding-top: 0;
+		}
+		 
+		body > h1:first-child + h2 {
+		  margin-top: 0;
+		  padding-top: 0;
+		}
+		 
+		body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+		  margin-top: 0;
+		  padding-top: 0;
+		}
+		 
+		a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+		  margin-top: 0;
+		  padding-top: 0;
+		}
+		 
+		h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+		  margin-top: 0;
+		}
+		 
+		li p.first {
+		  display: inline-block;
+		}
+		 
+		ul, ol {
+		  padding-left: 30px;
+		}
+		 
+		ul :first-child, ol :first-child {
+		  margin-top: 0;
+		}
+		 
+		ul :last-child, ol :last-child {
+		  margin-bottom: 0;
+		}
+		 
+		dl {
+		  padding: 0;
+		}
+		 
+		dl dt {
+		  font-size: 14px;
+		  font-weight: bold;
+		  font-style: italic;
+		  padding: 0;
+		  margin: 15px 0 5px;
+		}
+		 
+		dl dt:first-child {
+		  padding: 0;
+		}
+		 
+		dl dt > :first-child {
+		  margin-top: 0;
+		}
+		 
+		dl dt > :last-child {
+		  margin-bottom: 0;
+		}
+		 
+		dl dd {
+		  margin: 0 0 15px;
+		  padding: 0 15px;
+		}
+		 
+		dl dd > :first-child {
+		  margin-top: 0;
+		}
+		 
+		dl dd > :last-child {
+		  margin-bottom: 0;
+		}
+		 
+		blockquote {
+		  border-left: 4px solid #dddddd;
+		  padding: 0 15px;
+		  color: #777777;
+		}
+		 
+		blockquote > :first-child {
+		  margin-top: 0;
+		}
+		 
+		blockquote > :last-child {
+		  margin-bottom: 0;
+		}
+		 
+		table {
+		  padding: 0;
+		}
+		table tr {
+		  border-top: 1px solid #cccccc;
+		  background-color: white;
+		  margin: 0;
+		  padding: 0;
+		}
+		 
+		table tr:nth-child(2n) {
+		  background-color: #f8f8f8;
+		}
+		 
+		table tr th {
+		  font-weight: bold;
+		  border: 1px solid #cccccc;
+		  text-align: left;
+		  margin: 0;
+		  padding: 6px 13px;
+		}
+		 
+		table tr td {
+		  border: 1px solid #cccccc;
+		  text-align: left;
+		  margin: 0;
+		  padding: 6px 13px;
+		}
+		 
+		table tr th :first-child, table tr td :first-child {
+		  margin-top: 0;
+		}
+		 
+		table tr th :last-child, table tr td :last-child {
+		  margin-bottom: 0;
+		}
+		 
+		img {
+		  max-width: 100%;
+		}
+		 
+		span.frame {
+		  display: block;
+		  overflow: hidden;
+		}
+		 
+		span.frame > span {
+		  border: 1px solid #dddddd;
+		  display: block;
+		  float: left;
+		  overflow: hidden;
+		  margin: 13px 0 0;
+		  padding: 7px;
+		  width: auto;
+		}
+		 
+		span.frame span img {
+		  display: block;
+		  float: left;
+		}
+		 
+		span.frame span span {
+		  clear: both;
+		  color: #333333;
+		  display: block;
+		  padding: 5px 0 0;
+		}
+		 
+		span.align-center {
+		  display: block;
+		  overflow: hidden;
+		  clear: both;
+		}
+		 
+		span.align-center > span {
+		  display: block;
+		  overflow: hidden;
+		  margin: 13px auto 0;
+		  text-align: center;
+		}
+		 
+		span.align-center span img {
+		  margin: 0 auto;
+		  text-align: center;
+		}
+		 
+		span.align-right {
+		  display: block;
+		  overflow: hidden;
+		  clear: both;
+		}
+		 
+		span.align-right > span {
+		  display: block;
+		  overflow: hidden;
+		  margin: 13px 0 0;
+		  text-align: right;
+		}
+		 
+		span.align-right span img {
+		  margin: 0;
+		  text-align: right;
+		}
+		 
+		span.float-left {
+		  display: block;
+		  margin-right: 13px;
+		  overflow: hidden;
+		  float: left;
+		}
+		 
+		span.float-left span {
+		  margin: 13px 0 0;
+		}
+		 
+		span.float-right {
+		  display: block;
+		  margin-left: 13px;
+		  overflow: hidden;
+		  float: right;
+		}
+		 
+		span.float-right > span {
+		  display: block;
+		  overflow: hidden;
+		  margin: 13px auto 0;
+		  text-align: right;
+		}
+		 
+		code, tt {
+		  margin: 0 2px;
+		  padding: 0 5px;
+		  white-space: nowrap;
+		  border: 1px solid #eaeaea;
+		  background-color: #f8f8f8;
+		  border-radius: 3px;
+		}
+		 
+		pre code {
+		  margin: 0;
+		  padding: 0;
+		  white-space: pre;
+		  border: none;
+		  background: transparent;
+		}
+		 
+		.highlight pre {
+		  background-color: #f8f8f8;
+		  border: 1px solid #cccccc;
+		  font-size: 13px;
+		  line-height: 19px;
+		  overflow: auto;
+		  padding: 6px 10px;
+		  border-radius: 3px;
+		}
+		 
+		pre {
+		  background-color: #f8f8f8;
+		  border: 1px solid #cccccc;
+		  font-size: 13px;
+		  line-height: 19px;
+		  overflow: auto;
+		  padding: 6px 10px;
+		  border-radius: 3px;
+		}
+		 
+		pre code, pre tt {
+		  background-color: transparent;
+		  border: none;
+		}
+		
+		/* Syntax Highlights */
+		.hll { background-color: #ffffcc }
+		.c { color: #999988; font-style: italic } /* Comment */
+		.err { color: #a61717; background-color: #e3d2d2 } /* Error */
+		.k { color: #000000; font-weight: bold } /* Keyword */
+		.o { color: #000000; font-weight: bold } /* Operator */
+		.cm { color: #999988; font-style: italic } /* Comment.Multiline */
+		.cp { color: #999999; font-weight: bold; font-style: italic } /* Comment.Preproc */
+		.c1 { color: #999988; font-style: italic } /* Comment.Single */
+		.cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+		.gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+		.ge { color: #000000; font-style: italic } /* Generic.Emph */
+		.gr { color: #aa0000 } /* Generic.Error */
+		.gh { color: #999999 } /* Generic.Heading */
+		.gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+		.go { color: #888888 } /* Generic.Output */
+		.gp { color: #555555 } /* Generic.Prompt */
+		.gs { font-weight: bold } /* Generic.Strong */
+		.gu { color: #aaaaaa } /* Generic.Subheading */
+		.gt { color: #aa0000 } /* Generic.Traceback */
+		.kc { color: #000000; font-weight: bold } /* Keyword.Constant */
+		.kd { color: #000000; font-weight: bold } /* Keyword.Declaration */
+		.kn { color: #000000; font-weight: bold } /* Keyword.Namespace */
+		.kp { color: #000000; font-weight: bold } /* Keyword.Pseudo */
+		.kr { color: #000000; font-weight: bold } /* Keyword.Reserved */
+		.kt { color: #445588; font-weight: bold } /* Keyword.Type */
+		.m { color: #009999 } /* Literal.Number */
+		.s { color: #d01040 } /* Literal.String */
+		.na { color: #008080 } /* Name.Attribute */
+		.nb { color: #0086B3 } /* Name.Builtin */
+		.nc { color: #445588; font-weight: bold } /* Name.Class */
+		.no { color: #008080 } /* Name.Constant */
+		.nd { color: #3c5d5d; font-weight: bold } /* Name.Decorator */
+		.ni { color: #800080 } /* Name.Entity */
+		.ne { color: #990000; font-weight: bold } /* Name.Exception */
+		.nf { color: #990000; font-weight: bold } /* Name.Function */
+		.nl { color: #990000; font-weight: bold } /* Name.Label */
+		.nn { color: #555555 } /* Name.Namespace */
+		.nt { color: #000080 } /* Name.Tag */
+		.nv { color: #008080 } /* Name.Variable */
+		.ow { color: #000000; font-weight: bold } /* Operator.Word */
+		.w { color: #bbbbbb } /* Text.Whitespace */
+		.mf { color: #009999 } /* Literal.Number.Float */
+		.mh { color: #009999 } /* Literal.Number.Hex */
+		.mi { color: #009999 } /* Literal.Number.Integer */
+		.mo { color: #009999 } /* Literal.Number.Oct */
+		.sb { color: #d01040 } /* Literal.String.Backtick */
+		.sc { color: #d01040 } /* Literal.String.Char */
+		.sd { color: #d01040 } /* Literal.String.Doc */
+		.s2 { color: #d01040 } /* Literal.String.Double */
+		.se { color: #d01040 } /* Literal.String.Escape */
+		.sh { color: #d01040 } /* Literal.String.Heredoc */
+		.si { color: #d01040 } /* Literal.String.Interpol */
+		.sx { color: #d01040 } /* Literal.String.Other */
+		.sr { color: #009926 } /* Literal.String.Regex */
+		.s1 { color: #d01040 } /* Literal.String.Single */
+		.ss { color: #990073 } /* Literal.String.Symbol */
+		.bp { color: #999999 } /* Name.Builtin.Pseudo */
+		.vc { color: #008080 } /* Name.Variable.Class */
+		.vg { color: #008080 } /* Name.Variable.Global */
+		.vi { color: #008080 } /* Name.Variable.Instance */
+		.il { color: #009999 } /* Literal.Number.Integer.Long */
+		</style><!--
+	Copyright (C) 2013 KWARC Group <kwarc.info>
+	
+	This file is part of JOBAD.
+	
+	JOBAD is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	JOBAD is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
+-->
+	</head>
+	<body>
+<p><a href="index.html">Start</a> &gt; <strong>CSS</strong></p>
+<h1>CSS</h1>
+
+<p>The JOBAD CSS consists of two files, both of which can be found in the <code>css</code> directory. 
+The file <code>JOBAD.css</code> contains essential styles which should not be changed by the user. The file <code>JOBAD.theme.css</code> contains colors and other design elements which may be changed by the user.</p>
+
+<p>The following css classes are available. </p>
+
+<h2>General</h2>
+
+<ul>
+<li><code>JOBAD</code> - a class applied to all JOBAD elements </li>
+<li><code>JOBAD_Ignore</code> - add this class to any element to make JOBAD ignore it (even if it is visible). </li>
+<li><code>JOBAD_Notice</code> - add this class to any element to make JOBAD notice it (even if it is hidden). </li>
+<li><p><code>JOBAD_InlineIcon</code> - an inline icon. </p>
+
+<h2>JOBAD Hover</h2></li>
+<li><p><code>JOBAD_Hover</code> - applied to Hover Tooltips </p></li>
+<li><p><code>JOBAD_Sidebar_Hover</code> - applied to Hover Tooltips generated by the sidebar </p>
+
+<h2>JOBAD Contextmenu</h2></li>
+<li><p><code>JOBAD_Contextmenu</code> - applied to the context menu. </p></li>
+<li><code>JOBAD_ContextMenu_Radial</code> - applied to the radial context menu</li>
+<li><p><code>JOBAD_ContextMenu_RadialItem</code> - applied to applied to radial context menu items </p>
+
+<h2>JOBAD Sidebar</h2></li>
+<li><p><code>JOBAD_Sidebar_Wrapper</code> - wraps the element that has a sidebar </p></li>
+<li><code>JOBAD_Sidebar_Container</code> - contains all sidebar notifications </li>
+<li><code>JOBAD_Sidebar_right</code> - applied to the JOBAD Sidebar aligned to the right</li>
+<li><code>JOBAD_Sidebar_left</code> - applied to the JOBAD Sidebar aligned to the left</li>
+<li><code>JOBAD_Sidebar_Group</code> - applied to sidebar groups</li>
+<li><code>JOBAD_Sidebar_Single</code> - applied to elements in the sidebar which are not grouped</li>
+<li><code>JOBAD_Sidebar_group_element</code> - applied to elements of a sidebar group </li>
+<li><p><code>JOBAD_Notification_$CLASS</code> - applied to the notification class given by $CLASS. Available by default are: <code>error</code>, <code>warning</code>, <code>info</code>. </p>
+
+<h2>JOBAD Folding</h2></li>
+<li><p><code>JOBAD_Folding_Wrapper</code> - wraps the element that is being folded </p></li>
+<li><code>JOBAD_Folding_Container</code> - contains the folding bar</li>
+<li><code>JOBAD_Folding_folded</code> - applied to the JOBAD Folding container when it is folded </li>
+<li><code>JOBAD_Folding_unfolded</code> - applied to the JOBAD Folding container when it is unfolded </li>
+<li><code>JOBAD_Folding_right</code> - applied to all Foldings which are aligned to the right</li>
+<li><code>JOBAD_Folding_left</code> - applied to all Foldings which are aligned to the left </li>
+<li><p><code>JOBAD_Folding_Spacing</code> - a spacing element inserted after every folded element to create some space </p>
+
+<h2>JOBAD Config UI</h2></li>
+<li><p><code>JOBAD_ConfigUI</code> - applied to the JOBAD Config UI</p></li>
+<li><code>JOBAD_ConfigUI_tablemain</code> - The main table of the configuration UI</li>
+<li><code>JOBAD_ConfigUI_infobox</code> - The box containing all information about a module </li>
+<li><code>JOBAD_ConfigUI_ModEntry</code> - An entry in the table containing a module</li>
+<li><code>JOBAD_ConfigUI_MetaConfigTitle</code> - The title of a configuration setting. </li>
+<li><code>JOBAD_ConfigUI_MetaConfigDesc</code> - The description of a configuration setting. </li>
+<li><code>JOBAD_ConfigUI_validateFail</code> - a configuration setting that failed validation</li>
+<li><p><code>JOBAD_ConfigUI_validateOK</code> - a configuration setting that passed validation</p>
+
+<h2>JOBAD Repo</h2></li>
+<li><p><code>JOBAD_Repo</code> - applied to JOBAD repo pages</p></li>
+<li><code>JOBAD_Repo_Body</code> - applied to an element which contains the JOBAD repo body. </li>
+<li><code>JOBAD_Repo_MsgBox</code> - applied to the message box on repo pages. </li>
+<li><code>JOBAD_Repo_Title</code> - applied to the repo title on repo pages. </li>
+<li><code>JOBAD_Repo_Desc</code> - applied to the description on repo pages. </li>
+<li><code>JOBAD_Repo_Table</code> - applied to the table of all modules on repo pages. </li>
+<li><code>JOBAD_Repo_NA</code> - a span element which shoudl be filled with not available text</li>
+<li><code>JOBAD_Repo_Dependency</code> - a JOBAD repo dependency entry. </li>
+<li><code>JOBAD_Repo_Dependency_Found</code> - applied to dependencies which are found in the current repository. </li>
+<li><code>JOBAD_Repo_Dependency_NotFound</code> - applied to dependencies which are not found in the current repository. </li>
+<li><code>JOBAD_Sort_Ascend</code> - applied to a span element which should be filled with a sorted ascending text. </li>
+<li><code>JOBAD_Sort_Descend</code> - applied to a span element which should be filled with a sorted descending text. </li>
+</ul>
+
+	</body>
+</html>

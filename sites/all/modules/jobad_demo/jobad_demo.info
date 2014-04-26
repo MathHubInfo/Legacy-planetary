@@ -1,0 +1,6 @@
+name = JOBAD Demo
+description = Simple Demo for JOBAD
+core = 7.x
+package     = Planetary Modules
+
+dependencies[] = jobad

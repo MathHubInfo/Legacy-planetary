@@ -1,0 +1,22 @@
+{
+    "name": "editor_utils",
+    "title": "Editor Utils",
+    "description": "a collage of several modules enabling advanced editing experience",
+    "version": "0.1",
+    "keywords": [
+        "editor", "utils", "terminal", "scripting"
+    ],
+    "author": {
+        "name": "Constantin Jucovschi",
+        "email": "jucovschi@gmail.com",
+    },
+    "licenses": [{
+        "type": "LGPLv3",
+        "url": "http://www.gnu.org/licenses/lgpl.html"
+    }],
+    "bugs": "https://github.com/jucovschi/EditorTools/issues",
+    "download": "https://github.com/jucovschi/EditorTools/archive/master.zip",
+    "dependencies": {
+        "jquery": ">=1.5"
+    }
+}

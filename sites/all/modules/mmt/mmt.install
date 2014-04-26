@@ -33,18 +33,7 @@ function mmt_create_fields() {
 
 function mmt_install() {
   /** declaring node types */
-  //MMT Module
-  $mmt_module = (object) array(
-    'type' => 'mmt_module',
-    'name' => 'MMT Module',
-    'base' => 'node_content',
-    'description' => 'A node containing an flexiformal MMT Module',
-    'body_label' => 'Module Body',
-    'has_title' => true,
-  ); 
-
-  node_type_save($mmt_module);
-
+ 
   //MMT Document
   $mmt_doc = (object) array(
     'type' => 'mmtdoc',
@@ -60,34 +49,20 @@ function mmt_install() {
 
   //adding fields
   mmt_create_fields();
-
-  variable_set('mmtUrl', "http://localhost:8080");
   variable_set('mmt_menu_items', array());
-  $mlids = array();
-
-  $arch_item = array(
-    'link_path' => drupal_get_normal_path('mmt/archives'),
-    'link_title' => "Archives",
-    'weight' => 10,
-    'menu_name' => 'main-menu'
-  );
-  $mlids[] = menu_link_save($arch_item);
-
-  $forum_item = array(
-    'link_path' => drupal_get_normal_path('forum'),
-    'link_title' => "Discussion",
-    'weight' => 15,
-    'menu_name' => 'main-menu'
-  );
-  $mlids[] = menu_link_save($forum_item);
+  variable_set("mmt_config", array());
   
-  
-  variable_set('mmt_mlids', $mlids);
+  //settings mmt_config
+  $mmturl = variable_get("mmt_instance_url", 'http://localhost:8080');
+  $formats_S = variable_get("mmt_archive_formats", '');
+  $node_types_S = variable_get("mmt_format_node_types", '');
+  $extensions_S = variable_get("mmt_format_extensions", '');
+  mmt_config_set($mmturl, $formats_S, $node_types_S, $extensions_S);
 
   drupal_set_message("installed");
 }
 
-function delete_node_type($node_type_name, $remove_type = true) {
+function mmt_delete_node_type($node_type_name, $remove_type = true) {
   // deleting all node instances
   $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
   $nids = array();
@@ -101,18 +76,8 @@ function delete_node_type($node_type_name, $remove_type = true) {
   }
 }
 
-function mmt_uninstall() {
-  //deleting node types
-  delete_node_type('mmt_module');
-  delete_node_type('mmtdoc');	
-  delete_node_type('glossary', false); 
-  delete_node_type('article', false); 
-
-  $mlids = variable_get('mmt_mlids');
-  foreach ($mlids as $mlid) {
-	menu_link_delete($mlid);
-  }
-
+function mmt_uninstall() { 
+  mmt_delete_node_type('mmtdoc'); 
   drupal_set_message("uninstalled");
 }
 

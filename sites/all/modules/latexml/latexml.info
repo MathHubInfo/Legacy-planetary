@@ -1,0 +1,8 @@
+name = LateXML Integration
+description = Allows a communication between Drupal and LateXML
+core = 7.x
+package     = OAFF
+
+dependencies[] = planetary_repo	
+dependencies[] = oaff	
+

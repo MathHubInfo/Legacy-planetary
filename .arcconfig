@@ -1,0 +1,5 @@
+ {
+  "project_id" : "planetary",
+  "conduit_uri" : "http://phab.code4fun.de/",
+  "lint.engine" : "ArcanistExtensionBasedLintEngine"
+ }

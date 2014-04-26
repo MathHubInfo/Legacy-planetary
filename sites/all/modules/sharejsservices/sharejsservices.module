@@ -64,8 +64,6 @@ function editor_service_hypertree() {
     	echo $res;
     } else
     	return $res;
-
-;
 }
 
 function sharejsservices_theme($existing, $type, $theme, $path) {
@@ -83,7 +81,7 @@ function editor_service_getDependencies() {
 	$res = mmt_get_dependencies($path);
 	$rr = array();
 	foreach ($res[0] as $key) {
-		array_push($rr, str_replace("http://docs.omdoc.org", "http://docs.omdoc.org/smglo", $key));
+		array_push($rr, $key);//str_replace("http://docs.omdoc.org", "http://docs.omdoc.org/smglo", $key));
 	}
     drupal_json_output($rr);
 }
@@ -99,7 +97,7 @@ function editor_service_compile() {
    	global $filter_debug;
 	$filter_debug = array();
 
-    $markup = check_markup($text, "tex", "und");
+    $markup = check_markup($text, $info['extension'], "und");
     $output = array();
 
     if (isset($filter_debug["drutexml_latexml"])) {
@@ -118,7 +116,7 @@ function editor_service_compile() {
 		   	$result = json_decode(_drutexml_cache_read($key));
 		   	$log = $result->log;
 	   		$matches = array();
-	   		preg_match_all("|Error:[^\\n]*|", $log, $matches);
+	   		preg_match_all("|error [^\\n]*|", $log, $matches);
 
 		   	$output[$type] = $matches[0];
 	    }

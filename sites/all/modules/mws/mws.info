@@ -1,0 +1,4 @@
+name = MathWebSearch Integration
+description = Allows a communication between Drupal and a MWS instance, enabling math search 
+core = 7.x
+package     = OAFF

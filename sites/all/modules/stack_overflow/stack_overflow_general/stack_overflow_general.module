@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Stack Overflow General feature.
+ */
+
+include_once 'stack_overflow_general.features.inc';

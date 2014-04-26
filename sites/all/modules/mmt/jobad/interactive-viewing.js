@@ -1,6 +1,4 @@
-(function($){
-
-	var interactiveViewing = {
+var interactiveViewing = {
 	/* JOBAD Interface  */ 
 	info: {
 		'identifier' : 'kwarc.mmt.intvw',
@@ -12,27 +10,30 @@
 		'hasCleanNamespace': false
 	},
 	
-
-	contextMenuEntries: function(targetArray, JOBADInstance) {
-	   target = targetArray[0]  //for some reason jobad passes [target] instead of target
-		mmt.setCurrentPosition(target);
+	contextMenuEntries: function(target, JOBADInstance) {
+		mmt.setCurrentPosition(target.get(0));
 		var res = this.visibMenu();
-      if (mmt.focusIsMath) {
+		if (mmt.focusIsMath) {
 			var me = this;
 			res["infer type"] = me.inferType;
 			if (mmt.currentURI !== null) {
 				res["show type"] = this.showComp('type');
 				res["show definition"] = this.showComp('definition');
 				res["(un)mark occurrences"] = this.showOccurs;
-				res["show URI"] = function(){alert(mmt.currentURI)};
+				res["show URI"] = function(){alert(mmt.currentURI);};
 				res["open in new window"] = function() {mmt.openCurrent();};
 				//res["get OMDoc"] = mmt.openCurrentOMDoc();
 			}
+			var folded = $(mmt.focus).closest('.math-folded');
+			if (folded.length !== 0)
+				res.unfold = function(){folded.removeMClass('math-folded');};
+			else
+				res.fold = function(){$(mmt.focus).addMClass('math-folded');};
 			return res;
-		} else if ($(target).hasClass('folder') || mmt.focusIsMath) {
+		} else if ($(target).hasClass('folder')) {
 			return res;
 		} else {
-			return false;
+			return res;
 		}
 	},
 	
@@ -41,36 +42,36 @@
 	/* highlights all occurrences of the current URI */
 	showOccurs : function (){
 		$('mo').filter(function(index){
-		    return this.getAttribute('jobad:href') == mmt.currentURI;
-	   }).toggleMClass('math-occurrence');
+			return this.getAttribute('jobad:href') == mmt.currentURI;
+		}).toggleMClass('math-occurrence');
 	},
 	
 	/* sends type inference query to server for the currentComponent and currentPosition */
 	inferType : function (){
 		var query = qmt.present(qmt.type(
-		    qmt.subobject(qmt.component(qmt.individual(mmt.currentElement), mmt.currentComponent), mmt.currentPosition),
-		    uris.lf
-		));
+			qmt.subobject(qmt.component(qmt.individual(mmt.currentElement), mmt.currentComponent), mmt.currentPosition),
+			uris.lf
+			));
 		qmt.exec(query,
-				  function(result) {
-					  try {
-						  var pres = result.firstChild.firstChild.firstChild;
-						  mmt.setLatinDialog(pres, 'type');
-					  } catch(err) { // probably result is an error report
-						  mmt.setLatinDialog(result.firstChild, 'type');
-					  }
-				  }
-				 );
+			function(result) {
+				try {
+					var pres = result.firstChild.firstChild.firstChild;
+					mmt.setLatinDialog(pres, 'type');
+				} catch(err) { // probably result is an error report
+					mmt.setLatinDialog(result.firstChild, 'type');
+				}
+			}
+		);
 	},
 	
 	/* shows a component of the current MMT URI in a dialog */
 	showComp : function(comp) {
-	   return function(){
-		   var query = qmt.present(qmt.component(qmt.individual(mmt.currentURI), comp));
-		   qmt.exec(query,
-			   	     function(result){mmt.setLatinDialog(result.firstChild.firstChild.firstChild, mmt.currentURI);}
-				      );
-		}
+		return function(){
+			var query = qmt.present(qmt.component(qmt.individual(mmt.currentURI), comp));
+			qmt.exec(query,
+				function(result){mmt.setLatinDialog(result.firstChild.firstChild.firstChild, mmt.currentURI);}
+				);
+		};
 	},
 	
 	
@@ -84,23 +85,22 @@
 	},
 	
 	visibSubmenu : function(prop){
-	   var me = this;
+		var me = this;
 		return {
-			"show" : function(){me.setVisib(prop,true)},
-			"hide" : function(){me.setVisib(prop,false)},
+			"show" : function(){me.setVisib(prop,true);},
+			"hide" : function(){me.setVisib(prop,false);},
 		};
 	},
 	
 	visibMenu : function(){
-	    return {
+		return {
 			"reconstructed types" :  this.visibSubmenu('reconstructed'),
 			"implicit arguments" : this.visibSubmenu('implicit-arg'),
 			"redundant brackets" : this.visibSubmenu('brackets'),
-		}
-	},		
+		};
+	},
 };
 
 JOBAD.modules.register(interactiveViewing);
 
 
-})(jQuery);

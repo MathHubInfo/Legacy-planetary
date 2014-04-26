@@ -1,0 +1,761 @@
+<?php
+
+/**
+ * @file
+ * This file includes plugins for heartbeat by configuration.
+ * The plugins are ctools exportables.
+ */
+
+module_load_include('inc', 'heartbeat_plugins', 'includes/heartbeat_plugin');
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function heartbeat_plugins_ctools_plugin_api($owner, $api) {
+  if ($owner == 'heartbeat_plugins' && ($api == 'plugins' || $api == 'heartbeat_plugins')) {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function heartbeat_plugins_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && ($plugin == 'export_ui' || $plugin == 'heartbeat_plugins')) {
+    return 'plugins/' . $plugin;
+  }
+}
+
+/**
+ * Implementation of hook_heartbeat_plugin_info().
+ * Built-in default plugins that can be used with heartbeat.
+ */
+function heartbeat_plugins_heartbeat_plugin_info() {
+
+  $plugin_names = array();
+
+  $plugin_name = new HeartbeatPluginWrapper;
+  $plugin_name->disabled = FALSE; /* Edit this to true to make a default plugin_name disabled initially */
+  $plugin_name->api_version = 1;
+  $plugin_name->plugin_name = 'activitystatus';
+  $plugin_name->label = 'User activity status form above stream';
+  $plugin_name->module = 'heartbeat_plugins';
+  $plugin_name->settings = array();
+  $plugin_names['activitystatus'] = $plugin_name;
+
+  if (module_exists('flag')) {
+
+    $plugin_name = new HeartbeatPluginWrapper;
+    $plugin_name->disabled = FALSE; /* Edit this to true to make a default plugin_name disabled initially */
+    $plugin_name->api_version = 1;
+    $plugin_name->plugin_name = 'flagattachment';
+    $plugin_name->label = 'Flag link attachments with a count';
+    $plugin_name->module = 'heartbeat_plugins';
+    $plugin_name->settings = array(
+      'attachment' => 1,
+      'count_enabled' => 1,
+    );
+    $plugin_names['flagattachment'] = $plugin_name;
+
+  }
+
+  if (module_exists('shoutbox')) {
+
+    $plugin_name = new HeartbeatPluginWrapper;
+    $plugin_name->disabled = FALSE; /* Edit this to true to make a default plugin_name disabled initially */
+    $plugin_name->api_version = 1;
+    $plugin_name->plugin_name = 'shoutbox';
+    $plugin_name->label = 'Shoutbox form above stream';
+    $plugin_name->module = 'heartbeat_plugins';
+    $plugin_name->settings = array();
+    $plugin_names['shoutbox'] = $plugin_name;
+
+  }
+
+  if (module_exists('og')) {
+
+    $plugin_name = new HeartbeatPluginWrapper;
+    $plugin_name->disabled = FALSE; /* Edit this to true to make a default plugin_name disabled initially */
+    $plugin_name->api_version = 1;
+    $plugin_name->plugin_name = 'og';
+    $plugin_name->label = 'Organic group streams and access restriction specific to groups';
+    $plugin_name->module = 'heartbeat_plugins';
+    $plugin_name->settings = array();
+    $plugin_names['og'] = $plugin_name;
+
+  }
+
+  return $plugin_names;
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * @param array $form
+ * @param array $form_state
+ */
+function heartbeat_plugins_form_alter(&$form, &$form_state, $form_id) {
+
+  // Hook into the ctools edit form for heartbeat message templates.
+  if ($form_id == 'ctools_export_ui_edit_item_form') {
+
+    // Hook into the message template form.
+    if (isset($form['info']['message_id'])) {
+      _heartbeat_plugins_template_attachments_sort_form($form, $form_state);
+    }
+
+    // Hook into the stream configuration form.
+    if (isset($form['info']['class']) && isset($form['real_class'])) {
+      foreach(heartbeat_plugins_get_active_plugins() as $pluginWrapper) {
+        $plugin = $pluginWrapper->getPlugin();
+        if ($plugin && $plugin->adaptsStream()) {
+          $plugin->pluginStreamForm($form, $form_state);
+        }
+
+      }
+    }
+
+  }
+
+}
+
+/**
+ * CTools delete callback for plugins.
+ */
+function heartbeat_plugins_delete($plugin) {
+
+  db_delete('heartbeat_plugins')
+    ->condition('plugin_name', $plugin->plugin_name)
+    ->execute();
+
+  // Clear the cache for heartbeat plugins.
+  cache_clear_all('heartbeat_plugins', 'cache');
+
+}
+
+/**
+ * Implements hook_permission().
+ */
+function heartbeat_plugins_permission() {
+
+  $permissions = array(
+    'admin heartbeat plugins' => array(
+      'title' => t('Administer heartbeat plugins'),
+      'description' => t('Manage the heartbeat plugins.')
+    ),
+    'post activity statuses' => array(
+      'title' => t('Post activity statuses'),
+      'description' => t('Post heartbeat activity statuses.')
+    ),
+  );
+
+  return $permissions;
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function heartbeat_plugins_menu() {
+  $items = array();
+  foreach (heartbeat_plugins_get_active_plugins() as $pluginWrapper) {
+    if ($plugin = $pluginWrapper->getPlugin()) {
+      $items += $plugin->getMenuItems();
+    }
+  }
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function heartbeat_plugins_theme() {
+  $registry = array(
+    'heartbeat_attachments' => array(
+      'variables' => array('heartbeat_activity' => NULL),
+    ),
+    'heartbeat_plugins_attachments_form' => array(
+      'render element' => 'form',
+    ),
+    'heartbeat_flagging' => array(
+      'variables' => array('heartbeat_activity' => NULL),
+    ),
+  );
+
+  return $registry;
+}
+
+/**
+ * Implements hook_init().
+ */
+function heartbeat_plugins_init() {
+  heartbeat_plugins_get_active_plugins(TRUE);
+}
+
+/**
+ * Implements of hook_flag_definitions().
+ */
+function heartbeat_plugins_flag_definitions() {
+  $definitions = array();
+  foreach (heartbeat_plugins_get_active_plugins() as $pluginWrapper) {
+    $plugin = $pluginWrapper->getPlugin();
+    if ($plugin instanceof HeartbeatFlagPlugin && $plugin->hasFlagDefinitions()) {
+      $definitions += $plugin->flagDefinitions();
+    }
+  }
+  return $definitions;
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function heartbeat_plugins_field_extra_fields() {
+
+  $return = array();
+  $info = entity_get_info('heartbeat_activity');
+  foreach (array_keys($info['bundles']) as $bundle) {
+    $return['heartbeat_activity'][$bundle] = array(
+      'display' => array(
+        'attachments' => array(
+          'label' => 'Attachments',
+          'description' => t('Heartbeat activity attachments'),
+          'weight' => 4,
+        ),
+      ),
+    );
+  }
+
+  return $return;
+}
+
+/**
+ * Implements hook_flag_default_flags().
+ */
+function heartbeat_plugins_flag_default_flags() {
+
+  $flags = array();
+  foreach (heartbeat_plugins_get_active_plugins() as $pluginWrapper) {
+    $plugin = $pluginWrapper->getPlugin();
+    if ($plugin instanceof HeartbeatFlagPlugin && $plugin->hasDefaultFlags()) {
+      $flags += $plugin->flagDefaults();
+    }
+  }
+
+  return $flags;
+
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function heartbeat_plugins_token_info() {
+
+  // Handy tokens for heartbeat_activity.
+  $tokens = array();
+
+  if (module_exists('flag')) {
+    $flags = flag_get_flags('heartbeat_activity');
+    foreach ($flags as $flag) {
+      $tokens['heartbeat_activity']['flag-' . str_replace('_', '-', $flag->name) . '-count-linked'] = array(
+        'name' => t('@flag flag count', array('@flag' => $flag->get_title())),
+        'description' => t('Total flag count for flag @flag', array('@flag' => $flag->get_title())),
+      );
+    }
+  }
+
+  return array(
+    'tokens' => $tokens,
+  );
+
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function heartbeat_plugins_tokens($type, $tokens, array $data = array(), array $options = array()) {
+
+  ctools_include('modal');
+  ctools_include('ajax');
+
+  $url_options = array('absolute' => TRUE);
+  $url_options['alias'] = TRUE;
+  if (isset($options['language'])) {
+    $url_options['language'] = $options['language'];
+    $language_code = $options['language']->language;
+  }
+  else {
+    $language_code = NULL;
+  }
+  $sanitize = !empty($options['sanitize']);
+
+  $replacements = array();
+
+  if ($type == 'heartbeat_activity' && !empty($data['heartbeat_activity'])) {
+    $flags = flag_get_flags('heartbeat_activity');
+    $object = $data['heartbeat_activity'];
+    foreach ($flags as $flag) {
+      $flag_token = 'flag-'. str_replace('_', '-', $flag->name) .'-count-linked';
+      foreach ($tokens as $name => $original) {
+        if ($name == $flag_token) {
+          $count = $flag->get_count($flag->get_content_id($object));
+          $output = ctools_modal_text_button($count == 1 ? t('One person') : t('@count people', array('@count' => $count)),
+            'heartbeat/nojs/flagged/' . $object->uaid,
+            t('Show people'),
+            'ctools-modal-ctools-heartbeat-style');
+          $replacements[$original] = $output;
+        }
+      }
+    }
+  }
+
+  return $replacements;
+}
+
+/**
+ * Implements hook_heartbeat_stream_load().
+ *
+ * TODO Refactor this for two reasons.
+ * First is the plugins should be attached to the stream if needed (cfr heartbeatActivity)
+ * Second is that the plugin loaded here loads too often and it is invisible to any other
+ * point in the process where we could have picked in.
+ */
+function heartbeat_plugins_heartbeat_stream_load(HeartbeatStream $heartbeatStream) {
+
+  // Always invoke the streamLoaded on every plugin.
+  foreach (heartbeat_plugins_get_active_plugins() as $pluginWrapper) {
+  	$plugin = $pluginWrapper->getPlugin();
+  	// Notify the plugin that there is a stream loaded.
+  	if ($plugin) {
+  		$plugin->streamLoaded($heartbeatStream);
+  		// This is the method that will stay, replacing the one above.
+  		//$heartbeatStream->executePlugin($plugin);
+  	}
+  }
+
+}
+
+/**
+ * Implements of hook_heartbeat_activity_delete().
+ *
+ * Delete the attachments from a heartbeat activity object.
+ * @param $message
+ *   HeartbeatActivity ID
+ */
+function heartbeat_plugins_heartbeat_activity_delete($uaids, $all) {
+
+  foreach (heartbeat_plugins_get_active_plugins() as $pluginWrapper) {
+    $plugin = $pluginWrapper->getPlugin();
+    if ($plugin) {
+    	$plugin->activityRemoved($uaids, $all);
+    }
+  }
+
+}
+
+/**
+ * Implements hook_heartbeat_activity_view().
+ *
+ * @param HeartbeatActivity $heartbeatActivity
+ *   The activity message object.
+ */
+function heartbeat_plugins_heartbeat_activity_view(HeartbeatActivity $heartbeatActivity, $view_mode = 'full', $language = NULL) {
+
+  $heartbeatActivity->content['attachments'] = array('#markup' => '');
+  if ($heartbeatActivity->template->hasPluginAttachments()) {
+    $heartbeatActivity->content['attachments']['#markup'] = theme('heartbeat_attachments', array('heartbeat_activity' => $heartbeatActivity));
+  }
+
+}
+
+/**
+ * Implementation of hook_heartbeat_theme_alter().
+ *
+ * In this phase we want to tell all plugins attached to a message
+ * they can perform any loading tasks or any other data that needs to
+ * be available to later display (E.g. buttons and content).
+ */
+function heartbeat_plugins_heartbeat_theme_alter(&$messages, HeartbeatStream $stream) {
+
+  // Evaluate each message to attach plugin content or buttons.
+  foreach (array_keys($messages) as $key) {
+
+    $pluginLoaders = array();
+    if (isset($messages[$key]->template->attachments['buttons'])) {
+      foreach ($messages[$key]->template->attachments['buttons']['enabled'] as $id => $enabled) if ($enabled) {
+        $pluginLoaders[$id] = $id;
+      }
+    }
+    if (isset($messages[$key]->template->attachments['content'])) {
+      foreach ($messages[$key]->template->attachments['content']['enabled'] as $id => $enabled) if ($enabled) {
+        $pluginLoaders[$id] = $id;
+      }
+    }
+
+    // Alter the messages by attaching buttons.
+    foreach ($pluginLoaders as $pluginId => $info) {
+
+      $parts = explode(":", $pluginId);
+      $pluginName = $parts[0];
+      $name = isset($parts[1]) ? $parts[1] : NULL;
+
+      // Prepare a PluginWrapper.
+      $pluginWrapper = heartbeat_plugins_get_plugin($pluginName);
+      if (!is_object($pluginWrapper)) {
+        continue;
+      }
+      // Get a plugin to work with.
+      $plugin = $pluginWrapper->getPlugin();
+
+      // TODO This needs a check if the plugin is enabled (in this context).
+      if ($plugin instanceof HeartbeatBasePlugin) {
+        $plugin->setStream($stream);
+      }
+
+      // Load attachments.
+      $plugin->loadAttachments($messages[$key], $name);
+
+    }
+
+  }
+
+}
+
+/**
+ * Preprocess function for the heartbeat activity attachments.
+ */
+function heartbeat_plugins_preprocess_heartbeat_attachments(&$variables) {
+
+  $pluginAttachments = isset($variables['heartbeat_activity']->additions->plugins) ? $variables['heartbeat_activity']->additions->plugins : array();
+
+  foreach ($pluginAttachments as $pluginId => $plugin) {
+    if ($plugin->hasAttachmentsContent()) {
+      $plugin->renderAttachmentsContent($variables['heartbeat_activity']);
+    }
+  }
+  $variables['attachments'] = $variables['heartbeat_activity']->attachments;
+
+}
+
+/**
+ * Preprocess function for the heartbeat activity buttons.
+ */
+function heartbeat_plugins_preprocess_heartbeat_buttons(&$variables) {
+
+  $pluginAttachments = isset($variables['heartbeat_activity']->additions->plugins) ? $variables['heartbeat_activity']->additions->plugins : array();
+
+  foreach ($pluginAttachments as $pluginId => $plugin) {
+    if ($plugin->hasAttachmentsButtons()) {
+      $plugin->renderButtons($variables['heartbeat_activity']);
+    }
+  }
+
+}
+
+/**
+ * Theme function for messages attachments.
+ *
+ * @param $variables
+ *   Array of variables available for output.
+ */
+function theme_heartbeat_attachments($variables) {
+
+  $output = '<div class="heartbeat-attachments">';
+  $output .= implode(' ', $variables['attachments']);
+  $output .= '</div>';
+
+  return $output;
+
+}
+
+/**
+ * Helper function to retrieve an active plugin.
+ *
+ * @param Boolean $include
+ *   Indicates whether the plugins needs to be loaded/included.
+ */
+function heartbeat_plugins_get_plugin($plugin_name) {
+
+  $plugins = &drupal_static('heartbeat_plugins');
+
+  if (empty($plugins)) {
+    $plugins = heartbeat_plugins_get_active_plugins(TRUE);
+  }
+
+  foreach ($plugins as $plugin) {
+    if ($plugin->plugin_name == $plugin_name) {
+      return $plugin;
+    }
+  }
+
+  return NULL;
+
+}
+
+/**
+ * Helper function to retrieve all active plugins.
+ *
+ * @param Boolean $include
+ *   Indicates whether the plugins needs to be loaded/included.
+ */
+function heartbeat_plugins_get_active_plugins($include = FALSE) {
+
+  $plugins = &drupal_static('heartbeat_plugins');
+
+  if (!isset($plugins)) {
+
+    $plugins = array();
+
+    // Load from cache if possible.
+    if ($object = cache_get('heartbeat_plugins')) {
+      $plugins = $object->data;
+    }
+    // Ctools loads the plugins by default, we'll save it in cache.
+    else {
+      ctools_include('export');
+      foreach(ctools_export_crud_load_all('heartbeat_plugins') as $plugin) {
+        if (empty($plugin->disabled)) {
+          $plugins[] = $plugin;
+        }
+      }
+      cache_set('heartbeat_plugins', $plugins);
+    }
+  }
+
+  if (!empty($plugins)) {
+    if ($include) {
+      foreach ($plugins as $plugin) {
+        // Load our plugin file.
+        module_load_include('inc', 'heartbeat_plugins', 'plugins/' . $plugin->plugin_name);
+      }
+    }
+  }
+
+  return $plugins;
+
+}
+
+/**
+ * Helper function to create draggable interface for heartbeat plugins.
+ */
+function _heartbeat_plugins_template_attachments_sort_form(& $form, & $form_state) {
+
+  // Prepare the attachments for all active plugins willing to participate.
+  $attachments = array();
+  foreach (heartbeat_plugins_get_active_plugins() as $pluginWrapper) {
+
+    $plugin = $pluginWrapper->getPlugin();
+
+    if ($plugin) {
+
+	    $item_attachments = $form_state['item']->attachments;
+
+	    // Create a list of attachment buttons provided by the plugins.
+	    if ($plugin->hasButtons()) {
+	      $attachments['buttons'][$pluginWrapper->plugin_name] = array(
+	        'plugin' => $plugin,
+	        'values' => isset($item_attachments['buttons'][$pluginWrapper->plugin_name]) ? $item_attachments['buttons'][$pluginWrapper->plugin_name] : array()
+	      );
+	    }
+
+	    // Create a list of attachments (content) provided by the plugins.
+	    if ($plugin->hasContent()) {
+	      $attachments['content'][$pluginWrapper->plugin_name] = array(
+	        'plugin' => $plugin,
+	        'values' => isset($item_attachments['content'][$pluginWrapper->plugin_name]) ? $item_attachments['content'][$pluginWrapper->plugin_name] : array()
+	      );
+	    }
+
+    }
+
+  }
+
+  $item = $form_state['item'];
+  $values = $item->attachments;
+
+  /**
+   *  Create wrapper for Button Attachments.
+   */
+  if (!empty($attachments['buttons'])) {
+
+	  if (!isset($form_state['item']->attachments['buttons'])) {
+	    $form_state['item']->attachments['buttons'] = array();
+	  }
+	  $form['attachments']['buttons'] = array('#tree' => TRUE, '#type' => 'fieldset');
+	  $form['attachments']['buttons']['title'] = array('#markup' => t('Attachment Buttons'));
+
+	  // Prepare a sorted list of Attachment Buttons.
+	  $items = array();
+	  foreach ($attachments['buttons'] as $class_name => $plugin_attachments) {
+	    foreach ($plugin_attachments['plugin']->getAttachments($item, 'buttons') as $attachment) {
+	      $attachment['enabled'] = isset($values['buttons']['enabled'][$attachment['name']]) ? $values['buttons']['enabled'][$attachment['name']] : $attachment['enabled'];
+	      $attachment['weight'] = isset($values['buttons']['weight'][$attachment['name']]) ? $values['buttons']['weight'][$attachment['name']] : $attachment['weight'];
+	      $attachment['plugin'] = $plugin_attachments['plugin'];
+	      $items[] = $attachment;
+	    }
+	  }
+	  usort($items, '_heartbeat_attachment_sort_helper');
+
+	  $options = array();
+	  $enabled = array();
+	  $form['attachments']['buttons']['weight'] = array('#tree' => TRUE);
+	  foreach ($items as $attachment) {
+
+	    $key = $attachment['name'];
+	    $options[$key] = '';
+	    if ($attachment['enabled']) {
+	      $enabled[] = $key;
+	    }
+	    $form['attachments']['buttons']['weight'][$key] = array(
+	      '#type' => 'weight',
+	      '#title' => t('Weight for @title', array('@title' => $attachment['title'])),
+	      '#title_display' => 'invisible',
+	      '#default_value' => $attachment['weight'],
+	      '#attributes' => array('class' => array('heartbeat-attachment-order-weight')),
+	    );
+	    $form['attachments']['buttons']['settings'][$key] = array(
+	      '#type' => 'container',
+	    );
+	    $form['attachments']['buttons']['name'][$key] = array('#markup' => check_plain($attachment['title']));
+
+	    $attachment['plugin']->pluginAttachmentForm($form['attachments']['buttons']['settings'][$key], $form_state['item']->attachments['buttons'], 'buttons');
+
+	  }
+
+	  $form['attachments']['buttons']['enabled'] = array(
+	    '#type' => 'checkboxes',
+	    '#title' => t('Enabled attachments'),
+	    '#title_display' => 'invisible',
+	    '#options' => $options,
+	    '#default_value' => $enabled,
+	  );
+
+	  $form['attachments']['buttons']['#theme'] = 'heartbeat_plugins_attachments_form';
+
+  }
+
+  /**
+   *  Create wrapper for Attachments.
+   */
+  if (!empty($attachments['content'])) {
+
+	  if (!isset($form_state['item']->attachments['content'])) {
+	    $form_state['item']->attachments['content'] = array();
+	  }
+	  $form['attachments']['content'] = array('#tree' => TRUE, '#type' => 'fieldset');
+	  $form['attachments']['content']['title'] = array('#markup' => t('Attachments content'));
+
+	  // Prepare a sorted list of Attachment Content.
+	  $items = array();
+	  foreach ($attachments['content'] as $class_name => $plugin_attachments) {
+	    foreach ($plugin_attachments['plugin']->getAttachments($item, 'content') as $attachment) {
+	      $attachment['enabled'] = isset($values['content']['enabled'][$attachment['name']]) ? $values['content']['enabled'][$attachment['name']] : $attachment['enabled'];
+	      $attachment['weight'] = isset($values['content']['weight'][$attachment['name']]) ? $values['content']['weight'][$attachment['name']] : $attachment['weight'];
+	      $attachment['plugin'] = $plugin_attachments['plugin'];
+	      $items[] = $attachment;
+	    }
+	  }
+	  usort($items, '_heartbeat_attachment_sort_helper');
+
+	  $options = array();
+	  $enabled = array();
+	  $form['attachments']['content']['weight'] = array('#tree' => TRUE);
+	  foreach ($items as $attachment) {
+	    $key = $attachment['name'];
+	    $options[$key] = '';
+	    if ($attachment['enabled']) {
+	      $enabled[] = $key;
+	    }
+	    $form['attachments']['content']['weight'][$key] = array(
+	      '#type' => 'weight',
+	      '#title' => t('Weight for @title', array('@title' => $attachment['title'])),
+	      '#title_display' => 'invisible',
+	      '#default_value' => $attachment['weight'],
+	      '#attributes' => array('class' => array('heartbeat-attachment-order-weight')),
+	    );
+	    $form['attachments']['content']['settings'][$key] = array(
+	      '#type' => 'container',
+	    );
+	    $form['attachments']['content']['name'][$key] = array('#markup' => check_plain($attachment['title']));
+
+	    $attachment['plugin']->pluginAttachmentForm($form['attachments']['content']['settings'][$key], $form_state['item']->attachments['content'], 'content');
+
+	  }
+
+	  $form['attachments']['content']['enabled'] = array(
+	    '#type' => 'checkboxes',
+	    '#title' => t('Enabled attachments'),
+	    '#title_display' => 'invisible',
+	    '#options' => $options,
+	    '#default_value' => $enabled,
+	  );
+
+	  $form['attachments']['content']['#theme'] = 'heartbeat_plugins_attachments_form';
+
+  }
+
+}
+
+/**
+ * Helper function to sort an array for the Plugin Attachments.
+ */
+function _heartbeat_attachment_sort_helper($a, $b) {
+  $a_weight = (is_array($a) && isset($a['weight']) ? $a['weight'] : 0);
+  $b_weight = (is_array($b) && isset($b['weight']) ? $b['weight'] : 0);
+  return $a_weight - $b_weight;
+}
+
+/**
+ * Theme function for the draggable attachments form.
+ */
+function theme_heartbeat_plugins_attachments_form($variables) {
+
+  $form = $variables['form'];
+
+  // Special ID and classes for draggable tables.
+  $weight_class = 'heartbeat-attachment-order-weight';
+  $table_id = 'heartbeat-attachments-table';
+
+  // Build up a table of applicable fields.
+  $headers = array();
+  $headers[] = drupal_render($form['title']);
+  $headers[] = t('Enabled');
+  $headers[] = t('Settings');
+  $headers[] = t('Weight');
+
+  foreach ($form['name'] as $key => $element) {
+    // Do not take form control structures.
+    if (is_array($element) && element_child($key)) {
+
+      $title = drupal_render($form['name'][$key]);
+      $form['enabled'][$key]['#title'] = t('Enable !title', array('!title' => $title));
+      $form['enabled'][$key]['#title_display'] = 'invisible';
+      $rows[] = array(
+        'data' => array(
+          '<strong>' . $title . '</strong>',
+          array('data' => drupal_render($form['enabled'][$key]), 'align' => 'center'),
+          drupal_render($form['settings_button'][$key]) . drupal_render($form['settings'][$key]),
+          drupal_render($form['weight'][$key]),
+        ),
+        'class' => array('draggable'),
+      );
+    }
+  }
+  $output = theme('table', array('header' => $headers, 'rows' => $rows, 'attributes' => array('id' => $table_id)));
+  $output .= drupal_render_children($form);
+
+  drupal_add_tabledrag($table_id, 'order', 'sibling', $weight_class);
+
+  return $output;
+}
+
+/**
+ * Theme function for flagged users (default is clickable avatar).
+ */
+function theme_heartbeat_flagging($variables) {
+  $newarray = theme('image_style', array(
+    'style_name' => 'activity_avatar',
+    'path' => $variables['uri'],
+    'title' => $variables['name'],
+    'attributes' => array('class' => 'avatar')));
+  return '<div class="heartbeat-username">' . l($variables['name'], 'user/' . $variables['uid'], array('html' => TRUE)) . '</div><div class="heartbeat-avatar">' . l($newarray, 'user/' . $variables['uid'], array('html' => TRUE)) . '</div>';
+}

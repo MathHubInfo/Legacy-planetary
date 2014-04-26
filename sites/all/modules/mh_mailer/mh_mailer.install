@@ -1,0 +1,14 @@
+<?php
+
+function mh_mailer_install() {
+	variable_set('mail_system', array("default-system" => 'MathHubMailer'));
+	//drupal_set_message("got here 1");
+	//$res = drupal_mail('example', 'notice', 'mihnea.iancu88@gmail.com', 'und');
+	//print_r($res);
+	//blah();
+  //drupal_set_message($res);
+}
+
+function mh_mailer_uninstall() {
+	variable_set('mail_system', array());
+}

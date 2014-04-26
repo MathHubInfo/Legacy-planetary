@@ -1,0 +1,1 @@
+PERL5LIB=/var/data/stc/ext/stex/bin /var/data/stc/ext/stex/bin/sms $1.tex

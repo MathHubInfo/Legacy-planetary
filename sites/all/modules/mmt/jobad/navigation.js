@@ -1,5 +1,3 @@
-(function($){
-
 var navigation = {
 	info: {
 		'identifier' : 'kwarc.mmt.navigation',
@@ -22,14 +20,6 @@ var navigation = {
 		// main div
 		var url = mmt.adaptMMTURI(uri, '', true);
 		mmt.ajaxReplaceIn(url, 'main');
-		// cross references
-		/* var refurl = catalog + '/:query/incoming?' + uri;
-		ajaxReplaceIn(refurl, 'crossrefs');
-		$('#crossrefs').jstree({
-			"core" : {"animation": 0},
-			"themes" : {"theme" : "classic", "icons" : false},
-			"plugins" : ["html_data", "themes", "ui", "hotkeys"]
-		}); */
 		// breadcrumbs
 		var bcurl = '/:breadcrumbs?' + uri;
 		mmt.ajaxReplaceIn(bcurl, 'breadcrumbs');
@@ -85,4 +75,3 @@ var navigation = {
 
 JOBAD.modules.register(navigation);
 
-})(jQuery);

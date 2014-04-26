@@ -1,0 +1,331 @@
+<?php
+
+/**
+ * @file
+ * Subscriptions module installation.
+ */
+
+/**
+ * Implements hook_schema().
+ *
+ * @return array
+ */
+function subscriptions_schema() {
+
+  $schema['subscriptions'] = array(
+    'fields'          => array(
+      'sid'           => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
+      'module'        => array('type' => 'varchar', 'length' => '64', 'not null' => FALSE),
+      'field'         => array('type' => 'varchar', 'length' => '32', 'not null' => FALSE),
+      'value'         => array('type' => 'varchar', 'length' => '237', 'not null' => FALSE),
+      'recipient_uid' => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+      'send_interval' => array('type' => 'int', 'not null' => FALSE),
+      'author_uid'    => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+      'send_updates'  => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0),
+      'send_comments' => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0)),
+    'primary key'     => array('sid'),
+    'indexes'         => array(
+      'module'        => array('module', 'field', 'value'),
+      'recipient_uid' => array('recipient_uid')),
+  );
+
+
+  $schema['subscriptions_queue'] = array(
+    'fields'          => array(
+      'sqid'          => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
+      'uid'           => array('type' => 'int', 'not null' => FALSE),
+      'name'          => array('type' => 'varchar', 'length' => '60', 'not null' => FALSE),
+      'language'      => array('type' => 'varchar', 'length' => '12', 'not null' => FALSE),
+      'module'        => array('type' => 'varchar', 'length' => '64', 'not null' => FALSE),
+      'field'         => array('type' => 'varchar', 'length' => '32', 'not null' => FALSE),
+      'value'         => array('type' => 'varchar', 'length' => '237', 'not null' => FALSE),
+      'author_uid'    => array('type' => 'int', 'not null' => FALSE),
+      'send_interval' => array('type' => 'int', 'not null' => FALSE),
+      'digest'        => array('type' => 'int', 'size' => 'tiny', 'not null' => FALSE),
+      'load_args'     => array('type' => 'varchar', 'length' => '255', 'not null' => TRUE, 'default' => ''),
+      'load_function' => array('type' => 'varchar', 'length' => '60', 'not null' => TRUE, 'default' => ''),
+      'is_new'        => array('type' => 'int', 'size' => 'tiny', 'not null' => FALSE),
+      'last_sent'     => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'suspended'     => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0)),
+    'primary key'     => array('sqid'),
+    'indexes'         => array(
+      'load_args'     => array('load_args', 'load_function', 'uid'),
+      'uid'           => array('uid')),
+  );
+
+
+  $schema['subscriptions_user'] = array(
+    'fields'                  => array(
+      'uid'                   => array('type' => 'int', 'not null' => TRUE, 'default' => 0),
+      'digest'                => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => -1),
+      'send_interval'         => array('type' => 'int', 'not null' => TRUE, 'default' => -1),
+      'send_updates'          => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => -1),
+      'send_comments'         => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => -1),
+      'send_interval_visible' => array('type' => 'int', 'not null' => TRUE, 'default' => -1),
+      'send_updates_visible'  => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => -1),
+      'send_comments_visible' => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => -1),
+      'autosub_on_post'       => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => -1),
+      'autosub_on_update'     => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => -1),
+      'autosub_on_comment'    => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => -1),
+      'send_self'             => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => -1),
+      'suspended'             => array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0)),
+    'primary key'             => array('uid'),
+  );
+
+
+  $schema['subscriptions_last_sent'] = array(
+    'fields'          => array(
+      'uid'           => array('type' => 'int', 'not null' => TRUE),
+      'send_interval' => array('type' => 'int', 'not null' => TRUE),
+      'last_sent'     => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0)),
+    'primary key'     => array('uid', 'send_interval'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function subscriptions_install() {
+  // Remove old cruft if it's still around.
+  if (db_table_exists('subscriptions_mail_edit')) {
+    db_drop_table('subscriptions_mail_edit');      // old table from 5.x-2.x
+  }
+  if (db_table_exists('subscriptions_old')) {
+    db_drop_table('subscriptions_old');            // old backup from 5.x-1.x
+  }
+  if (db_table_exists('subscriptions_holding')) {
+    db_drop_table('subscriptions_holding');        // old left-over from 5.x-1.x
+  }
+  if (db_table_exists('subscriptions_holding_old')) {
+    db_drop_table('subscriptions_holding_old');    // old backup from 5.x-1.x
+  }
+  if (db_table_exists('subscriptions_sent')) {     // old left-over from first
+    db_drop_table('subscriptions_sent');           // incarnation of 5.x-2.0
+  }
+
+  // Create initial data.
+  db_insert('subscriptions_user')
+    ->fields(array(
+      'uid' => -DRUPAL_AUTHENTICATED_RID,
+      'digest' => 0,
+      'send_interval' => 1,
+      'send_updates' => 1,
+      'send_comments' => 1,
+      'send_interval_visible' => 0,
+      'send_updates_visible' => 0,
+      'send_comments_visible' => 0,
+      'autosub_on_post' => 0,
+      'autosub_on_update' => 0,
+      'autosub_on_comment' => 0,
+      'send_self' => 1,
+    ))
+    ->execute();
+  $select = db_select('users', 'u')
+    ->fields('u', array('uid'))
+    ->condition('u.uid', 0, '>');
+  db_insert('subscriptions_user')
+    ->from($select)
+    ->execute();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function subscriptions_uninstall() {
+  if (db_table_exists('mail_edit')) {
+    db_delete('mail_edit')
+      ->condition('id', 'subscriptions_%', 'LIKE')
+      ->execute();
+  }
+  if (db_table_exists('mail_edit_registry')) {
+    db_delete('mail_edit_registry')
+      ->condition('id', 'subscriptions_%', 'LIKE')
+      ->execute();
+  }
+
+  variable_del('subscriptions_avoid_empty_subscribe_links');
+  variable_del('subscriptions_blocked_content_types');
+  variable_del('subscriptions_blocked_nodes');
+  variable_del('subscriptions_cron_percent');
+  variable_del('subscriptions_form_expanded');
+  variable_del('subscriptions_form_in_block');
+  variable_del('subscriptions_form_link_only');
+  variable_del('subscriptions_generate_full_node');
+  variable_del('subscriptions_hide_overview_page');
+  variable_del('subscriptions_link_teaser');
+  variable_del('subscriptions_omitted_taxa');
+  variable_del('subscriptions_restricted_taxa');
+  variable_del('subscriptions_send_intervals');
+  variable_del('subscriptions_show_by_author_options');
+  variable_del('subscriptions_static_content_types');
+  variable_del('subscriptions_unlisted_content_types');
+
+  // also remove legacy 5.x-1.9(-dev) variables:
+  variable_del('subscriptions_allow_vid');
+  variable_del('subscriptions_autoset');
+  variable_del('subscriptions_email_body');
+  variable_del('subscriptions_email_subject');
+  variable_del('subscriptions_sendself');
+  variable_del('subscriptions_teaser');
+  variable_del('subscriptions_testpost');
+  variable_del('subscriptions_usecron');
+  variable_del('subscriptions_usersmenu');
+}
+
+/**
+ * Implements hook_update_last_removed().
+ *
+ * We've removed the D5 update functions.
+ *
+ * @return int
+ */
+function subscriptions_update_last_removed() {
+  return 9;
+}
+
+/**
+ * Database update function 6101: Add the {subscriptions_last_sent} table.
+ */
+function subscriptions_update_6101() {
+  $schema['subscriptions_last_sent'] = array(
+    'fields'          => array(
+      'uid'           => array('type' => 'int', 'not null' => TRUE),
+      'send_interval' => array('type' => 'int', 'not null' => TRUE),
+      'last_sent'     => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0)),
+    'primary key'     => array('uid', 'send_interval'),
+  );
+
+  db_create_table('subscriptions_last_sent', $schema['subscriptions_last_sent']);
+  db_add_index('subscriptions_queue', 'uid', array('uid'));
+
+  _subscriptions_module_load_include('subscriptions', 'admin.inc');
+  foreach (_subscriptions_send_intervals() as $send_interval => $text) {
+    $select = db_select('subscriptions_user', 'su');
+    $select->addField('su', 'uid');
+    $select->addExpression($send_interval);
+    $select->addField('su', 'last_sent');
+    $select->condition('su.uid', 0, '>');
+    db_insert('subscriptions_last_sent')
+      ->from($select)
+      ->execute();
+  }
+}
+
+/**
+ * Database update function 6102: Remove the obsolete
+ * {subscriptions_user}.last_sent column if it's still there.
+ */
+function subscriptions_update_6102() {
+  if (db_field_exists('subscriptions_user', 'last_sent')) {
+    db_drop_field('subscriptions_user', 'last_sent');
+  }
+}
+
+/**
+ * Database update function 6103: Add the new
+ * {subscriptions_queue}.suspended and {subscriptions_user}.suspended
+ * columns.
+ */
+function subscriptions_update_6103() {
+  db_add_field('subscriptions_queue', 'suspended', array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0));
+  db_add_field('subscriptions_user', 'suspended', array('type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 0));
+}
+
+/**
+ * Database update function 6104: Remove the 'mail' column.
+ */
+function subscriptions_update_6104() {
+  db_drop_field('subscriptions_queue', 'mail');
+}
+
+/**
+ * Database update function 7000: Adjustments for D7.
+ *
+ * Rename load functions.
+ */
+function subscriptions_update_7000() {
+  db_update('subscriptions_queue')
+    ->fields(array('load_function' => 'subscriptions_content_load_node'))
+    ->condition('load_function', 'subscriptions_content_node_load')
+    ->execute();
+  db_update('subscriptions_queue')
+    ->fields(array('load_function' => 'subscriptions_content_load_comment'))
+    ->condition('load_function', 'subscriptions_content_comment_load')
+    ->execute();
+}
+
+/**
+ * Remove the bug-fix SubscriptionsMailSystem, we need Drupal 7.5+ from now.
+ */
+function subscriptions_update_7001() {
+  $mailsystem = variable_get('mail_system', array());
+  if (isset($mailsystem['default-system']) && $mailsystem['default-system'] == 'SubscriptionsMailSystem') {
+    unset($mailsystem['default-system']);
+    if (empty($mailsystem)) {
+      variable_del('mail_system');
+    }
+    else {
+      variable_set('mail_system', $mailsystem);
+    }
+  }
+}
+
+/**
+ * Update the '!variables' in the stored templates to their corresponding
+ * new Drupal 7 '[tokens]'.
+ */
+function subscriptions_update_7002() {
+  if (!db_table_exists('mail_edit')) {
+    return;
+  }
+
+  $tokens = array(
+    '!site'                    => '[site:name]',
+
+    '!recipient_uid'           => '[current-user:uid]',
+    '!recipient_name'          => '[current-user:name]',
+    '!recipient_page'          => '[current-user:url]',
+    '!name'                    => '[current-user:name]',
+
+    '!sender_uid'              => '[user:uid]',
+    '!sender_name'             => '[user:name]',
+    '!sender_page'             => '[user:url]',
+    '!sender_contact_page'     => '[### !sender_contact_page ###]',
+    '!sender_has_contact_page' => '[### !sender_has_contact_page ###]',
+
+    '!is_new'                  => '[subs:is-new]',
+    '!is_updated'              => '[subs:is-updated]',
+    '!is_old'                  => '[subs:is-old]',
+    '!comments'                => '[subs:comments]',
+    '!has_new_comments'        => '[subs:comments:count]',
+
+    '!subs_type'               => '[subs:type]',
+    '!manage_url'              => '[subs:manage-url]',
+    '!unsubscribe_url'         => '[subs:unsubscribe-url]',
+
+    '!has_files'               => '[### !has_files ###]',
+    '!files'                   => '[### !files ###]',
+  );
+  $query = db_select('mail_edit', 'me', array('fetch' => PDO::FETCH_ASSOC));
+  $query->join('mail_edit_registry', 'mer', 'mer.id = me.id');
+  $result = $query
+    ->fields('me')
+    ->condition('mer.module', 'subscriptions_content')
+    ->execute();
+  foreach ($result as $row) {
+    $id = $row['id'];
+    $langcode = $row['language'];
+    unset($row['id']);
+    unset($row['language']);
+    $row['subject'] = strtr($row['subject'], $tokens);
+    $row['body'] = strtr($row['body'], $tokens);
+    db_update('mail_edit')
+      ->fields($row)
+      ->condition('id', $id)
+      ->condition('language', $langcode)
+      ->execute();
+  }
+}
+

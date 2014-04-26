@@ -1,0 +1,59 @@
+{
+	"Home" : {
+		"Formatting" : {
+			"italic" : {
+				"href" : "icons/cmd/lc_italic.png",
+				"help" : "Italic selection"
+			},
+			"bold" : {
+				"href" : "icons/cmd/lc_bold.png",
+				"help" : "Bold selection"
+			},
+			"underline" : {
+				"href" : "icons/cmd/lc_underline.png",
+				"help" : "Bold selection"
+			}
+		},
+		"Paragraph" : {
+			"alignleft" : {
+				"href" : "icons/cmd/lc_alignleft.png",
+				"help" : "Align left"				
+			},
+			"alignright" : {
+				"href" : "icons/cmd/lc_alignright.png",
+				"help" : "Align right"				
+			},
+			"aligncenter" : {
+				"href" : "icons/cmd/lc_centerpara.png",
+				"help" : "Align center"				
+			}
+		},
+		"Numbering": {
+			"itemize" : {
+				"href" : "icons/cmd/lc_defaultbullet.png",
+				"help" : "Align center"				
+			},
+			"enumerate" : {
+				"href" : "icons/cmd/lc_defaultnumbering.png",
+				"help" : "Align center"				
+			}
+		},
+		"Math" : {
+			"insertMath" : {
+				"href" : "icons/cmd/sc_insertmath.png",
+				"help" : "Align center"		
+			}
+		},		
+		"Compile" : {
+			"compile" : {
+				"href" : "icons/cmd/sc_outlineup.png",
+				"help" : "Compile"		
+			},
+			"graph" : {
+				"href" : "icons/cmd/sc_connectorarrows.png",
+				"help" : "Graph"		
+			}
+		}
+
+	}
+}

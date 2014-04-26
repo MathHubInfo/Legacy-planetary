@@ -1,0 +1,4 @@
+src/*.js
+node_modules/*
+editor_tools/*
+icons/*

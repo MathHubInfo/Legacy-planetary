@@ -5,12 +5,12 @@
  * @param string The original path, can be relative etc.
  * @return string The resolved path, it might not exist.
  */
-function truepath($path){
+function truepath($path) {
     // whether $path is unix or not
-    $unipath=strlen($path)==0 || $path{0}!='/';
+    $unipath = strlen($path) == 0 || $path{0} != '/';
     // attempts to detect if path is relative in which case, add cwd
-    if(strpos($path,':')===false && $unipath)
-        $path=getcwd().DIRECTORY_SEPARATOR.$path;
+    if (strpos($path, ':') === false && $unipath)
+        $path = getcwd().DIRECTORY_SEPARATOR.$path;
     // resolve path parts (single dot, double dot and double delimiters)
     $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
     $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
@@ -23,11 +23,11 @@ function truepath($path){
             $absolutes[] = $part;
         }
     }
-    $path=implode(DIRECTORY_SEPARATOR, $absolutes);
+    $path = implode(DIRECTORY_SEPARATOR, $absolutes);
     // resolve any symlinks
-    if(file_exists($path) && linkinfo($path)>0)$path=readlink($path);
+    if (file_exists($path) && linkinfo($path) > 0)$path = readlink($path);
     // put initial separator that could have been lost
-    $path=!$unipath ? '/'.$path : $path;
+    $path = !$unipath ? '/'.$path : $path;
     return $path;
 }
 
@@ -38,7 +38,7 @@ function truepath($path){
  */
 function planetary_repo_access_path($root, $path) {
   $p = truepath($root."/".$path);
-  if (strlen($p)==0)
+  if (strlen($p) == 0)
     return false;
   $prefix = substr($p, 0, strlen($root)); 
   if (strcmp($prefix, $root) == 0)
@@ -82,13 +82,17 @@ function planetary_repo_local_load($path) {
 function planetary_repo_local_list($path) {
   $full_path = planetary_repo_local_access_path($path);
   $content = array();
+  
   if ($full_path) {
     $handle = opendir($full_path);
-    while (false !== ($file = readdir($handle))) {
+    if ($handle) {
+      while (false !== ($file = readdir($handle))) {
          $content[] = $file;
+      }
+      closedir($handle);
     }
-    closedir($handle);
   }
+  
   return $content;
 }
 
@@ -135,33 +139,35 @@ function planetary_repo_git_settings(&$element) {
     );
 }
 
-function planetary_repo_git_pull() {
+function planetary_repo_git_pull($rel_path) {
   $exec = variable_get('planetary_repo_git_exec', "/usr/bin/git");
-  $path = variable_get('planetary_repo_git_path');
-  shell_exec("cd $path; git pull");
+  $base_path = variable_get('planetary_repo_git_path'); 
+  $path = dirname($base_path . $rel_path);
+  $ret = shell_exec("cd $path; git pull 2>&1");
 }
 
-function planetary_repo_git_push() {
+function planetary_repo_git_push($rel_path) {
   global $user;
   $uname = $user->name;
-
   $exec = variable_get('planetary_repo_git_exec', "/usr/bin/git");
-  $path = variable_get('planetary_repo_git_path');
-  shell_exec("cd $path; git add *; git commit -m 'change by user $uname'; git push origin master ");
+  $base_path = variable_get('planetary_repo_git_path');
+  $path = dirname($base_path . $rel_path);
+  $filename = basename($rel_path);
+  shell_exec("cd $path; git add $filename; git commit -m 'change by user $uname'; git push origin master ");
 }
 
 function planetary_repo_git_save($path, $content) {
-  planetary_repo_git_push();
   $full_path = planetary_repo_git_access_path($path);
   if (!$full_path) 
     return false;
   $f = fopen($full_path, "w");
   fwrite($f, $content);
   fclose($f);
+  planetary_repo_git_push($path);
 }
 
 function planetary_repo_git_load($path) {
-  planetary_repo_git_pull();
+  planetary_repo_git_pull($path);
   $full_path = planetary_repo_git_access_path($path);
   $f = fopen($full_path, "r");
   $content = fread($f, 1000000);
@@ -170,21 +176,23 @@ function planetary_repo_git_load($path) {
 }
 
 function planetary_repo_git_list($path) {
-  planetary_repo_git_pull();
+  planetary_repo_git_pull($path);
   $full_path = planetary_repo_git_access_path($path);
   $content = array();
   if ($full_path) {
     $handle = opendir($full_path);
-    while (false !== ($file = readdir($handle))) {
+    if ($handle) {
+      while (false !== ($file = readdir($handle))) {
          $content[] = $file;
+      }
+      closedir($handle);
     }
-    closedir($handle);
   }
   return $content;
 }
 
 function planetary_repo_git_stat($path) {
-  planetary_repo_git_pull();
+  planetary_repo_git_pull($path);
   $full_path = planetary_repo_git_access_path($path);
   if ($full_path) {
     if (!file_exists($full_path))
@@ -204,20 +212,22 @@ function planetary_repo_repo_provider() {
         "load" => 'planetary_repo_local_load',
         "list" => 'planetary_repo_local_list',
         "stat" => 'planetary_repo_local_stat',
+        "access" => 'planetary_repo_local_access_path',
       ),
     "git" => array(
         "label" => "Git File System",
         "settings" => 'planetary_repo_git_settings',
-	"save" => 'planetary_repo_git_save',
+      	"save" => 'planetary_repo_git_save',
         "load" => 'planetary_repo_git_load',
         "list" => 'planetary_repo_git_list',
         "stat" => 'planetary_repo_git_stat',
+        "access" => 'planetary_repo_git_access_path',
       )
     );
 }
 
 function planetary_repo_menu() {
-  //create page where the paths can be configured
+  // create page where the paths can be configured
   $items = array();
   $items['admin/config/content/repo'] = array(
     'title' => 'Repositories configuration',
@@ -275,6 +285,15 @@ function planetary_repo_list($path) {
     return $providers[$current]["list"]($path);
   };
 }
+
+function planetary_repo_access_rel_path($path) {
+  $current = variable_get('planetary_repo_provider', null);
+  if ($current) {
+    $providers = module_invoke_all("repo_provider");
+    return $providers[$current]["access"]($path);
+  };
+}
+
 
 function planetary_repo_config_form($form, &$form_state) {
   $providers = module_invoke_all("repo_provider");

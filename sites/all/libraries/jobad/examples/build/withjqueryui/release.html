@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JOBAD v3 (CHAOS) Example Page</title>
+
+	<!-- This file has been generated automatically. Any changes will be overwritten. -->
+
+	<script src='./../../../build/release/libs/js/libs.js'></script>
+
+	<link rel='stylesheet' type='text/css' href='./../../../build/release/libs/css/libs.css'>
+
+	<!-- Include JOBAD -->
+	<script src='./../../../build/release/JOBAD.min.js'></script>
+
+	<link rel='stylesheet' type='text/css' href='./../../../build/release/JOBAD.min.css'>
+
+	<!-- jQuery UI -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+
+	<!-- jQuery UI Code for demo / test -->
+	<style type="text/css">
+		.ui-widget {
+			font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana", "sans-serif";
+			font-size: 71.5%;
+		}
+
+		.ui-menu { width: 150px; }
+	</style>
+
+	<script>
+		$(function() {
+			$("#tabs").tabs();
+			$("#accordion").accordion();
+			$( "#datepicker" ).datepicker();
+			$( "#slider" ).slider();
+			$( "#progressbar" ).progressbar({
+				value: 37
+			});
+			$( "#menu" ).menu();
+
+			$("#dialog, #dialog-modal").hide(); 
+
+			$("button").button(); 
+
+			$("button").eq(0).click(function(){
+				$( "#dialog" ).dialog();
+			});
+
+			$("button").eq(1).click(function(){
+				$( "#dialog-modal" ).dialog({
+					height: 140,
+					modal: true
+				});
+			});
+
+
+			var availableTags = [
+			"ActionScript",
+			"AppleScript",
+			"Asp",
+			"BASIC",
+			"C",
+			"C++",
+			"Clojure",
+			"COBOL",
+			"ColdFusion",
+			"Erlang",
+			"Fortran",
+			"Groovy",
+			"Haskell",
+			"Java",
+			"JavaScript",
+			"Lisp",
+			"Perl",
+			"PHP",
+			"Python",
+			"Ruby",
+			"Scala",
+			"Scheme"
+			];
+			$( "#tags" ).autocomplete({
+				source: availableTags
+			});
+
+
+		});
+	</script>
+
+	<script type="text/javascript">
+			JOBAD.config.BootstrapScope = "bootstrap"; //Bootstrap CSS scope
+
+			var JOBAD1, JOBAD2;
+			
+			JOBAD.repo.loadAllFrom("./../../../modules", function(){ //Load all from the repo
+				jQuery(function(){
+					JOBAD1 = new JOBAD(jQuery("#1"));
+					JOBAD2 = new JOBAD(jQuery("#2"), {
+						"auto_show_toolbar": true
+					});
+
+					JOBAD1.modules.load([
+						['test.click', ['green']],
+						"test.menu1",
+						"test.menu2",
+						"test.menu3",
+						"test.hover",
+						"jobad.debug",
+						"jobad.showfocus"
+						], function(mod, state){
+							this.Setup();
+						});
+
+					JOBAD2.modules.load([
+						['test.click', ['blue']],
+						"test.menu1",
+						"test.menu2",
+						// "test.menu3",
+						"test.hover",
+						"test.sidebar",
+						"jobad.debug",
+						"mathjax.mathjax",
+						"test.tb1", 
+						"test.tb2",
+						"jobad.showfocus"
+						], function(mod, state){
+							this.Setup();
+						});
+				})	
+			});	
+		</script>
+	</head>
+	<body>
+		<h1>JOBAD (Instance 1)</h1>
+		<div id='1'>
+			<div id='3'>
+				<b>No tooltip, just a menu.  </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc bibendum, velit molestie eleifend tincidunt, neque metus facilisis nunc, vitae euismod mi neque nec erat. Proin luctus lacinia nisl vel commodo. Integer aliquam erat massa. Pellentesque semper neque vel diam tincidunt luctus dignissim lorem mollis. Donec dui dui, consequat non suscipit et, porttitor nec enim. Sed augue lorem, commodo a mollis eget, scelerisque quis urna. Phasellus ac erat urna, non luctus est. Proin eu mauris dolor, ut pulvinar ipsum. In hac habitasse platea dictumst. Donec eros odio, vulputate id placerat et, venenatis consectetur magna.
+				<p id='4'>
+					<b>A menu and a tooltip. </b>Hello WORLD. I am a subparagraph
+				</p>
+			</div>
+			<p>
+				<b>A menu and a tooltip. </b>Ut dolor est, pellentesque eu posuere et, faucibus non libero. Vestibulum sit amet augue a urna sagittis fermentum ultricies quis tortor. Aenean lacinia, arcu at bibendum fringilla, nisl sapien ultricies felis, vehicula consequat nisl enim vel mauris. Fusce tempus, velit eget porta placerat, orci arcu aliquam felis, ut vulputate magna erat ac nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris diam arcu, tempor a tempor at, pulvinar et justo. Nulla eu massa mi. Nunc id diam in arcu luctus facilisis at quis dolor. Aenean id diam orci, at elementum tellus. Donec id nisl nisi.
+			</p>
+			<p>
+				<b>A menu and a tooltip. </b>Donec vitae arcu eu sapien cursus adipiscing vitae vel ipsum. Suspendisse viverra malesuada massa non molestie. Donec consectetur, tellus at condimentum congue, nibh odio cursus magna, eget bibendum lacus augue eu elit. Suspendisse pellentesque, quam ut feugiat rhoncus, orci massa tempus libero, et rhoncus lacus felis at nisi. Curabitur sollicitudin nunc at lectus fringilla iaculis. In commodo porta est nec pharetra. Sed eget nisi sem, ac ornare ante. Suspendisse potenti. Suspendisse sed luctus lorem. Nulla facilisi. Integer iaculis blandit eleifend.
+			</p>
+			<p>
+				<b>A menu and a tooltip. </b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id massa eget elit condimentum fringilla. Nam malesuada odio eu tortor condimentum id aliquam elit tincidunt. Sed sit amet dolor non lorem interdum interdum eget id dolor. Maecenas congue lectus quis purus ultrices ut interdum enim consectetur. Nunc venenatis neque vitae lacus fringilla mollis. Morbi augue felis, dapibus at ultricies et, tincidunt vel velit. Morbi nisi purus, bibendum eget dapibus elementum, dictum nec diam. Proin ac elit massa, non sollicitudin justo. Etiam id risus mi, at interdum mi. Pellentesque et malesuada enim. Aliquam eros massa, eleifend aliquam feugiat ut, tincidunt quis urna. Vestibulum vehicula dolor eu augue lobortis cursus. Cras vitae urna nulla. Duis placerat orci et dolor egestas vulputate. Donec sed orci augue.
+			</p>
+			<p class='JOBAD_Ignore'>
+				<b>Nothing here</b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id massa eget elit condimentum fringilla. Nam malesuada odio eu tortor condimentum id aliquam elit tincidunt. Sed sit amet dolor non lorem interdum interdum eget id dolor. Maecenas congue lectus quis purus ultrices ut interdum enim consectetur. Nunc venenatis neque vitae lacus fringilla mollis. Morbi augue felis, dapibus at ultricies et, tincidunt vel velit. Morbi nisi purus, bibendum eget dapibus elementum, dictum nec diam. Proin ac elit massa, non sollicitudin justo. Etiam id risus mi, at interdum mi. Pellentesque et malesuada enim. Aliquam eros massa, eleifend aliquam feugiat ut, tincidunt quis urna. Vestibulum vehicula dolor eu augue lobortis cursus. Cras vitae urna nulla. Duis placerat orci et dolor egestas vulputate. Donec sed orci augue.
+			</p>
+		</div>
+		<h1>JOBAD (Instance 2)</h1>
+		<b>All of these have a tooltip and a menu. </b>
+		<div id='2'>
+			<p>
+				Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.
+			</p>
+			<p>
+				Some math: 
+				<math mode="display" xmlns="http://www.w3.org/1998/Math/MathML">
+					<mrow>
+						<mi>x</mi>
+						<mo>=</mo>
+						<mfrac>
+							<mrow>
+								<mo form="prefix">&#x2212;<!-- − --></mo>
+								<mi>b</mi>
+								<mo>&#x00B1;<!-- &PlusMinus; --></mo>
+								<msqrt>
+									<msup>
+										<mi>b</mi>
+										<mn>2</mn>
+									</msup>
+									<mo>&#x2212;<!-- − --></mo>
+									<mn>4</mn>
+									<mo>&#x2062;<!-- &InvisibleTimes; --></mo>
+									<mi>a</mi>
+									<mo>&#x2062;<!-- &InvisibleTimes; --></mo>
+									<mi>c</mi>
+								</msqrt>
+							</mrow>
+							<mrow>
+								<mn>2</mn>
+								<mo>&#x2062;<!-- &InvisibleTimes; --></mo>
+								<mi>a</mi>
+							</mrow>
+						</mfrac>
+					</mrow>
+				</math>
+			</p>
+			<p>
+				Donec cursus neque quis eros tristique facilisis molestie sem consectetur. Pellentesque ut tortor erat, non semper nunc. Phasellus et nibh leo, a posuere ante. In laoreet purus vel nulla mattis id placerat enim rhoncus. Duis quam mi, laoreet quis ullamcorper eu, dignissim sit amet odio. Fusce accumsan mollis augue, facilisis vestibulum mi sodales ut. Nullam ligula libero, tempus ut tempus non, vestibulum ac urna. Phasellus faucibus imperdiet urna, et ullamcorper nisi ultrices vel. Etiam mollis est nibh.
+			</p>
+			<p>
+				Aenean malesuada erat vel neque ullamcorper non luctus lacus rhoncus. Sed diam tortor, pretium eget vehicula non, pellentesque nec lacus. Ut volutpat consectetur nibh id pulvinar. Sed elit magna, feugiat in lobortis ac, suscipit sit amet arcu. Aliquam id nisi in risus tempus tincidunt. Donec lectus risus, dictum sit amet sagittis vitae, dictum ultrices lectus. Sed non diam non risus convallis rhoncus id eget nisl. Donec ligula sapien, dignissim eu imperdiet eget, consectetur ut urna. Suspendisse potenti. Pellentesque posuere augue nec quam porttitor sodales. Donec erat nulla, aliquet vitae ornare ac, vehicula id augue. Sed feugiat volutpat quam hendrerit consequat. Quisque a lorem odio, in facilisis dolor. Duis commodo consequat risus, vel pellentesque sem porta non.
+			</p>
+			<p>
+				Quisque ut libero lorem, cursus ornare elit. Curabitur interdum, neque a fermentum auctor, nulla metus laoreet lectus, vitae elementum dolor lectus vel nunc. Nullam eget turpis urna. Aenean ac bibendum ipsum. Proin purus nisl, fermentum ut sagittis dignissim, dapibus ut metus. Suspendisse potenti. Sed elementum diam a dolor posuere lobortis ultrices ante rutrum. Maecenas ac diam in dui auctor venenatis eget vitae neque. In suscipit consectetur elementum. Nam eu elit semper metus consequat bibendum ac non nulla. Maecenas sed mollis velit. Donec vitae tellus eros. Curabitur vestibulum nunc et felis tristique ullamcorper aliquet lorem placerat. Duis malesuada, tellus non suscipit lacinia, leo augue consequat sem, eu lobortis dui felis eget magna.
+			</p>
+			<p>
+				Vestibulum vestibulum est at turpis consequat at ultrices risus lacinia. Quisque accumsan libero at dui vestibulum gravida. Ut tincidunt dui ac lacus ullamcorper eget mollis felis blandit. Donec rutrum aliquet velit, vitae porta eros consectetur eu. In luctus consectetur egestas. Pellentesque nec libero at dui tristique ornare. Nam non ultrices felis. Duis molestie mattis augue in venenatis. Morbi ut tellus velit, a rutrum nisl. Maecenas ac imperdiet quam. Quisque orci est, fringilla sed viverra ut, bibendum id ligula. Morbi at lectus magna, vel mattis orci. Maecenas dictum malesuada dolor, sed porta lacus egestas quis. Mauris ornare leo ac odio interdum suscipit. In imperdiet commodo elit, eu congue augue pretium sit amet. Praesent posuere fringilla nisl vel consequat.
+			</p>
+		</div>
+		<h1>No JOBAD below this line - jQuery UI Compatibility Testing</h1>
+		<div>
+			<!-- Tabs -->
+
+			<h2>Tabs</h2>
+
+			<div id="tabs">
+				<ul>
+					<li><a href="#tabs-1">Nunc tincidunt</a></li>
+					<li><a href="#tabs-2">Proin dolor</a></li>
+					<li><a href="#tabs-3">Aenean lacinia</a></li>
+				</ul>
+				<div id="tabs-1">
+					<p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
+				</div>
+				<div id="tabs-2">
+					<p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+				</div>
+				<div id="tabs-3">
+					<p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
+					<p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+				</div>
+			</div>
+
+
+			<!-- Accordion -->
+
+			<h2>Accordion</h2>
+
+			<div id="accordion">
+				<h3>Section 1</h3>
+				<div>
+					<p>
+						Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer
+						ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit
+						amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut
+						odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.
+					</p>
+				</div>
+				<h3>Section 2</h3>
+				<div>
+					<p>
+						Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet
+						purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor
+						velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In
+						suscipit faucibus urna.
+					</p>
+				</div>
+				<h3>Section 3</h3>
+				<div>
+					<p>
+						Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
+						Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
+						ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
+						lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
+					</p>
+					<ul>
+						<li>List item one</li>
+						<li>List item two</li>
+						<li>List item three</li>
+					</ul>
+				</div>
+				<h3>Section 4</h3>
+				<div>
+					<p>
+						Cras dictum. Pellentesque habitant morbi tristique senectus et netus
+						et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
+						faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
+						mauris vel est.
+					</p>
+					<p>
+						Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
+						Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
+						inceptos himenaeos.
+					</p>
+				</div>
+			</div>
+
+
+			<div>
+				<h2>Dialogs</h2>
+
+				<button id="opend">Open Dialog</button>
+
+				<button id="opendm">Open modal dialog</button>
+
+				<!-- Dialog & Buttons-->
+				<div id="dialog" title="Basic dialog">
+					<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+				</div>
+
+				<div id="dialog-modal" title="Basic modal dialog">
+					<p>Adding the modal overlay screen makes the dialog look more prominent because it dims out the page content.</p>
+				</div>
+			</div>
+
+			<div>
+				<h2>Datepicker</h2>
+
+				<p>Date: <input type="text" id="datepicker" /></p>
+			</div>
+
+			<div>
+				<h2>Autocomplete</h2>
+				<div class="ui-widget">
+					<label for="tags">Tags: </label>
+					<input id="tags" />
+				</div>
+			</div>
+
+			<div>
+				<h2>Slider</h2>
+				<div id="slider"></div>
+			</div>
+
+			<div>
+				<h2>Progressbar</h2>
+				<div id="progressbar"></div>
+			</div>
+
+			<div>
+				<h2>Menu</h2>
+				<ul id="menu">
+  <li class="ui-state-disabled"><a href="#">Aberdeen</a></li>
+  <li><a href="#">Ada</a></li>
+  <li><a href="#">Adamsville</a></li>
+  <li><a href="#">Addyston</a></li>
+  <li>
+    <a href="#">Delphi</a>
+    <ul>
+      <li class="ui-state-disabled"><a href="#">Ada</a></li>
+      <li><a href="#">Saarland</a></li>
+      <li><a href="#">Salzburg</a></li>
+    </ul>
+  </li>
+  <li><a href="#">Saarland</a></li>
+  <li>
+    <a href="#">Salzburg</a>
+    <ul>
+      <li>
+        <a href="#">Delphi</a>
+        <ul>
+          <li><a href="#">Ada</a></li>
+          <li><a href="#">Saarland</a></li>
+          <li><a href="#">Salzburg</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">Delphi</a>
+        <ul>
+          <li><a href="#">Ada</a></li>
+          <li><a href="#">Saarland</a></li>
+          <li><a href="#">Salzburg</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Perch</a></li>
+    </ul>
+  </li>
+  <li class="ui-state-disabled"><a href="#">Amesville</a></li>
+</ul>
+			</div>
+
+
+		</div>
+
+	</div>
+</div>
+</body>
+</html>

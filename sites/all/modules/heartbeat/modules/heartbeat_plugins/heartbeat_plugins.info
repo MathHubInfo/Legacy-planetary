@@ -1,0 +1,17 @@
+name = Heartbeat plugins
+description = "Plugins for heartbeat will add extra functionality and integration with other contributions. Currently implemented: Flag, Flag friend, Organic groups, User Relationships. The heartbeat comments module provides the heartbeat comment plugin."
+package = Heartbeat
+core = 7.x
+files[] = plugins/export_ui/ctools_export_ui_heartbeat_plugin.class.php
+files[] = heartbeat_plugins.module
+files[] = plugins/flagattachment.inc
+files[] = plugins/shoutbox.inc
+files[] = plugins/activitystatus.inc
+dependencies[] = heartbeat
+
+; Information added by drupal.org packaging script on 2012-09-04
+version = "7.x-1.1"
+core = "7.x"
+project = "heartbeat"
+datestamp = "1346786566"
+

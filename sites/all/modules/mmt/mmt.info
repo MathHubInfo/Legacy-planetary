@@ -1,8 +1,8 @@
 name = MMT Integration
 description = Allows a communication between Drupal and MMT
 core = 7.x
-package     = Planetary Modules
+package     = OAFF
 
 dependencies[] = jobad
 dependencies[] = planetary_repo	
-
+dependencies[] = oaff

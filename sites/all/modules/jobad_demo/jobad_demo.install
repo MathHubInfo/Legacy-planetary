@@ -1,0 +1,122 @@
+<?php 
+
+/**
+ * Implements hook_install, 
+ * creates jobad_demo content type and one sample node instance
+ */
+function jobad_demo_install() {
+  /** declaring node types */
+  // Module
+  $module_info = (object) array(
+    'type' => 'jobad_demo',
+    'name' => 'JOBAD Demo Node',
+    'base' => 'node_content',
+    'description' => 'A Content type for demonstrating JOBAD functionality',
+    'body_label' => 'Body',
+    'has_title' => true,
+  ); 
+  node_type_save($module_info);
+
+  jobad_demo_add_sample_node();
+  drupal_set_message("installed");
+}
+
+/**
+ * implements hook_uninstall
+ * deletes the jobad_demo content type and all instances of it
+ */
+function jobad_demo_uninstall() {
+  //deleting node types
+  jobad_demo_delete_node_type('jobad_demo');
+
+  drupal_set_message("uninstalled");
+}
+
+
+/**
+ * implements hook_schema,
+ * declares table for holding the body of jobad nodes
+ */ 
+function jobad_demo_schema() {
+  $schema['jbd_body'] = array(
+    'description' => 'the base table for content of JOBAD Demo Nodes',
+    'fields' => array(
+	  'uid' => array(
+	    'description' => 'The primary identifier of a uri',
+        'type' => 'serial', 
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'nid' => array(
+	    'description' => 'The node id',
+        'type' => 'int', 
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'jcontent' => array(
+        'description' => 'The Node Content',
+        'type' => 'varchar',
+        'length' => 8000,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('uid'),	
+  );
+  return $schema;
+}
+
+/**
+ * helper function to delete a content type and all instances of it
+ */
+function jobad_demo_delete_node_type($node_type_name) {
+  // deleting all node instances
+  $result = db_query('SELECT nid FROM {node} n WHERE n.type = :type', array(':type' => $node_type_name));
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+  }
+  node_delete_multiple($nids);
+  //deleting node type
+  node_type_delete($node_type_name);
+
+}
+
+
+/**
+ * helper function to create a sample node as a JOBAD Demo Node
+ */
+function jobad_demo_add_sample_node() {
+  $newnode = (object) array(
+    'type' => 'jobad_demo',
+    'uid' => 0,
+    'created' => strtotime("now"),
+    'changed' => strtotime("now"),
+    'status' => 1,
+	'comment' => 1,
+ 	'promote' => 0,
+    'moderate' => 0,
+    'sticky' => 0,
+    'language' => 'und'    
+  );
+
+  $newnode->title = "Sample JOBAD Demo Node";
+  $newnode->jcontent = '			<p>
+				Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.Aenean porta porttitor enim, ut tristique turpis vestibulum nec. Mauris volutpat consectetur sem at ornare. Morbi id lorem eu nunc dapibus faucibus eget malesuada erat. Ut in ligula turpis. Proin cursus consequat imperdiet. Cras vitae nisl massa, eu rhoncus eros. Suspendisse lacinia libero vitae ante euismod sit amet volutpat ante gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae eros dui, sed ultrices diam.
+			</p>
+			<p>
+				Donec cursus neque quis eros tristique facilisis molestie sem consectetur. Pellentesque ut tortor erat, non semper nunc. Phasellus et nibh leo, a posuere ante. In laoreet purus vel nulla mattis id placerat enim rhoncus. Duis quam mi, laoreet quis ullamcorper eu, dignissim sit amet odio. Fusce accumsan mollis augue, facilisis vestibulum mi sodales ut. Nullam ligula libero, tempus ut tempus non, vestibulum ac urna. Phasellus faucibus imperdiet urna, et ullamcorper nisi ultrices vel. Etiam mollis est nibh.
+			</p>
+			<p>
+				Aenean malesuada erat vel neque ullamcorper non luctus lacus rhoncus. Sed diam tortor, pretium eget vehicula non, pellentesque nec lacus. Ut volutpat consectetur nibh id pulvinar. Sed elit magna, feugiat in lobortis ac, suscipit sit amet arcu. Aliquam id nisi in risus tempus tincidunt. Donec lectus risus, dictum sit amet sagittis vitae, dictum ultrices lectus. Sed non diam non risus convallis rhoncus id eget nisl. Donec ligula sapien, dignissim eu imperdiet eget, consectetur ut urna. Suspendisse potenti. Pellentesque posuere augue nec quam porttitor sodales. Donec erat nulla, aliquet vitae ornare ac, vehicula id augue. Sed feugiat volutpat quam hendrerit consequat. Quisque a lorem odio, in facilisis dolor. Duis commodo consequat risus, vel pellentesque sem porta non.
+			</p>
+			<p>
+				Quisque ut libero lorem, cursus ornare elit. Curabitur interdum, neque a fermentum auctor, nulla metus laoreet lectus, vitae elementum dolor lectus vel nunc. Nullam eget turpis urna. Aenean ac bibendum ipsum. Proin purus nisl, fermentum ut sagittis dignissim, dapibus ut metus. Suspendisse potenti. Sed elementum diam a dolor posuere lobortis ultrices ante rutrum. Maecenas ac diam in dui auctor venenatis eget vitae neque. In suscipit consectetur elementum. Nam eu elit semper metus consequat bibendum ac non nulla. Maecenas sed mollis velit. Donec vitae tellus eros. Curabitur vestibulum nunc et felis tristique ullamcorper aliquet lorem placerat. Duis malesuada, tellus non suscipit lacinia, leo augue consequat sem, eu lobortis dui felis eget magna.
+			</p>
+			<p>
+				Vestibulum vestibulum est at turpis consequat at ultrices risus lacinia. Quisque accumsan libero at dui vestibulum gravida. Ut tincidunt dui ac lacus ullamcorper eget mollis felis blandit. Donec rutrum aliquet velit, vitae porta eros consectetur eu. In luctus consectetur egestas. Pellentesque nec libero at dui tristique ornare. Nam non ultrices felis. Duis molestie mattis augue in venenatis. Morbi ut tellus velit, a rutrum nisl. Maecenas ac imperdiet quam. Quisque orci est, fringilla sed viverra ut, bibendum id ligula. Morbi at lectus magna, vel mattis orci. Maecenas dictum malesuada dolor, sed porta lacus egestas quis. Mauris ornare leo ac odio interdum suscipit. In imperdiet commodo elit, eu congue augue pretium sit amet. Praesent posuere fringilla nisl vel consequat.
+			</p>
+';
+  node_object_prepare($newnode);//necessary ?
+  node_save($newnode);
+}
+

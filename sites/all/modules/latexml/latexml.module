@@ -1,0 +1,155 @@
+<?php
+
+function latexml_compile($location) {
+  $pathinfo = pathinfo($location);
+  $base_relpath = oaff_join_path(array($pathinfo['dirname'], $pathinfo['filename']));
+
+  $prepo_provider = variable_get('planetary_repo_provider');
+  $repo_path = '/tmp/'; // default
+  if ($prepo_provider == 'local') {
+    $repo_path = variable_get('planetary_repo_local_path');
+  } elseif ($prepo_provider == 'git') {
+    $repo_path = variable_get('planetary_repo_git_path');
+  } else {
+    drupal_set_message('Unknown repository provider: "' . $prepo_provider . '" (expected local or git). Cannot find base path, defaulting to /tmp/', 'warning');
+  }
+  $arg_location = oaff_join_path(array($repo_path, $location));
+  $lmh_status = shell_exec('lmh gen --omdoc ' . $arg_location);
+  $log_location = $base_relpath . '.ltxlog';
+  $out_location = $base_relpath . '.omdoc';
+  if (planetary_repo_stat_file($log_location) == null || planetary_repo_stat_file($out_location) == null) {
+    // TODO add a message to status
+    $latexml_status = array("conversion" => 3, "messages" => array()); // conversion failed => fatal error 
+    $content = ""; 
+  } else {
+    $log = planetary_repo_load_file($log_location);
+    $latexml_status = _latexml_produce_status_msg($log);
+    $content = planetary_repo_load_file($out_location);  
+  }
+  $result = array("content" => $content, "status" => $latexml_status);
+  return $result;
+}
+
+function _latexml_produce_status_msg($log) {
+  $status = array();
+  $status['messages'] = array();
+  $log_lines = explode("\n", $log);
+  
+  $msgline_pattern = '/^([^ :]+)\:([^ :]+)\:([^ ]+)(\s(.*))?$/';
+  $details_pattern = '/^\t(.*)/';
+
+  $current_message = array();
+  $last_is_msg = false;
+  
+  for ($i = 0; $i < count($log_lines); $i++) {
+    $line = $log_lines[$i];
+    $matches = array();
+    $is_msg_line = preg_match($msgline_pattern, $line, $matches);
+    if ($is_msg_line) {
+      $last_is_msg = true;
+      if (isset($current_message['type'])) { // have to save previous msg
+        $status['messages'][] = $current_message;
+        $current_message = array();
+      }
+      if ($matches[1] == 'Status') {
+        $status['conversion'] = $matches[3];
+      } else if ($matches[1] == "Info" || $matches[1] == "Warning" || $matches[1] == "Error" || $matches[1] == "Fatal") {
+        $current_message['type'] = $matches[1];
+        $current_message['shortMsg'] = $matches[5];
+        $current_message['longMsg'] = '';
+      } else {
+        drupal_set_message("Found unknown error type : " . $matches[1], 'warning');
+      }
+    } else {
+      $is_details_line = preg_match($details_pattern, $line, $matches);
+      if ($is_details_line && $last_is_msg) {
+        if (isset($current_message['srcref'])) {
+          $current_message['longMsg'] .=  $line . "\n";
+        } else { // this is the source ref line
+          $trange_pattern = '/^.*textrange\(from=(\d*);(\d*),to=(\d*);(\d*)\)/';
+          $valid_trange = preg_match($trange_pattern, $line, $matches);
+          if ($valid_trange) {
+            $current_message["srcref"] = array();
+            $current_message["srcref"]['from'] = array();
+            $current_message["srcref"]['from']['line'] = $matches[1] + 1; // oaff standard is that lines nr starts at 1 not 0
+            $current_message["srcref"]['from']['col'] = $matches[2];
+            $current_message["srcref"]['to'] = array();
+            $current_message["srcref"]['to']['line'] = $matches[3] + 1; // oaff standard is that lines nr starts at 1 not 0
+            $current_message["srcref"]['to']['col'] = $matches[4];
+          } else {
+            // no source ref, adding to long message
+            $current_message['longMsg'] .= $line . "\n";
+          }
+        }
+      } else { // random line, skipping and setting message 
+        $last_is_msg = false;
+      }
+    }
+  }
+  if (isset($current_message['type'])) { // have to save last msg
+    $status['messages'][] = $current_message;
+    $current_message = array();
+  }
+  return $status;
+}
+
+function latexml_filter_info() {
+  $filters = array();
+  $filters['local-compilation'] = array(
+    'title' => t('Local LateXML Compilation filter'),
+    'description' => t('The TeX(t) will be compiled by LateXML to produce XML'),
+    'process callback' => 'latexml_filter_local_process',
+    'default settings' => array(
+      'latexml_profile' => 'math',
+      'latexml_preamble' => '',
+    ),
+    'settings callback' => 'latexml_filter_local_settings',
+  );
+  return $filters;
+}
+
+function latexml_filter_local_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  global $filter_context;
+  global $filter_debug;
+  
+  if (!isset($filter_context['source'])) { // this is the first filter
+    $filter_context['source'] = $text;
+  }
+
+  if (isset($filter_context['failed']) && $filter_context['failed'] == "true") { // failed already
+    return $text;
+  }
+
+  $fpath = $filter_context['mmt']['location'];
+  $response = latexml_compile($fpath);
+
+  if (!isset($filter_context['status'])) {
+    $filter_context['status'] = array();
+  }
+
+  $filter_context['status']['latexml'] = $response['status'];
+
+  if ($response['status']['conversion'] != 0) { // && $response['status']['conversion'] != 1
+    $filter_context['failed'] = true;
+  }
+
+  return $response['content'];
+}
+
+function latexml_filter_local_settings($form, $form_state, $filter, $format, $defaults) {
+  $settings = array();
+  $settings['latexml_profile'] = array(
+    '#type' => 'textfield',
+    '#title' => t('LateXML Profile'),
+    '#default_value' => isset($filter->settings['latexml_profile']) ? $filter->settings['latexml_profile'] : $defaults['latexml_profile'],
+    '#description' => t('The name of the LateXML profile to be used'),
+  );
+
+  $settings['latexml_preamble'] = array(
+    '#type' => 'textarea',
+    '#title' => t('LateXML Preamble'),
+    '#default_value' => isset($filter->settings['latexml_preamble']) ? $filter->settings['latexml_preamble'] : $defaults['latexml_preamble'],
+    '#description' => t('The LateXML preamble to be used'),
+  );
+  return $settings;
+}

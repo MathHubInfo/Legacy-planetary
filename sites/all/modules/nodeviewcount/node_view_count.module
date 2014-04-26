@@ -1,0 +1,42 @@
+<?php
+
+require_once 'includes/node_view_count.api.inc';
+require_once 'model/node_view_count.db.inc';
+
+function node_view_count_menu() {
+  $items = array();
+
+  $items['admin/config/content/count-views'] = array(
+    'title' => t('Node view count settings'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('node_view_count_admin_settings_form'),
+    'access arguments' => array('administer modules'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/pages/node_view_count.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function node_view_count_node_view($node, $view_mode, $langcode) {
+  if ($view_mode != 'full') {
+    return;
+  } 
+  if (!node_view_count_is_node_count($node)) {
+		return;
+	}
+  global $user;
+  if (!node_view_count_is_user_count($user)) {
+		return;
+	}
+  node_view_count_count_view_insert($node->nid, $user->uid);
+}
+
+function node_view_count_views_api() {
+  return array(
+    'api' => 3.0,
+    'path' => drupal_get_path('module', 'node_view_count') . '/includes',
+  );
+}

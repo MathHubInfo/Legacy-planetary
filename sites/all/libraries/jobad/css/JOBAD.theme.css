@@ -1,0 +1,328 @@
+/*
+	JOBAD.theme.css
+	Contains JOBAD CSS Theme
+	
+	Copyright (C) 2013 KWARC Group <kwarc.info>
+	
+	This file is part of JOBAD.
+	
+	JOBAD is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	JOBAD is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with JOBAD.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+.JOBAD {
+	/* applied to all JOBAD related elements */
+}
+
+/* inline icon */
+
+.JOBAD.JOBAD_InlineIcon{
+	background-size:18px 18px; 
+	width: 18px;
+	height: 18px;
+}
+
+/* 
+	HoverText
+*/
+
+.JOBAD.JOBAD_Hover {
+	/* Style for JOBAD Hover Texts */
+	background-color: #ffffca;
+	-webkit-border-radius: 5;
+	-moz-border-radius: 5;
+	border-radius: 5;
+	border: 1px solid #000023;
+}
+
+/* 
+	JOBAD ContextMenu
+*/
+
+.JOBAD.JOBAD_Contextmenu {
+	/* applied to the context menu */
+}
+
+.JOBAD.JOBAD_Contextmenu.JOBAD_ContextMenu_Radial.JOBAD_ContextMenu_RadialItem{
+	/* a radial context menu item */
+}
+
+.JOBAD.JOBAD_Contextmenu.JOBAD_ContextMenu_Radial.JOBAD_ContextMenu_RadialItem:hover{
+	/* a radial context menu item */
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	border: 1px solid black; 
+}
+
+.JOBAD.JOBAD_Contextmenu.JOBAD_ContextMenu_Radial.JOBAD_ContextMenu_RadialItem.JOBAD_ContextMenu_Radial_Disabled {
+	-webkit-filter: grayscale(100%); /* we are disabled */
+}
+
+.JOBAD.JOBAD_Contextmenu.JOBAD_ContextMenu_Radial.JOBAD_ContextMenu_RadialItem.JOBAD_ContextMenu_Radial_Disabled:hover {
+	border: 0px; 
+}
+
+/* 
+	JOBAD Sidebar 
+*/
+.JOBAD.JOBAD_Sidebar_left,  .JOBAD.JOBAD_Sidebar_right{
+	/* applied to all sidebar elements */
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Sidebar_Hover {
+	/* applied to JOBAD Sidebar Hover Tooltips. */
+}
+
+/* The following are sidebar notification type tooltips */
+.JOBAD.JOBAD_Sidebar.JOBAD_Notification_info
+{
+	/* Information */
+	background-color: #0033FF;
+	border: 1px solid #0000FF;
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Notification_warning {
+	/* Warning */
+	background-color: #FFFF00;
+	border: 1px solid #FFAA00;
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Notification_error{
+	/* Error */	
+	background-color: red;
+	border: 1px solid red;
+}
+
+.JOBAD.JOBAD_Sidebar.JOBAD_Notification_none{
+	background-color: #696969;
+	border: 1px solid #000000;
+}
+
+
+/*
+	JOBAD Folding
+*/
+.JOBAD.JOBAD_Folding_left.JOBAD_Folding_Container.JOBAD_Folding_folded,
+.JOBAD.JOBAD_Folding_left.JOBAD_Folding_Container.JOBAD_Folding_unfolded,
+.JOBAD.JOBAD_Folding_right.JOBAD_Folding_Container.JOBAD_Folding_folded,
+.JOBAD.JOBAD_Folding_right.JOBAD_Folding_Container.JOBAD_Folding_unfolded{
+	width: 3px;
+	box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
+/* on hover */
+.JOBAD.JOBAD_Folding_left.JOBAD_Folding_Container.JOBAD_Folding_folded:hover,
+.JOBAD.JOBAD_Folding_left.JOBAD_Folding_Container.JOBAD_Folding_unfolded:hover,
+.JOBAD.JOBAD_Folding_right.JOBAD_Folding_Container.JOBAD_Folding_folded:hover,
+.JOBAD.JOBAD_Folding_right.JOBAD_Folding_Container.JOBAD_Folding_unfolded:hover{
+	background-color: #C0C0C0;
+}
+
+
+
+
+.JOBAD.JOBAD_Folding_right.JOBAD_Folding_Container.JOBAD_Folding_folded {
+	/* Right Folding Bracket */
+	border-right: 1px solid black;
+}
+
+.JOBAD.JOBAD_Folding_left.JOBAD_Folding_Container.JOBAD_Folding_folded {
+	/* Left Folding Bracket */
+	border-left: 1px solid black;
+}
+
+.JOBAD.JOBAD_Folding_right.JOBAD_Folding_Container.JOBAD_Folding_unfolded {
+	/* Right Folding Bracket */
+	border-right: 1px solid gray;
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+}
+
+.JOBAD.JOBAD_Folding_left.JOBAD_Folding_Container.JOBAD_Folding_unfolded {
+	/* Left Folding Bracket */
+	border-left: 1px solid gray;
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+}
+
+/*
+	JOBAD Config UI
+*/
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_tablemain{
+	/* Main Table of the confg UI */
+	font-size: 150%;
+}
+
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_infobox{
+	/* Config UI Infobox */
+	vertical-align: top; 
+}
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_subtabs {
+	/* Tabs in the boxes */
+	font-size: 70%;
+}
+
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_ModEntry {
+	/* Module entries */
+	vertical-align: top; 
+}
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_ModEntry td {
+	border-top: 1px solid black;
+}
+
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_MetaConfigTitle {
+	/* Title of module in about box */
+	font-weight: bold; 
+}
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_MetaConfigDesc {
+	/* Description of module in about box */
+	font-style: italic;
+	margin-left: 20px; 
+}
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_validateFail {
+	/* Validation FAIL */
+	background-color: red; 
+}
+
+.JOBAD.JOBAD_ConfigUI.JOBAD_ConfigUI_validateOK {
+	/* Validatvion OK */
+	background-color: #FFFFD0;
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Body{
+	margin: auto; 
+}
+
+/*
+	JOBAD Repo
+*/
+.JOBAD.JOBAD_Repo.JOBAD_Repo_MsgBox {
+	/* The message box */
+	position: fixed;
+	top: 20px;
+	left: 50%;
+	margin-left: -200px;
+	width: 400px;
+	height: 20px;
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Title {
+	/* Repository title */
+	text-align: center;
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Desc {
+	/* Respoitory description */
+	text-align: center;
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Table {
+	border-collapse:collapse;
+	width: 100%;
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Table th, 
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Table td
+{
+	/* Module Table Borders */
+	border: 1px solid gray;
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Table th{
+	/* Table Head */
+	font-weight: bold;
+	border-bottom: 3px solid black;
+}
+
+/* Not available text */
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_NA:before {
+  content: "n/a";
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_NA {
+	color: gray;
+}
+
+
+/* Dependencies */
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Dependency {
+	color: black; 
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Dependency.JOBAD_Repo_Dependency_Found:hover{
+	/* Found */
+	color: green;
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Repo_Dependency.JOBAD_Repo_Dependency_NotFound:hover{
+	/* Not Found */
+	color: red;
+}
+
+/*
+	Sorting
+*/
+
+/* ascending */
+.JOBAD.JOBAD_Repo.JOBAD_Sort_Ascend:before {
+	content: "+";
+}
+
+/* descending */
+.JOBAD.JOBAD_Repo.JOBAD_Sort_Descend:before {
+	content: "-";
+}
+
+.JOBAD.JOBAD_Repo.JOBAD_Sort_Ascend, 
+.JOBAD.JOBAD_Repo.JOBAD_Sort_Descend {
+	color: gray;
+}
+
+
+
+
+/*
+	JOBAD jQuery UI CSS compatibility fixes
+*/
+
+/* Progress Bar */
+.ui-progressbar {
+	position: relative;
+}
+
+.progress-label {
+	position: absolute;
+	width: 400px;
+	text-align: center;
+	top: 4px;
+	font-weight: bold;
+	text-shadow: 1px 1px 0 #fff;
+}
+
+/* fix for bad size */
+.ui-widget { font-size: 70%; }

@@ -1,0 +1,6 @@
+name = OAFF Views
+description = Declares various views for OAFF nodes
+core = 7.x
+package = OAFF
+
+dependencies[] = oaff

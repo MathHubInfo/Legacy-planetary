@@ -1,6 +1,6 @@
 <?php
 
-require_once("glossary_local.php");
+require_once("LocalGlossary.php");
 
 $glossary = null;
 
@@ -32,7 +32,7 @@ function planetary_glossary_field_formatter_view($entity_type, $entity, $field, 
       $lang = $entity->language;
       foreach ($items as $delta => $item) {
 	      $location = $item['path'];
-        $path_info = mmt_get_path_info($location);
+        $path_info = oaff_get_path_info($location);
 
         global $filter_context;
         $filter_context = array();
@@ -73,6 +73,7 @@ function getGlossary() {
 }
 
 function planetary_glossary_menu() {
+   $items = array();
    $items['glossary/imports'] = array(
       'title' => 'Autocomplete glossary imports',
       'type' => MENU_CALLBACK,
@@ -99,6 +100,8 @@ function planetary_glossary_sync($form, &$form_status) {
 
 	$query = new EntityFieldQuery();
 
+  // TODO This looks broken and unfinished, commented out for now 
+  /*
 	$query->entityCondition('entity_type', 'node')
 		->fieldCondition('field_news_types', 'value', 'spotlight', '=')
 		->fieldCondition('field_photo', 'fid', 'NULL', '!=')
@@ -118,6 +121,7 @@ function planetary_glossary_sync($form, &$form_status) {
 	foreach (planetary_repo_list("/") as $file) {
 		
 	}
+  */
 	return $form;
 }
 
@@ -160,7 +164,8 @@ function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $ins
       // 
       if (isset($items[$delta]['path'])) {
         $location = $items[$delta]['path'];
-        $path_info = mmt_get_path_info($location);
+        $path_info = oaff_get_path_info($location);
+
         $moduleid = $path_info['module'];
 
         global $filter_context;
@@ -180,6 +185,12 @@ function planetary_glossary_field_widget_form(&$form, &$form_state, $field, $ins
       $widget["#type"] = "fieldset";
       $widget["data"] = array(
              "path" => array(
+               "#type" => "textfield",
+               "#title" => "File Location",
+               "#required" => true,
+               "#default_value" => $location
+             ),
+              "module" => array(
                "#type" => "textfield",
                "#title" => "Module name",
                "#required" => true,
@@ -274,7 +285,7 @@ function planetary_glossary_field_widget_validate($element, &$form_state) {
     
     $location = $values["data"]["path"]; //TODO for manually created nodes, this needs to correspond to the <module>.<lang>.<ext> standard
     $lang = $values["data"]["lang"];
-    $path_info = mmt_get_path_info($location);
+    $path_info = oaff_get_path_info($location);
     
     $dpath = $path_info['dpath'];
     planetary_repo_save_file($location, $values["data"]["content"]["value"]);

@@ -6,3 +6,6 @@ scripts[] = async.js
 scripts[] = sharejsservices.js
 scripts[] = sharejsservices.js
 stylesheets[all][] = sharejsservices.css
+
+dependencies[] = mmt
+

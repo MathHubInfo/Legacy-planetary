@@ -13,50 +13,55 @@ var planetaryNavigation = {
   
 
     leftClick: function(target, JOBADInstance) {
-    	if(target.hasAttribute('loadable')) {
-			var elem = target.parent().get(0);
-			var uri = $(elem).attr('jobad:load');
-			var uriEnc = this.encode(uri);
-		    window.location.search = "?q=" + uriEnc;
-			return true;
+		if(target.hasAttribute('jobad:href')) {
+			var uri = target.attr("jobad:href");
+			var uriEnc = planetary.relNavigate(uri);
 		}
-	    return false;
+		return false;
     },
 
 
     contextMenuEntries: function(target, JOBADInstance) {
+		var blob_url = 'http://gl.mathhub.info/' + oaff_node_group  + "/" + oaff_node_archive + "/blob/master/source/" + oaff_node_rel_path;
+		var blame_url = 'http://gl.mathhub.info/' + oaff_node_group  + "/" + oaff_node_archive + "/blame/master/source/" + oaff_node_rel_path;
+		var res = {
+			'View Source' : function() {window.open(blob_url, '_blank');},
+			'View Change History' : function() {window.open(blame_url, '_blank');},
+			'View Graph' : function() {$('#svg_modal').modal()},
+		};
 		if (target.hasAttribute('jobad:href')) {			
 			var mr = $(target).closest('mrow');
-			var select = (mr.length == 0) ? target : mr[0];
+			var select = (mr.length === 0) ? target : mr[0];
 			mmt.setSelected(select);
 			var uri = target.attr('jobad:href');
-			console.log(uri);
-		 	var me = this;
-			return {
-				'Go To Declaration': function() {me.planetaryOpen(uri)},
-			}
-		}
-		return false;
+			var me = this;
+			res['Go To Declaration'] = function() {planetary.navigate(uri);};
+			res['Show Definition'] = function() {
+				$.ajax({ 
+				  'url': mmtUrl + "/:immt/query",
+   	  			  'type' : 'POST',
+			      'data' : '{ "subject" : "' + uri + '",' + 
+			      	'"relation" : "isDefinedBy",' + 
+			        '"return" : "planetary"}',
+			       'dataType' : 'html',
+			       'processData' : 'false',
+	       			'contentType' : 'text/plain',
+	              'crossDomain': true,
+                  'success': function cont(data) {
+  					$('#dynamic_modal_content').html(data);
+  					$('#dynamic_modal').modal();
+                  },
+                  'error' : function( reqObj, status, error ) {
+					console.log( "ERROR:", error, "\n ",status );
+		    	  },
+                });
+			};
+		} 
+		return res;
 	},
-
-	planetaryOpen : function(uri) {
-	  uriSegs = uri.split("?");
-	  if (uriSegs.length < 2) {//module or document path 
-	    window.location.search = "?q=" + this.encode(uri);
-      } else { //symbol or fragment path
-		var modUri = uriSegs[0] + "?" + uriSegs[1];
-		window.location.search = "?q=" + this.encode(modUri);        
-      }
-	},
-
-
-    encode : function(uri) {
-		var rawEncoded = encodeURIComponent(uri);
-		//mirroring drupal in not escaping slashes
-		return rawEncoded.replace(/%2F/g, "/");
-    },
-}
-
+    
+};
 
 JOBAD.modules.register(planetaryNavigation);
 })(jQuery);
+

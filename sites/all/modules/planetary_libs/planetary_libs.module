@@ -36,8 +36,8 @@ function planetary_libs_js_alter(&$javascript) {
   $old_patches = array("sites/all/modules/views/js/jquery.ui.dialog.patch.js"); //Stuff we no longer need for the new jquersy version
 
   //jQuery
-  $javascript['misc/jquery.js']['data']    =  $base_path . '/libs/jquery/jquery-1.9.1.js';
-  $javascript['misc/jquery.js']['version'] = '1.9.1';
+  $javascript['misc/jquery.js']['data']    =  $base_path . '/libs/jquery/jquery-1.10.2.js';
+  $javascript['misc/jquery.js']['version'] = '1.10.2';
 
   $hooked_in_ui = false;
 
@@ -337,9 +337,12 @@ function planetary_libs_libraries_info() {
     ),
     'files' => array(
       'js' => array(
+        'js/deps/underscore/underscore-min.js',
+        'js/deps/bootstrap.js',
         'build/release/JOBAD.js',
       ),
-      'css' => array(
+      'css' => array(        
+        'build/release/libs/css/libs.css',
         'build/release/JOBAD.css',
       )
     ),
@@ -347,9 +350,12 @@ function planetary_libs_libraries_info() {
       'minified' => array(
         'files' => array(
           'js' => array(
+          'js/deps/underscore/underscore-min.js',
+          'js/deps/bootstrap.js',
             'build/release/JOBAD.min.js',
           ),
           'css' => array(
+            'build/release/libs/css/libs.css',
             'build/release/JOBAD.css',
           )       
         ),

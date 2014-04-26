@@ -1,0 +1,157 @@
+<?php
+
+/**
+ * @file
+ * Install file.
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function heartbeat_plugins_install() {
+}
+
+/**
+ * Implements hook_schema().
+ */
+function heartbeat_plugins_schema() {
+
+  $schema['heartbeat_plugins'] = array(
+    'description' => 'The base table for heartbeat plugins.',
+
+    // CTools export definitions.
+    'export' => array(
+      'key' => 'plugin_name',
+      'identifier' => 'plugin_name',
+      'object' => 'HeartbeatPluginWrapper',
+      'default hook' => 'heartbeat_plugin_info',
+      'delete callback' => 'heartbeat_plugins_delete',
+      'can disable' => TRUE,
+      'api' => array(
+        'owner' => 'heartbeat_plugins',
+        'api' => 'heartbeat_plugins',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+
+    'fields' => array(
+      'plugin_name' => array(
+        'description' => 'The primary identifier for the heartbeat plugin.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'label' => array(
+        'description' => 'The label for the heartbeat plugin.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'module' => array(
+        'description' => 'The module for the heartbeat plugin.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'settings' => array(
+        'description' => t('Settings for the plugin.'),
+        'type' => 'blob',
+        'serialize' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('plugin_name'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function heartbeat_plugins_update_7001() {
+  if (!db_field_exists('heartbeat_plugins', 'module')) {
+    db_add_field('heartbeat_plugins', 'module', array(
+      'description' => 'The module for the heartbeat plugin.',
+      'type' => 'varchar',
+      'length' => 64,
+      'not null' => TRUE,
+      'default' => '',
+    ));
+  }
+}
+
+/**
+ * Add in_group, language, timestamp index to {heartbeat_activity}.
+ */
+function heartbeat_plugins_update_7003() {
+  if (module_exists('og')) {
+    db_add_index('heartbeat_activity', 'group_language_timestamp', array('in_group', 'language', 'timestamp'));
+  }
+}
+
+/**
+ * Reformat the attachment section of the plugins.
+ */
+function heartbeat_plugins_update_7004() {
+
+  module_load_include('inc', 'heartbeat', 'heartbeat');
+  module_load_include('inc', 'heartbeat', 'heartbeat_plugins');
+  module_load_include('module', 'ctools');
+  ctools_include("export");
+
+  $templates = ctools_export_crud_load_all('heartbeat_messages');
+  foreach ($templates as $template) {
+    if (!isset($template->attachments['buttons'])) {
+
+      $buttons = array(
+        'weight' => array(),
+        'settings' => array(),
+        'enabled' => array(),
+      );
+      $content = array(
+        'weight' => array(),
+        'enabled' => array(),
+      );
+
+      // The activity comment plugin
+      if (isset($template->attachments['activitycomments']) && $template->attachments['activitycomments']['enabled']) {
+        $buttons['weight']['activitycomments'] = -9;
+        $buttons['settings']['activitycomments']['activitycomments_node'] = $template->attachments['activitycomments']['activitycomments_node'];
+        $buttons['enabled']['activitycomments'] = 'activitycomments';
+        $content['weight']['activitycomments'] = -9;
+        $content['enabled']['activitycomments'] = 'activitycomments';
+      }
+
+      // The activity flag plugin
+      if (isset($template->attachments['flagattachment'])) {
+        foreach ($template->attachments['flagattachment']['flags'] as $flag) {
+          if (!$flag) {
+            continue;
+          }
+          $pluginId = 'flagattachment:' . $flag;
+          $buttons['weight'][$pluginId] = -10;
+          $buttons['enabled'][$pluginId] = $pluginId;
+          if (isset($template->attachments['flagattachment']['flag_count_enabled'])
+              && $template->attachments['flagattachment']['flag_count_enabled']['flags']) {
+            $content['weight'][$pluginId] = -10;
+            $content['enabled'][$pluginId] = $pluginId;
+          }
+        }
+      }
+
+      $template->attachments = array(
+        'buttons' => $buttons,
+        'content'  => $content
+      );
+      // Migrate the configuration for the template.
+      ctools_export_crud_save('heartbeat_messages', $template);
+    }
+
+  }
+
+}
