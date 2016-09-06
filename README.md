@@ -1,5 +1,7 @@
 # About
 
+[![DOI](https://zenodo.org/badge/24270/KWARC/planetary.svg)](https://zenodo.org/badge/latestdoi/24270/KWARC/planetary)
+
 Since mid-2013, Planetary is the software system that powers [PlanetMath](http://planetmath.org).  The technologies used (including Drupal 7, MathML, and the Virtuoso triple store) comprise an extensible modern platform, suitable for further development and stand-alone deployments.  For instance, Planetary is currently in use as a course forum and as the frontend to a formal mathematics system.
 
 # Our development style
